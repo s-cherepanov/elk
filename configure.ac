@@ -434,13 +434,11 @@ AC_DEFINE(GENERATIONAL_GC, 1, [FIXME HARD])
 # stop-and-copy garbage collector is used).
 AC_DEFINE(HEAP_SIZE, 1024, [FIXME HARD])
 
-# The directory where all files are installed by running "make install".
-# The subdirectories bin, lib, include, and runtime (with various
-# subdirectories) are created automatically, but $install_dir isn't.
-# Make sure $install_dir doesn't point to the top of the source tree
-# (i.e. choose a subdirectory or a directory outside the source tree).
-AC_DEFINE_UNQUOTED(SCM_DIR, "${prefix}/share/elk", [Data directory])
-AC_DEFINE_UNQUOTED(LIB_DIR, "${prefix}/lib/elk", [Plugins directory])
+# The directory where all files are installed by running "make install". We
+# cannot use AC_DEFINE_UNQUOTED here because ${prefix} is not set until the
+# end of the configure script. Thanks to Phillip Rulon for spotting that.
+CPPFLAGS="${CPPFLAGS} -DSCM_DIR=\\\"\$(prefix)/share/elk\\\""
+CPPFLAGS="${CPPFLAGS} -DLIB_DIR=\\\"\$(prefix)/lib/elk\\\""
 
 #define FIND_AOUT defined(USE_LD) || defined(CAN_DUMP) || defined(INIT_OBJECTS)
 AC_DEFINE(FIND_AOUT, 1, [FIXME HARD])
