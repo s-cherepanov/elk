@@ -1,7 +1,13 @@
+elk (3.0-14) unstable; urgency=low
+
+  * Rebuilt package against libgdbm's new version.
+  * Set policy to 3.5.10.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed,  4 Jun 2003 02:42:08 +0200
+
 elk (3.0-13) unstable; urgency=low
 
   * Fixed gcc-3.3 compilation errors due to deprecated usage of <varargs.h>.
-  * Set policy to 3.5.10.
 
  -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 30 May 2003 17:04:56 +0200
 
