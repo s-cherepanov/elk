@@ -88,9 +88,9 @@ Object Reduce_Bignum (Object x) {
 }
 
 static void Bignum_Mult_In_Place (register struct S_Bignum *x, int n) {
-    register int i = x->usize;
+    register unsigned int i = x->usize;
     register gran_t *p = x->data;
-    register int j;
+    register unsigned int j;
     register unsigned int k = 0;
 
     for (j = 0; j < i; ++j) {
@@ -107,9 +107,9 @@ static void Bignum_Mult_In_Place (register struct S_Bignum *x, int n) {
 }
 
 static void Bignum_Add_In_Place (register struct S_Bignum *x, int n) {
-    register int i = x->usize;
+    register unsigned int i = x->usize;
     register gran_t *p = x->data;
-    register int j = 0;
+    register unsigned int j = 0;
     register unsigned int k = n;
 
     if (i == 0) goto extend;
@@ -230,7 +230,7 @@ Object Bignum_To_String (Object x, int radix) {
 
     while (big->usize) {
 	register unsigned int bigdig = Bignum_Div_In_Place (big, div);
-	register int i;
+	register unsigned int i;
 	for (i = 0; i < ndig; i++) {
 	    *--p = '0' + bigdig % radix;
 	    if (*p > '9')
@@ -443,8 +443,8 @@ Object Bignum_Abs (Object x) {
 }
 
 int Bignum_Mantissa_Cmp (register struct S_Bignum *x,
-	register struct S_Bignum *y) {
-    register int i = x->usize;
+                         register struct S_Bignum *y) {
+    register unsigned int i = x->usize;
     if (i < y->usize)
 	return -1;
     else if (i > y->usize)
