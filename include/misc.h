@@ -46,9 +46,9 @@ extern_c Object elk_import False2;
 
 /* Align heap addresses */
 #ifdef ALIGN_8BYTE
-#  define ALIGN(ptr) ((ptr) = (void *)(((intptr_t)(ptr) + 7) & ~7))
+#  define ELK_ALIGN(ptr) ((ptr) = (void *)(((intptr_t)(ptr) + 7) & ~7))
 #else
-#  define ALIGN(ptr) ((ptr) = (void *)(((intptr_t)(ptr) + 3) & ~3))
+#  define ELK_ALIGN(ptr) ((ptr) = (void *)(((intptr_t)(ptr) + 3) & ~3))
 #endif
 
 /* Normalize stack addresses */

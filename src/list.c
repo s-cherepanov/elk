@@ -58,7 +58,7 @@ Object P_Cons (Object car, Object cdr) {
     register char *p;
 
     p = Hp;
-    ALIGN(p);
+    ELK_ALIGN(p);
     if (p + sizeof (struct S_Pair) <= Heap_End && !GC_Debug) {
         Hp = p + sizeof (struct S_Pair);
         SET(cell, T_Pair, (struct S_Pair *)p);

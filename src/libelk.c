@@ -285,7 +285,7 @@ void Elk_Init (int ac, char **av, int init_objects, char *toplevel) {
 
     stkbase = &foo;
     Stack_Grows_Down = Check_Stack_Grows_Down ();
-    ALIGN(stkbase);
+    ELK_ALIGN(stkbase);
     Make_Heap (heap);
     Init_Everything ();
 #ifdef HAVE_ATEXIT

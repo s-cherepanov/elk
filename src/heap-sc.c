@@ -72,11 +72,11 @@ Object Alloc_Object (int size, int type, int konst) {
         (void)P_Collect ();
         p = Hp;
     }
-    ALIGN(p);
+    ELK_ALIGN(p);
     if (p + size > Heap_End) {
         (void)P_Collect ();
         p = Hp;
-        ALIGN(p);
+        ELK_ALIGN(p);
         if (p + size > Heap_End - HEAP_MARGIN)
             Uncatchable_Error ("Out of heap space");
     }
@@ -143,7 +143,7 @@ again:
         SETPOINTER(*p, POINTER(*tag));
         return 0;
     }
-    ALIGN(To);
+    ELK_ALIGN(To);
     switch (t) {
     case T_Bignum:
         size = sizeof (struct S_Bignum) - sizeof (gran_t)
