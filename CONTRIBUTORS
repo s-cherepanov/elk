@@ -1,0 +1,29 @@
+Numerous users of the Extension Language Kit (too many to mention them
+all) have contributed ideas, suggestions for improvements, bug reports,
+source code, useful feedback, as well as other kinds of support to this
+and earlier releases.  Their help has made the present version of Elk
+Extension Language Kit a genuinely collective effort.
+
+I'm especially obliged to my former colleague Carsten Bormann, who
+has significantly influenced the design of Elk since the beginning
+of the project in 1987.  Carsten also wrote most of the bignum code.
+
+I also would like to thank Claus Bathe of NME Berlin for securing the
+permission from his management to publish Elk 1.2 (from which the
+present version has been derived), and Prof. Dr. Sigram Schindler for
+providing the work environment for my research work at Technische
+Universitaet Berlin.
+
+In addition, I would like to thank Nick Betteridge, Stephen Bevan,
+Alan Bishop, Tim Bradshaw, Paul Breslaw, Dennis Brueni, Thomas Dickey,
+Ted Dunning, Gerhard Eckel, Walter Eder, Joe Esch, Mikel Evins,
+Ed Ferguson, Ram Firestone, Robert Forsman, Ken Fox, Thomas Gellekum,
+Robert Glickstein, George Hartzell, Robert Henry, Don Hopkins,
+Xiaoli Huang, Bill Janssen, Rob Jellinghaus, Robert Joop, Kazuhiko Kato,
+Doo-Hwan Kim, Bengt Kleberg, Richard Kreutzer, Richard Kuhns, Dinh Le,
+John Lewis, Tor Lillqvist, Christopher Maeda, Steven Majewski,
+Craig McPheeters, Zdzislaw Meglicki, Perry Metzger, Lars Nyman,
+Richard O'Keefe, Bob Pendelton, Flip Phillips, Norbert Preining,
+Dave Richards, Robert Sanders, Supreet Singh, Martin Stut, Brian Taylor,
+Scott Watson, and Mike Wray.  I apologize for any omissions from
+this--necessarily incomplete--list.

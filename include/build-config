@@ -1,0 +1,344 @@
+. ../config/system
+. ../config/site
+
+case "$system" in
+*-*-*) ;;
+*) echo Error in config file:
+   echo Badly formed system identification: "$system"; exit 1;;
+esac
+
+def_vfork=undef
+def_vprintf=undef
+def_dirent=undef
+def_atexit=undef
+def_syms_underl=undef
+def_random=undef
+def_include_unistd_h=undef
+def_sysconf_open_max=undef
+def_getdtablesize=undef
+def_pathconf_path_max=undef
+def_getpagesize=undef
+def_sysconf_pagesize=undef
+def_bsd_signals=undef
+def_posix_signals=undef
+def_align_8byte=undef
+def_can_dump=undef
+def_fchmod_broken=undef
+def_termio=undef
+def_flush_bsd=undef
+def_flush_fpurge=undef
+def_flush_tiocflush=undef
+def_flush_tcflsh=undef
+def_use_alloca=undef
+def_include_alloca_h=undef
+def_pragma_alloca=undef
+def_coff=undef
+def_ecoff=undef
+def_xcoff=undef
+def_elf=undef
+def_macho=undef
+def_convex=undef
+def_hp9k=undef
+def_hp_shared_libs=undef
+def_debug_dump=undef
+def_use_ld=undef
+def_use_rld=undef
+def_use_shl=undef
+def_use_dlopen=undef
+def_max_stack_size=undef
+def_mprotect=undef
+def_mprotect_mmap=undef
+def_want_proto=undef
+def_no_proto=undef
+def_generational_gc=undef
+def_cachectl_h=undef
+def_syms_begin_with=undef
+def_ansi_cpp=undef
+def_can_load_obj=undef
+def_sigsegv_siginfo=undef
+def_sigsegv_sigcontext=undef
+def_sigsegv_arg4=undef
+def_sigsegv_aix=undef
+def_sigsegv_hpux=undef
+def_gettimeofday=undef
+def_ftime=undef
+def_gethostname=undef
+def_uname=undef
+def_mktemp=undef
+def_tmpnam=undef
+def_tempnam=undef
+def_getcwd=undef
+def_getwd=undef
+def_rename=undef
+def_waitpid=undef
+def_wait3=undef
+def_wait4=undef
+def_fionread_h=undef
+def_utime_h=undef
+def_regcomp=undef
+
+if [ _$regcomp = _yes ];          then def_regcomp=define;          fi
+if [ _$utime_h = _yes ];          then def_utime_h=define;          fi
+if [ _$fionread_include != _ ];   then def_fionread_h=define;       fi
+if [ _$wait4 = _yes ];            then def_wait4=define;            fi
+if [ _$wait3 = _yes ];            then def_wait3=define;            fi
+if [ _$waitpid = _yes ];          then def_waitpid=define;          fi
+if [ _$rename = _yes ];           then def_rename=define;           fi
+if [ _$getwd = _yes ];            then def_getwd=define;            fi
+if [ _$getcwd = _yes ];           then def_getcwd=define;           fi
+if [ _$tempnam = _yes ];          then def_tempnam=define;          fi
+if [ _$tmpnam = _yes ];           then def_tmpnam=define;           fi
+if [ _$mktemp = _yes ];           then def_mktemp=define;           fi
+if [ _$uname = _yes ];            then def_uname=define;            fi
+if [ _$gethostname = _yes ];      then def_gethostname=define;      fi
+if [ _$gettimeofday = _yes ];     then def_gettimeofday=define;     fi
+if [ _$ftime =  _yes ];           then def_ftime=define;            fi
+if [ _$vfork = _yes ];            then def_vfork=define;            fi
+if [ _$vprintf = _yes ];          then def_vprintf=define;          fi
+if [ _$dirent = _yes ];           then def_dirent=define;           fi
+if [ _$atexit = _yes ];           then def_atexit=define;           fi
+if [ _$syms_with_underline = _yes ];
+				  then def_syms_underl=define;      fi
+if [ _$random = _yes ];           then def_random=define;           fi
+if [ _$include_unistd_h = _yes ]; then def_include_unistd_h=define; fi
+if [ _$sysconf_open_max = _yes ]; then def_sysconf=define;          fi
+if [ _$getdtablesize = _yes ];    then def_getdtablesize=define;    fi
+if [ _$pathconf_path_max = _yes ];then def_pathconf_path_max=define;fi
+if [ _$getpagesize = _yes ];      then def_getpagesize=define;      fi
+if [ _$sysconf_pagesize = _yes ]; then def_sysconf_pagesize=define; fi
+if [ _$align_8byte = _yes ];      then def_align_8byte=define;      fi
+if [ _$can_dump = _yes ];         then def_can_dump=define;         fi
+if [ _$fchmod_broken = _yes ];    then def_fchmod_broken=define;    fi
+if [ _$termio = _yes ];           then def_termio=define;           fi
+if [ _$use_alloca = _yes ];       then def_use_alloca=define;       fi
+if [ _$include_alloca_h = _yes ]; then def_include_alloca_h=define; fi
+if [ _$pragma_alloca = _yes ];    then def_pragma_alloca=define;    fi
+if [ _$max_stack_size != _ ];     then def_max_stack_size=define;   fi
+if [ _$generational_gc = _yes ];  then def_generational_gc=define;  fi
+if [ _$cachectl_h != _ ];         then def_cachectl_h=define;       fi
+if [ _$ansi_cpp =  _yes ];        then def_ansi_cpp=define;         fi
+if [ _$hp_shared_libraries = _yes ];
+				  then def_hp_shared_libs=define;   fi
+if [ _$debug_dump = _yes ];       then def_debug_dump=define;       fi
+if [ _$syms_begin_with != _ ];    then
+    def_syms_begin_with=define
+    syms_begin_char=\'$syms_begin_with\'
+fi
+if [ _$mprotect = _yes ];         then def_mprotect=define;         fi
+if [ _$mprotect = _mmap ];        then
+    def_mprotect=define;
+    def_mprotect_mmap=define;
+fi
+if [ $def_getpagesize = undef -a $def_sysconf_pagesize = undef ]; then
+    if [ $def_mprotect = define ]; then
+	echo Error in config file:
+	echo mprotect requires getpagesize or sysconf_pagesize; exit 1
+    fi
+fi
+if [ _$index != _yes ];           then
+    def_index="#define index strchr"
+fi
+if [ _$bstring != _yes ]; then
+    def_bcopy="#define bcopy(from,to,len) memcpy(to,from,len)"
+    def_bzero="#define bzero(p,len)       memset(p,0,len)"
+    def_bcmp="#define bcmp memcmp"
+fi
+
+case _$reliable_signals in
+_bsd)    def_bsd_signals=define;;
+_posix)  def_posix_signals=define;;
+esac
+
+case _$prototypes in
+_yes)    def_want_proto=define;;
+_no)     def_no_proto=define;;
+esac
+
+case _$aout_format in
+_coff)   def_coff=define;;
+_ecoff)  def_ecoff=define;;
+_xcoff)  def_xcoff=define;;
+_elf)    def_elf=define;;
+_macho)  def_macho=define;;
+_hp9k)   def_hp9k=define;;
+_convex) def_convex=define;;
+esac
+
+case _$load_obj in
+_ld)     def_use_ld=define;      def_can_load_obj=define;;
+_rld)    def_use_rld=define;     def_can_load_obj=define;;
+_shl)    def_use_shl=define;     def_can_load_obj=define;;
+_dl)     def_use_dlopen=define;  def_can_load_obj=define;;
+_)       ;;
+*)       echo Error in config file:
+	 echo Invalid value for symbol load_obj: $load_obj; exit 1;;
+esac
+
+case _$flush_stdio in
+_bsd)    def_flush_bsd=define;;
+_fpurge) def_flush_fpurge=define;;
+_)       ;;
+*)       echo Error in config file:
+	 echo Invalid value for symbol flush_stdio: $flush_stdio; exit 1;;
+esac
+
+case _$flush_tty in
+_tiocflush) def_flush_tiocflush=define;;
+_tcflsh)    def_flush_tcflsh=define;;
+_)          ;;
+*)          echo Error in config file:
+	    echo Invalid value for symbol flush_tty: $flush_tty; exit 1;;
+esac
+
+case _$sigsegv_addr in
+_siginfo)    def_sigsegv_siginfo=define;;
+_sigcontext) def_sigsegv_sigcontext=define;;
+_arg4)       def_sigsegv_arg4=define;;
+_aix)        def_sigsegv_aix=define;;
+_hpux)       def_sigsegv_hpux=define;;
+_)           if [ $def_mprotect = define ]; then
+		 echo Error in config file:
+		 echo Must specify value for sigsegv_addr if mprotect=yes
+		 exit 1
+	     fi;;
+*)           echo Error in config file:
+	     echo Invalid value for symbol sigsegv_addr: $sigsegv_addr
+	     exit 1;;
+esac
+
+if [ _$load_obj = _ld -a "_$load_libraries" = _ ]; then
+    load_libraries=-lc
+fi
+
+if [ _$getgroups_type = _ ]; then
+    echo Error in config file:
+    echo Must specify a value for symbol getgroups_type
+    exit 1
+fi
+
+if [ -f $install_dir/include/build ]; then
+    echo Error in config file:
+    echo You cannot install Elk into the top of the source tree.
+    echo 'Choose a different directory for $install_dir in config/site'
+    echo '(e.g. a subdirectory or a directory outside the source tree).'
+    exit 1
+fi
+
+if [ _$init_prefix != _elk_init_ -o _$finit_prefix != _elk_finit_ ]; then
+    echo "****" Warning:
+    echo "****" Changing init_prefix or finit_prefix in your configuration
+    echo "****" requires you to modify all standard extensions accordingly
+    echo "****" and restricts portability of newly written extension.
+fi
+
+rel=`../util/getversion ../README`
+IFS=.
+set $rel
+major=$1
+minor=$2
+IFS=
+
+
+echo Building config.h...
+cat <<EOT >config.h
+/* This file was produced by the Makefile in this directory.
+ * If you want to change the value of a constant, edit ../config/system
+ * or ../config/site and run make again.
+ */
+
+#$def_regcomp          REGCOMP
+#$def_waitpid          WAITPID
+#$def_wait3            WAIT3
+#$def_wait4            WAIT4
+#$def_mktemp           MKTEMP
+#$def_tmpnam           TMPNAM
+#$def_tempnam          TEMPNAM
+#$def_getcwd           GETCWD
+#$def_getwd            GETWD
+#$def_rename           RENAME
+#$def_uname            UNAME
+#$def_gethostname      GETHOSTNAME
+#$def_gettimeofday     GETTIMEOFDAY
+#$def_ftime            FTIME
+#$def_vfork            VFORK
+#$def_vprintf          VPRINTF
+#$def_dirent           DIRENT
+#$def_random           RANDOM
+#$def_include_unistd_h INCLUDE_UNISTD_H
+#$def_sysconf_open_max SYSCONF_OPEN_MAX
+#$def_getdtablesize    GETDTABLESIZE
+#$def_pathconf_path_max PATHCONF_PATH_MAX
+#$def_getpagesize      GETPAGESIZE
+#$def_sysconf_pagesize SYSCONF_PAGESIZE
+#$def_bsd_signals      BSD_SIGNALS
+#$def_posix_signals    POSIX_SIGNALS
+#$def_align_8byte      ALIGN_8BYTE
+#$def_coff             COFF
+#$def_ecoff            ECOFF
+#$def_xcoff            XCOFF
+#$def_elf              ELF
+#$def_macho            MACH_O
+#$def_convex           CONVEX_AOUT
+#$def_hp9k             HP9K
+#$def_hp_shared_libs   HPSHLIB
+#$def_debug_dump       DEBUG_DUMP
+#$def_can_load_obj     CAN_LOAD_OBJ
+#$def_use_ld           USE_LD
+#$def_use_rld          USE_RLD
+#$def_use_shl          USE_SHL
+#$def_use_dlopen       USE_DLOPEN
+#  define              LOAD_LIBRARIES    "${load_libraries}"
+#$def_cachectl_h       CACHECTL_H        $cachectl_h
+#$def_fionread_h       FIONREAD_H        $fionread_include
+#  $def_atexit         ATEXIT
+#$def_syms_begin_with  SYMS_BEGIN_WITH   $syms_begin_char
+#$def_can_dump         CAN_DUMP
+#  define              SEG_SIZ           ${segment_size-unused}
+#  define              FILE_TEXT_START   ${file_text_start-unused}
+#  define              MEM_TEXT_START    ${mem_text_start-unused}
+#  define              TEXT_LENGTH_ADJ   ${text_length_adj-unused}
+#  define              COFF_PAGESIZE     ${coff_pagesize-unused}
+#  $def_fchmod_broken  FCHMOD_BROKEN
+#$def_termio           TERMIO
+#$def_flush_bsd        FLUSH_BSD
+#$def_flush_fpurge     FLUSH_FPURGE
+#$def_flush_tiocflush  FLUSH_TIOCFLUSH
+#$def_flush_tcflsh     FLUSH_TCFLSH
+#$def_use_alloca       USE_ALLOCA
+#$def_include_alloca_h INCLUDE_ALLOCA_H
+#$def_pragma_alloca    PRAGMA_ALLOCA
+#$def_max_stack_size   MAX_STACK_SIZE    $max_stack_size
+#$def_generational_gc  GENERATIONAL_GC
+#$def_mprotect         HAS_MPROTECT
+#$def_mprotect_mmap    MPROTECT_MMAP
+#$def_sigsegv_siginfo     SIGSEGV_SIGINFO
+#$def_sigsegv_sigcontext  SIGSEGV_SIGCONTEXT
+#$def_sigsegv_arg4        SIGSEGV_ARG4
+#$def_sigsegv_aix         SIGSEGV_AIX
+#$def_sigsegv_hpux        SIGSEGV_HPUX
+$def_index
+$def_bcopy
+$def_bzero
+$def_bcmp
+#define                AOUT_H            $aout_h
+#define                SCM_DIR           "$install_dir/runtime/scm"
+#define                OBJ_DIR           "$install_dir/runtime/obj"
+#define                HEAP_SIZE         $default_heap_size
+#define                FIND_AOUT         defined(USE_LD) || defined(CAN_DUMP)\\
+				      || defined(INIT_OBJECTS)
+#if !defined(WANT_PROTOTYPES) && !defined(NO_PROTOTYPES)
+#  $def_want_proto       WANT_PROTOTYPES
+#  $def_no_proto         NO_PROTOTYPES
+#endif
+#$def_ansi_cpp         ANSI_CPP
+#define                SYSTEMTYPE        "$system"
+#define                GETGROUPS_TYPE    $getgroups_type
+#define                LD_NAME           "$ld"
+#define                LDFLAGS_SHARED    "$ldflags_shared"
+#define                INC_LDFLAGS       "$incremental_ldflags"
+#$def_utime_h          UTIME_H
+#define                INIT_PREFIX       "$init_prefix"
+#define                FINIT_PREFIX      "$finit_prefix"
+#define                ELK_MAJOR         $major
+#define                ELK_MINOR         $minor
+EOT

@@ -1,0 +1,8 @@
+. ../config/system
+. ../config/site
+
+cat <<HERE
+# Echo the LDFLAGS required for linking the Elk interpreter kernel.
+
+echo $ldflags
+HERE

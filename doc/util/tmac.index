@@ -1,0 +1,33 @@
+. \" Macros for the index
+.de Ib	\" blank major entry
+.br
+.ne 2v
+\\$1#
+..
+.de I>	\" major entry
+.br
+\\$1, \\$2
+..
+.de I<  \" minor entry
+.br
+   \\$2, \\$3
+..
+.de LB	\" new letter starts here
+.di DT	\" start diverted text
+.sp
+\s+2\f3\\$1\fP\s-2
+.sp
+.di	\" end diverted text
+.ne \\n(dnu+1v	\" get enough space for it
+.DT		\" output it
+..
+.
+.bp
+.XS
+Index
+.XE
+.rs
+.sp .5i
+.tl '\&'\f3\s+2Index\s0\fP'\&'
+.sp .5i
+.2C

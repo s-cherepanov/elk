@@ -1,0 +1,135 @@
+send-event? argument to all handler functions
+
+No support for screens and visuals yet
+
+Missing functions:
+
+XNewModifiermap             XFreeModifiermap
+XGetModifierMapping         XSetModifierMapping
+XInsertModifiermapEntry     XDeleteModifiermapEntry
+
+XCreateImage    XGetImage   XGetPixel
+XDestroyImage   XPutImage   XPutPixel
+XGetSubImage    XAddPixel   XSubImage
+
+XCreateColormap             XAllocColorPlanes
+XCopyColormapAndFree        XAllocColorCells
+XStoreNamedColor            XFreeColors             XStoreColors
+
+XAddHosts       XEnableAccessControl
+XRemoveHosts    XDisableAccessControl
+XListHosts
+
+XGetWMColormapWindows       XGetRGBColormaps        XWMGeometry
+XSetWMColormapWindows       XSetRGBColormaps
+
+XGetErrorDatabaseText       XGetErrorText
+
+XKillClient                 XSendEvent
+
+XVisualIDFromVisual
+XGetVisualInfo
+XMatchVisualInfo
+XDefaultVisual
+
+XDoesBackingStore           XDoesSaveUnders
+
+XRootWindowOfScreen
+XDefaultVisualOfScreen
+XDefaultGCOfScreen
+XBlackPixelOfScreen
+XWhitePixelOfScreen
+XDefaultColormapOfScreen
+XDisplayOfScreen
+XEventMaskOfScreen
+XScreenNumberOfScreen
+XCellsOfScreen
+XDefaultDepthOfScreen
+XHeightMMOfScreen
+XHeightOfScreen
+XMaxCmapsOfScreen
+XMinCmapsOfScreen
+XPlanesOfScreen
+XWidthMMOfScreen
+XWidthOfScreen
+XScreenOfDisplay
+XDefaultScreenOfDisplay
+
+XActivateScreenSaver
+XForceScreenSaver
+XGetScreenSaver
+XResetScreenSaver
+XSetScreenSaver
+XAutoRepeatOff
+XAutoRepeatOn
+XChangeKeyboardControl
+XGetKeyboardControl
+XChangeKeyboardMapping
+XGetKeyboardMapping
+XChangePointerControl
+XGetPointerControl
+XQueryKeymap
+
+XSupportsLocale
+XSetLocaleModifiers
+XCreateFontSet
+XFreeFontSet
+XFontsOfFontSet
+XBaseFontNameListOfFontSet
+XLocaleOfFontSet
+XContextDependentDrawing
+XExtentsOfFontSet
+
+XmbTextEscapement
+XwcTextEscapement
+XmbTextExtents
+XwcTextExtents
+XmbTextPerCharExtents
+XwcTextPerCharExtents
+XmbDrawText
+XwcDrawText
+XmbDrawString
+XwcDrawString
+XmbDrawImageString
+XwcDrawImageString
+XmbLookupString
+XwcLookupString
+XDefaultString
+XmbTextListToTextProperty
+XwcTextListToTextProperty
+XwcFreeStringList
+XmbTextPropertyToTextList
+XwcTextPropertyToTextList
+XmbSetWMProperties
+
+XOpenIM
+XCloseIM
+XGetIMValues
+XDisplayOfIM
+XLocaleOfIM
+XCreateIC
+XDestroyIC
+XSetICFocus
+XUnsetICFocus
+XwcResetIC
+XmbResetIC
+XSetICValues
+XGetICValues
+XIMOfIC
+
+XClipBox
+XCreateRegion
+XDestroyRegion
+XEmptyRegion
+XEqualRegion
+XIntersectRegion
+XOffsetRegion
+XPointInRegion
+XPolygonRegion
+XRectInRegion
+XSetRegion
+XShrinkRegion
+XSubtractRegion
+XUnionRectWithRegion
+XUnionRegion
+XXorRegion

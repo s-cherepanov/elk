@@ -1,0 +1,97 @@
+. ../../config/system
+. ../../config/site
+
+if [ _$gdbm = _yes ]; then
+    gdbm_c="gdbm.c"
+    gdbm_o="gdbm.o"
+    gdbm_rule="gdbm.o:		\$(H) gdbm.c"
+else
+    gdbm_incl=
+fi
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+CC= ${cc-cc}
+CFLAGS= $cflags $obj_cflags
+LINTFLAGS= $lintflags
+
+INC=	../../include
+
+H=	\$(INC)/compat.h\\
+	\$(INC)/config.h\\
+	\$(INC)/cstring.h\\
+	\$(INC)/exception.h\\
+	\$(INC)/extern.h\\
+	\$(INC)/funcproto.h\\
+	\$(INC)/gc.h\\
+	\$(INC)/misc.h\\
+	\$(INC)/object.h\\
+	\$(INC)/param.h\\
+	\$(INC)/stkmem.h\\
+	\$(INC)/type.h
+
+C=	bitstring.c\\
+	debug.c\\
+	elk-eval.c\\
+	hack.c\\
+	monitor.c\\
+	newhandler.c\\
+	record.c\\
+	regexp.c\\
+	struct.c $gdbm_c
+
+O=	bitstring.o\\
+	debug.o\\
+	elk-eval.o\\
+	hack.o\\
+	monitor.o\\
+	newhandler.o\\
+	record.o\\
+	regexp.o\\
+	struct.o $gdbm_o
+
+.c.o:
+	\$(CC) \$(CFLAGS) -I\$(INC) $gdbm_incl -c \$<
+	../../scripts/makedl \$@ \$@
+
+all: \$(O)
+
+bitstring.o:	\$(H) bitstring.c
+debug.o:	\$(H) debug.c
+elk-eval.o:	\$(H) elk-eval.c
+hack.o:		\$(H) hack.c
+monitor.o:	\$(H) monitor.c
+newhandler.o:	\$(H) newhandler.c
+record.o:	\$(H) record.c
+regexp.o:	\$(H) regexp.c
+struct.o:	\$(H) struct.c
+$gdbm_rule
+
+install: \$(O)
+	-@if [ ! -d $install_dir/runtime ]; then \\
+	    echo mkdir $install_dir/runtime; \\
+	    mkdir $install_dir/runtime; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj ]; then \\
+	    echo mkdir $install_dir/runtime/obj; \\
+	    mkdir $install_dir/runtime/obj; \\
+	fi
+	@for i in \$(O) ;\\
+	do \\
+	    echo cp \$\$i $install_dir/runtime/obj; \\
+	    cp \$\$i $install_dir/runtime/obj; \\
+	done
+
+lint:
+	lint \$(LINTFLAGS) -I\$(INC) $gdbm_incl \$(C)
+
+clean:
+	rm -f *.o core
+
+distclean:
+	rm -f *.o core lint.out Makefile.local
+EOT

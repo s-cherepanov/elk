@@ -1,0 +1,168 @@
+Compilation and Installation Instructions for Elk
+-------------------------------------------------
+
+
+1. Change to the directory "config" and choose the configuration file for
+   your type of system.
+   
+   The names of the config files have three parts separated by dashes:
+   machine-os-compiler.  "machine" identifies the type of hardware, "os" is
+   the operating system name and version, and "compiler" identifies the C
+   compiler to be used to compile Elk.
+
+   When you have selected a config file, make a symbolic link "system" to
+   it (or a hard link, or copy it), for example:
+
+      ln -s alpha-osf1-cc system
+
+   If you can't find a suitable config file for your system, create a new
+   one by copying one of the existing files (preferably one that resembles
+   your platform).  Edit the new file and change the definitions that need
+   to be changed for your type of platform.
+
+   Alternatively, you may find a suitable config file in config/untested.
+   These config files have been provided by users of earlier Elk releases,
+   or they are for platforms to which I don't have access any longer.  In
+   any case, they may or may not work, as the current Elk release has not
+   been tested with any of these.
+
+   
+2. Edit the file config/site and have a look at the definitions.  Change
+   "install_dir" to point to the directory under which the Elk runtime
+   system will be installed on your system.  Also, remove -L/usr/X11/lib
+   from all definitions if the X libraries reside in a standard location.
+
+   config/sites holds a few locally used site files for different
+   operating systems; you may find these useful (in particular the libx*
+   definitions).
+
+
+3. Change back to the directory where you unpacked the distribution and
+   have a look at the SUBDIRS definition in the Makefile.  Delete any
+   components that you don't want to install (for example, delete
+   lib/xm and lib/xm/xt if you don't have Motif and/or don't want the
+   Motif extension).
+
+
+4. You may want to look up your type of platform in the file MACHINES for
+   further information and potential pitfalls with specific compilers and
+   operating system versions.
+
+
+5. Run "make install" (or just "make" and then "make install").
+
+
+6. Invoke the Scheme interpreter ($install_dir/scheme) and test it by
+   typing a few Scheme expressions or by loading some of the example
+   programs from the "examples" directory tree.
+   
+   If your platform supports dynamic loading of object files, test it by
+   loading, for example, one of the programs from examples/unix.  You
+   may also want to run some of the X11 demonstration programs to check
+   whether the X11 extensions work.
+
+   If freezing of a running program into a new executable ("dump") is
+   supported, test it by typing "(dump 'newelk)", then quit the interpreter,
+   and finally invoke newelk and see if it works.
+
+
+7. If your system does not support dynamic loading of object files, you
+   may want to create an instance of the interpreter that is linked
+   with a number of extensions statically.  For example, to create an
+   interpreter with the UNIX extension, you can change to $install_dir and
+   type:
+
+      lib/linkscheme unixelk runtime/obj/unix.o runtime/obj/record.o
+
+   (see below for more information).  Invoke the newly created unixelk
+   interpreter and test it with the examples programs in examples/unix.
+   
+
+
+Roadmap for $install_dir (files that are created by running "make install")
+---------------------------------------------------------------------------
+
+
++-- bin ---- scheme     The Scheme interpreter proper
+|
+|
++-- include --  The include files to be included by Elk extensions and by
+|               applications using Elk (actually, only "scheme.h" is used;
+|               scheme.h then includes the right files).  config.h is created
+|               automatically; do not edit it.  The include files may or may
+|               not use function prototypes, depending on the config file you
+|               used for building Elk.
+|
+|
++-- runtime --+-- scm --     The Scheme files used by Elk during runtime, such
+|             |              as the interactive toplevel and the debugger
+|             |
+|             `-- obj --     The dynamically loadable objects used at runtime.
+|                            The directory may be empty if your platform does
+|                            not support dynamic loading.  There are sub-
+|                            directories for the Athena widgets and Motif
+|                            extensions holding one object per widget class
+|
+|
++-- lib --+-- standalone.o   The Scheme interpreter as an object file.  This
+          |                  file can be linked with extensions or with your
+          |                  application to produce a runnable executable.
+          |                  On startup the executable automatically invokes
+          |                  extension initializers (beginning with elk_init_)
+          |                  and C++ static constructors by scanning its own
+          |                  symbol table (ditto for finalizers/destructors).
+          |                  You may want to use the script linkscheme to link
+          |                  with standalone.o, as additional libraries may
+          |                  be required.
+          |
+          +-- module.o       Like standalone.o, except that it doesn't have
+          |                  a main() function.  main() must be provided by
+          |                  your application and must call Elk_Init():
+          |
+          |                  Elk_Init(int argv, char **argv, int initflag,
+          |                           char *file);
+          |
+          |                  argc/argv are the arguments of your main().  You
+          |                  may change them, but argv[0] MUST be the original
+          |                  argv[0] (Elk_Init takes its address to determine
+          |                  the stackbase.  If initflag is non-zero, Elk_Init
+          |                  calls the extension initializers as described
+          |                  above.  file is zero or the name of a Scheme file
+          |                  to be loaded by Elk_Init.
+          |
+          +-- linkscheme     Shell script to link standalone.o with a number
+          |                  of object files (extensions or your application)
+          |                  and libraries.  The first argument is the name of
+          |                  the output file; all other arguments are passed
+          |                  to the linker.
+          |
+          +-- makedl         Shell script to create a dynamically loadable
+          |                  object from one or more .o files.  The first
+          |                  argument is the output file name.
+          |
+          `-- ldflags        Prints the flags to be used when linking files
+                             with Elk (with standalone.o or module.o).  You
+                             may use this in your Makefiles.
+
+For more details, read the C/C++ Programmer's Manual (doc/cprog).
+
+
+
+How the Makefiles in the Elk distribution are organized
+-------------------------------------------------------
+
+Each source directory contains a small Makefile with a few standard rules;
+all these Makefiles are basically identical.  The actual rules are in
+Makefile.local in each directory; Makefile.local is automatically created
+on the fly by a shell script `build' in each directory whenever
+Makefile.local is out-of-date with respect to config/system or config/site.
+
+The `build' scripts "localize" the information in each Makefile.local by
+performing variable substitutions based on the definitions in config/system
+and config/site.  `build' also localizes a few other files that contain
+site-specific information, such as include/config.h and scm/siteinfo.scm.
+
+`make clean' causes everything to be rebuilt the next time `make' is invoked.
+`make distclean' also deletes the Makefile.local instances, causing each
+Makefile.local and all other files with site-specific contents to be rebuilt
+as well.

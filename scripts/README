@@ -1,0 +1,20 @@
+Running `make' in this directory creates the localized versions of the
+shell scripts from the (unlocalized) source files in the subdirectory
+`src'.  A script `makedl' (without suffix) is created by choosing the
+correct makedl-xyz version from src.
+
+Running `make install' copies linkscheme, ldflags, and makedl into
+$install_dir/lib.
+
+The shell script `linkscheme' can be used used to link the Scheme
+interpreter statically with a number of extensions and/or with an
+application.  The script `makedl' is used to create a dynamically
+loadable object file from one or more ordinary object files.  There is
+one `makedl-xyz' script in `src' for each dynamic loading mechanism
+supported by Elk; the `xyz' suffix corresponds to the possible values
+of $load_obj in config/system.
+
+The shell script `ldflags' echoes the linker flags that are required to
+link the interpreter (at least -lm).  You are supposed to use this
+script in your Makefiles when linking the interpreter with extensions
+and/or an application.

@@ -1,0 +1,58 @@
+Interpreter kernel
+
+  o  Documentation strings.  Put them into an extra field in S_Compound.
+     New primitives:  procedure-documentation, macro-documentation.
+
+  o  It should not matter to an extension writer whether a primitive is
+     written in Scheme or in C -- primitives should not be invoked directly
+     via the P_ functions.  Instead, a more general mechanism is needed.
+
+  o  include/misc.h: Reader_Tweak_Stream() should call Primitive_Error()
+     if ferror() is true.
+
+  o  Implement a pure heap for constant objects (should be placed into
+     read-only text segment by "dump").
+
+  o  Generic print, equal, etc. functions should be provided for
+     extensions.
+
+  o  Treat # as comment character if file starts with #! (hard to
+     implement, as this requires the reader to detect beginning of line).
+
+  o  map and for-each should also work for other data structures
+     (such as vectors).
+
+  o  Dump for NEXT-OS/MACH.
+
+
+Extensions
+
+  o  Motif:  add support for new widgets and new functions.
+
+  o  A socket/networking extension.
+
+  o  A UNIX process interface, like that in GNU Emacs.
+
+  o  A foreign function interface generator as described in the CFI's
+     ``A Scheme-Based Extension Language Environment''.
+
+
+Projects
+
+  o  Symbol completion would be very useful (but hard to implement).
+
+  o  A reasonable debugger and a better trace facility are needed.
+
+  o  An interface to Tcl/Tk.
+
+  o  The error-handler should be invoked with a symbol identifying the
+     error as an argument.  The symbol has an error text property
+     holding the full text.
+
+  o  Ports: the accessor functions should be part of the port object.
+
+  o  Hash tables.  Need to be rehashed on each GC.  Table object
+     holds hash function, compare function, etc.
+
+  o  It should be possible to define new types in Scheme (not only in
+     extensions).  New primitive: define-type (similar to define-structure?).

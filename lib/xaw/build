@@ -1,0 +1,125 @@
+. ../../config/system
+. ../../config/site
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+CC= ${cc-cc}
+CFLAGS= $cflags $obj_cflags
+LINTFLAGS= $lintflags
+SCMFLAGS= -p .:../../scm:../xt
+
+INC=	../../include
+
+H=	\$(INC)/compat.h\\
+	\$(INC)/config.h\\
+	\$(INC)/cstring.h\\
+	\$(INC)/exception.h\\
+	\$(INC)/extern.h\\
+	\$(INC)/funcproto.h\\
+	\$(INC)/gc.h\\
+	\$(INC)/misc.h\\
+	\$(INC)/object.h\\
+	\$(INC)/param.h\\
+	\$(INC)/stkmem.h\\
+	\$(INC)/type.h\\
+	../xlib/xlib.h\\
+	../xt/xt.h
+
+O=	ascii.o\\
+	box.o\\
+	command.o\\
+	dialog.o\\
+	form.o\\
+	grip.o\\
+	label.o\\
+	list.o\\
+	menubutton.o\\
+	paned.o\\
+	panner.o\\
+	porthole.o\\
+	repeater.o\\
+	scrollbar.o\\
+	shell.o\\
+	simplemenu.o\\
+	sme.o\\
+	smebsb.o\\
+	smeline.o\\
+	stripchart.o\\
+	toggle.o\\
+	tree.o\\
+	viewport.o
+
+WIDGET_SET= xaw
+
+.SUFFIXES: .d .c .o
+
+.c.o:
+	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $x11_incl -c \$<
+	../../scripts/makedl \$@ \$@
+
+.d.c:
+	../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$@ \$(WIDGET_SET)
+
+.d.o:
+	../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$*.c \$(WIDGET_SET)
+	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $x11_incl -c \$*.c
+	../../scripts/makedl \$@ \$@
+
+all: \$(O)
+
+ascii.o:	\$(H) ascii.d
+box.o:		\$(H) box.d
+command.o:	\$(H) command.d
+dialog.o:	\$(H) dialog.d
+form.o:		\$(H) form.d
+grip.o:		\$(H) grip.d
+label.o:	\$(H) label.d
+list.o:		\$(H) list.d
+menubutton.o:	\$(H) menubutton.d
+paned.o:	\$(H) paned.d
+panner.o:	\$(H) panner.d
+porthole.o:	\$(H) porthole.d
+repeater.o:	\$(H) repeater.d
+scrollbar.o:	\$(H) scrollbar.d
+shell.o:	\$(H) shell.d
+simplemenu.o:	\$(H) simplemenu.d
+sme.o:		\$(H) sme.d
+smebsb.o:	\$(H) smebsb.d
+smeline.o:	\$(H) smeline.d
+stripchart.o:	\$(H) stripchart.d
+toggle.o:	\$(H) toggle.d
+tree.o:		\$(H) tree.d
+viewport.o:	\$(H) viewport.d
+
+install: \$(O)
+	-@if [ ! -d $install_dir/runtime ]; then \\
+	    echo mkdir $install_dir/runtime; \\
+	    mkdir $install_dir/runtime; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj ]; then \\
+	    echo mkdir $install_dir/runtime/obj; \\
+	    mkdir $install_dir/runtime/obj; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj/xaw ]; then \\
+	    echo mkdir $install_dir/runtime/obj/xaw; \\
+	    mkdir $install_dir/runtime/obj/xaw; \\
+	fi
+	@for i in \$(O) ALIASES ;\\
+	do \\
+	    echo cp \$\$i $install_dir/runtime/obj/xaw; \\
+	    cp \$\$i $install_dir/runtime/obj/xaw; \\
+	done
+
+lint:
+	lint \$(LINTFLAGS) -I\$(INC) -I../xlib $x11_incl *.c
+
+clean:
+	rm -f *.o *.c core
+
+distclean:
+	rm -f *.o *.c core lint.out Makefile.local
+EOT

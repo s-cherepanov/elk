@@ -1,0 +1,43 @@
+. ../config/system
+. ../config/site
+
+if [ _$load_obj = _ ]; then
+    load_obj=none
+fi
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+FILES= linkscheme makedl ldflags
+
+all:      \$(FILES)
+
+localize: \$(FILES)
+
+linkscheme:	src/linkscheme ../config/system ../config/site
+	\$(SHELL) src/\$@ > \$@
+	chmod +x \$@
+
+makedl:		src/makedl-$load_obj ../config/system ../config/site
+	\$(SHELL) src/makedl-$load_obj > \$@
+	chmod +x \$@
+
+ldflags:	src/ldflags ../config/system ../config/site
+	\$(SHELL) src/\$@ > \$@
+	chmod +x \$@
+
+install: \$(FILES)
+	-@if [ ! -d $install_dir/lib ]; then \\
+	    echo mkdir $install_dir/lib; \\
+	    mkdir $install_dir/lib; \\
+	fi
+	cp linkscheme $install_dir/lib
+	cp makedl $install_dir/lib
+	cp ldflags $install_dir/lib
+
+distclean:
+	rm -f \$(FILES) Makefile.local
+EOT

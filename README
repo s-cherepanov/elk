@@ -1,0 +1,193 @@
+This is release 3.0 of Elk, the Extension Language Kit.
+
+
+What is Elk?
+------------
+
+Elk is an implementation of the Scheme programming language.
+In contrast to existing, stand-alone Scheme systems Elk has been
+designed specifically as an embeddable, reusable extension language
+subsystem for applications written in C or C++.
+
+Developers using Elk can deliver applications with different components
+written in different languages, such as an efficient core written in
+C or C++ and an extensible user interface layer implemented in Scheme.
+To help building hybrid application architectures, Elk supports a
+tightly-knit interworking of the C/C++ parts of applications with
+Scheme code.
+
+Elk is also useful as a stand-alone Scheme implementation, in particular
+as a platform for rapid prototyping of X11-based Scheme programs.
+
+The Elk project was started in 1987 to support ISOTEXT, a multimedia
+document editor that has been developed at the Technical University of
+Berlin.  The first freely available version, Elk 1.0, was published in
+USENET in September 1989.  Since then, Elk has been successfully used as
+the extension language framework for numerous applications (commercial
+products as well as free software projects).
+
+
+Getting Elk
+-----------
+
+You can obtain the Elk 3.0 distribution as well as additional information
+about Elk in the World Wide Web at
+   
+   http://www.informatik.uni-bremen.de/~net/elk
+
+The distribution is also available for anonymous FTP from a number of
+servers including these:
+   
+   ftp://ftp.x.org/contrib/devel_tools/elk-3.0.tar.gz
+   ftp://ftp.uni-bremen.de/pub/programming/languages/scheme/elk/elk-3.0.tar.gz
+
+
+A non-trivial example application using Elk as its extension language
+is available as source and pre-compiled binaries (`unroff' is a troff
+translator with back-ends for HTML and the -ms and -man macros):
+
+  http://www.informatik.uni-bremen.de/~net/unroff
+
+
+What is new in Elk 3.0?
+-----------------------
+
+The major improvements in Elk 3.0 are a new Scheme object representation
+and a new, completely rewritten C/C++ Programmer's Manual for Elk.
+
+The new object representation has been suggested by Craig McPheeters,
+who also contributed an initial set of patches.  Its advantages are:
+
+   o  the heap size is no longer limited (except by the amount of
+      virtual memory that can be addressed);
+   o  `fixnums' now occupy an entire C int;
+   o  the number of Scheme types is no longer limited to 128
+   o  the new format improves compile-time checking and eases debugging;
+   o  Elk now ports easily to 64-bit platforms such as the DEC/Alpha.
+
+The new C/C++ Programmer's Manual is a complete specification of the
+C/C++ interface to Elk; it is intended for authors of extensible,
+Elk-based applications and for extension writers.  Topics range from
+the general architecture of extensible applications and the use of
+dynamic loading to advanced techniques such as weak data structures and
+cooperation with the garbage collector.
+
+Also new in Elk 3.0 is a POSIX-style regular expression extension.
+Elk has been ported to a number of new platforms (among them Linux,
+BSD/OS, AIX 4.1, and HP-UX 10.0).  A full list of changes is in the
+distribution (see the files CHANGES and MIGRATE).
+
+
+Elk features
+------------
+
+  o  Full incremental, dynamic loading
+
+     This facility enables Scheme code to load compiled Scheme extensions
+     into the running interpreter (or into the application) on demand.
+     Complex Elk-based applications can be decomposed into dynamically
+     loadable components to avoid large, monolithic executables.
+     Furthermore, user-supplied extension need not be written entirely in
+     Scheme; they may include an efficient, low-level layer written in C
+     or C++.
+
+     Dynamic loading in Elk is supported on many platforms and is not
+     restricted to a dlopen() interface.  Elk provides automatic
+     initialization of dynamically loaded extensions and takes care of
+     C++ static constructors/destructors embedded in object files.
+
+  o  Freezing of fully customized applications into executable files
+
+     Elk provides a new Scheme primitive `dump' which freezes the dynamic
+     runtime image of the Scheme interpreter into an executable file
+     (including an enclosing application if present).  This facility
+     resembles unexec() in Emacs, but the new executable resumes execution
+     by returning from the call to `dump' by which that executable was
+     created (not unlike fork() in UNIX).  Dynamic loading and `dump'
+     increase the usability of Elk as the backbone of complex applications.
+
+  o  Powerful C/C++ interface for language interoperability
+
+     Elk provides for a tight integration of the C/C++ core of applications
+     (or extensions) with the extension language.  Applications can define
+     their own Scheme primitives (three calling disciplines are supported),
+     define application-specific first-class Scheme types with customized
+     print and read functions, convert objects between Scheme types and
+     C/C++ types in various ways, implement weak data structures, raise
+     Scheme errors, define Scheme variables and symbols, evaluate
+     S-expressions encoded as C strings, and utilize the garbage collector.
+
+  o  Full Scheme bindings for X11 and Motif
+
+     Several dynamically loadable extensions provide full Scheme access to
+     the X11/OpenWindows Xlib, to the application programmer interface of
+     the Xt intrinsics, and to the Athena and OSF/Motif widget sets.
+     Using these extensions, the graphical user-interfaces of Elk-based
+     applications can be built entirely in the extension language.
+
+  o  UNIX interface
+
+     Elk provides Scheme access to most UNIX system calls and common C
+     library functions.  The UNIX extension supports a wide range of
+     different UNIX platforms without restricting its functionality to the
+     lowest common denominator or to the POSIX 1003.1 functions.
+
+  o  Stop-and-copy and generational, incremental garbage collection
+
+     Elk employs two garbage collection strategies selectable at compile
+     time: a traditional stop-and-copy garbage collector and a generational
+     garbage collector which is more efficient and thus reduces the time the
+     application is disrupted by a garbage collection.  On platforms with
+     advanced memory management, `incremental' mode can be enabled for the
+     generational garbage collector to further reduce wait times.
+
+  o  Non-standard Scheme features
+
+     In addition to the standard Scheme core, Elk supports first-class
+     environments, error handling, provide/require and autoloading,
+     fluid bindings and dynamic-wind, simple `eval-twice'-style macros,
+     property lists, string ports and bidirectional ports, shell-style
+     `tilde expansion' in filenames, an interactive top-level written
+     in Scheme, a Scheme debugger and a pretty printer, arbitrary length
+     bitstrings, and Scheme records.
+
+  o  Comprehensive documentation
+
+     The distribution includes 230+ pages of fully indexed documentation.
+     All manuals exist as troff input files which can be translated to HTML
+     (with `unroff') for online browsing in addition to producing typeset-
+     quality printed versions.
+
+  o  Distributed in legally unencumbered form
+
+     The copyright/license agreement permits free redistribution and use
+     of Elk in commercial products.
+
+
+Why is Elk using Scheme?
+------------------------
+
+As extensions can get as large and complex as freestanding programs,
+extension language programmers (usually the users of the application)
+deserve the same language features that other programmers are
+accustomed to.  By using a general-purpose programming language rather
+than a specialized scripting language, non-trivial extensions can
+benefit from the structuring functionality inherent in real programming
+languages (such as Lisp).
+
+Members of the Lisp language family are particularly suitable as an
+extension language:  Lisp has a simple syntax but powerful semantics,
+it allows for small implementations, and its interactive nature
+supports rapid prototyping and encourages users to explore and test
+solutions to problems in an incremental way.
+
+Consequently, Lisp has become increasingly popular for this purpose, to
+the point where the abundance of different dialects has grown into a
+problem.  Of the standardized dialects of Lisp, only Scheme is suitably
+modest, yet sufficiently general, to serve as a reusable extension
+language for a wide range of applications.  Scheme is orthogonal and
+well-defined, and it is small enough to not dominate the application it
+serves and to be fully understood with acceptable effort.
+
+
+Oliver Laumann  <net@informatik.uni-bremen.de>

@@ -1,0 +1,55 @@
+Subresources cannot be read by means of get-values.
+
+Callbacks *must* return; e.g. a (reset) from within a callback is
+not allowed.  This is a bug in Xt.
+
+Xt doesn't notice when ports that have been registered as input source
+with context-add-input are closed.  In this case, the select() fails.
+
+error.c:  Warning msg handler is now part of application context
+
+Missing:
+
+  keycode translators
+  case converters
+  shared graphics contexts
+  selections
+
+  2.
+  XtScreen
+  XtDisplayOfObject
+  XtScreenOfObject
+  XtWindowOfObject
+
+  7.
+  XtAddGrab
+  XtRemoveGrab
+  XtGrabKey
+  XtUngrabKey
+  XtGrabKeyboard
+  XtUngrabKeyboard
+  XtGrabButton
+  XtUngrabButton
+  XtGrabPointer
+  XtUngrabPointer
+  XtSetKeyboardFocus
+  XtCallAcceptFocus
+  XtAppPending
+  XtAppPeekEvent, XtAppNextEvent, XtAppProcessEvent, XtDispatchEvent (?)
+  Xt{Add,Remove,Insert}EventHandler (?)
+  Xt{Add,Remove,Insert}RawEventHandler (?)
+  XtBuildEventMask (?)
+
+  9.
+  XtGetSubresources (?)
+  XtGetApplicationResources
+  XtGetSubvalues, XtSetSubvalues (?)
+
+  10.
+  XtAppAddActionHook (?)
+  XtRemoveActionHook (?)
+
+  11.
+  XtAppSetSelectionTimeout
+  XtAppGetSelectionTimeout
+  XtSetWMColormapWindows

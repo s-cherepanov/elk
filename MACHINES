@@ -1,0 +1,245 @@
+Sun-3 and Sun-4, SunOS 4.1
+
+   o  Tested with /bin/cc, various gcc versions, and with the Sun
+      SPARCompiler 2.0.1 (acc).
+
+   o  For compiling Elk with gcc and the generational garbage collector,
+      see the remark in the file BUGS.
+
+   o  Dumped executables created on a Sun-4m (SPARCstation 10 or
+      SPARCstation 600) do not run on other Sun-4 architectures and
+      vice versa.
+
+
+Sun-4, SunOS 5.2 (Solaris 2.2)
+
+   o  Tested with various gcc versions and with ANSI SPARCompiler 2.0.1.
+      If you have gcc, however, you should use it rather than the Sun
+      compiler.  gcc produces much faster code.
+
+   o  The Motif extension has been tested with both vanilla OSF Motif 1.2
+      as well as Sun's version of Motif (which usually lives in /usr/dt).
+      The X11 extensions have been tested with OpenWindows in addition
+      to X Consortium X11R6.
+
+   o  Certain versions of gcc complain about syntax errors in code that
+      uses sigset_t (from <signal.h>), although this should not happen
+      unless -ansi is given.  A possible fix is to add add -D__STDC__=0
+      to the cflags in the config file.
+
+   o  "dump" works, but it doesn't know anything about shared objects
+      (the dl library doesn't support a way to get hold of the text and
+      data segments of dlopen()ed shared objects).  Thus it's a bad idea
+      to invoke "dump" if any object files have been loaded into the
+      interpreter.
+
+   o  Dynamic loading is based on the dlopen() function of the "dl"
+      library.  Here is a short overview of the implementation of
+      dlopen-based dynamic loading:
+   
+         To load an object file, the linker is called by the interpreter
+         to produce a shared object from the .o file.  This shared object
+	 is then loaded by means of dlopen().
+
+         To allow object files to reference symbols defined by object
+         files loaded earlier (the standard dynamic loading semantics
+         of Elk), the interpreter keeps tmp the output files (shared
+         objects) of all previous linker invocations in /tmp and uses
+	 these as input to a each linker invocation.  As a result, one
+	 new temp file is created each time an object file is loaded.
+
+         As the linker combines dynamically loadable object files and
+         (optional) libraries into shared objects, all dynamically loadable
+         files must have been compiled with -fpic or -K PIC (to create
+	 position independent code).  Also, all involved libraries must
+	 either be shared libraries or must contain position independent
+	 code as well.  For example, if you want to use the Motif extension,
+	 your Xm library must have been compiled with -fpic.
+
+         A bug in Solaris 2.1 causes dlopen() to fail if more than
+         8 shared objects are loaded (which in turn causes the "load"
+         primitive of Elk to signal an error).  This restriction doesn't
+         exit in newer versions of Solaris 2.
+
+         You can use the -v option of Elk to see the actual linker options
+         when an object file is loaded.
+
+
+DECstation 5100, Ultrix 4.2
+
+   o  Prototypes have been disabled in the config file, as cc has trouble
+      with certain forms of prototype declarations (this looks like a bug).
+
+   o  The LDFLAGS "-Wl,-D,800000" are required for dynamic loading to work.
+
+   o  You have to create "-G 0" versions of all X libraries to be able to
+      dynamically load the X11 extensions of Elk (the MIPS linker requires
+      this).
+
+
+DEC/Alpha, OSF/1
+
+   o  This platform uses ELF and the dlopen()-style linker interface.
+      See the section on Solaris 2 above for remarks on dynamic loading.
+
+
+SGI IRIS Indy, Irix 5.3
+
+   o  See SunOS 5.x above for information about dynamic loading and dump.
+
+   o  examples/unix/calc.scm doesn't work, because /usr/bin/dc uses
+      buffered output if stdout is not a terminal.
+
+   o  For Irix 5.2, -lSM and -lICE must be removed from the libx*
+      definitions in config/site (the X11 version seems to be X11R5).
+
+
+HP 9000/700, HP-UX 9.0 and HP-UX 10.0
+
+   o  Dynamic loading is based on the shl_load() interface to the dynamic
+      linker of HP-UX.  If you are writing your own extensions, compile
+      them with the option +z and use $install_dir/lib/makedl to link them.
+      The load-libraries are simply shl_loaded before the files passed to
+      the "load" primitives.  Each load-library is only loaded once.
+
+   o  wait3 has been set to `no' in the system file, because this function
+      has a non-standard third argument in HP-UX 9.0.
+
+   o  The "dump" implementation for HP-UX which used to work well under
+      HP-UX 8.x doesn't really work any longer, because HP in their
+      infinite wisdom have removed the MAP_REPLACE flag for mmap() in
+      HP-UX 9.x.
+
+   o  HP-UX 10 does have a stack-extending alloca() (in contrast to
+      HP-UX 9.0), but it has a serious bug and therefore is not used
+      by Elk (the function overwrites its argument if it is a register
+      variable).
+
+   o  The incremental garbage collector doesn't work (see the file BUGS).
+
+   o  The Athena widgets are not included with HP-UX 9.0; delete "lib/xaw"
+      from the Makefile.
+
+   o  You may want to use the HP-UX site file from config/sites.
+
+
+IBM RS/6000, AIX 3.2
+
+   o  Neither "dump" nor dynamic loading work.  It is not clear whether
+      the dynamic loading semantics of Elk can be implemented with the
+      dynamic linker interface of AIX at all.
+
+   o  To support linking the interpreter with extensions statically,
+      you *have* to use the $install_dir/lib/linkscheme shell script;
+      it contains special code to build an `export list' to prevent
+      the AIX linker from `garbage collecting' the extensions.
+
+   o  -O has been omitted from the CFLAGS, as the optimizer seems to
+      have bugs.
+
+
+PowerPC, AIX 4.1 (xlc and gcc)
+
+   o  No dynamic loading, no dump (see AIX 3.2 above).
+
+   o  The incremental garbage collector doesn't work (see the file BUGS).
+
+   o  If you are using gcc, and if your gcc uses the AIX linker, the
+      linker prints tons of bogus messages about duplicate symbols; they
+      can be ignored safely.  You may also have to change the `*-aix4*-cc'
+      in the shell script `linkscheme' into `*-aix4*-gcc' to enable the
+      hack involving the linker export list.
+
+
+NeXT workstation, MACH/NeXT-OS 3.3
+
+   o  Dynamic loading is implemented by means of the rld_load() library
+      function.  Due to what looks like a bug in rld_load(), it only
+      works sometimes.  In particular, it is not possible to load the
+      UNIX extension.
+
+      The source of the problem seems to be that sometimes the string table
+      of the newly loaded object file gets truncated when being mapped into
+      memory by rld_load().  You can observe the problem by inserting a
+      statement like "write(1, strtab, sym_cmd->strsize);" right after
+      the line beginning with "strtab =" in src/stab-macho.c.
+
+   o  Linking extensions statically with the interpreter doesn't work
+      either; there are no symbols in the symbol table when it is read
+      on startup of the executable.  This seems to be related to the
+      bug described above.
+      
+      These two problems render Elk virtually unusable on the NeXT.
+
+
+386/486-PC, Linux 1.2.8
+
+   o  Dynamic loading does not work any longer, because the linker has
+      changed.  It doesn't seem to support incremental loading any more
+      at all.  dlopen() seems to exist now, but how does one create
+      a shared object from an ordinary .o file?  Someone who knows
+      Linux well may want to look into this...
+
+   o  `dump' doesn't work either.  It did work in earlier Linux versions.
+
+   o  Because of a bug in `make', all Makefiles had to be changed to
+      explicitly run the shell for invoking the `build' shell scripts.
+
+   o  examples/unix/calc.scm doesn't work, because /usr/bin/dc uses
+      buffered output if stdout is not a terminal.
+
+
+386/486-PC, 32-bit gcc (DJGPP) and `go32' DOS extender
+
+    o  Elk 3.0 has not been tested on this platform.
+
+    o  As the typical DOS machine doesn't have a fully functional UNIX
+       shell, sed, etc., you have to cross-localize the source tree on a
+       UNIX machine (i.e. create all the localized Makefiles, create
+       include/config.h, etc.).  To do so, just copy the DOS config file
+       to config/system (or make a link), edit config/site, and call
+
+          make localized.zip
+
+       This cleans the source tree, performs the necessary localizations,
+       and packages a minimal distribution into a zip file.  You can
+       then FTP the zip file to the DOS machine and run `make' there.
+       The zip file basically contains the interpreter sources, the Scheme
+       files needed at runtime, the extensions in lib/misc, and the
+       localized Makefiles and include files.
+
+    o  There are a few trouble spots you should watch out for.  Some versions
+       of `make' under DOS (Ndmake?) can't handle the macro $(MAKE) that
+       is defined at the beginning of all Makefiles.  If this is the case
+       on your system, forget the Makefiles and run "make -f Makefile.local"
+       in each directory.  You may have to replace $(O) in src/Makefile.local
+       by *.o to avoid command lines that are too long for the DOS shell.
+       You have to delete the line beginning with "../../scripts/makedl"
+       in misc/Makefile.local.
+
+
+X Window System
+
+   o  You need either X11R4, X11R5, X11R6, or (on Suns) OpenWindows 3.x to
+      use the Elk/X11 extensions.  The current release of Elk has been
+      tested with X11R6 and OpenWindows.
+
+      If you are still running X11R4, edit the file lib/xaw/build and
+      remove the lines referring to the Athena widgets that are new in
+      X11R5 (panner, porthole, repeater, and tree).
+
+      If you are running X11R5 or older, you may want to edit lib/xaw/build
+      and add lines for the `clock' widget.  Also, remove -lSM and -lICE
+      from the definitions in config/site.  examples/xaw/porthole.scm
+      and examples/xaw/viewport.scm don't work with X11R6, as they are
+      using the clock widget which doesn't exist any longer.
+
+
+Motif Widgets
+
+   o  You need at least Motif 1.1 to use the Elk/Motif extension.
+      The current release of Elk has been tested with OSF/Motif 1.2
+      and, under Solaris 2.4, with Sun Motif (/usr/dt).
+
+      Make sure that X11 has been compiled with the symbol MotifBC set
+      to YES in site.def.

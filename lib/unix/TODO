@@ -1,0 +1,5 @@
+termio
+stdio (setbuf, fseek, ...)
+signals: handlers that may return (to be invoked in Funcall?)
+support for systems with "union wait" (vanilla BSD, Mach, ...)
+sysconf: NGROUP_MAX, etc.

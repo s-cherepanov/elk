@@ -1,0 +1,131 @@
+. ../../config/system
+. ../../config/site
+
+sys_incl="$x11_incl $motif_incl"
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+CC= ${cc-cc}
+CFLAGS= $cflags $obj_cflags $motif_cflags
+LINTFLAGS= $lintflags
+SCMFLAGS= -p .:../../scm:../xt
+
+INC=	../../include
+
+H=	\$(INC)/compat.h\\
+	\$(INC)/config.h\\
+	\$(INC)/cstring.h\\
+	\$(INC)/exception.h\\
+	\$(INC)/extern.h\\
+	\$(INC)/funcproto.h\\
+	\$(INC)/gc.h\\
+	\$(INC)/misc.h\\
+	\$(INC)/object.h\\
+	\$(INC)/param.h\\
+	\$(INC)/stkmem.h\\
+	\$(INC)/type.h\\
+	../xlib/xlib.h\\
+	../xt/xt.h
+
+O=	arrow-button.o\\
+	bulletin-brd.o\\
+	cascade-btn.o\\
+	command.o\\
+	drawing-area.o\\
+	drawn-button.o\\
+	file-selectn.o\\
+	form.o\\
+	frame.o\\
+	label.o\\
+	list.o\\
+	main-window.o\\
+	message-box.o\\
+	paned-window.o\\
+	push-button.o\\
+	row-column.o\\
+	scale.o\\
+	scroll-bar.o\\
+	scrolled-win.o\\
+	selectn-box.o\\
+	separator.o\\
+	shell.o\\
+	support.o\\
+	text.o\\
+	toggle-btn.o
+
+WIDGET_SET= xm
+
+.SUFFIXES: .d .c .o
+
+.c.o:
+	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $sys_incl -c \$<
+	../../scripts/makedl \$@ \$@
+
+.d.c:
+	../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$@ \$(WIDGET_SET)
+
+.d.o:
+	../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$*.c \$(WIDGET_SET)
+	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $sys_incl -c \$*.c
+	../../scripts/makedl \$@ \$@
+
+all: \$(O)
+
+arrow-button.o:		\$(H) arrow-button.d
+bulletin-brd.o:		\$(H) bulletin-brd.d
+cascade-btn.o:		\$(H) cascade-btn.d
+command.o:		\$(H) command.d
+drawing-area.o:		\$(H) drawing-area.d
+drawn-button.o:		\$(H) drawn-button.d
+file-selectn.o:		\$(H) file-selectn.d
+form.o:			\$(H) form.d
+frame.o:		\$(H) frame.d
+label.o:		\$(H) label.d
+list.o:			\$(H) list.d
+main-window.o:		\$(H) main-window.d
+message-box.o:		\$(H) message-box.d
+paned-window.o:		\$(H) paned-window.d
+push-button.o:		\$(H) push-button.d
+row-column.o:		\$(H) row-column.d
+scale.o:		\$(H) scale.d
+scroll-bar.o:		\$(H) scroll-bar.d
+scrolled-win.o:		\$(H) scrolled-win.d
+selectn-box.o:		\$(H) selectn-box.d
+separator.o:		\$(H) separator.d
+shell.o:		\$(H) shell.d
+support.o:		\$(H) support.d
+text.o:			\$(H) text.d
+toggle-btn.o:		\$(H) toggle-btn.d
+
+install: \$(O)
+	-@if [ ! -d $install_dir/runtime ]; then \\
+	    echo mkdir $install_dir/runtime; \\
+	    mkdir $install_dir/runtime; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj ]; then \\
+	    echo mkdir $install_dir/runtime/obj; \\
+	    mkdir $install_dir/runtime/obj; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj/xm ]; then \\
+	    echo mkdir $install_dir/runtime/obj/xm; \\
+	    mkdir $install_dir/runtime/obj/xm; \\
+	fi
+	@for i in \$(O) ALIASES ;\\
+	do \\
+	    echo cp \$\$i $install_dir/runtime/obj/xm; \\
+	    cp \$\$i $install_dir/runtime/obj/xm; \\
+	done
+
+lint:
+	lint \$(LINTFLAGS) -I\$(INC) -I../xlib $sys_incl *.c
+
+clean:
+	rm -f *.o *.c core
+
+distclean:
+	rm -f *.o *.c core lint.out Makefile.local
+EOT

@@ -1,0 +1,35 @@
+Generational/Incremental Garbage Collector
+
+   The generational, incremental garbage collector still is considered
+   experimental, although it stands up well in some real applications.
+   Here is a list of known problems:
+
+   o  On a Sun (Sun-4/SunOS4 or 5) when compiling Elk with gcc (2.6.3
+      or older), the generational garbage collector sometimes loops
+      (when working in non-incremental mode).  This can be circumvented
+      by compiling src/proc.c (yes, proc.c, not heap.c) without the -O
+      option.  We are not sure yet whether this is a bug in Elk or in gcc.
+
+   o  Running out of memory when expanding the heap shouldn't be handled
+      as a fatal error.  Instead, the garbage collector should clean up
+      and then invoke Uncatchable_Error() to return control to the Scheme
+      program.
+
+   o  The return value of ExpandHeap() is sometimes ignored.
+
+   o  When running the program
+
+	 (garbage-collect-status 'generational 'incremental)
+	 (define (f) (make-list 10000 'a) (f))
+	 (f)
+
+      the pairs in the lists become stable quickly and aren't reclaimed,
+      as the current algorithm favors heap expansions over full collections.
+
+   o  With the same test program, the GC sometimes crashes with SIGSEGV
+      after having expanded the heap to 9MB.
+
+   o  Under HP-UX 9.0 and AIX 4.1, the GC doesn't work in incremental mode
+      (a broken-heart is passed to Memoize_Frame() after an ExpandHeap()).
+
+   o  The percentage displayed at the end of a GC run is sometimes wrong.

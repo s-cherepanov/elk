@@ -1,0 +1,6 @@
+When porting Elk to a new architecture, you may want to compile and run
+alloca.c to check if your system's alloca() function is usable for Elk.
+See the leading comment in alloca.c.
+
+getversion is a trivial shell script to extract the Elk version number
+from the file README.  It is used by the build process.

@@ -1,0 +1,204 @@
+. ../config/system
+. ../config/site
+
+case _$aout_format in
+_coff)   dump=dump-vanilla.c; stab=stab-coff.c;;
+_ecoff)  dump=dump-ecoff.c;   stab=stab-ecoff.c;;
+_xcoff)                       stab=stab-coff.c;;
+_elf)    dump=dump-elf.c;     stab=stab-elf.c;;
+_macho)                       stab=stab-macho.c;;
+_hp9k)   dump=dump-hp9k.c;    stab='stab-hp9k300.c stab-hp9k800.c';;
+_convex)                      stab='stab-convex.c';;
+*)       dump=dump-vanilla.c; stab=stab-bsd.c;;
+esac
+
+if [ _$load_obj != _ ]; then
+    load=load-${load_obj}.c
+fi
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+CC= ${cc-cc}
+CFLAGS= $cflags
+LDFLAGS= $ldflags
+LINTFLAGS= $lintflags
+
+INC=	../include
+
+H=	\$(INC)/compat.h\\
+	\$(INC)/config.h\\
+	\$(INC)/cstring.h\\
+	\$(INC)/exception.h\\
+	\$(INC)/extern.h\\
+	\$(INC)/funcproto.h\\
+	\$(INC)/gc.h\\
+	\$(INC)/intern.h\\
+	\$(INC)/kernel.h\\
+	\$(INC)/misc.h\\
+	\$(INC)/object.h\\
+	\$(INC)/param.h\\
+	\$(INC)/stkmem.h\\
+	\$(INC)/type.h
+
+C=	autoload.c\\
+	bignum.c\\
+	bool.c\\
+	char.c\\
+	cont.c\\
+	cstring.c\\
+	debug.c\\
+	dump.c\\
+	env.c\\
+	error.c\\
+	exception.c\\
+	feature.c\\
+	heap.c\\
+	io.c\\
+	list.c\\
+	load.c\\
+	main.c\\
+	malloc.c\\
+	math.c\\
+	onfork.c\\
+	prim.c\\
+	print.c\\
+	proc.c\\
+	promise.c\\
+	read.c\\
+	special.c\\
+	stab.c\\
+	stkmem.c\\
+	string.c\\
+	symbol.c\\
+	terminate.c\\
+	type.c\\
+	vector.c
+
+OCOMMON=\\
+	autoload.o\\
+	bignum.o\\
+	bool.o\\
+	char.o\\
+	cont.o\\
+	cstring.o\\
+	debug.o\\
+	dump.o\\
+	env.o\\
+	error.o\\
+	exception.o\\
+	feature.o\\
+	heap.o\\
+	io.o\\
+	list.o\\
+	load.o\\
+	malloc.o\\
+	math.o\\
+	onfork.o\\
+	prim.o\\
+	print.o\\
+	proc.o\\
+	promise.o\\
+	read.o\\
+	special.o\\
+	stkmem.o\\
+	string.o\\
+	symbol.o\\
+	terminate.o\\
+	type.o\\
+	vector.o
+
+O1= \$(OCOMMON) main.o stab.o
+O2= \$(OCOMMON) main2.o stab2.o
+O3= \$(OCOMMON) main3.o stab2.o
+
+all: scheme standalone.o module.o
+
+scheme:	\$(O1)
+	\$(CC) -o \$@ \$(CFLAGS) \$(O1) \$(LDFLAGS)
+
+standalone.o: \$(O2)
+	ld -r -o \$@ \$(O2)
+	chmod 644 \$@
+
+module.o: \$(O3)
+	ld -r -o \$@ \$(O3)
+	chmod 644 \$@
+
+.c.o:
+	\$(CC) \$(CFLAGS) -I\$(INC) -c \$<
+
+autoload.o:	\$(H) autoload.c
+bignum.o:	\$(H) bignum.c
+bool.o:		\$(H) bool.c
+char.o:		\$(H) char.c
+cont.o:		\$(H) cont.c
+cstring.o:	\$(H) cstring.c
+debug.o:	\$(H) debug.c
+dump.o:		\$(H) dump.c $dump
+env.o:		\$(H) env.c
+error.o:	\$(H) error.c
+exception.o:	\$(H) exception.c
+feature.o:	\$(H) feature.c
+heap.o:		\$(H) heap.c heap-sc.c heap-gen.c
+io.o:		\$(H) io.c
+list.o:		\$(H) list.c
+load.o:		\$(H) load.c $load
+main.o:		\$(H) main.c
+malloc.o:	\$(H) malloc.c
+math.o:		\$(H) math.c
+onfork.o:	\$(H) onfork.c
+prim.o:		\$(H) prim.c
+print.o:	\$(H) print.c
+proc.o:		\$(H) proc.c
+promise.o:	\$(H) promise.c
+read.o:		\$(H) read.c
+special.o:	\$(H) special.c
+stab.o:		\$(H) stab.c $stab
+stkmem.o:	\$(H) stkmem.c
+string.o:	\$(H) string.c
+symbol.o:	\$(H) symbol.c
+terminate.o:	\$(H) terminate.c
+type.o:		\$(H) type.c
+vector.o:	\$(H) vector.c
+
+main2.o:	\$(H) main.c
+	rm -f main2.c; ln main.c main2.c
+	\$(CC) -DINIT_OBJECTS \$(CFLAGS) -I\$(INC) -c main2.c
+	rm main2.c
+
+stab2.o:	\$(H) stab.c $stab
+	rm -f stab2.c; ln stab.c stab2.c
+	\$(CC) -DINIT_OBJECTS \$(CFLAGS) -I\$(INC) -c stab2.c
+	rm stab2.c
+
+main3.o:	\$(H) main.c
+	rm -f main3.c; ln main.c main3.c
+	\$(CC) -DINIT_OBJECTS -DNOMAIN \$(CFLAGS) -I\$(INC) -c main3.c
+	rm main3.c
+
+install: scheme standalone.o module.o
+	-@if [ ! -d $install_dir/bin ]; then \\
+	    echo mkdir $install_dir/bin; \\
+	    mkdir $install_dir/bin; \\
+	fi
+	cp scheme $install_dir/bin
+	-@if [ ! -d $install_dir/lib ]; then \\
+	    echo mkdir $install_dir/lib; \\
+	    mkdir $install_dir/lib; \\
+	fi
+	cp standalone.o $install_dir/lib
+	cp module.o $install_dir/lib
+
+lint:
+	lint \$(LINTFLAGS) -I\$(INC) \$(C)
+
+clean:
+	rm -f *.o core main2.c stab2.c main3.c
+
+distclean:
+	rm -f *.o core main2.c stab2.c main3.c lint.out scheme Makefile.local
+EOT

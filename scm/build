@@ -1,0 +1,66 @@
+. ../config/system
+. ../config/site
+
+echo Building Makefile.local...
+cat >Makefile.local <<EOT
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+FILES= apropos.scm\\
+       bitstring.scm\\
+       cscheme.scm\\
+       debug.scm\\
+       describe.scm\\
+       gdbmtest.scm\\
+       initscheme.scm\\
+       motif.scm\\
+       oops.scm\\
+       parse.scm\\
+       pp.scm\\
+       qsort.scm\\
+       record.scm\\
+       recordutil.scm\\
+       regexp.scm\\
+       safe-env.scm\\
+       setf.scm\\
+       siteinfo.scm\\
+       struct.scm\\
+       toplevel.scm\\
+       trace.scm\\
+       unix.scm\\
+       xlib.scm\\
+       xt.scm\\
+       xwidgets.scm
+
+TARGETS= siteinfo.scm
+
+all:      \$(TARGETS)
+
+localize: \$(TARGETS)
+
+siteinfo.scm: ../config/system ../config/site
+	\$(SHELL) ./build-siteinfo
+
+install: \$(TARGETS)
+	-@if [ ! -d $install_dir/runtime ]; then \\
+	    echo mkdir $install_dir/runtime; \\
+	    mkdir $install_dir/runtime; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/scm ]; then \\
+	    echo mkdir $install_dir/runtime/scm; \\
+	    mkdir $install_dir/runtime/scm; \\
+	fi
+	@for i in \$(FILES) ;\\
+	do \\
+	    echo cp \$\$i $install_dir/runtime/scm; \\
+	    cp \$\$i $install_dir/runtime/scm; \\
+	done
+
+lint:
+
+clean:
+
+distclean:
+	rm -f \$(TARGETS) Makefile.local
+EOT

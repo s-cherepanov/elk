@@ -1,0 +1,117 @@
+.pl 11i			\" US letter format
+.TH ELK 1 "15 January 1991"
+.UC 4
+.SH NAME
+elk, scheme \- extensible Scheme interpreter
+.SH SYNOPSIS
+.B scheme
+[
+.B \-l \f2file\fP
+] [
+.B \-h \f2KBytes\fP
+] [
+.B \-p \f2load-path\fP
+] [
+.B \-g
+] [
+.B \-i
+] [
+.B \-v \f2type\fP
+] [[
+.B \-\^\-
+] \f2args\fP]
+.LP
+.BR elk .\|.\|.
+.SH DESCRIPTION
+.I Elk
+(Extension Language Kit) is a Scheme implementation designed
+as a general extension language for applications
+written in C or C++.
+Normally,
+.I Elk
+is linked with the application it serves, but a stand-alone version
+of the Scheme interpreter is installed as well (usually under
+the name
+.BR scheme ).
+This interpreter, together with the standard Scheme toplevel,
+.I Elk
+can be used as an ordinary, stand-alone implementation of the
+Scheme language.
+.LP
+When called without the
+.B \-l
+option,
+.I Elk
+loads the standard \*(lqtoplevel\*(rq to start an interactive session.
+When called with
+.BR "\-l \f2file\fP" ,
+the contents of the specified file is loaded instead.
+If a `\-' is given as a filename argument,
+.I Elk
+loads from standard input.
+.LP
+The option
+.B \-p \f2load-path\fP
+can be used to override the standard \f2load-path\fP.
+The argument is a colon-separated list of directories.
+If this option is not present and the environment variable
+ELK_LOADPATH is defined, the value of this variable is used
+to initialize the \f2load-path\fP.
+The value of ELK_LOADPATH has the same format as the argument
+to the
+.B -p
+option.
+.LP
+The
+.B \-h \f2KBytes\fP
+option is used to specify a non-standard heap size.
+The default heap size is 512 KBytes.
+.LP
+If the option
+.B \-i
+is specified, symbols are mapped to lower case.
+Normally,
+.I Elk
+is case-sensitive.
+.LP
+The
+.B \-g
+option causes the interpreter to run the garbage collector each
+time memory is allocated on the heap.
+This is useful for writers of extensions who want to test the
+garbage collect behavior of an extension.
+Running
+.I Elk
+with the
+.B \-g
+option is likely to reveal GC-related bugs in extensions (such as not
+properly protected local objects), as it triggers a garbage collection
+each time an object is allocated on the Scheme heap.
+A dot is written to standard output each time a garbage collection is
+performed when
+.B \-g
+has been specified.
+.LP
+When called with one or more
+.B \-v \f2type\fP
+(``verbose'') options, the interpreter prints additional
+informational messages to standard output, depending on the value
+of the \f2type\fP argument.
+If \f2type\fP is \f2load\fP, the linker command and options are
+printed each time an object file is loaded; if \f2type\fP is
+\f2init\fP, the names of extension initialization
+and finalization functions are printed as they are called.
+.LP
+The remaining
+.I args
+are put into a list of strings, and the Scheme variable
+.B command-line-args
+is bound to this list in the global environment.
+If arguments could be interpreted as options, `\-\^-\' can be
+used to indicate the end of the options.
+.SH FILES
+.nf
+$TMPDIR/ldXXXXXX           Temporary files
+.fi
+.SH AUTHOR
+Oliver Laumann

@@ -1,0 +1,42 @@
+. ../config/system
+. ../config/site
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+FILES= compat.h\\
+       config.h\\
+       cstring.h\\
+       exception.h\\
+       extern.h\\
+       funcproto.h\\
+       gc.h\\
+       misc.h\\
+       object.h\\
+       param.h\\
+       scheme.h\\
+       stkmem.h\\
+       type.h
+
+config.h:	../config/system ../config/site
+	\$(SHELL) ./build-config
+
+install:	\$(FILES)
+	-@if [ ! -d $install_dir/include ]; then \\
+	    echo mkdir $install_dir/include; \\
+	    mkdir $install_dir/include; \\
+	fi
+	@for i in \$(FILES) ;\\
+	do \\
+	    echo cp \$\$i $install_dir/include; \\
+	    cp \$\$i $install_dir/include; \\
+	done
+
+localize:	config.h
+
+distclean:
+	rm -f Makefile.local config.h
+EOT

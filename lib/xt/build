@@ -1,0 +1,118 @@
+. ../../config/system
+. ../../config/site
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+CC= ${cc-cc}
+CFLAGS= $cflags $obj_cflags
+LINTFLAGS= $lintflags
+
+INC=	../../include
+
+H=	\$(INC)/compat.h\\
+	\$(INC)/config.h\\
+	\$(INC)/cstring.h\\
+	\$(INC)/exception.h\\
+	\$(INC)/extern.h\\
+	\$(INC)/funcproto.h\\
+	\$(INC)/gc.h\\
+	\$(INC)/misc.h\\
+	\$(INC)/object.h\\
+	\$(INC)/param.h\\
+	\$(INC)/stkmem.h\\
+	\$(INC)/type.h\\
+	../xlib/xlib.h\\
+	xt.h
+
+C=	accelerator.c\\
+	action.c\\
+	callback.c\\
+	class.c\\
+	classname.c\\
+	context.c\\
+	converter.c\\
+	error.c\\
+	function.c\\
+	identifier.c\\
+	init.c\\
+	objects.c\\
+	popup.c\\
+	resource.c\\
+	translation.c\\
+	widget.c
+
+O=	accelerator.o\\
+	action.o\\
+	callback.o\\
+	class.o\\
+	classname.o\\
+	context.o\\
+	converter.o\\
+	error.o\\
+	function.o\\
+	identifier.o\\
+	init.o\\
+	objects.o\\
+	popup.o\\
+	resource.o\\
+	translation.o\\
+	widget.o
+
+all: \$(O) xt.pre
+
+.c.o:
+	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $x11_incl -c \$<
+
+accelerator.o:	\$(H) accelerator.c
+action.o:	\$(H) action.c
+callback.o:	\$(H) callback.c
+class.o:	\$(H) class.c
+classname.o:	\$(H) classname.c
+context.o:	\$(H) context.c
+converter.o:	\$(H) converter.c
+error.o:	\$(H) error.c
+function.o:	\$(H) function.c
+identifier.o:	\$(H) identifier.c
+init.o:		\$(H) init.c
+objects.o:	\$(H) objects.c
+popup.o:	\$(H) popup.c
+resource.o:	\$(H) resource.c
+translation.o:	\$(H) translation.c
+widget.o:	\$(H) widget.c
+
+xt.pre: \$(O) ../xlib/xlib.pre
+	../../scripts/makedl \$@ \$(O) ../xlib/*.o
+
+install: xt.pre
+	-@if [ ! -d $install_dir/runtime ]; then \\
+	    echo mkdir $install_dir/runtime; \\
+	    mkdir $install_dir/runtime; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj ]; then \\
+	    echo mkdir $install_dir/runtime/obj; \\
+	    mkdir $install_dir/runtime/obj; \\
+	fi
+	cp xt.pre $install_dir/runtime/obj/xt.o
+	-@if [ ! -d $install_dir/include ]; then \\
+	    echo mkdir $install_dir/include; \\
+	    mkdir $install_dir/include; \\
+	fi
+	-@if [ ! -d $install_dir/include/extensions ]; then \\
+	    echo mkdir $install_dir/include/extensions; \\
+	    mkdir $install_dir/include/extensions; \\
+	fi
+	cp xt.h $install_dir/include/extensions
+
+lint:
+	lint \$(LINTFLAGS) -I\$(INC) -I../xlib $x11_incl \$(C)
+
+clean:
+	rm -f *.o xt.pre core
+
+distclean:
+	rm -f *.o xt.pre core lint.out Makefile.local
+EOT

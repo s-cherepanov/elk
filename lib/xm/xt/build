@@ -1,0 +1,69 @@
+. ../../../config/system
+. ../../../config/site
+
+# In HP-UX, the Motif libraries must be linked with xt-motif.o instead
+# of placing them into the load-libraries (I don't know why):
+
+if [ _$load_obj = _shl ]; then
+    motif_link_libs="$libxmotif"
+else
+    motif_link_libs=
+fi
+
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+CC= ${cc-cc}
+CFLAGS= $cflags $obj_cflags
+LINTFLAGS= $lintflags
+
+XTDIR=	../../xt
+
+O=	\$(XTDIR)/accelerator.o\\
+	\$(XTDIR)/action.o\\
+	\$(XTDIR)/callback.o\\
+	\$(XTDIR)/class.o\\
+	\$(XTDIR)/classname.o\\
+	\$(XTDIR)/context.o\\
+	\$(XTDIR)/converter.o\\
+	\$(XTDIR)/error.o\\
+	\$(XTDIR)/function.o\\
+	\$(XTDIR)/identifier.o\\
+	\$(XTDIR)/init.o\\
+	\$(XTDIR)/objects.o\\
+	\$(XTDIR)/popup.o\\
+	\$(XTDIR)/resource.o\\
+	\$(XTDIR)/translation.o\\
+	\$(XTDIR)/widget.o
+
+.c.o:
+	@echo ""
+	@echo === Must make files in \$(XTDIR) first\! ===
+	@echo ""
+
+xt-motif.pre: \$(O) ../../xlib/xlib.pre
+	../../../scripts/makedl \$@ \$(O) ../../xlib/*.o $motif_link_libs
+
+install: xt-motif.pre
+	-@if [ ! -d $install_dir/runtime ]; then \\
+	    echo mkdir $install_dir/runtime; \\
+	    mkdir $install_dir/runtime; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj ]; then \\
+	    echo mkdir $install_dir/runtime/obj; \\
+	    mkdir $install_dir/runtime/obj; \\
+	fi
+	cp xt-motif.pre $install_dir/runtime/obj/xt-motif.o
+
+lint:
+
+clean:
+	rm -f *.o xt-motif.pre core
+
+distclean:
+	rm -f *.o xt-motif.pre core Makefile.local
+EOT

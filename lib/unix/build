@@ -1,0 +1,108 @@
+. ../../config/system
+. ../../config/site
+
+echo Building Makefile.local...
+cat <<EOT >Makefile.local
+# This Makefile was produced by running ./build in this directory.
+
+SHELL=/bin/sh
+
+CC= ${cc-cc}
+CFLAGS= $cflags $obj_cflags
+LINTFLAGS= $lintflags
+
+INC=	../../include
+
+H=	\$(INC)/compat.h\\
+	\$(INC)/config.h\\
+	\$(INC)/cstring.h\\
+	\$(INC)/exception.h\\
+	\$(INC)/extern.h\\
+	\$(INC)/funcproto.h\\
+	\$(INC)/gc.h\\
+	\$(INC)/misc.h\\
+	\$(INC)/object.h\\
+	\$(INC)/param.h\\
+	\$(INC)/stkmem.h\\
+	\$(INC)/type.h\\
+	unix.h
+
+C=	error.c\\
+	fdescr.c\\
+	file.c\\
+	lock.c\\
+	misc.c\\
+	passwd.c\\
+	process.c\\
+	signal.c\\
+	system.c\\
+	temp.c\\
+	time.c\\
+	unix.c\\
+	wait.c
+
+O=	error.o\\
+	fdescr.o\\
+	file.o\\
+	lock.o\\
+	misc.o\\
+	passwd.o\\
+	process.o\\
+	signal.o\\
+	system.o\\
+	temp.o\\
+	time.o\\
+	unix.o\\
+	wait.o
+
+all: \$(O) unix.pre
+
+.c.o:
+	\$(CC) \$(CFLAGS) -I\$(INC) -c \$<
+
+error.o:	\$(H) error.c
+fdescr.o:	\$(H) fdescr.c
+file.o:		\$(H) file.c
+lock.o:		\$(H) lock.c
+misc.o:		\$(H) misc.c
+passwd.o:	\$(H) passwd.c
+process.o:	\$(H) process.c
+signal.o:	\$(H) signal.c
+system.o:	\$(H) system.c
+temp.o:		\$(H) temp.c
+time.o:		\$(H) time.c
+unix.o:		\$(H) unix.c
+wait.o:		\$(H) wait.c
+
+unix.pre: \$(O)
+	../../scripts/makedl \$@ \$(O)
+
+install: unix.pre
+	-@if [ ! -d $install_dir/runtime ]; then \\
+	    echo mkdir $install_dir/runtime; \\
+	    mkdir $install_dir/runtime; \\
+	fi
+	-@if [ ! -d $install_dir/runtime/obj ]; then \\
+	    echo mkdir $install_dir/runtime/obj; \\
+	    mkdir $install_dir/runtime/obj; \\
+	fi
+	cp unix.pre $install_dir/runtime/obj/unix.o
+	-@if [ ! -d $install_dir/include ]; then \\
+	    echo mkdir $install_dir/include; \\
+	    mkdir $install_dir/include; \\
+	fi
+	-@if [ ! -d $install_dir/include/extensions ]; then \\
+	    echo mkdir $install_dir/include/extensions; \\
+	    mkdir $install_dir/include/extensions; \\
+	fi
+	cp unix.h $install_dir/include/extensions
+
+lint:
+	lint \$(LINTFLAGS) -I\$(INC) \$(C)
+
+clean:
+	rm -f *.o unix.pre core
+
+distclean:
+	rm -f *.o unix.pre core lint.out Makefile.local
+EOT

@@ -1,0 +1,67 @@
+. ../config/system
+. ../config/site
+
+if [ _$load_obj = _ld -o _$load_obj = _dl ]; then
+    force_load_xm="-u ${syms_begin_with}XmIsMotifWMRunning"
+fi
+
+# In HP-UX, the Motif libraries must be linked with xt-motif.o instead
+# of placing them into the load-libraries (I don't know why).  So just
+# flush $libxmotif at this point.
+
+if [ _$load_obj = _shl ]; then
+    libxmotif=
+fi
+
+# Take apart $system:
+
+IFS=-
+set $system
+machine=$1
+os=$2
+cc=$3
+
+# Get version number
+
+rel=`../util/getversion ../README`
+IFS=.
+set $rel
+major=$1
+minor=$2
+IFS=
+
+echo Building siteinfo.scm
+cat <<EOT >siteinfo.scm
+;;; -*-Scheme-*-
+;;;
+;;; This file has been produced automatically from the information in
+;;; your config/system and config/site files.  Do not edit!
+
+
+;;; Miscellaneous parameters from config/system:
+
+(define site-machine "$machine")
+(define site-os      "$os")
+(define site-cc      "$cc")
+
+(define site-version '($major . $minor))
+
+
+;;; Various pathnames/options for dynamically loading the X extensions:
+
+(define site-lib-xlib
+   "$libxlib")
+
+(define site-lib-xt
+   "$libxt")
+
+(define site-lib-xaw
+   "$libxaw")
+
+(define site-lib-xmotif
+   "$libxmotif")
+
+(define site-force-load-xm "$force_load_xm")
+
+(provide 'siteinfo)
+EOT

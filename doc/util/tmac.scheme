@@ -1,0 +1,150 @@
+.\" Conditional requests using \n(.U have been added to most macros
+.\" for unroff support; the number register .U is non-zero if the file
+.\" is processed by unroff, else zero.
+.\"
+.\" A font suitable for Scheme keywords and program examples must be
+.\" mounted on font position 5.
+.\" For example:  .fp 5 TT  (Typewriter font)
+.\"          or:  .fp 5 HR  (Helvetica Roman)
+.\"          or:  .fp 5 C   (Courier)
+.\"
+.fp 5 C
+.\"
+.nr PS 11
+.nr VS 5i/24u
+.\"               US paper format.
+.pl 11i
+.\"               The subscripts 1 and 2.
+.ie \n(.U .ds 1 1
+.el       .ds 1 "\v'.3m'\s-11\s0\v'-.3m'
+.ie \n(.U .ds 2 2
+.el       .ds 2 "\v'.3m'\s-12\s0\v'-.3m'
+.\"
+.\"               The digit 4 as a superscript (used in R^4RS).
+.ie \n(.U .ds ^4 ^4
+.el .ds ^4 \u\s-2\&4\s0\d
+.\"
+.\"               Underline page top.
+.de Ul
+.am PT
+.if \\\\n%-1 .tl ?\\\\v'-.6v'\\\\l'\\\\n(LLu\(ru'\\\\v'.6v'
+\\..
+..
+.\"               Index entry.
+.de Ix
+.if !\n(.U .tm \\n%#\\$1#\\$2#\\$3
+..
+.\"               Index entry (definition).
+.de Id
+.Ix "\\$1" "\\$2" @DEF@
+..
+.\"               Scheme code start.
+.de Ss
+.KS
+.nr sF \\n(.f
+.ft 5
+.ps -1
+.vs -1
+.ie \n(.U .RS
+.el .in 1c
+.nf
+.if !\n(.U .sp .3c
+..
+.\"               Scheme code end.
+.de Se
+.sp .5
+.fi
+.ie \n(.U .RE
+.el .in
+.ps
+.vs
+.ft \\n(sF
+.KE
+..
+.\"               Scheme keyword in text.  Inline font switches to italics
+.\"               should be used instead, but at least one document
+.\"               (oops/oops.ms) still uses this macro.
+.de S
+.ft 5
+.ps -1
+.if \\n(.$=1 \&\\$1
+.if \\n(.$>1 \&\\$1\c
+.ft
+.ps
+.if \\n(.$>1 \&\\$2
+..
+.\"               Chapter with TOC entry.
+.de Ch
+.br
+.ne 3c
+.NH
+\\$1
+.XS
+\\$1
+.XE
+..
+.\"               Called before first in a group of .Pr/.Sy/.Va.
+.de Sh
+.ie \n(.U .LP
+.el .SH
+..
+.\"               Scheme procedure.
+.de Pr
+.ds xx "
+.if \\n(.$>=2 .as xx " \f2\\$2\fP
+.if \\n(.$>=3 .as xx " \f2\\$3\fP
+.if \\n(.$>=4 .as xx " \f2\\$4\fP
+.if \\n(.$>=5 .as xx " \f2\\$5\fP
+.if \\n(.$>=6 .as xx " \f2\\$6\fP
+.if \\n(.$>=7 .as xx " \f2\\$7\fP
+.if \\n(.$>=8 .as xx " \f2\\$8\fP
+.if \\n(.$>=9 .as xx " \f2\\$9\fP
+.if !\\nP .Sh
+.if \\n+P>2 .br
+.ie \n(.U (\f3\\$1\fP\|\\*(xx)
+.el .tl '(\\$1\|\\*(xx)'\&'procedure'
+.Id "\\$1"
+..
+.\"               Scheme syntax form.
+.de Sy
+.ds xx "
+.if \\n(.$>=2 .as xx " \f2\\$2\fP
+.if \\n(.$>=3 .as xx " \f2\\$3\fP
+.if \\n(.$>=4 .as xx " \f2\\$4\fP
+.if \\n(.$>=5 .as xx " \f2\\$5\fP
+.if \\n(.$>=6 .as xx " \f2\\$6\fP
+.if \\n(.$>=7 .as xx " \f2\\$7\fP
+.if \\n(.$>=8 .as xx " \f2\\$8\fP
+.if \\n(.$>=9 .as xx " \f2\\$9\fP
+.if !\\nP .Sh
+.if \\n+P>2 .br
+.ie \n(.U (\f3\\$1\fP\|\\*(xx)
+.el .tl '(\\$1\|\\*(xx)'\&'syntax'
+.Id "\\$1"
+..
+.\"               Scheme variable.
+.de Va
+.if !\\nP .Sh
+.if \\n+P>2 .br
+.ie \n(.U \f3\\$1\fP
+.el .tl '\\$1'\&'variable'
+.Id "\\$1"
+..
+.nr P 0
+.\"               .[[ and .]] enclose a group of .Pr/.Sy/.Va requests.
+.de [[
+.nr P 1 1
+.Sh
+..
+.de ]]
+.nr P 0 0
+..
+.\"               Output the table of contents.
+.de Tc
+.de PT
+\\..
+.1C
+.bp
+.ie \n(.U .## (if (zero? (option 'split)) (parse-line ".PX"))
+.el .PX
+..

@@ -1,0 +1,11 @@
+;;; Map widget names that are longer than 12 chars to shorter names
+;;; to satisfy stupid System V restriction
+;;; (12 chars widget name + '.o' == 14 chars)
+
+(set! widget-aliases
+  '((bulletin-board  . bulletin-brd)
+    (cascade-button  . cascade-btn)
+    (file-selection  . file-selectn)
+    (scrolled-window . scrolled-win)
+    (selection-box   . selectn-box)
+    (toggle-button   . toggle-btn)))

@@ -1,0 +1,209 @@
+This file lists changes in the interpreter kernel that affect the C/C++
+interface to applications using Elk and to Elk extensions, and (in
+rare cases) the Scheme level interface.
+
+Changes in release 3.0:
+
+     o  To avoid name conflicts, the names of extension initialization
+	(finalization) functions now begin with elk_init_ (elk_finit_).
+	You will have to edit your source and change the function names
+	accordingly.
+
+     o  The Scheme object representation ("Object") has been changed from
+	an unsigned long to a struct.  Although the changes are backwards
+	compatible with the Elk 2.2 interface and should, in general, not
+	affect your C/C++ code, you should be aware of a few potential
+	trouble spots:
+
+	  o  Code can no longer assume sizeof(Object) == sizeof(int).
+	     Thus, all arguments and return values of type Object must
+	     be declared properly.
+
+	  o  You can no longer cast an `int' into an Object or vice versa.
+
+	  o  You cannot compare Objects directly; use the EQ macro.
+
+	  o  POINTER_CONSTANT_HIGH_BITS is gone (but you weren't supposed
+	     to use this anyway...)
+
+	  o  Initializing a local (auto) Object variable in the declaration
+	     doesn't work any longer if you are using a K&R C compiler.
+
+     o  You can no longer enforce allocation of a specific type slot
+	by Define_Type().  The first argument to Define_Type() now _must_
+	be zero.
+
+     o  The constant MAX_TYPE has become meaningless and will be removed
+	in the future.  Also, SETFIXNUM and SETTYPE do not exist any
+	longer (SET can be used instead); SETPOINTER is obsolete.
+
+     o  There are a few new interface functions that your code may benefit
+	from (such as Set_App_Name); see CHANGES and the new C/C++
+	Programmer's Manual (doc/cprog).
+
+     o  A few `P_*' functions have been renamed in the interpreter for
+	consistency.  See include/compat.h.
+
+     o  In Elk 2.2, the primitives c[ad]*r and cxr just returned ()
+	if the list was too short.  Proper error checking has been
+	added.  If your Scheme code suddenly produces errors in calls
+	to c[ad]*r, check the arguments.
+
+     o  All the names of converters for callbacks in lib/xaw/*.d and
+	lib/xm/*.d now have a prefix `callback:'.  This was required
+	to resolve name conflicts with the converters for ordinary
+	resources.  If you are using custom widgets or have added your
+	own converters to existing widgets, you will have to add the
+	prefix.
+
+
+Changes in release 2.2:
+
+     o  All Scheme files in the distribution now end with the suffix .scm;
+	`require' now appends .scm to the feature name if no file name has
+	been specified.  You should rename your Scheme files accordingly
+	(if you haven't done yet anyway).
+
+     o  Declarations that are private to the interpreter (and are not
+	supposed to be used by extensions) have been moved from
+	include/extern.h into include/intern.h.  You should make sure
+	that extensions only use functions and variables defined in
+	the new include/extern.h.
+
+     o  If you have an extension that invokes fork() and that may execute
+	Scheme primitives in the child process, make sure that the new
+	function `Call_Onfork()' is invoked in the child process to call
+	the `fork handlers' which may have been registered by the
+	interpreter or by other extensions.
+
+     o  The interpreter kernel now exports functions to convert C longs
+        into Scheme numbers and vice versa.  See CHANGES for the list of
+	new functions.
+
+     o  The new function Define_Reader() may be used by extensions to
+	define their own `#' read syntaxes.  See lib/bitstring.c for an
+	example.
+
+     o  The macros Make_C_String, Declare_C_String, and Dispose_C_String
+	are now obsolete (but are retained for compatibility for a
+	limited time).  You should use the new, improved functions/macros
+	mentioned in CHANGES and in src/cstring.c.
+
+     o  Get_Integer() and the new Get_Long() can be called with inexact
+	integers (such as the result of truncate).  If you are writing
+	a Scheme primitive that requires its argument(s) to be *exact*
+	integers, use Get_Exact_Integer() or Get_Exact_Long().
+
+     o  Elk 2.2 now correctly supports inexact integers.  This may cause
+	Scheme code such as
+
+	   (vector-ref '#(a b c) (truncate 1.5))
+	
+	which used to work in earlier versions of Elk to fail, as
+	truncate returns an inexact integer in this example.  One simple
+	way to fix this is to use inexact->exact to convert the inexact
+	integer into an exact one.
+
+     o  As extensions (such as the new UNIX extension) are now allowed
+	to use signals, it is important that you protect critical code
+	sections by calls to Disable_Interrupts/Enable_Interrupts (in C)
+	or disable-interrupts/enable-interrupts (in Scheme).
+
+     o  The representation of Void has changed-- it is no longer a
+	separate, pointer-less type (like Null), but a symbol with
+	an empty name.  As a result you now have to GC_Link variables
+	holding Void.
+
+     o  The old (undocumented) `struct' extension is obsolete; you
+	should use the new record extension (see doc/record).
+
+     o  The primitives `file-status' and `getenv' have been removed.
+	file-status can be approximated by functions from the new UNIX
+	extension like this:
+
+           (require 'unix)
+
+           (define (file-status file)
+             (let ((stat (unix-errval (unix-stat file))))
+               (if (unix-error? stat)
+	           'non-existent
+	           (stat-type stat))))
+
+	Use unix-getenv from the UNIX extension in place of the old
+	getenv primitive (note, though, that unix-getenv must be called
+	with a string; it doesn't accept a symbol).
+
+     o  The `linkscheme' shell script gets installed into a different
+	directory (lib) now and works in a slightly different way.
+	The `linkext' script is now called lib/makedl.  `init_objects'
+	is gone; see INSTALL for a new mechanism to link extensions
+	with the interpreter statically.
+
+
+Changes in release 2.1:
+
+     o  The library libutil.a (which was part of the default libraries
+	in earlier versions) has been removed; the code has been
+	integrated into the interpreter kernel.
+
+	If you have pre-linked dynamically loadable extensions against
+	this library or against object files in lib/misc, just remove
+	the relevant commands from your Makefiles.
+
+     o  The semantics of the Truep() macro have changed; the empty
+        list no longer counts as false (see comment in CHANGES).
+
+
+Changes in release 2.0:
+
+     o  The Elk include file "scheme.h" now is in a different directory
+	(include), so you have to change the -I option in your Makefiles.
+
+     o  <errno.h> is no longer included by "scheme.h", so you have
+	to include it in your extensions if it is required.
+
+     o  lib/string.h is included automatically if you include scheme.h.
+
+     o  It is no longer necessary to pre-link extensions against
+	lib/util/objects.o or lib/util/symbol.o.  The files now are in
+	a library (libutil.a); extensions are linked against this
+	library automatically when they are loaded into Elk.
+
+     o  The way new Scheme objects are allocated has changed as a
+	side-effect of adding the necessary hooks for the generational
+	garbage collector (which is not yet present in Elk 2.0).
+	
+	The function Get_Bytes has been replaced by the new function
+	Alloc_Object.  Alloc_Object already returns a Scheme `Object';
+	there is no need to use SET any longer.  The arguments are the
+	object's size in bytes, the type, and a flag indicating whether
+	the object is constant (constant objects may be placed into a
+	read-only portion of the memory in later versions of Elk).
+
+	So you have to replace old code to allocate an object of type
+	T_Foo that looked like this:
+
+	   Object o;  char *p;
+
+	   p = Get_Bytes (sizeof (struct S_Foo));
+	   SET(o, T_Foo, (struct S_Foo *)p);
+
+	by this:
+
+	    Object o = Alloc_Object (sizeof (struct S_Foo), T_Foo, 0);
+
+	(use 1 instead of 0 if the new object is considered immutable).
+
+     o  If you store weak pointers to objects and forward the pointers
+	explicitly in an after-GC function, you are now required to use
+	a set of new macros.  See src/terminate.c and lib/util/objects.c
+	for examples.
+
+     o  The empty list is no longer regarded as false.  To simplify
+	testing, you can evaluate
+
+	   (empty-list-is-false-for-backward-compatibility #t)
+
+	to enable the old (no longer standard-conforming) semantics.
+	A call to this function with an argument of #f reverts to
+	the default behavior.

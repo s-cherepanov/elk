@@ -1,0 +1,5 @@
+#!/bin/sh
+if [ $# != 1 ]; then
+    echo Usage: $0 README; exit 1
+fi
+exec grep "^This is release" $1 | awk '{print $4}'

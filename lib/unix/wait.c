@@ -1,0 +1,142 @@
+#ifdef __MACH__
+#  define _POSIX_SOURCE
+#endif
+
+#include "unix.h"
+
+#if defined(WAITPID) || defined(WAIT4)
+#  define WAIT_PROCESS
+#endif
+
+#if defined(WAITPID) || defined(WAIT3) || defined(WAIT4)
+#  define WAIT_OPTIONS
+#endif
+
+#if defined(WAIT3) || defined(WAIT4)
+#  define WAIT_RUSAGE
+#  include <sys/time.h>
+#  include <sys/resource.h>
+#endif
+
+#ifdef WAIT_OPTIONS
+static SYMDESCR Wait_Flags[] = {
+    { "nohang",    WNOHANG },
+    { "untraced",  WUNTRACED },
+    { 0, 0 }
+};
+#endif
+
+#ifndef WEXITSTATUS
+#  define WEXITSTATUS(stat)       ((int)((stat >> 8) & 0xFF))
+#endif
+#ifndef WTERMSIG
+#  define WTERMSIG(stat)          ((int)(stat & 0x7F))
+#endif
+#ifndef WSTOPSIG
+#  define WSTOPSIG(stat)          ((int)((stat >> 8) & 0xFF))
+#endif
+#ifndef WIFSIGNALED
+#  define WIFSIGNALED(stat)       ((int)(stat & 0x7F))
+#endif
+#ifndef WIFSTOPPED
+#  define WIFSTOPPED(stat)        ((int)(stat & 0x7F) == 0x7F)
+#endif
+
+
+static Object General_Wait(ret, ruret, haspid, pid, options)
+	Object ret, ruret; int haspid, pid, options; {
+    int retpid, st, code;
+    char *status;
+#ifdef WAIT_RUSAGE
+    struct rusage ru;
+    Object sec;
+#endif
+    Object x;
+    GC_Node3;
+
+    x = Null;
+    Check_Result_Vector(ret, 5);
+    Check_Result_Vector(ruret, 2);
+    if (haspid) {
+#ifdef WAIT4
+	retpid = wait4(pid, &st, options, &ru);
+#else
+#ifdef WAITPID
+	retpid = waitpid(pid, &st, options);
+#endif
+#endif
+    } else {
+#ifdef WAIT3
+	retpid = wait3(&st, options, &ru);
+#else
+	retpid = wait(&st);
+#endif
+    }
+    if (retpid == -1 && errno != ECHILD)
+	Raise_System_Error("~E");
+    GC_Link3(ret, ruret, x);
+    x = Make_Integer(retpid); VECTOR(ret)->data[0] = x;
+    if (retpid == 0 || retpid == -1) {
+	 status = "none";
+	 st = code = 0;
+#ifdef WAIT_RUSAGE
+	 bzero((char *)&ru, sizeof(ru));
+#endif
+    } else if (WIFSTOPPED(st)) {
+	status = "stopped";  code = WSTOPSIG(st);
+    } else if (WIFSIGNALED(st)) {
+	status = "signaled"; code = WTERMSIG(st);
+    } else {
+	status = "exited";   code = WEXITSTATUS(st);
+    }
+    x = Intern(status);     VECTOR(ret)->data[1] = x;
+    x = Make_Integer(code); VECTOR(ret)->data[2] = x;
+    VECTOR(ret)->data[3] = st & 0200 ? True : False;
+#ifdef WAIT_RUSAGE
+    x = Cons(Null, Make_Unsigned_Long((unsigned long)ru.ru_utime.tv_usec
+	* 1000));
+    sec = Make_Unsigned_Long((unsigned long)ru.ru_utime.tv_sec);
+    Car(x) = sec;
+    VECTOR(ruret)->data[0] = x;
+    x = Cons(Null, Make_Unsigned_Long((unsigned long)ru.ru_stime.tv_usec
+	* 1000));
+    sec = Make_Unsigned_Long((unsigned long)ru.ru_stime.tv_sec);
+    Car(x) = sec;
+    VECTOR(ruret)->data[1] = x;
+#endif
+    GC_Unlink;
+    return Void;
+}
+
+static Object P_Wait(argc, argv) int argc; Object *argv; {
+    int flags = 0;
+
+    if (argc == 3)
+#ifdef WAIT_OPTIONS
+	flags = (int)Symbols_To_Bits(argv[2], 1, Wait_Flags);
+#else
+	Primitive_Error("wait options not supported");
+#endif
+    return General_Wait(argv[0], argv[1], 0, 0, flags);
+}
+
+#ifdef WAIT_PROCESS
+/* If WAIT_PROCESS is supported, then WAIT_OPTIONS is supported as well,
+ * because both waitpid() and wait4() accept options.
+ */
+static Object P_Wait_Process(argc, argv) int argc; Object *argv; {
+    return General_Wait(argv[0], argv[1], 1, Get_Integer(argv[2]),
+	argc == 4 ? (int)Symbols_To_Bits(argv[3], 1, Wait_Flags) : 0);
+}
+#endif
+
+elk_init_unix_wait() {
+    Def_Prim(P_Wait,         "unix-wait-vector-fill!",         2, 3, VARARGS);
+#ifdef WAIT_PROCESS
+    Def_Prim(P_Wait_Process, "unix-wait-process-vector-fill!", 3, 4, VARARGS);
+    P_Provide(Intern("unix:wait-process"));
+#endif
+#ifdef WAIT_OPTIONS
+    P_Provide(Intern("unix:wait-options"));
+#endif
+}
