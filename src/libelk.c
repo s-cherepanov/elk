@@ -40,7 +40,7 @@
 
 #ifdef HAVE_GETRLIMIT
 #   include <sys/time.h>
-#   ifdef HAVE_SYS_RESOURCES_H
+#   ifdef HAVE_SYS_RESOURCE_H
 #       include <sys/resource.h>
 #   endif
 #endif
