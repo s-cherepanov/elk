@@ -418,11 +418,11 @@ dnl
 CFLAGS_save="${CFLAGS}"
 LDFLAGS_save="${LDFLAGS}"
 
-if test -n "${CXX}"; then
-  ac_cv_my_have_cxx=yes
-else
-  ac_cv_my_have_cxx=no
-fi
+AC_CACHE_CHECK([if \$CXX really works],
+  [ac_cv_my_have_cxx],
+  [AC_LANG_PUSH(C++)
+   AC_TRY_COMPILE([],,ac_cv_my_have_cxx=yes, ac_cv_my_have_cxx=no)
+   AC_LANG_POP(C++)])
 AM_CONDITIONAL(HAVE_CXX, test "${ac_cv_my_have_cxx}" = "yes")
 
 AC_CACHE_CHECK([if \$CC accepts -Wall],
