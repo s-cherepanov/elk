@@ -1,0 +1,5 @@
+Various Scheme conformance tests
+--------------------------------
+
+r4rstest.scm: Aubrey Jaffer's R4RS conformance test, downloaded from
+              http://swissnet.ai.mit.edu/ftpdir/scm/r4rstest.scm

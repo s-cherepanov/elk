@@ -42,6 +42,12 @@ scheme_DATA = \
 	scheme/unify.scm \
 	$(NULL)
 
+testsdir = $(examplesdir)/tests
+tests_DATA = \
+	tests/README \
+	tests/r4rstest.scm \
+	$(NULL)
+
 unixdir = $(examplesdir)/unix
 unix_DATA = \
 	unix/pipsiz.scm \
