@@ -6,7 +6,6 @@
 ;; Initialization
 
 (require 'motif)
-(load-widgets shell bulletin-board row-column label push-button)
 
 (define top (application-initialize 'vcr))
 (define con (widget-context top))

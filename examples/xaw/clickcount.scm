@@ -5,8 +5,7 @@
 ;;; Based on an example program (xclickcount.c) from the O'Reilly
 ;;; collection of Xt example programs.
 
-(require 'xwidgets)
-(load-widgets shell label)
+(require 'xaw)
 
 (define top (application-initialize 'clickcount))
 (define con (widget-context top))

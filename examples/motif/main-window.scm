@@ -3,8 +3,6 @@
 ;;; Main window demo
 
 (require 'motif)
-(load-widgets drawing-area shell main-window scroll-bar row-column
-	      cascade-button command)
 
 (define top (application-initialize 'main-window))
 (set-values! top 'width 500 'height 800)

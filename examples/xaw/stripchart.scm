@@ -2,8 +2,7 @@
 ;;;
 ;;; Stripchart widget demo
 
-(require 'xwidgets)
-(load-widgets shell stripchart)
+(require 'xaw)
 
 (define top (application-initialize 'stripchart))
 

@@ -2,8 +2,7 @@
 ;;;
 ;;; Panner widget demo
 
-(require 'xwidgets)
-(load-widgets shell panner)
+(require 'xaw)
 
 (define top (application-initialize 'panner))
 (set-values! top 'width 150 'height 150)

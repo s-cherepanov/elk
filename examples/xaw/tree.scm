@@ -12,8 +12,7 @@
 					    'label (car l))))
 	      (set-values! w 'tree-parent p))))))
 
-(require 'xwidgets)
-(load-widgets shell label tree)
+(require 'xaw)
 
 (define top (application-initialize 'tree))
 

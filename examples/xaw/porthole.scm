@@ -3,8 +3,7 @@
 ;;; Porthole widget demo
 ;;; This only works with X11R5; there is no clock widget in X11R6-Xaw.
 
-(require 'xwidgets)
-(load-widgets shell clock form panner porthole)
+(require 'xaw)
 
 (define top (application-initialize 'porthole))
 

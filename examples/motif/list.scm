@@ -3,7 +3,6 @@
 ;;; List widget demo (directory browser) for Motif
 
 (require 'motif)
-(load-widgets shell form label push-button list)
 (require 'unix)
 (require 'sort 'qsort.scm)
 

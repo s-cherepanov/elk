@@ -2,8 +2,7 @@
 ;;;
 ;;; Dialog box demo
 
-(require 'xwidgets)
-(load-widgets shell ascii dialog command box label)
+(require 'xaw)
 
 (define top (application-initialize 'dialog))
 (define dpy (widget-display top))

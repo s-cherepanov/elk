@@ -3,7 +3,6 @@
 ;;; Radio box and button demo
 
 (require 'motif)
-(load-widgets shell row-column arrow-button push-button toggle-button)
 (load 'radio-stuff.scm)
 
 (define top (application-initialize 'radio))

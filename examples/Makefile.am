@@ -85,20 +85,20 @@ xlib_DATA = \
 	xlib/picture.scm \
 	$(NULL)
 
-xmdir = $(examplesdir)/xm
-xm_DATA = \
-	xm/scroll-bar.scm \
-	xm/radio.scm \
-	xm/message-dialog.scm \
-	xm/drawing-area.scm \
-	xm/radio-stuff.scm \
-	xm/popup-menu.scm \
-	xm/pulldown-menu.scm \
-	xm/main-window.scm \
-	xm/menu-stuff.scm \
-	xm/vcr.scm \
-	xm/option-menu.scm \
-	xm/list.scm \
-	xm/selection-box.scm \
+motifdir = $(examplesdir)/motif
+motif_DATA = \
+	motif/scroll-bar.scm \
+	motif/radio.scm \
+	motif/message-dialog.scm \
+	motif/drawing-area.scm \
+	motif/radio-stuff.scm \
+	motif/popup-menu.scm \
+	motif/pulldown-menu.scm \
+	motif/main-window.scm \
+	motif/menu-stuff.scm \
+	motif/vcr.scm \
+	motif/option-menu.scm \
+	motif/list.scm \
+	motif/selection-box.scm \
 	$(NULL)
 

@@ -3,7 +3,6 @@
 ;;; Scroll bar demo
 
 (require 'motif)
-(load-widgets shell scroll-bar)
 
 (define top (application-initialize 'scrollbar))
 (set-values! top 'allow-shell-resize #t)

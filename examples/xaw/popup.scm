@@ -2,8 +2,7 @@
 ;;;
 ;;; Popup menu demo
 
-(require 'xwidgets)
-(load-widgets shell simplemenu smebsb label)
+(require 'xaw)
 
 (define top (application-initialize 'popup))
 

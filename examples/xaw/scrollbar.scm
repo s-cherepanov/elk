@@ -2,8 +2,7 @@
 ;;;
 ;;; Scrollbar widget demo
 
-(require 'xwidgets)
-(load-widgets shell scrollbar)
+(require 'xaw)
 
 (define top (application-initialize 'scrollbar))
 

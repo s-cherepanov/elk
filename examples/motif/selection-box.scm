@@ -3,7 +3,6 @@
 ;;; Selection box demo
 
 (require 'motif)
-(load-widgets shell selection-box)
 
 (define top (application-initialize 'selection))
 

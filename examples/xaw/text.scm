@@ -3,8 +3,7 @@
 ;;; Trivial text widget demo (the text widget isn't fully supported
 ;;; by Elk)
 
-(require 'xwidgets)
-(load-widgets shell ascii box command label)
+(require 'xaw)
 
 (define top (application-initialize 'text))
 

@@ -5,8 +5,7 @@
 ;;; Based on an example program (xtryaccel.c) from the O'Reilly
 ;;; book `X Toolkit Intrinsics Programming Manual'
 
-(require 'xwidgets)
-(load-widgets command box shell)
+(require 'xaw)
 
 (define top (application-initialize 'accel
   "*bye.label:    Goodbye"

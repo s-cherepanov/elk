@@ -3,7 +3,6 @@
 ;;; Option menu demo
 
 (require 'motif)
-(load-widgets shell row-column cascade-button push-button label separator)
 (load 'menu-stuff.scm)
 
 (define top (application-initialize 'option))

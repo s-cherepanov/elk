@@ -3,8 +3,6 @@
 ;;; Popup menu demo
 
 (require 'motif)
-(load-widgets shell row-column cascade-button push-button label separator
-              drawing-area)
 (load 'menu-stuff.scm)
 
 (define top (application-initialize 'popup))

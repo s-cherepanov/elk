@@ -2,8 +2,7 @@
 ;;;
 ;;; List widget demo (directory browser)
 
-(require 'xwidgets)
-(load-widgets shell form label command list)
+(require 'xaw)
 (require 'unix)
 (require 'sort 'qsort.scm)
 

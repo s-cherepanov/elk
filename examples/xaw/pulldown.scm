@@ -2,8 +2,7 @@
 ;;;
 ;;; Pulldown menu demo
 
-(require 'xwidgets)
-(load-widgets shell menubutton simplemenu smebsb smeline sme)
+(require 'xaw)
 
 (define top (application-initialize 'pulldown))
 

@@ -2,8 +2,7 @@
 ;;;
 ;;; Grip widget demo
 
-(require 'xwidgets)
-(load-widgets shell grip)
+(require 'xaw)
 
 (define top (application-initialize 'grip))
 (set-values! top 'width 50 'height 50)

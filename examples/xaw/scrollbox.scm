@@ -2,8 +2,7 @@
 ;;;
 ;;; Scroll box demo
 
-(require 'xwidgets)
-(load-widgets shell command box label)
+(require 'xaw)
 
 (define items (list 'Helvetica 'Courier 'Times 'Palatino 'Zapf\ Chancery
 		    'Zapf\ Dingbats))

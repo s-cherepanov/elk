@@ -3,7 +3,6 @@
 ;;; Message box dialog demo
 
 (require 'motif)
-(load-widgets shell message-box row-column toggle-button push-button)
 (load 'radio-stuff.scm)
 
 (define top (application-initialize 'message-box))

@@ -2,8 +2,7 @@
 ;;;
 ;;; Paned widget demo
 
-(require 'xwidgets)
-(load-widgets shell label command paned)
+(require 'xaw)
 
 (define top (application-initialize 'paned))
 
