@@ -1,3 +1,5 @@
+# $Id$
+
 AC_INIT(src/main.c)
 
 AC_PREREQ(2.50)

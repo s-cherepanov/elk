@@ -1,4 +1,4 @@
-$Id: foo$
+$Id$
 
 This file lists changes in the interpreter kernel that affect the C/C++
 interface to applications using Elk and to Elk extensions, and (in
