@@ -3,7 +3,27 @@ $Id$
 Changes between 3.0 and 4.0:
 ----------------------------
 
-  * Nothing yet.
+  * Not released yet.
+
+  * New in 3.99.1 prerelease (rev 126):
+    + Ported to Mac OS X.
+    + Added proper checks for the libraries (libgdbm, X11, Motif, ...).
+    + Added a ChangeLog file.
+    + libelf is no longer an absolute requirement, though it is still
+      strongly recommended.
+
+  * New in 3.99.0 prerelease (rev 96):
+    + libelk, a shared library containing all the Elk scheme interpreter
+      features.
+    + Properly builds with GCC 3.
+    + 64 bits clean.
+    + Uses autoconf, automake and libtool for greater portability and a
+      simpler build and installation process.
+    + Support for dynamically loadable plugins. Previous versions used the
+      system's linker to build shared objects at runtime.
+    + Massive bugfixing.
+    + Dump support was removed because it was too platform-specific and
+      could not be thoroughly tested. I may enable it again in the future.
 
 Changes between 2.2 and 3.0:
 ----------------------------
