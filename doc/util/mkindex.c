@@ -35,7 +35,7 @@ char buf[10000];
 long line;
 char *fn;
 
-main(ac, av) char **av; {
+main(int ac, char **av) {
     FILE *fp;
 
     if (ac < 2) {
@@ -54,7 +54,7 @@ main(ac, av) char **av; {
     return 0;
 }
 
-doit(fp) FILE *fp; {
+doit(FILE *fp) {
     char *p, *q, *start, *macro;
     char inx[1000], arg[1000];
     int n, need_nl = 0;
@@ -125,7 +125,7 @@ doit(fp) FILE *fp; {
     }
 }
 
-eatfont(from, to) char *from, *to; {
+eatfont(char *from, char *to) {
     while (*from) {
         if (*from == '\\' && from[1] == 'f' && from[2]) {
             from += 3;
@@ -140,7 +140,7 @@ eatfont(from, to) char *from, *to; {
     *to = 0;
 }
 
-error(s) char *s; {
+error(char *s) {
     fprintf(stderr, "Error in %s line %d, %s:\n%s\n", fn, line, s, buf);
     exit(1);
 }
