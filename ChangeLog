@@ -1,4 +1,73 @@
 ------------------------------------------------------------------------
+rev 156:  sam | 2003-09-15 13:09:21 +0200 (Mon, 15 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /lib/misc/Makefile.am
+
+  * Disabled the monitor plugin because it relies on specific gcc features.
+
+------------------------------------------------------------------------
+rev 155:  sam | 2003-09-15 11:12:16 +0200 (Mon, 15 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/man/Makefile.am
+
+  * Fixed the manpage directory.
+
+------------------------------------------------------------------------
+rev 154:  sam | 2003-09-15 10:59:33 +0200 (Mon, 15 Sep 2003) | 3 lines
+Changed paths:
+   M /doc/man/Makefile.am
+   M /src/Makefile.am
+
+  * Use install-{exec,data}-hook instead of -local so that target directories
+    already exist when the rule is called.
+
+------------------------------------------------------------------------
+rev 153:  sam | 2003-09-15 10:52:09 +0200 (Mon, 15 Sep 2003) | 3 lines
+Changed paths:
+   M /doc/bitstring/Makefile.am
+   M /doc/cprog/Makefile.am
+   M /doc/kernel/Makefile.am
+   M /doc/man/Makefile.am
+   M /doc/oops/Makefile.am
+   M /doc/record/Makefile.am
+   M /doc/regexp/Makefile.am
+   M /doc/unix/Makefile.am
+   M /doc/usenix/Makefile.am
+   M /doc/xlib/Makefile.am
+   M /doc/xt/Makefile.am
+   M /lib/xwidgets/motif/Makefile.am
+   M /lib/xwidgets/xaw/Makefile.am
+
+  * **/Makefile.am: Use CLEANFILES instead of a new clean rule to remove
+    temporary files generated at build time.
+
+------------------------------------------------------------------------
+rev 152:  sam | 2003-09-15 10:46:36 +0200 (Mon, 15 Sep 2003) | 7 lines
+Changed paths:
+   M /debian/changelog
+   M /debian/rules
+   M /doc/man/Makefile.am
+   M /src/Makefile.am
+
+  * src/Makefile.am, doc/man/Makefile.am:
+    + Create symlinks at install time.
+  * debian/rules:
+    + Moved manpages to /usr/share/man (Closes: #210894).
+    + Ignore plugins in the dh_makeshlibs call.
+    + Removed the elk->scheme-elk link, it is done at make install time.
+
+------------------------------------------------------------------------
+rev 151:  sam | 2003-09-13 08:33:51 +0200 (Sat, 13 Sep 2003) | 2 lines
+Changed paths:
+   M /ChangeLog
+   M /NEWS
+   M /build-win32
+   M /debian/changelog
+
+  * The 3.99.2 release is now ready.
+
+------------------------------------------------------------------------
 rev 150:  sam | 2003-09-13 08:31:24 +0200 (Sat, 13 Sep 2003) | 2 lines
 Changed paths:
    M /configure.ac
