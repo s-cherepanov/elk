@@ -22,15 +22,15 @@
 	  (lambda (i) (check-string 'define-widget-type i 'include)) include)
         (check-string 'define-widget-type include 'include))
     (set! type-name name)
-    (format f "#include \"../xt/xt.h\"~%")
+    (format f "#include \"../xt.h\"~%")
     (case widget-set
-      (xm
+      (motif
 	(format f "#include <Xm/Xm.h>~%")))
     (if (and (not (eqv? include "")) (not (null? include)))
 	(begin
 	  (define dir)
 	  (case widget-set
-	    (xm
+	    (motif
 	     (set! dir "Xm"))
 	    (xaw
 	     (set! dir "X11/Xaw")))

@@ -1,18 +1,16 @@
 NULL = 
 
-EXTRA_DIST = $(DATA) $(D_FILES)
+EXTRA_DIST = $(D_FILES)
 
-pkglib_xaw_DATA = ALIASES
-pkglib_xaw_LTLIBRARIES = xaw.la
-pkglib_xawdir = $(pkglibdir)/xaw
+pkglib_LTLIBRARIES = xaw-widgets.la
 
-nodist_xaw_la_SOURCES = $(C_FILES)
-xaw_la_CFLAGS = -I$(srcdir)/../xlib @XAW_CFLAGS@
-xaw_la_LDFLAGS = -module -avoid-version
-xaw_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
+nodist_xaw_widgets_la_SOURCES = $(C_FILES)
+xaw_widgets_la_CFLAGS = -I$(srcdir)/../../xlib @XAW_CFLAGS@
+xaw_widgets_la_LDFLAGS = -module -avoid-version
+xaw_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
 
 .d.c:
-	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/../xt -l mkwidget.scm $< $@ xaw
+	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ xaw
 
 clean: clean-local
 clean-local:
