@@ -34,19 +34,17 @@
 #include <limits.h>
 #include <string.h>
 
-#ifdef FLUSH_TIOCFLUSH
-#  include <sys/ioctl.h>
-#else
-#ifdef FLUSH_TCFLSH
-#  include <termio.h>
-#endif
+#if defined(HAVE_TERMIO_H)
+#   include <termio.h>
+#elif defined(HAVE_TERMIOS_H)
+#   include <termios.h>
 #endif
 
-#if defined(FIONREAD_IN_TERMIOS_H)
-#   include <termios.h>
-#elif defined(FIONREAD_IN_SYS_IOCTL_H)
+#if defined(HAVE_SYS_IOCTL_H)
 #   include <sys/ioctl.h>
-#elif defined(FIONREAD_IN_SYS_FILIO_H)
+#endif
+
+#if defined(HAVE_SYS_FILIO_H)
 #   include <sys/filio.h>
 #endif
 
@@ -146,20 +144,17 @@ void Discard_Input (Object port) {
     if (PORT(port)->flags & P_STRING)
         return;
     f = PORT(port)->file;
-#ifdef FLUSH_FPURGE
+#if defined(HAVE_FPURGE)
     (void)fpurge (f);
-#else
-#ifdef FLUSH_BSD
+#elif defined(HAVE_BSD_FLUSH)
     f->_cnt = 0;
     f->_ptr = f->_base;
 #endif
-#endif
-#ifdef FLUSH_TIOCFLUSH
+
+#if defined(TIOCFLUSH)
     (void)ioctl (fileno (f), TIOCFLUSH, (char *)0);
-#else
-#ifdef FLUSH_TCFLSH
+#elif defined(TCFLSH)
     (void)ioctl (fileno (f), TCFLSH, (char *)0);
-#endif
 #endif
 }
 

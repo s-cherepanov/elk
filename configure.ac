@@ -63,24 +63,7 @@ dnl FIXME
 AC_CHECK_HEADERS(unistd.h)
 
 # If the FIONREAD ioctl command is defined, which file must be included?
-AC_MSG_CHECKING(for FIONREAD in termios.h)
-AC_EGREP_HEADER(FIONREAD, termios.h, [
-  AC_MSG_RESULT(yes) AC_DEFINE(FIONREAD_IN_TERMIOS_H, 1, Define if <termios.h> defines FIONREAD)
-],[
-  AC_MSG_RESULT(no)
-  AC_MSG_CHECKING(for FIONREAD in sys/ioctl.h)
-  AC_EGREP_HEADER(FIONREAD, sys/ioctl.h, [
-    AC_MSG_RESULT(yes) AC_DEFINE(FIONREAD_IN_SYS_IOCTL_H, 1, Define if <sys/ioctl.h> defines FIONREAD)
-  ],[
-    AC_MSG_RESULT(no)
-    AC_MSG_CHECKING(for FIONREAD in sys/filio.h)
-    AC_EGREP_HEADER(FIONREAD, sys/filio.h, [
-      AC_MSG_RESULT(yes) AC_DEFINE(FIONREAD_IN_SYS_FILIO_H, 1, Define if <sys/filio.h> defines FIONREAD)
-    ],[
-      AC_MSG_RESULT(no)
-    ])
-  ])
-])
+AC_CHECK_HEADERS(termios.h sys/ioctl.h sys/filio.h)
 
 # If getdtablesize() is available to determine the maximum number of open
 # files per process, set getdtablesize=yes.
@@ -249,16 +232,22 @@ AC_DEFINE(TERMIO, 1, [FIXME HARD])
 #    tiocflush   use TIOCFLUSH ioctl from <sys/ioctl.h>
 #    tcflsh      use TCFLSH ioctl from <termio.h>
 # Leave the variable(s) empty if flushing is not supported.
-if false; then
-  AC_DEFINE(FLUSH_BSD, 1, [FIXME HARD])
+AC_CHECK_FUNCS(fpurge)
+
+AC_CACHE_CHECK([for BSD-style flushing],
+  [ac_cv_have_bsd_flush],
+  [AC_TRY_COMPILE(
+    [#include <stdio.h>],
+    [FILE *f;
+     f->_cnt = 0;
+     f->_ptr = f->_base;],
+    ac_cv_have_bsd_flush=yes,
+    ac_cv_have_bsd_flush=no)])
+if test "${ac_cv_have_bsd_flush}" = "yes"; then
+  AC_DEFINE(HAVE_BSD_FLUSH, 1, [Define if you have BSD-style flushing])
 fi
-if false; then
-  AC_DEFINE(FLUSH_FPURGE, 1, [FIXME HARD])
-fi
-if false; then
-  AC_DEFINE(FLUSH_TIOCFLUSH, 1, [FIXME HARD])
-fi
-AC_DEFINE(FLUSH_TCFLSH, 1, [FIXME HARD])
+
+AC_CHECK_HEADERS(termio.h termios.h)
 
 # The interpreter uses the getrlimit function to determine the maximum
 # stack size of the running program.  If this function is not supported,
