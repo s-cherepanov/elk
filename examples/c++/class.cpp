@@ -9,7 +9,7 @@ See constructor.cpp in this directory for compilation instructions.
 Here is a transcript showing a test run under Linux using the
 GNU g++ compiler:
 
-    % g++ -shared -fPIC -I/usr/elk/include -c class.c -o class.so
+    % g++ -shared -fPIC -I/usr/include/elk class.cpp -o class.so -lelk
     %
     % scheme
     > (load 'class.so)

@@ -5,9 +5,11 @@ are invoked by Elk when loading a compiled C++ file (when exiting).
 
 o  Compile the shared object, for instance:
 
-     CC -pic -shared -I/usr/elk/include constructor.c -o constructor.so
+   CC -pic -shared -I/usr/elk/include constructor.cpp -o constructor.so -lelk
 
-     g++ -fPIC -shared -I/usr/include/elk constructor.c -o constructor.so
+   or:
+
+   g++ -fPIC -shared -I/usr/include/elk constructor.ppc -o constructor.so -lelk
 
 o  Now "(load 'constructor.so)", observe the "invoking constructor" message,
    and evaluate "(test)", which should return 3.  Terminate the interpreter
