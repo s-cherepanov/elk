@@ -21,7 +21,7 @@ AC_C_INLINE
 AC_TYPE_SIZE_T
 
 # Check whether we are doing a native build
-AM_CONDITIONAL(NATIVE_BUILD, test "${cross_compile}" = "no")
+AM_CONDITIONAL(NATIVE_BUILD, test "${cross_compiling}" = "no")
 
 AC_CHECK_HEADERS(inttypes.h,
   [STDINT_HEADER="<inttypes.h>"],
@@ -462,7 +462,7 @@ AC_CHECK_LIB(Xmu, XmuDrawLogo,
  [xmu_libraries=""],
  [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
 
-if test "${cross_compile}" = "no"; then
+if test "${cross_compiling}" = "no"; then
   AC_CHECK_LIB(Xaw, XawTextSearch,
    [ac_cv_my_have_xaw=yes
     XAW_CFLAGS="-I${x_includes}"
@@ -476,7 +476,7 @@ AM_CONDITIONAL(HAVE_XAW, test "${ac_cv_my_have_xaw}" = "yes")
 AC_SUBST(XAW_CFLAGS)
 AC_SUBST(XAW_LIBS)
 
-if test "${cross_compile}" = "no"; then
+if test "${cross_compiling}" = "no"; then
   AC_CHECK_LIB(Xm, XmStringConcat,
    [ac_cv_my_have_motif=yes
     MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
@@ -533,6 +533,7 @@ AC_OUTPUT([
   doc/xlib/Makefile
   doc/xt/Makefile
   examples/Makefile
+  examples/tests/Makefile
   include/Makefile
   lib/Makefile
   lib/misc/Makefile

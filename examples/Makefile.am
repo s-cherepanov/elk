@@ -1,5 +1,6 @@
 NULL = 
 
+SUBDIRS = tests
 EXTRA_DIST = $(DATA)
 
 examplesdir = $(datadir)/doc/@PACKAGE@/examples
