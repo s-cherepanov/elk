@@ -5,6 +5,7 @@ EXTRA_DIST = $(SOURCES_D)
 pkglib_LTLIBRARIES = xaw-widgets.la
 
 nodist_xaw_widgets_la_SOURCES = $(SOURCES_C)
+xaw_widgets_la_SOURCES = init.c
 xaw_widgets_la_CFLAGS = -I$(srcdir)/../../xlib @XAW_CFLAGS@
 xaw_widgets_la_LDFLAGS = -module -avoid-version
 xaw_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
