@@ -30,7 +30,7 @@
  */
 
 #include <stdint.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 typedef struct {
     int64_t data;
