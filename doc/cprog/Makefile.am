@@ -14,7 +14,7 @@ cprog.ps: cprog.ms side.ref side.inx
 	$(MKINDEX) cprog.ms | sed -f side.ref | $(TROFF) 2> /dev/null > $@
 
 side.ref: side
-	sed -ne '/^[sS]/{s/\.\//\//;p}' < side > side.ref
+	grep '^[sS]' < side | sed -e 's/\.\//\//' > side.ref
 
 side.inx: side
 	egrep -v '^s' side | sort -f -t'#' +1 -3 +0n | \
