@@ -3,9 +3,12 @@ $Id$
 Changes between 3.0 and 4.0:
 ----------------------------
 
-  * Not released yet.
+  * New in 3.99.6 prerelease:
+    + Many portability checks added to the configure script.
+    + Fix for an installation bug that prevented extension loading.
+    + BeOS dynamic plugin support.
 
-  * New in 3.99.5 prerelease (rev 221):
+  * New in 3.99.5 prerelease:
     + R4RS compliance fixes (r4rstest.scm successful passes):
       - Allow for empty (begin) and (cond) statements.
       - Fixed scope of named let variables.
@@ -13,27 +16,27 @@ Changes between 3.0 and 4.0:
     + Mac OS X compilation fixes.
     + Fixed the detection of environ on Solaris.
 
-  * New in 3.99.4 prerelease (rev 171):
+  * New in 3.99.4 prerelease:
     + Proper plugin support under Win32 and HP-UX.
     + Compilation fixes.
     + Minor bugs fixed.
 
-  * New in 3.99.3 prerelease (rev 157):
+  * New in 3.99.3 prerelease:
     + Minor bugs fixed.
 
-  * New in 3.99.2 prerelease (rev 151):
+  * New in 3.99.2 prerelease:
     + Ported to HP-UX.
     + Ported to Windows (both Cygwin and Mingw32) except the plugin system.
     + More bugs fixed.
 
-  * New in 3.99.1 prerelease (rev 126):
+  * New in 3.99.1 prerelease:
     + Ported to Mac OS X.
     + Added proper checks for the libraries (libgdbm, X11, Motif, ...).
     + Added a ChangeLog file.
     + libelf is no longer an absolute requirement, though it is still
       strongly recommended.
 
-  * New in 3.99.0 prerelease (rev 96):
+  * New in 3.99.0 prerelease:
     + libelk, a shared library containing all the Elk scheme interpreter
       features.
     + Properly builds with GCC 3.

@@ -2,7 +2,7 @@ elk (3.99.6-1) unstable; urgency=low
 
   * New upstream release.
 
- -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 10 Oct 2003 14:35:06 +0200
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri,  5 Dec 2003 13:35:10 +0100
 
 elk (3.99.5-3) unstable; urgency=low
 
