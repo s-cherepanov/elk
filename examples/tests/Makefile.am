@@ -7,8 +7,9 @@ if NATIVE_BUILD
 all-local: $(allstamps)
 endif
 
-stamp-r4rs:
+stamp-r4rs: $(top_builddir)/src/elk
+	rm -f $@
 	-$(top_builddir)/src/elk -p .:$(top_srcdir)/scm -l r4rstest.scm
 	rm -f tmp1 tmp2 tmp3
-	touch $@
+	printf "" > $@
 
