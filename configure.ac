@@ -382,7 +382,7 @@ AC_DEFINE(ANSI_CPP, 1, [FIXME HARD])
 AC_CHECK_HEADERS(utime.h sys/utime.h sys/wait.h sys/times.h dirent.h netdb.h)
 AC_CHECK_FUNCS(waitpid wait3 wait4 vfork uname gethostname gettimeofday ftime)
 AC_CHECK_FUNCS(mktemp tmpnam tempnam getcwd getwd rename regcomp environ)
-AC_MSG_CHECKING(for environ in unistd.h)
+AC_MSG_CHECKING(for __environ in unistd.h)
 AC_EGREP_HEADER(__environ, unistd.h,
  [AC_MSG_RESULT(yes)
   AC_DEFINE(__ENVIRON_IN_UNISTD_H, 1, Define if <unistd.h> defines __environ)],
