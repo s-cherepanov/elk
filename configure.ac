@@ -154,11 +154,25 @@ fi
 
 # Which mechanism should be used to dynamically load object files?
 ac_cv_my_can_load_lib=no
-AC_CHECK_HEADERS(dlfcn.h, ac_cv_my_can_load_lib=yes)
+
+AC_CHECK_HEADERS(mach-o/dyld.h,
+  [AC_CHECK_FUNCS(NSLinkModule,
+    [AC_DEFINE(HAVE_DL_DYLD, 1, [Define if you have the Darwin dyld API])
+     ac_cv_my_can_load_lib=yes])])
+
 AC_CHECK_HEADERS(a.out.h, ac_cv_my_can_load_lib=yes)
 
+# Only test for dlopen() if the others didn't work
+if test "${ac_cv_my_can_load_lib}" = "no"; then
+  AC_CHECK_HEADERS(dlfcn.h,
+    [AC_CHECK_LIB(dl, dlopen,
+      [AC_DEFINE(HAVE_DL_DLOPEN, 1, [Define if you have the dlopen API])
+       ELK_LIBS="${ELK_LIBS} -ldl"
+       ac_cv_my_can_load_lib=yes])])
+fi
+
 if test "${ac_cv_my_can_load_lib}" = "yes"; then
-  AC_DEFINE(CAN_LOAD_LIB, 1, [FIXME HARD])
+  AC_DEFINE(CAN_LOAD_LIB, 1, [Define if dynamic loading is supported])
 fi
 
 # Systems with "aout_format=ecoff" may require a call to the cacheflush
@@ -422,7 +436,7 @@ AC_SUBST(MOTIF_LIBS)
 
 dnl  Export variables
 INCLUDES="${INCLUDES} -I\$(top_srcdir)/include"
-ELK_LIBS="${ELK_LIBS} -lm -ldl"
+ELK_LIBS="${ELK_LIBS} -lm"
 AC_SUBST(INCLUDES)
 AC_SUBST(ELK_LIBS)
 
