@@ -65,8 +65,7 @@ static Object P_Environ() {
     return P_Reverse(ret);
 }
 
-static Object General_Exec(argc, argv, path) int argc; Object *argv;
-        int path; {
+static Object General_Exec(int argc, Object *argv, int path) {
     Object fn, args,  p, e;
     char *fnp, **argp, **envp;
     int i, len;

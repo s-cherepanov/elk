@@ -75,8 +75,8 @@ static SYMDESCR Wait_Flags[] = {
 #endif
 
 
-static Object General_Wait(ret, ruret, haspid, pid, options)
-        Object ret, ruret; int haspid, pid, options; {
+static Object General_Wait(Object ret, Object ruret,
+                           int haspid, int pid, int options) {
     int retpid, st, code;
     char *status;
 #ifdef WAIT_RUSAGE

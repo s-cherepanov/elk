@@ -132,8 +132,7 @@ int Gdbm_fh_Equal (Object a, Object b) {
 }
 
 /*ARGSUSED*/
-int Gdbm_fh_Print (fh, port, raw, depth, len) Object fh, port;
-        int /*Bool*/ raw; int depth, len; {
+int Gdbm_fh_Print (Object fh, Object port, int raw, int depth, int len) {
     Printf (port, "#[gdbm-file %lu]", GDBM_FH(fh)->fptr);
     return 0;
 }
@@ -182,8 +181,7 @@ Object P_Gdbm_Close (Object fh) {
     return Void;
 }
 
-Object P_Gdbm_Store (fh, key, content, flag)
-        Object fh, key, content, flag; {
+Object P_Gdbm_Store (Object fh, Object key, Object content, Object flag) {
     int res;
     datum k, c;
 
