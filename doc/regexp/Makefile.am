@@ -1,4 +1,5 @@
 EXTRA_DIST = regexp.ms
+CLEANFILES = index.raw index.ms regexp.ps regexp.html
 
 if HAVE_GROFF
 doc_DATA = regexp.ps
@@ -27,5 +28,3 @@ check:
 	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] regexp.ms |\
 	    grep -v "Empty command"
 
-clean:
-	rm -f index.raw index.ms regexp.ps regexp.html

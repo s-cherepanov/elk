@@ -1,4 +1,5 @@
 EXTRA_DIST = oops.ms
+CLEANFILES = index.raw index.ms oops.ps oops.html
 
 if HAVE_GROFF
 doc_DATA = oops.ps
@@ -27,5 +28,3 @@ check:
 	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] oops.ms |\
 	    grep -v "Empty command"
 
-clean:
-	rm -f index.raw index.ms oops.ps oops.html

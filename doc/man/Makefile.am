@@ -1,4 +1,5 @@
 EXTRA_DIST = $(man_MANS)
+CLEANFILES = elk.ps elk.1.html
 
 man_MANS = elk.1
 
@@ -15,9 +16,6 @@ elk.ps: elk.1
 
 elk.1.html: elk.1
 	$(UNROFF) $?
-
-clean:
-	rm -f elk.ps elk.1.html
 
 install-data-local:
 	rm -f "$(DESTDIR)$(mandir)/scheme-elk.1"

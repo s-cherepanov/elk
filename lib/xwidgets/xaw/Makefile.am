@@ -1,6 +1,7 @@
 NULL = 
 
 EXTRA_DIST = $(SOURCES_D)
+CLEANFILES = $(SOURCES_C)
 
 pkglib_LTLIBRARIES = $(xaw_widgets_la)
 
@@ -16,10 +17,6 @@ xaw_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
 
 .d.c:
 	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ xaw
-
-clean: clean-local
-clean-local:
-	-rm -f $(SOURCES_C)
 
 SOURCES_C = \
 	ascii.c \

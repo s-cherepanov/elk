@@ -1,4 +1,5 @@
 EXTRA_DIST = usenix.ms
+CLEANFILES = tmp.ref usenix.ps
 
 if HAVE_GROFF
 doc_DATA = usenix.ps
@@ -16,7 +17,4 @@ usenix.html: usenix.ms tmp.ref
 
 tmp.ref: usenix.ms
 	$(TROFF) usenix.ms 2> tmp.ref >/dev/null
-
-clean:
-	rm -f tmp.ref usenix.ps
 

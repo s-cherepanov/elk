@@ -1,4 +1,5 @@
 EXTRA_DIST = record.ms
+CLEANFILES = index.raw index.ms record.ps record.html
 
 if HAVE_GROFF
 doc_DATA = record.ps
@@ -27,5 +28,3 @@ check:
 	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] record.ms |\
 	    grep -v "Empty command"
 
-clean:
-	rm -f index.raw index.ms record.ps record.html

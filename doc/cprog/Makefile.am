@@ -1,4 +1,5 @@
 EXTRA_DIST = cprog.ms
+CLEANFILES = side side.ref side.inx cprog.ps cprog.html
 
 if HAVE_GROFF
 doc_DATA = cprog.ps
@@ -8,10 +9,6 @@ endif
 TROFF= groff -ms -t
 UNROFF= unroff -ms
 MKINDEX= awk -f ../util/mkindex.awk
-
-clean: local-clean
-local-clean:
-	rm -f side side.ref side.inx cprog.ps cprog.html
 
 cprog.ps: cprog.ms side.ref side.inx
 	$(MKINDEX) cprog.ms | sed -f side.ref | $(TROFF) 2> /dev/null > $@

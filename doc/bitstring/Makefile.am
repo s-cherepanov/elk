@@ -1,4 +1,5 @@
 EXTRA_DIST = bitstring.ms
+CLEANFILES = index.raw index.ms bitstring.ps bitstring.html
 
 if HAVE_GROFF
 doc_DATA = bitstring.ps
@@ -27,5 +28,3 @@ check:
 	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] bitstring.ms |\
 	    grep -v "Empty command"
 
-clean:
-	rm -f index.raw index.ms bitstring.ps bitstring.html

@@ -1,4 +1,5 @@
 EXTRA_DIST = xlib.ms
+CLEANFILES = index.raw index.ms xlib.ps xlib.html
 
 if HAVE_GROFF
 doc_DATA = xlib.ps
@@ -27,5 +28,3 @@ check:
 	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] xlib.ms |\
 	    grep -v "Empty command"
 
-clean:
-	rm -f index.raw index.ms xlib.ps xlib.html
