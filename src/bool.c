@@ -64,8 +64,8 @@ int Eqv (Object x1, Object x2) {
     t2 = TYPE(x2);
     if (Numeric (t1) && Numeric (t2)) {
         /* r4rs 6.2 states that (eqv? 1 1.0) ==> #f */
-        if(t1 == T_Flonum && t2 != T_Flonum
-            || t1 != T_Flonum && t2 == T_Flonum)
+        if((t1 == T_Flonum && t2 != T_Flonum)
+            || (t1 != T_Flonum && t2 == T_Flonum))
             return 0;
         return Generic_Equal (x1, x2);
     }
