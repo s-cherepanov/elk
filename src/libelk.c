@@ -177,12 +177,10 @@ int main (int ac, char **av) {
     Object file;
     struct stat st;
     extern int errno;
-#ifdef CAN_DUMP
-#ifdef NOMAIN
-#  define foo (av[0][0])
+#if defined(CAN_DUMP) && defined(NOMAIN)
+#   define foo (av[0][0])
 #else
     char foo;
-#endif
 #endif
 
 #ifdef CAN_DUMP
