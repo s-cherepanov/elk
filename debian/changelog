@@ -4,9 +4,17 @@ elk (3.99.6-1) unstable; urgency=low
 
  -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 10 Oct 2003 14:35:06 +0200
 
+elk (3.99.5-3) unstable; urgency=low
+
+  * debian/control:
+    + Switched to libelf1-dev.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 13 Oct 2003 02:05:48 +0200
+
 elk (3.99.5-2) unstable; urgency=low
 
-  * Added libelfg0-dev and xlibs-dev to the -dev package's dependencies.
+  * debian/control:
+    + Added libelfg0-dev and xlibs-dev to the -dev package's dependencies.
 
  -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 10 Oct 2003 14:35:06 +0200
 
