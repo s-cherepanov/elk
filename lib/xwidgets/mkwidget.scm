@@ -135,14 +135,9 @@
     (string->symbol (substring fn 0 i))))
 
 (define args (command-line-args))
-(if (not (= (length args) 2))
-    (error 'mkwidget "expected two arguments"))
-(define widget-set 
-  (let ((n (substring? "/" (cadr args))))
-(display (cadr args))(newline)
-    (if n
-      (string->symbol (substring (cadr args) 0 n))
-      'unknown)))
+(if (not (= (length args) 3))
+    (error 'mkwidget "expected three arguments"))
+(define widget-set (string->symbol (caddr args)))
 (set! f (open-output-file (cadr args)))
 (load (car args))
 (if (not type-name)

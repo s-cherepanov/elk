@@ -139,6 +139,19 @@ extern Object Xt_Class_Name P_((WidgetClass));
 extern Object Get_Selection_CB P_((ELLIPSIS));    /* xm/support.d */
 extern Object Get_Any_CB P_((ELLIPSIS));          /* xm/support.d */
 
+extern void elk_init_xt_accelerator P_(());
+extern void elk_init_xt_action P_(());
+extern void elk_init_xt_callback P_(());
+extern void elk_init_xt_class P_(());
+extern void elk_init_xt_context P_(());
+extern void elk_init_xt_function P_(());
+extern void elk_init_xt_identifier P_(());
+extern void elk_init_xt_popup P_(());
+extern void elk_init_xt_translation P_(());
+extern void elk_init_xt_widget P_(());
+extern void elk_init_xt_error P_(());
+extern void elk_init_xt_init P_(());
+
 C_LINKAGE_END
 
 #define Encode_Arglist(ac,av,to,widget,class) {\
