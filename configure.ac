@@ -491,7 +491,7 @@ AC_SUBST(X_CFLAGS)
 AC_SUBST(X_LIBS)
 
 if test "${cross_compiling}" = "no"; then
-  AC_CHECK_LIB(Xt, XtDisplayTranslations,
+  AC_CHECK_LIB(Xt, XtFree,
    [ac_cv_my_have_xt=yes
     AC_CHECK_LIB(Xmu, XmuDrawLogo,
      [XT_CFLAGS="-I${x_includes}"
