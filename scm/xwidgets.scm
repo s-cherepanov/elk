@@ -5,7 +5,7 @@
 (define widgets (if (feature? 'motif) 'motif 'xaw))
 
 (require 'xlib)
-(require 'xt.la (string->symbol (format #f "~a.la" widgets)))
+(require (string->symbol (format #f "~a.la" widgets)))
 
 (provide 'xwidgets)
 
