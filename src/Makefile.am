@@ -1,7 +1,7 @@
 NULL = 
 
 lib_LTLIBRARIES = libelk.la
-libelk_la_CFLAGS = -I/usr/include/libelf -DINIT_OBJECTS -DNOMAIN
+libelk_la_CFLAGS = -I/usr/include/libelf -DNOMAIN
 libelk_la_LDFLAGS = 
 libelk_la_LIBADD = -lm -lelf -ldl
 libelk_la_SOURCES = \
