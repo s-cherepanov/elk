@@ -746,6 +746,8 @@ Object Generic_Multiply (Object x, Object y) {
 
     switch (TYPE(x)) {
     case T_Fixnum:
+        if(FIXNUM(x) == 0)
+            return Zero;
         switch (TYPE(y)) {
         case T_Fixnum:
             ret = Fixnum_Multiply (FIXNUM(x), FIXNUM(y));
@@ -764,6 +766,8 @@ Object Generic_Multiply (Object x, Object y) {
     case T_Flonum:
         switch (TYPE(y)) {
         case T_Fixnum:
+            if(FIXNUM(y) == 0)
+                return Zero;
             return Make_Flonum (FLONUM(x)->val * FIXNUM(y));
         case T_Flonum:
             return Make_Flonum (FLONUM(x)->val * FLONUM(y)->val);
@@ -775,6 +779,8 @@ Object Generic_Multiply (Object x, Object y) {
     case T_Bignum:
         switch (TYPE(y)) {
         case T_Fixnum:
+            if(FIXNUM(y) == 0)
+                return Zero;
             return Bignum_Fixnum_Multiply (x, y);
         case T_Flonum:
             return Make_Flonum (Bignum_To_Double (x) * FLONUM(y)->val);
