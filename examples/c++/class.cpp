@@ -4,7 +4,7 @@ This trivial Elk extension demonstrates encapsulation of a C++ class in
 a first-class Scheme type, and encapsulation of member functions in
 Scheme primitives.
 
-See constructor.c in this directory for compilation instructions.
+See constructor.cpp in this directory for compilation instructions.
 
 Here is a transcript showing a test run under Linux using the
 GNU g++ compiler:
