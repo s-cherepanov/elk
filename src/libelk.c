@@ -209,13 +209,13 @@ int main (int ac, char **av) {
             fprintf (stderr,
 "Can't restart dumped interpreter from a different machine architecture\n");
             fprintf (stderr,
-"   (Stack delta = %lld bytes).\n", (long long int)(ptrdiff_t)(stkbase - &foo));
+"   (Stack delta = %lld bytes).\n", (long long int)(intptr_t)(stkbase - &foo));
             exit (1);
         }
         /* Check if program break must be reset.
         */
-        if ((ptrdiff_t)Brk_On_Dump && (ptrdiff_t)brk (Brk_On_Dump)
-                == (ptrdiff_t)-1) {
+        if ((intptr_t)Brk_On_Dump && (intptr_t)brk (Brk_On_Dump)
+                == (intptr_t)-1) {
             perror ("brk"); exit (1);
         }
 #if defined(HP9K) && defined(CAN_DUMP) && defined(HPSHLIB)

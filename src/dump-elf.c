@@ -151,7 +151,7 @@ Object P_Dump (Object ofile) {
         Primitive_Error ("sbrk(0) failed: ~E");
     }
     ndata     = obssp->sh_addr;
-    ndatasize = (Elf32_Addr)((ptrdiff_t)Brk_On_Dump - (ptrdiff_t)ndata);
+    ndatasize = (Elf32_Addr)((intptr_t)Brk_On_Dump - (intptr_t)ndata);
     ndataoff  = obssp->sh_offset;
 
     /* mmap new a.out file, setup pointers to ELF header, section header
@@ -272,7 +272,7 @@ Object P_Dump (Object ofile) {
             "memory" : "file"); (void)fflush (stdout);
 #endif
         if ((sp->sh_flags & (SHF_ALLOC|SHF_WRITE)) == (SHF_ALLOC|SHF_WRITE))
-            from = (void *)(ptrdiff_t)sp->sh_addr;
+            from = (void *)(intptr_t)sp->sh_addr;
         else
             from = (void *)(oaddr + sp->sh_offset);
         if (sp != ndatap && sp->sh_offset >= ndataoff)

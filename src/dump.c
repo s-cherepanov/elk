@@ -109,7 +109,7 @@ void Init_Dump () {
     return False;\
 }
 
-#if defined(ELF)
+#if defined(HAVE_ELF)
 #  include "dump-elf.c"
 #elif defined(ECOFF)
 #  include "dump-ecoff.c"

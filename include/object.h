@@ -51,8 +51,8 @@ typedef struct {
 #define FIXNUM(x)       ((int)(x).data)
 #define CHAR(x)         ((int)(x).data)
 
-#define POINTER(x)      ((void *)(ptrdiff_t)(x).data)
-#define SETPOINTER(x,p) ((x).data = (ptrdiff_t)(void *)(p))
+#define POINTER(x)      ((void *)(intptr_t)(x).data)
+#define SETPOINTER(x,p) ((x).data = (intptr_t)(void *)(p))
 #define SET(x,t,p)      ((x).tag = (int)t << 1, (x).data = (p))
 
 #define ISCONST(x)      ((x).tag & CONSTBIT)
@@ -68,9 +68,9 @@ typedef struct {
 #ifdef GENERATIONAL_GC
 
    typedef int gcspace_t;                 /* type for space and type arrays */
-   typedef ptrdiff_t gcptr_t;             /* type for pointers */
+   typedef intptr_t gcptr_t;              /* type for pointers */
    typedef long int pageno_t;             /* type for page numbers */
-   typedef ptrdiff_t addrarith_t;         /* type for address arithmetic */
+   typedef intptr_t addrarith_t;          /* type for address arithmetic */
 
    extern gcspace_t *space;
    extern gcspace_t current_space;
@@ -237,7 +237,7 @@ struct S_Control {
     Object gcsave;              /* vector */
     WIND *firstwind, *lastwind;
     int tailcall;
-    ptrdiff_t delta;
+    intptr_t delta;
 #ifdef GENERATIONAL_GC
     int reloc;
 #endif

@@ -46,13 +46,13 @@ extern Object False2;
 
 /* Align heap addresses */
 #ifdef ALIGN_8BYTE
-#  define ALIGN(ptr) ((ptr) = (void *)(((ptrdiff_t)(ptr) + 7) & ~7))
+#  define ALIGN(ptr) ((ptr) = (void *)(((intptr_t)(ptr) + 7) & ~7))
 #else
-#  define ALIGN(ptr) ((ptr) = (void *)(((ptrdiff_t)(ptr) + 3) & ~3))
+#  define ALIGN(ptr) ((ptr) = (void *)(((intptr_t)(ptr) + 3) & ~3))
 #endif
 
 /* Normalize stack addresses */
-#define NORM(addr)  ((ptrdiff_t)(addr) + delta)
+#define NORM(addr)  ((intptr_t)(addr) + delta)
 
 
 /* Used in special forms: */

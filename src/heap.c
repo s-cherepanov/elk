@@ -84,7 +84,7 @@ void Call_After_GC () {
         p->func();
 }
 
-void Visit_GC_List (GCNODE *list, ptrdiff_t delta) {
+void Visit_GC_List (GCNODE *list, intptr_t delta) {
     register GCNODE *gp, *p;
     register int n;
     register Object *vec;
@@ -101,7 +101,7 @@ void Visit_GC_List (GCNODE *list, ptrdiff_t delta) {
     }
 }
 
-void Visit_Wind (WIND *list, ptrdiff_t delta) {
+void Visit_Wind (WIND *list, intptr_t delta) {
     register WIND *wp, *p;
 
     for (wp = list; wp; wp = p->next) {
