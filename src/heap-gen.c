@@ -42,7 +42,7 @@
 #if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
 #  include <sys/mman.h>
 #endif
-#if defined(HAVE_GETPAGESIZE) || defined(SC_PAGESIZE_IN_UNISTD_H)
+#if defined(HAVE_UNISTD_H)
 #  include <unistd.h>
 #  if defined(_SC_PAGE_SIZE) && !defined(_SC_PAGESIZE)   /* Wrong in HP-UX */
 #    define _SC_PAGESIZE _SC_PAGE_SIZE
@@ -493,7 +493,7 @@ void Make_Heap (int size) {
      * then calculate the resulting number of heap pages.
      */
 
-#if defined(SC_PAGESIZE_IN_UNISTD_H)
+#if defined(_SC_PAGESIZE)
     if ((bytes_per_pp = sysconf (_SC_PAGESIZE)) == -1)
         Fatal_Error ("sysconf(_SC_PAGESIZE) failed; can't get pagesize");
 #elif defined(HAVE_GETPAGESIZE)

@@ -40,7 +40,7 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 
-#ifdef PC_PATH_MAX_IN_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
 
@@ -122,7 +122,7 @@ unsigned int Path_Max () {
     return PATH_MAX;
 #elif defined(MAXPATHLEN) /* 4.3 BSD */
     return MAXPATHLEN;
-#elif defined(PC_PATH_MAX_IN_UNISTD_H)
+#elif defined(_PC_PATH_MAX)
     static int r;
     if (r == 0) {
         if ((r = pathconf ("/", _PC_PATH_MAX)) == -1)

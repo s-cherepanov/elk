@@ -194,7 +194,7 @@ int Num_Filedescriptors() {
     ret = OPEN_MAX;
 #elif defined(HAVE_GETDTABLESIZE)
     ret = getdtablesize();
-#elif defined(SC_OPEN_MAX_IN_UNISTD_H)
+#elif defined(_SC_OPEN_MAX)
     static r;
     if (r == 0) {
         if ((r = sysconf(_SC_OPEN_MAX)) == -1)

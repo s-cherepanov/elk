@@ -6,7 +6,7 @@ AC_PREREQ(2.50)
 AC_CONFIG_AUX_DIR(autotools)
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(elk, 3.99.4)
+AM_INIT_AUTOMAKE(elk, 3.99.5)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -85,21 +85,9 @@ AC_CHECK_HEADERS(termios.h sys/ioctl.h sys/filio.h)
 # set sysconf_open_max=yes.
 # If neither is set to "yes", an educated guess will be made.
 AC_CHECK_FUNCS(getdtablesize)
-AC_MSG_CHECKING(for _SC_OPEN_MAX in unistd.h)
-AC_EGREP_HEADER(_SC_OPEN_MAX, unistd.h, [
-  AC_MSG_RESULT(yes) AC_DEFINE(SC_OPEN_MAX_IN_UNISTD_H, 1, Define if <unistd.h> defines _SC_OPEN_MAX)
-],[
-  AC_MSG_RESULT(no)
-])
 
 # If POSIX-style pathconf() can be invoked with _PC_PATH_MAX to determine
 # the maximum pathname length, set pathconf_path_max=yes.
-AC_MSG_CHECKING(for _PC_PATH_MAX in unistd.h)
-AC_EGREP_HEADER(_PC_PATH_MAX, unistd.h, [
-  AC_MSG_RESULT(yes) AC_DEFINE(PC_PATH_MAX_IN_UNISTD_H, 1, Define if <unistd.h> defines _PC_PATH_MAX)
-],[
-  AC_MSG_RESULT(no)
-])
 
 # If the system page size can be determined by calling getpagesize()
 # set getpagesize=yes.
@@ -108,12 +96,6 @@ AC_EGREP_HEADER(_PC_PATH_MAX, unistd.h, [
 # These two variables are only required if the generational garbage
 # collector is used.
 AC_CHECK_FUNCS(getpagesize)
-AC_MSG_CHECKING(for _SC_PAGESIZE in unistd.h)
-AC_EGREP_HEADER(_SC_PAGESIZE, unistd.h, [
-  AC_MSG_RESULT(yes) AC_DEFINE(SC_PAGESIZE_IN_UNISTD_H, 1, Define if <unistd.h> defines _SC_PAGESIZE)
-],[
-  AC_MSG_RESULT(no)
-])
 
 # Set reliable_signals=bsd if your system supports BSD-style reliable
 # signals (has sigblock and related functions); set reliable_signals=posix
