@@ -99,7 +99,7 @@ int Stack_Grows_Down;
 unsigned int Max_Stack;
 int Interpreter_Initialized;
 int GC_Debug = 0;
-int Case_Insensitive;
+int Case_Insensitive = 1;
 int Verb_Load = 0, Verb_Init = 0;
 
 char **Argv;
@@ -244,8 +244,10 @@ void Elk_Init (int ac, char **av, int init_objects, char *toplevel) {
 #endif
 
     for ( ; First_Arg < ac; First_Arg++) {
-        if (strcmp (av[First_Arg], "-g") == 0) {
+        if (strcmp (av[First_Arg], "-debug") == 0) {
             debug = 1;
+        } else if (strcmp (av[First_Arg], "-g") == 0) {
+            Case_Insensitive = 0;
         } else if (strcmp (av[First_Arg], "-i") == 0) {
             Case_Insensitive = 1;
         } else if (strcmp (av[First_Arg], "-v") == 0) {
@@ -345,7 +347,8 @@ static char *Usage_Msg[] = {
     "   [-l -]          Load from standard input",
     "   [-h heapsize]   Heap size in KBytes",
     "   [-p loadpath]   Initialize load-path (colon-list of directories)",
-    "   [-g]            Enable GC-debugging",
+    "   [-debug]        Enable GC-debugging",
+    "   [-g]            Case-sensitive symbols",
     "   [-i]            Case-insensitive symbols",
     "   [-v type]       Be verbose.  \"type\" controls what to print:",
     "                      load   linker command when loading object file",
