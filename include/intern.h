@@ -149,7 +149,7 @@ extern SYMTAB *Open_File_And_Snarf_Symbols P_((char *));
 
 /* stkmem.c
  */
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
 extern Object Save_GC_Nodes P_((void));
 #endif
 

@@ -1183,7 +1183,7 @@ static void ScanPage (Object *currentp, Object *nextcp) {
         case T_Control_Point:
             (CONTROL(obj)->delta) += CONTROL(obj)->reloc;
 
-#ifdef USE_ALLOCA
+#ifdef HAVE_ALLOCA
             Visit_GC_List (CONTROL(obj)->gclist, CONTROL(obj)->delta);
 #else
             Visit (&CONTROL(obj)->gcsave);

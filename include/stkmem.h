@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#ifdef USE_ALLOCA
+#ifdef HAVE_ALLOCA
 
 #ifdef HAVE_ALLOCA_H
 #  include <alloca.h>
@@ -59,7 +59,7 @@ C_LINKAGE_END
     (ret) = (type)alloca((size)))
 #define Alloca_End
 
-#else /* USE_ALLOCA */
+#else /* HAVE_ALLOCA */
 
 extern MEM_NODE *Mem_List;
 extern char *Mem_Alloc P_((unsigned));

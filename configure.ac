@@ -52,7 +52,7 @@ AC_CHECK_FUNCS(random)
 
 # Does the system have the index library function?  If not, strchr
 # will be used.
-dnl FIXME
+AC_CHECK_FUNCS(index)
 
 # Does the system have the bcopy, bzero, and bcmp library functions?
 # If not, memcpy/memset/memcmp will be used.
@@ -105,10 +105,8 @@ AC_EGREP_HEADER(_SC_PAGESIZE, unistd.h, [
 # signals (has sigblock and related functions); set reliable_signals=posix
 # for POSIX-style signals (sigprocmask, sigsets); otherwise old V7/SysV
 # signal semantics are assumed.
-if false; then
-  AC_DEFINE(BSD_SIGNALS, 1, [FIXME HARD])
-fi
-AC_DEFINE(POSIX_SIGNALS, 1, [FIXME HARD])
+AC_CHECK_HEADERS(signal.h)
+AC_CHECK_FUNCS(sigprocmask sigblock)
 
 # To support dynamic loading of object files and "dump", the system's
 # a.out format has to be known.  Choose one of the following:
@@ -293,9 +291,8 @@ AC_CHECK_HEADERS(termio.h termios.h)
 # The interpreter uses the getrlimit function to determine the maximum
 # stack size of the running program.  If this function is not supported,
 # set max_stack_size to a (fixed) maximum stack size (in bytes).
-if false; then
-  AC_DEFINE(MAX_STACK_SIZE, 1, [FIXME HARD])
-fi
+AC_CHECK_FUNCS(getrlimit)
+AC_DEFINE(DEFAULT_MAX_STACK_SIZE, 1024*1024, [Define default max stack size])
 
 # Is the mprotect system call supported?  The generational garbage collector
 # requires mprotect to implement incremental GC.  $mprotect is ignored if
@@ -339,7 +336,7 @@ fi
 # function actually extend the stack?  If in doubt, extract alloca.o
 # from the C library and check if it contains the symbols malloc and free.
 # If this is the case, forget it.
-AC_DEFINE(USE_ALLOCA, 1, [FIXME HARD])
+AC_CHECK_FUNCS(alloca)
 
 # Must <alloca.h> be included to use alloca?  Is "#pragma alloca" required?
 AC_CHECK_HEADERS(alloca.h)
@@ -390,6 +387,8 @@ AC_DEFINE(OBJ_DIR, "/usr/lib/elk", [FIXME HARD])
 
 #define FIND_AOUT defined(USE_LD) || defined(CAN_DUMP) || defined(INIT_OBJECTS)
 AC_DEFINE(FIND_AOUT, 1, [FIXME HARD])
+
+AC_CHECK_HEADERS(pwd.h sys/resource.h)
 
 dnl
 dnl  Check for available compiler features

@@ -52,7 +52,6 @@
 
 extern void Flush_Output (Object);
 
-extern char *index();
 extern double atof();
 
 int Skip_Comment (Object);
@@ -659,7 +658,11 @@ Object Parse_Number (Object port, char const *buf, int radix) {
                 return Null;
             if (p[1] == '+' || p[1] == '-')
                 p++;
+#ifdef HAVE_INDEX
         } else if (radix == 16 && !index ("0123456789abcdefABCDEF", c)) {
+#else
+        } else if (radix == 16 && !strchr ("0123456789abcdefABCDEF", c)) {
+#endif
             return Null;
         } else if (radix < 16 && (c < '0' || c > '0' + radix-1)) {
             return Null;

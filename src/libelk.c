@@ -38,17 +38,19 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifndef MAX_STACK_SIZE
-#  include <sys/time.h>
-#  include <sys/resource.h>
+#ifdef HAVE_GETRLIMIT
+#   include <sys/time.h>
+#   ifdef HAVE_SYS_RESOURCES_H
+#       include <sys/resource.h>
+#   endif
 #endif
 
 #ifdef FIND_AOUT
-#  ifdef HAVE_UNISTD_H
-#    include <unistd.h>
-#  else
-#    include <sys/file.h>
-#  endif
+#   ifdef HAVE_UNISTD_H
+#       include <unistd.h>
+#   else
+#       include <sys/file.h>
+#   endif
 #endif
 
 #include "kernel.h"
@@ -383,9 +385,7 @@ void Init_Everything () {
 }
 
 void Get_Stack_Limit () {
-#ifdef MAX_STACK_SIZE
-    Max_Stack = MAX_STACK_SIZE;
-#else
+#ifdef HAVE_GETRLIMIT
     struct rlimit rl;
 
     if (getrlimit (RLIMIT_STACK, &rl) == -1) {
@@ -393,6 +393,8 @@ void Get_Stack_Limit () {
         exit (1);
     }
     Max_Stack = rl.rlim_cur;
+#else
+    Max_Stack = DEFAULT_MAX_STACK_SIZE;
 #endif
     Max_Stack -= STACK_MARGIN;
 }

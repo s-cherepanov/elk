@@ -32,7 +32,9 @@
 
 #include <errno.h>
 #include <stdio.h>
-#include <pwd.h>
+#ifdef HAVE_PWD_H
+#   include <pwd.h>
+#endif
 #include <string.h>
 #include <sys/types.h>
 #include <sys/param.h>
@@ -147,13 +149,16 @@ Object Get_File_Name (Object name) {
 
 char *Internal_Tilde_Expand (register char *s, register char **dirp) {
     register char *p;
+#ifdef HAVE_PWD_H
     struct passwd *pw, *getpwnam();
+#endif
 
     if (*s++ != '~')
         return 0;
     for (p = s; *p && *p != '/'; p++)
         ;
     if (*p == '/') *p++ = 0;
+#ifdef HAVE_PWD_H
     if (*s == '\0') {
         if ((*dirp = getenv ("HOME")) == 0)
             *dirp = "";
@@ -162,6 +167,9 @@ char *Internal_Tilde_Expand (register char *s, register char **dirp) {
             Primitive_Error ("unknown user: ~a", Make_String (s, strlen (s)));
         *dirp = pw->pw_dir;
     }
+#else
+    *dirp = "";
+#endif
     return p;
 }
 
@@ -175,7 +183,8 @@ Object General_File_Operation (Object s, register int op) {
     switch (op) {
     case 0: {
         char *p, *dir;
-        if ((p = Internal_Tilde_Expand (r, &dir)) == 0) {
+        p = Internal_Tilde_Expand (r, &dir);
+        if (p == 0) {
             Alloca_End;
             return s;
         }
@@ -224,7 +233,8 @@ Object Open_File (char *name, int flags, int err) {
     struct stat st;
     Alloca_Begin;
 
-    if ((p = Internal_Tilde_Expand (name, &dir))) {
+    p = Internal_Tilde_Expand (name, &dir);
+    if (p) {
         Alloca (name, char*, strlen (dir) + 1 + strlen (p) + 1);
         sprintf (name, "%s/%s", dir, p);
     }

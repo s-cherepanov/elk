@@ -243,7 +243,7 @@ again:
     case T_Control_Point:
         Recursive_Visit (&CONTROL(*p)->memsave);
         CONTROL(*p)->delta += reloc;
-#ifdef USE_ALLOCA
+#ifdef HAVE_ALLOCA
         Visit_GC_List (CONTROL(*p)->gclist, CONTROL(*p)->delta);
 #else
         Recursive_Visit (&CONTROL(*p)->gcsave);

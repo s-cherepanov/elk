@@ -31,9 +31,6 @@
 #ifndef SCHEME_H
 #define SCHEME_H
 
-#include <stdio.h>
-#include <signal.h>
-
 #include "site.h"
 #include "funcproto.h"
 #include "param.h"

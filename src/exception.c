@@ -39,12 +39,10 @@ extern void Reset () elk_attribute(__noreturn__);
 int Intr_Was_Ignored;
 unsigned long int Intr_Level;
 
-#ifdef POSIX_SIGNALS
+#if defined(HAVE_SIGPROCMASK)
 sigset_t Sigset_Old, Sigset_Block;
-#else
-#ifdef BSD_SIGNALS
+#elif defined(HAVE_SIGBLOCK)
 int Sigmask_Old, Sigmask_Block;
-#endif
 #endif
 
 static Object V_Interrupt_Handler;
@@ -59,25 +57,27 @@ void Signal_Exit (int sig) {
 
 void Init_Exception () {
     Define_Variable (&V_Interrupt_Handler, "interrupt-handler", Null);
-#ifdef POSIX_SIGNALS
+#if defined(HAVE_SIGPROCMASK)
     sigemptyset (&Sigset_Block);
     sigaddset (&Sigset_Block, SIGINT);
     (void)sigprocmask (0, (sigset_t *)0, &Sigset_Old);
-#else
-#ifdef BSD_SIGNALS
+#elif defined(HAVE_SIGBLOCK)
     Sigmask_Block = sigmask (SIGINT);
     Sigmask_Old = sigblock (0);
 #endif
-#endif
+#ifdef SIGHUP
     (void)signal (SIGHUP, Signal_Exit);
+#endif
+#ifdef SIGPIPE
     (void)signal (SIGPIPE, Signal_Exit);
+#endif
 }
 
 /*ARGSUSED*/
 void Intr_Handler (int sig) {
     Object fun;
 
-#ifndef BSD_SIGNALS
+#if defined(HAVE_SIGPROCMASK) || ! defined(HAVE_SIGBLOCK)
     (void)signal (SIGINT, Intr_Handler);
 #endif
     Set_Error_Tag ("interrupt-handler");

@@ -29,6 +29,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 

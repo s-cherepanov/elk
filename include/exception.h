@@ -28,22 +28,24 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#ifdef HAVE_SIGNAL_H
+#   include <signal.h>
+#endif
+
 extern int Intr_Was_Ignored;
 extern unsigned long Intr_Level;
 
-#ifdef POSIX_SIGNALS
+#if defined(HAVE_SIGPROCMASK)
     extern sigset_t Sigset_Old, Sigset_Block;
-#else
-#ifdef BSD_SIGNALS
+#elif defined(HAVE_SIGBLOCK)
     extern int Sigmask_Old, Sigmask_Block;
 #else
     C_LINKAGE_BEGIN
     extern void Intr_Handler P_((int));
     C_LINKAGE_END
 #endif
-#endif
 
-#ifdef BSD_SIGNALS
+#if defined(HAVE_SIGPROCMASK) || ! defined(HAVE_SIGBLOCK)
 #  ifndef sigmask
 #    define sigmask(n)  (1 << ((n)-1))
 #  endif
@@ -57,15 +59,14 @@ extern unsigned long Intr_Level;
     if (Intr_Level > 0 && --Intr_Level == 0) Force_Enable_Interrupts;\
 }
 
-#ifdef BSD_SIGNALS
-#define Force_Disable_Interrupts  (void)sigblock (Sigmask_Block)
-#define Force_Enable_Interrupts   (void)sigsetmask (Sigmask_Old)
-#else
-#ifdef POSIX_SIGNALS
+#ifdef HAVE_SIGPROCMASK
 #define Force_Disable_Interrupts  (void)sigprocmask (SIG_BLOCK, &Sigset_Block,\
                                       (sigset_t *)0)
 #define Force_Enable_Interrupts   (void)sigprocmask (SIG_SETMASK, &Sigset_Old,\
                                       (sigset_t *)0)
+#elif defined(HAVE_SIGBLOCK)
+#define Force_Disable_Interrupts  (void)sigblock (Sigmask_Block)
+#define Force_Enable_Interrupts   (void)sigsetmask (Sigmask_Old)
 #else
 #define Force_Disable_Interrupts  {\
     if (!Intr_Was_Ignored) (void)signal (SIGINT, SIG_IGN);\
@@ -74,4 +75,4 @@ extern unsigned long Intr_Level;
     if (!Intr_Was_Ignored) (void)signal (SIGINT, Intr_Handler);\
 }
 #endif
-#endif
+

@@ -98,7 +98,7 @@ convex_longjmp (char *p, int i) {
 WIND *First_Wind, *Last_Wind;
 
 static Object Cont_Value;
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
 static Object Cont_GCsave;
 #endif
 
@@ -161,7 +161,7 @@ void Jump_Cont (struct S_Control *cp, Object val) {
     longjmp (p->j, 1);
 }
 
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
 Object Terminate_Cont (Object cont) {
     Free_Mem_Nodes (CONTROL(cont)->memlist);
     return Void;
@@ -190,7 +190,7 @@ Object Internal_Call_CC (int from_dump, Object proc) {
 
     control = gcsave = Null;
     GC_Link3 (proc, control, gcsave);
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
     gcsave = Save_GC_Nodes ();
 #endif
 
@@ -220,12 +220,12 @@ Object Internal_Call_CC (int from_dump, Object proc) {
     to = cp->stack;
     memcpy (to, p, cp->size);
     cp->delta = to - p;
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
     Register_Object (control, (GENERIC)0, Terminate_Cont, 0);
     Save_Mem_Nodes (control);
 #endif
     if (setjmp (CONTROL(control)->j) != 0) {
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
         Restore_GC_Nodes (Cont_GCsave);
 #endif
         if (Intr_Level == 0) {
@@ -289,7 +289,7 @@ void Funcall_Control_Point (Object control, Object argl, int eval) {
     cp = CONTROL(control);
     Switch_Environment (cp->env);
     GC_List = cp->gclist;
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
     Restore_Mem_Nodes (control);
     Cont_GCsave = CONTROL(control)->gcsave;
 #endif

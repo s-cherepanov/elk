@@ -32,7 +32,7 @@
 
 #include "kernel.h"
 
-#ifndef USE_ALLOCA
+#ifndef HAVE_ALLOCA
 
 extern char *malloc();
 

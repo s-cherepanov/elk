@@ -201,11 +201,7 @@ static Object P_Pause() {
     Fatal_Error("pause() returned unexpectedly");
 }
 
-#if defined(POSIX_SIGNALS) || defined(BSD_SIGNALS)
-#  define RELIABLE_SIGNALS
-#endif
-
-#ifdef RELIABLE_SIGNALS
+#if defined(HAVE_SIGPROCMASK) || defined(HAVE_SIGBLOCK)
 
 static Object Handlers;
 
@@ -217,7 +213,7 @@ static Object P_Alarm(Object s) {
 void General_Handler(int sig) {
     Object fun, args;
 
-#ifndef BSD_SIGNALS
+#if defined(HAVE_SIGPROCMASK)
     (void)signal(sig, General_Handler);
 #endif
     Set_Error_Tag("signal-handler");
@@ -248,7 +244,7 @@ static Object Action_To_Sym(void (*act)()) {
 }
 
 void Add_To_Mask(int sig) {
-#ifdef POSIX_SIGNALS
+#ifdef HAVE_SIGPROCMASK
     sigaddset(&Sigset_Block, sig);
 #else
     Sigmask_Block |= sigmask(sig);
@@ -258,7 +254,7 @@ void Add_To_Mask(int sig) {
 }
 
 void Remove_From_Mask(int sig) {
-#ifdef POSIX_SIGNALS
+#ifdef HAVE_SIGPROCMASK
     sigdelset(&Sigset_Block, sig);
 #else
     Sigmask_Block &= ~sigmask(sig);
@@ -319,7 +315,7 @@ static Object P_Signal(int argc, Object *argv) {
         Raise_System_Error("~E");
     return Truep(old) ? old : Action_To_Sym(disp);
 }
-#endif /* RELIABLE_SIGNALS */
+#endif /* defined(HAVE_SIGPROCMASK) || defined(HAVE_SIGBLOCK) */
 
 void elk_init_unix_signal() {
     Define_Symbol(&Sym_Exit, "exit");
@@ -328,7 +324,7 @@ void elk_init_unix_signal() {
     Def_Prim(P_Kill,                "unix-kill",                2, 2, EVAL);
     Def_Prim(P_List_Signals,        "unix-list-signals",        0, 0, EVAL);
     Def_Prim(P_Pause,               "unix-pause",               0, 0, EVAL);
-#ifdef RELIABLE_SIGNALS
+#if defined(HAVE_SIGPROCMASK) || defined(HAVE_SIGBLOCK)
     Def_Prim(P_Alarm,               "unix-alarm",               1, 1, EVAL);
     Handlers = Make_Vector(NSIG, False);
     Global_GC_Link(Handlers);

@@ -33,7 +33,7 @@
 
 #include "kernel.h"
 
-#ifdef USE_ALLOCA
+#ifdef HAVE_ALLOCA
 #  define MAX_ARGS_ON_STACK  4
 #else
 #  define MAX_ARGS_ON_STACK  8
