@@ -4,7 +4,7 @@ EXTRA_DIST = $(SOURCES_D)
 
 pkglib_LTLIBRARIES = $(xaw_widgets_la)
 
-if HAVE_MOTIF
+if HAVE_XAW
 xaw_widgets_la = xaw-widgets.la
 endif
 
