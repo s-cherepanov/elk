@@ -177,13 +177,13 @@ void Dlopen_File (char *obj) {
 static void Load_Lib (Object libs) {
     char *lib = NULL;
     Object port, name;
+    GC_Node2;
 
     if (Nullp (libs))
         return;
 
     Load_Lib (Cdr (libs));
 
-    GC_Node2;
     port = name = Null;
     GC_Link2 (port, name);
 
