@@ -2,8 +2,11 @@
  * data types.
  */
 
+#include <stdint.h>
+#include <malloc.h>
+
 typedef struct {
-    unsigned long int data;
+    int64_t data;
     int tag;
 } Object;
 
@@ -21,9 +24,9 @@ typedef struct {
 #define FIXNUM(x)       ((int)(x).data)
 #define CHAR(x)         ((int)(x).data)
 
-#define POINTER(x)      ((x).data)
-#define SETPOINTER(x,p) ((x).data = (unsigned long int)(p))
-#define SET(x,t,p)      ((x).tag = (int)t << 1, (x).data = (unsigned long int)(p))
+#define POINTER(x)      ((void *)(ptrdiff_t)(x).data)
+#define SETPOINTER(x,p) ((x).data = (ptrdiff_t)(void *)(p))
+#define SET(x,t,p)      ((x).tag = (int)t << 1, (x).data = (p))
 
 #define ISCONST(x)      ((x).tag & CONSTBIT)
 #define SETCONST(x)     ((x).tag |= CONSTBIT)
@@ -207,7 +210,7 @@ struct S_Control {
     Object gcsave;              /* vector */
     WIND *firstwind, *lastwind;
     int tailcall;
-    unsigned int delta;
+    ptrdiff_t delta;
 #ifdef GENERATIONAL_GC
     int reloc;
 #endif

@@ -295,7 +295,7 @@ ld=ld
 
 # The C compiler flags used for all files.
 
-cflags='-Wall -O2 -I/usr/include/libelf'
+cflags='-g -Wall -O2 -I/usr/include/libelf'
 
 
 # Are extra C compiler flags (such as -D_NO_PROTO) required to compile

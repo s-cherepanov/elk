@@ -8,8 +8,8 @@ void Memoize_Frame (Object);
 void Memoize_Frames (Object, Object);
 void Forget_Frame (Object);
 
-#define Env_To_List(env, list) SET((list), T_Pair, POINTER(env))
-#define List_To_Env(list, env) SET((env), T_Environment, POINTER(list))
+#define Env_To_List(env, list) SET((list), T_Pair, (ptrdiff_t)POINTER(env))
+#define List_To_Env(list, env) SET((env), T_Environment, (ptrdiff_t)POINTER(list))
 
 Object The_Environment, Global_Environment;
 

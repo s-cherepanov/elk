@@ -508,7 +508,7 @@ void Make_Heap (int size) {
     else
 	aligned_heap_ptr = heap_ptr;
 
-    SET(heap_obj, 0, aligned_heap_ptr);
+    SET(heap_obj, 0, (ptrdiff_t)aligned_heap_ptr);
 
 #ifdef ARRAY_BROKEN
     pagebase = ((gcptr_t)POINTER (heap_obj)) / PAGEBYTES;
@@ -600,7 +600,7 @@ static int ExpandHeap (char *reason) {
     else
 	aligned_heap_ptr = heap_ptr;
 
-    SET(heap_obj, 0, aligned_heap_ptr);
+    SET(heap_obj, 0, (ptrdiff_t)aligned_heap_ptr);
 
     new_first = firstpage;
     new_last = lastpage;
@@ -911,7 +911,7 @@ Object Alloc_Object (size, type, konst) {
     MAKE_HEADER (*current_freep, s, type);
     current_freep++;
     *current_freep = Null;
-    SET (obj, type, current_freep);
+    SET (obj, type, (ptrdiff_t)current_freep);
     if (big)
 	current_freep = (Object*)0, current_free = 0;
     else
@@ -1018,7 +1018,7 @@ int Visit (register Object *cp) {
     if (WAS_FORWARDED (*cp)) {
 	if (pageaddr != 0)
 	    PROTECT (pageaddr);
-	MAKEOBJ (*cp, tag, POINTER(*obj_ptr));
+	MAKEOBJ (*cp, tag, (ptrdiff_t)POINTER(*obj_ptr));
 	if (konst)
 	    SETCONST (*cp);
 	return 0;
@@ -1091,8 +1091,8 @@ do_forward:
     MAKE_HEADER (*forward_freep, objwords, tag);
     forward_freep++;
     memcpy (forward_freep, obj_ptr, (objwords-1)*sizeof(Object));
-    SET (*obj_ptr, T_Broken_Heart, forward_freep);
-    MAKEOBJ (*cp, tag, forward_freep);
+    SET (*obj_ptr, T_Broken_Heart, (ptrdiff_t)forward_freep);
+    MAKEOBJ (*cp, tag, (ptrdiff_t)forward_freep);
     if (konst)
 	SETCONST (*cp);
     forward_freep += (objwords - 1);
@@ -1135,7 +1135,7 @@ static void ScanPage (Object *currentp, Object *nextcp) {
 	 * words.
 	 */
 
-	SET(obj, t, cp);
+	SET(obj, t, (ptrdiff_t)cp);
 
 	switch (t) {
 	case T_Symbol:
@@ -1540,7 +1540,7 @@ static void General_Collect (int initiate) {
         fpage = next (fpage);
     }
     current_freep = (Object *)PHYSPAGE (fpage);
-    SET(obj, 0, current_freep);
+    SET(obj, 0, (ptrdiff_t)current_freep);
     current_freepage = OBJ_TO_PAGE (obj);
 
     /* advance spaces. Then forward all objects directly accessible

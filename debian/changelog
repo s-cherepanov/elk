@@ -1,3 +1,12 @@
+elk (3.0-11) unstable; urgency=low
+
+  * Fixed a compilation issue in src/load-dl.c:Load_Lib().
+  * Fixed more pointer/integer type confusions, used ptrdiff_t where possible.
+  * Fixed a register mangling issue in heap.c:Visit_GC_List() and
+    heap.c:Visit_Wind() (Really fixes #59893).
+
+ -- Samuel Hocevar <sam@zoy.org>  Fri,  4 Apr 2003 02:48:29 +0200
+
 elk (3.0-10) unstable; urgency=low
 
   * Updated debhelper build dependency to >>3.0.0.
