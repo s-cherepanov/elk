@@ -1134,7 +1134,6 @@ Object P_Max (int argc, Object *argv) {
 
 Object P_Random () {
 #ifdef HAVE_RANDOM
-    extern long int random();
     return Make_Long (random ());
 #else
     return Make_Integer (rand ());
