@@ -42,7 +42,11 @@
 #if defined(__APPLE__)
 #   include <crt_externs.h>
 #   define environ (* _NSGetEnviron())
-#elif !defined(ENVIRON_IN_UNISTD_H)
+#elif defined(__ENVIRON_IN_UNISTD_H)
+#   define environ __environ
+#elif defined(ENVIRON_IN_UNISTD_H)
+/* Nothing to do */
+#else
 /* "extern" in front of the next declaration causes the Ultrix 4.2 linker
  * to fail, but omitting it no longer works with modern C compilers: */
 extern char **environ;
