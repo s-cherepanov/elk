@@ -39,13 +39,16 @@
 
 #ifndef WIN32
 
-#ifndef ENVIRON_IN_UNISTD_H
+#if defined(__APPLE__)
+#   include <crt_externs.h>
+#   define environ (* _NSGetEnviron())
+#elif !defined(ENVIRON_IN_UNISTD_H)
 /* "extern" in front of the next declaration causes the Ultrix 4.2 linker
  * to fail, but omitting it no longer works with modern C compilers: */
 extern char **environ;
 #endif
 
-#if defined(HAVE_ENVIRON) && !defined(SYS_DARWIN)
+#if defined(HAVE_ENVIRON)
 static Object P_Environ() {
     Object ret, cell, str;
     char *p, **ep;
@@ -361,7 +364,7 @@ err:
 }
 
 void elk_init_unix_process() {
-#if defined(HAVE_ENVIRON) && !defined(SYS_DARWIN)
+#if defined(HAVE_ENVIRON)
     Def_Prim(P_Environ,             "unix-environ",              0, 0, EVAL);
 #endif
     Def_Prim(P_Exec,                "unix-exec",                 2, 3, VARARGS);
