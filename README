@@ -1,4 +1,6 @@
-This is release 3.0 of Elk, the Extension Language Kit.
+$Id: foo$
+
+This is Elk 3.99, a pre-release of Elk 4.0, the Extension Language Kit.
 
 
 What is Elk?
@@ -30,10 +32,10 @@ products as well as free software projects).
 Getting Elk
 -----------
 
-You can obtain the Elk 3.0 distribution as well as additional information
+You can obtain the Elk 3.99 distribution as well as additional information
 about Elk in the World Wide Web at
-   
-   http://www.informatik.uni-bremen.de/~net/elk
+
+   http://sam.zoy.org/projects/sam/
 
 The distribution is also available for anonymous FTP from a number of
 servers including these:
@@ -47,35 +49,6 @@ is available as source and pre-compiled binaries (`unroff' is a troff
 translator with back-ends for HTML and the -ms and -man macros):
 
   http://www.informatik.uni-bremen.de/~net/unroff
-
-
-What is new in Elk 3.0?
------------------------
-
-The major improvements in Elk 3.0 are a new Scheme object representation
-and a new, completely rewritten C/C++ Programmer's Manual for Elk.
-
-The new object representation has been suggested by Craig McPheeters,
-who also contributed an initial set of patches.  Its advantages are:
-
-   o  the heap size is no longer limited (except by the amount of
-      virtual memory that can be addressed);
-   o  `fixnums' now occupy an entire C int;
-   o  the number of Scheme types is no longer limited to 128
-   o  the new format improves compile-time checking and eases debugging;
-   o  Elk now ports easily to 64-bit platforms such as the DEC/Alpha.
-
-The new C/C++ Programmer's Manual is a complete specification of the
-C/C++ interface to Elk; it is intended for authors of extensible,
-Elk-based applications and for extension writers.  Topics range from
-the general architecture of extensible applications and the use of
-dynamic loading to advanced techniques such as weak data structures and
-cooperation with the garbage collector.
-
-Also new in Elk 3.0 is a POSIX-style regular expression extension.
-Elk has been ported to a number of new platforms (among them Linux,
-BSD/OS, AIX 4.1, and HP-UX 10.0).  A full list of changes is in the
-distribution (see the files CHANGES and MIGRATE).
 
 
 Elk features
@@ -190,4 +163,104 @@ well-defined, and it is small enough to not dominate the application it
 serves and to be fully understood with acceptable effort.
 
 
-Oliver Laumann  <net@informatik.uni-bremen.de>
+The Elk distribution
+--------------------
+
+Here is a brief roadmap for the subdirectories and files included in
+the distribution.
+
+
+elk-3.0 --+-- README      Explains the purpose and release status of Elk
+          |
+          +-- CHANGES     Lists the changes between this and earlier releases
+	  |               of Elk
+          |
+          +-- MIGRATE     Explains how C/C++ code (applications or extensions)
+	  |               written for older versions of Elk may have to be
+	  |               modified to make it work with this version
+          |
+          +-- INSTALL     Instructions for configuring, compiling, and
+	  |               installing Elk; a brief description of the files that
+	  |               get installed in the process; and a description of
+	  |               the structure of the Makefiles and the purpose of
+	  |               Makefile.local and `build' in each source directory
+          |
+          +-- MACHINES    Additional, platform-specific advice for installing
+	  |               and using Elk, such as compiler bugs, unsupported
+	  |               features, problems with older OS versions and other
+	  |               pitfalls
+          |
+          +-- BUGS        Information about known problems with this release
+          |
+          +-- TODO        Ideas, improvements and projects for future releases
+          |
+          +-- COPYING     The copyright status of the distribution
+          |
+          +-- AUTHORS     A list of people who have contributed significantly
+	  |               to Elk; acknowledgments and credits
+	  |
+          +-- include/    The include files to be #included by applications
+	  |               that use Elk as their extension language, and by
+	  |               extensions to Elk.  Including scheme.h from this
+	  |               directory causes all the other .h files to be
+	  |               included in the right order.  The include files may
+	  |               or may not use ANSI/ISO-C prototypes, depending on
+	  |               the config file you have chosen.
+          |
+          +-- src/        The C source files of the Scheme interpreter
+          |
+          +-- scm/        Scheme files that are loaded during runtime.  These
+	  |               are copied to a destination directory specified in
+	  |               config/site when Elk is installed.
+          |
+          +-- lib --,     This directory tree holds the C source for various
+	  |         |     Elk extensions that can be loaded into the Scheme
+	  |         |     interpreter or linked with an application
+	  |         |
+	  |         +-- xlib/  The C source files of the X11 Xlib extension
+          |         |
+          |         +-- xt/    The C source files of the Xt (X11 Toolkit
+	  |         |          Intrinsics) extension
+          |         |
+          |         +-- xaw/   The Scheme interfaces to the X11 Athena widgets.
+	  |         |          There is one .d file for each widget class.
+	  |         |          Each of these is compiled into a C source file
+	  |         |          when running `make' and then compiled into a
+	  |         |          dynamically loadable object.
+          |         |
+          |         +-- xm/    The .d files for the Motif widgets
+          |         |
+          |         +-- unix/  The C source files of the UNIX extension
+	  |         |
+	  |         `-- misc/  The C source files of the record extension, the
+	  |                    bitstring extension, the regular expression
+	  |                    extension, and various other dynamically
+	  |                    loadable Elk extensions
+          |
+	  +-- doc/        The directory tree holding the documentation for
+	  |               Elk as troff input files and pre-generated
+	  |               PostScript files.  See doc/README for a roadmap
+	  |               of the `doc' tree.
+	  |
+	  |
+	  +-- examples --,   A collection of demonstration programs for Elk
+	  |              |   and the various extensions (mostly in Scheme)
+	  |              |
+	  |              +-- scheme  Basic Scheme demos (collected from USENET
+	  |              |           and other sources)
+	  |              |
+	  |              +-- xlib    Programs demonstrating the Xlib, Athena,
+	  |              +-- xaw     and Motif extensions
+	  |              +-- xm
+	  |              |
+	  |              +-- unix    Example programs for the UNIX extension
+	  |              |
+	  |              +-- regexp  A demonstration of the regexp extension
+	  |              |
+	  |              `-- c++     A few simple C++ programs demonstrating
+	  |                          use of Elk with C++ applications (see
+	  |                          README in this directory)
+	  |
+	  `-- util/       Various utilities, some of which may aid in preparing
+                          a config file for an as yet unsupported platform.
+

@@ -1,3 +1,5 @@
+$Id: foo$
+
 Sun-3 and Sun-4, SunOS 4.1
 
    o  Tested with /bin/cc, various gcc versions, and with the Sun

@@ -1,3 +1,7 @@
+$Id: foo$
+
+Changes from release 3.0 to release 4.0
+
 Changes from release 2.2 to release 3.0
 
    General:
@@ -108,7 +112,7 @@ Changes from release 2.2 to release 3.0
      o  The object files for Athena or Motif widgets are now loaded
 	by means of `require'.
 
-     o  New regular expression extension (see doc/regexp and
+     o  New POSIX-style regular expression extension (see doc/regexp and
 	examples/regexp).
 
      o  The file hunk.c has been removed from lib/misc, as it no longer

@@ -1,3 +1,5 @@
+$Id: foo$
+
 Interpreter kernel
 
   o  Documentation strings.  Put them into an extra field in S_Compound.
