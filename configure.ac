@@ -40,6 +40,7 @@ AC_SUBST(STDINT_HEADER)
 # type of system.
 AC_DEFINE_UNQUOTED(SYSTEMTYPE, ["${target_os}"], [Our operating system])
 
+SYSTEM="${target_os}"
 MATH_LIBS="-lm"
 case "${target_os}" in
   *hpux*)
@@ -49,6 +50,10 @@ case "${target_os}" in
     ELK_CFLAGS="${ELK_CFLAGS} -DELK_BUILD_DLL"
     ELK_LDFLAGS="${ELK_LDFLAGS} -no-undefined"
     MATH_LIBS=""
+    SYSTEM="mingw32"
+    ;;
+  *cygwin*)
+    SYSTEM="cygwin"
     ;;
   *darwin*)
     AC_DEFINE(SYS_DARWIN, 1, Define if the system is Darwin)
@@ -214,10 +219,12 @@ fi
 
 # Win32 style
 if test "${ac_cv_my_can_load_lib}" = "no"; then
-  AC_CHECK_LIB(kernel32, main,
-   [ELK_LIBS="${ELK_LIBS} -lkernel32"
-    AC_DEFINE(HAVE_DL_WINDOWS, 1, [Define if you have Windows' LoadLibrary])
-    ac_cv_my_can_load_lib=yes])
+  if test "${SYSTEM}" = "mingw32" -o "${SYSTEM}" = "cygwin"; then
+    AC_CHECK_LIB(kernel32, main,
+     [ELK_LIBS="${ELK_LIBS} -lkernel32"
+      AC_DEFINE(HAVE_DL_WINDOWS, 1, [Define if you have Windows' LoadLibrary])
+      ac_cv_my_can_load_lib=yes])
+  fi
 fi
 
 AC_CHECK_HEADERS(a.out.h)
