@@ -162,11 +162,17 @@ if false; then
   AC_DEFINE(HP9K, 1, [FIXME HARD])
 fi
 
-ac_cv_my_have_aout_format=yes
 if test "${ac_cv_my_have_elf}" = "yes"; then
   AC_DEFINE(HAVE_LIBELF, 1, Define if you have libelf.)
+  ac_cv_my_can_dump=yes
+  ac_cv_my_can_load_obj=yes
+  ac_cv_my_can_load_lib=yes
+  CAN_DUMP=1
+  CAN_LOAD_OBJ=1
 else
-  :
+  ac_cv_my_can_dump=no
+  ac_cv_my_can_load_obj=no
+  ac_cv_my_can_load_lib=no
   dnl AC_MSG_ERROR([could not handle the native object format, if you are running Linux please install the libelf development headers])
 fi
 
@@ -179,8 +185,13 @@ fi
 #    dl        SysVR4/SunOS5 dlopen()
 #
 # Leave load_obj empty if dynamic loading is not supported.
-AC_DEFINE(CAN_LOAD_OBJ, 1, [FIXME HARD])
-AC_DEFINE(CAN_LOAD_LIB, 1, [FIXME HARD])
+if test "${ac_cv_my_can_load_obj}" = "yes"; then
+  AC_DEFINE(CAN_LOAD_OBJ, 1, [FIXME HARD])
+fi
+if test "${ac_cv_my_can_load_lib}" = "yes"; then
+  AC_DEFINE(CAN_LOAD_LIB, 1, [FIXME HARD])
+fi
+
 if false; then
   AC_DEFINE(USE_LD, 1, [FIXME HARD])
 fi
@@ -228,7 +239,9 @@ AC_DEFINE(INIT_PREFIX, "elk_init_", [FIXME HARD])
 AC_DEFINE(FINIT_PREFIX, "elk_finit_", [FIXME HARD])
 
 # Is the "dump" function supported?
-AC_DEFINE(CAN_DUMP, 1, [FIXME HARD])
+if test "${ac_cv_my_can_dump}" = "yes"; then
+  AC_DEFINE(CAN_DUMP, 1, [FIXME HARD])
+fi
 
     # Is the fchmod system call broken or unavailable?
     if false; then
