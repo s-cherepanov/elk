@@ -1,4 +1,4 @@
-/* plugin.c
+/* init.c
  *
  * $Id$
  *
