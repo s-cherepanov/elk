@@ -1,4 +1,4 @@
-/* xterror.c
+/* error.c
  *
  * $Id$
  *

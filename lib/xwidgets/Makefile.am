@@ -26,14 +26,14 @@ SOURCES_XT = \
 	classname.c \
 	context.c \
 	converter.c \
+	error.c \
 	function.c \
 	identifier.c \
+	init.c \
+	objects.c \
 	popup.c \
 	resource.c \
 	translation.c \
 	widget.c \
-	xterror.c \
-	xtinit.c \
-	xtobjects.c \
 	$(NULL)
 

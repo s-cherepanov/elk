@@ -1,4 +1,4 @@
-/* xtobjects.c
+/* init.c
  *
  * $Id$
  *
@@ -28,22 +28,49 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include <stdarg.h>
-
 #include "xt.h"
 
-int Match_Xt_Obj (Object x, va_list v) {
-    register int type = TYPE(x);
+static Object P_Xt_Release_4_Or_Laterp () {
+    return True;
+}
 
-    if (type == T_Context) {
-        return va_arg (v, XtAppContext) == CONTEXT(x)->context;
-    } else if (type == T_Class) {
-        return va_arg (v, WidgetClass) == CLASS(x)->wclass;
-    } else if (type == T_Widget) {
-        return va_arg (v, Widget) == WIDGET(x)->widget;
-    } else if (type == T_Identifier) {
-        return va_arg (v, int) == IDENTIFIER(x)->type
-            && va_arg (v, XtPointer) == IDENTIFIER(x)->val;
-    } else Panic ("Match_Xt_Obj");
-    return 0;
+static Object P_Xt_Release_5_Or_Laterp () {
+#ifdef XT_RELEASE_5_OR_LATER
+    return True;
+#else
+    return False;
+#endif
+}
+
+static Object P_Xt_Release_6_Or_Laterp () {
+#ifdef XT_RELEASE_6_OR_LATER
+    return True;
+#else
+    return False;
+#endif
+}
+
+extern WidgetClass vendorShellWidgetClass;
+
+/* The reference to vendorShellWidgetClass is required to make sure
+ * that the linker pulls the vendor shell definition from libXaw,
+ * not from libXt.  It's passed to a dummy function to make sure that
+ * it isn't removed by the optimizer.
+ */
+
+static void dummy (WidgetClass w) {
+}
+
+void elk_init_xt_init () {
+    extern WidgetClass vendorShellWidgetClass;
+
+    dummy(vendorShellWidgetClass);
+
+    Define_Primitive (P_Xt_Release_4_Or_Laterp, "xt-release-4-or-later?",
+        0, 0, EVAL);
+    Define_Primitive (P_Xt_Release_5_Or_Laterp, "xt-release-5-or-later?",
+        0, 0, EVAL);
+    Define_Primitive (P_Xt_Release_6_Or_Laterp, "xt-release-6-or-later?",
+        0, 0, EVAL);
+    XtToolkitInitialize ();
 }
