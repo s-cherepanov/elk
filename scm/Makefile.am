@@ -1,6 +1,10 @@
 NULL = 
 
-pkgdata_DATA = \
+EXTRA_DIST = $(SCM_FILES) slib.scm.in
+
+pkgdata_DATA = $(SCM_FILES) slib.scm
+
+SCM_FILES = \
 	apropos.scm \
 	bitstring.scm \
 	cscheme.scm \
@@ -18,7 +22,6 @@ pkgdata_DATA = \
 	regexp.scm \
 	safe-env.scm \
 	setf.scm \
-	slib.scm \
 	struct.scm \
 	toplevel.scm \
 	trace.scm \
@@ -27,6 +30,4 @@ pkgdata_DATA = \
 	xt.scm \
 	xwidgets.scm \
 	$(NULL)
-
-EXTRA_DIST = slib.scm.in
 
