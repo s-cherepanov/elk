@@ -1,8 +1,35 @@
-/* The regular expression extension.  It provides Scheme language
+/* regexp.c: The regular expression extension.  It provides Scheme language
  * bindings to the POSIX regcomp/regexec functions.
  *
  * Inspired by a GNU regular expression extension contributed by
  * Stephen J. Bevan to an earlier version of Elk.
+ *
+ * $Id$
+ *
+ * Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
+ * Copyright 2002, 2003 Sam Hocevar <sam@zoy.org>, Paris
+ *
+ * This software was derived from Elk 1.2, which was Copyright 1987, 1988,
+ * 1989, Nixdorf Computer AG and TELES GmbH, Berlin (Elk 1.2 has been written
+ * by Oliver Laumann for TELES Telematic Services, Berlin, in a joint project
+ * between TELES and Nixdorf Microprocessor Engineering, Berlin).
+ *
+ * Oliver Laumann, TELES GmbH, Nixdorf Computer AG and Sam Hocevar, as co-
+ * owners or individual owners of copyright in this software, grant to any
+ * person or company a worldwide, royalty free, license to
+ *
+ *    i) copy this software,
+ *   ii) prepare derivative works based on this software,
+ *  iii) distribute copies of this software or derivative works,
+ *   iv) perform this software, or
+ *    v) display this software,
+ *
+ * provided that this notice is not removed and that neither Oliver Laumann
+ * nor Teles nor Nixdorf are deemed to have made any representations as to
+ * the suitability of this software for any purpose nor are held responsible
+ * for any defects of this software.
+ *
+ * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
 #include "scheme.h"
@@ -45,11 +72,11 @@ static SYMDESCR Exec_Syms[] = {
     { 0, 0 }
 };
 
-static Object P_Regexpp(x) Object x; {
+static Object P_Regexpp(Object x) {
     return TYPE(x) == T_Regexp ? True : False;
 }
 
-static Object P_Matchp(x) Object x; {
+static Object P_Matchp(Object x) {
     return TYPE(x) == T_Match ? True : False;
 }
 
@@ -77,7 +104,7 @@ static int Match_Equal(Object a, Object b) {
     return 1;
 }
 
-static int Match_Size(m) Object m; {
+static int Match_Size(Object m) {
     return sizeof(struct S_Match) + (MATCH(m)->num - 1) * sizeof(regmatch_t);
 }
 

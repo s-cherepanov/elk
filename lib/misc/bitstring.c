@@ -1,3 +1,33 @@
+/* bitstring.c
+ *
+ * $Id$
+ *
+ * Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
+ * Copyright 2002, 2003 Sam Hocevar <sam@zoy.org>, Paris
+ *
+ * This software was derived from Elk 1.2, which was Copyright 1987, 1988,
+ * 1989, Nixdorf Computer AG and TELES GmbH, Berlin (Elk 1.2 has been written
+ * by Oliver Laumann for TELES Telematic Services, Berlin, in a joint project
+ * between TELES and Nixdorf Microprocessor Engineering, Berlin).
+ *
+ * Oliver Laumann, TELES GmbH, Nixdorf Computer AG and Sam Hocevar, as co-
+ * owners or individual owners of copyright in this software, grant to any
+ * person or company a worldwide, royalty free, license to
+ *
+ *    i) copy this software,
+ *   ii) prepare derivative works based on this software,
+ *  iii) distribute copies of this software or derivative works,
+ *   iv) perform this software, or
+ *    v) display this software,
+ *
+ * provided that this notice is not removed and that neither Oliver Laumann
+ * nor Teles nor Nixdorf are deemed to have made any representations as to
+ * the suitability of this software for any purpose nor are held responsible
+ * for any defects of this software.
+ *
+ * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
+ */
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -105,12 +135,12 @@ static Object P_Make_Bitstring(Object len, Object init) {
     return ret;
 }
 
-static Object P_Bitstring_Length(bs) Object bs; {
+static Object P_Bitstring_Length(Object bs) {
     Check_Type(bs, T_Bitstring);
     return Make_Unsigned(BITSTRING(bs)->len);
 }
 
-static int Ulong_Size(ul) unsigned long ul; {
+static int Ulong_Size(unsigned long ul) {
     int n;
 
     for (n = 0; ul; ul >>= 1, n++)
@@ -135,7 +165,7 @@ static Object Ulong_To_Bitstring(unsigned long ul, unsigned int len) {
     return ret;
 }
 
-static unsigned int Bigbits(b) struct S_Bignum *b; {
+static unsigned int Bigbits(struct S_Bignum *b) {
     return b->usize ? (Ulong_Size((unsigned long)b->data[b->usize-1]) +
 	    (b->usize-1) * sizeof(gran_t) * 8) : 0;
 }
@@ -166,7 +196,7 @@ static Object Bignum_To_Bitstring(Object big, unsigned int len) {
     return ret;
 }
 
-static Object P_Int_To_Bitstring(len, i) Object len, i; {
+static Object P_Int_To_Bitstring(Object len, Object i) {
     Object isneg;
     int ilen;
 
@@ -181,7 +211,7 @@ static Object P_Int_To_Bitstring(len, i) Object len, i; {
     return Bignum_To_Bitstring(i, (unsigned)ilen);
 }
 
-static Object Bitstring_To_Bignum (bs) Object bs; {
+static Object Bitstring_To_Bignum (Object bs) {
     struct S_Bitstring *b;
     Object big;
     int i, n, k;
@@ -204,7 +234,7 @@ static Object Bitstring_To_Bignum (bs) Object bs; {
     return big;
 }
 
-static Object P_Bitstring_To_Int(bs) Object bs; {
+static Object P_Bitstring_To_Int(Object bs) {
     struct S_Bitstring *b;
     unsigned u = 0;
     int i;
@@ -220,7 +250,7 @@ static Object P_Bitstring_To_Int(bs) Object bs; {
     return Make_Integer(u);
 }
 
-static Object P_Bitstring_Ref(bs, inx) Object bs, inx; {
+static Object P_Bitstring_Ref(Object bs, Object inx) {
     struct S_Bitstring *b;
     int i;
 
@@ -232,7 +262,7 @@ static Object P_Bitstring_Ref(bs, inx) Object bs, inx; {
     return b->data[i/8] & 1 << i % 8 ? True : False;
 }
 
-static Object P_Bitstring_Set(bs, inx, val) Object bs, inx, val; {
+static Object P_Bitstring_Set(Object bs, Object inx, Object val) {
     int old, i, j, mask;
     struct S_Bitstring *b;
 
@@ -252,7 +282,7 @@ static Object P_Bitstring_Set(bs, inx, val) Object bs, inx, val; {
     return old ? True : False;
 }
 
-static Object P_Bitstring_Zerop(bs) Object bs; {
+static Object P_Bitstring_Zerop(Object bs) {
     struct S_Bitstring *b;
     int i;
 
@@ -263,14 +293,15 @@ static Object P_Bitstring_Zerop(bs) Object bs; {
     return i < 0 ? True : False;
 }
 
-static Object P_Bitstring_Fill(bs, fill) Object bs, fill; {
+static Object P_Bitstring_Fill(Object bs, Object fill) {
     Check_Type(bs, T_Bitstring);
     Check_Type(fill, T_Boolean);
     Fill_Bitstring(bs, Truep(fill));
     return Void;
 }
 
-#define bitop(name, op) static void name(a, b) struct S_Bitstring *a, *b; {\
+#define bitop(name, op) static void name(struct S_Bitstring *a,\
+                                         struct S_Bitstring *b) {\
     int i, rem;\
 \
     if (a->len != b->len) {\
@@ -293,7 +324,7 @@ bitop(bor, |=)
 bitop(bandnot, &= ~)
 bitop(bxor, ^=)
 
-static Object Bit_Operation(b1, b2, fun) Object b1, b2; void (*fun)(); {
+static Object Bit_Operation(Object b1, Object b2, void (*fun)()) {
     struct S_Bitstring *a, *b;
 
     Check_Type(b1, T_Bitstring);
@@ -306,32 +337,32 @@ static Object Bit_Operation(b1, b2, fun) Object b1, b2; void (*fun)(); {
     return Void;
 }
 
-static Object P_Bitstring_Move(a, b) Object a, b; {
+static Object P_Bitstring_Move(Object a, Object b) {
     return Bit_Operation(a, b, bmove);
 }
 
-static Object P_Bitstring_Not(a, b) Object a, b; {
+static Object P_Bitstring_Not(Object a, Object b) {
     return Bit_Operation(a, b, bnot);
 }
 
-static Object P_Bitstring_And(a, b) Object a, b; {
+static Object P_Bitstring_And(Object a, Object b) {
     return Bit_Operation(a, b, band);
 }
 
-static Object P_Bitstring_Or(a, b) Object a, b; {
+static Object P_Bitstring_Or(Object a, Object b) {
     return Bit_Operation(a, b, bor);
 }
 
-static Object P_Bitstring_Andnot(a, b) Object a, b; {
+static Object P_Bitstring_Andnot(Object a, Object b) {
     return Bit_Operation(a, b, bandnot);
 }
 
-static Object P_Bitstring_Xor(a, b) Object a, b; {
+static Object P_Bitstring_Xor(Object a, Object b) {
     return Bit_Operation(a, b, bxor);
 }
 
-static Object P_Substring_Move(b1, from, to, b2, dst)
-	Object b1, from, to, b2, dst; {
+static Object P_Substring_Move(Object b1, Object from, Object to,
+                               Object b2, Object dst) {
     struct S_Bitstring *a, *b;
     int start1, end1, start2, end2, len, off1, off2, i, j;
     unsigned char mask;
@@ -480,7 +511,7 @@ static Object P_Substring_Move(b1, from, to, b2, dst)
 }
 
 /*ARGSUSED*/
-static Object Bitstring_Read(port, chr, konst) Object port; int chr, konst; {
+static Object Bitstring_Read(Object port, int chr, int konst) {
     int c, str, i;
     FILE *f;
     char buf[1024], *p = buf;

@@ -1,3 +1,33 @@
+/* record.c
+ *
+ * $Id$
+ *
+ * Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
+ * Copyright 2002, 2003 Sam Hocevar <sam@zoy.org>, Paris
+ *
+ * This software was derived from Elk 1.2, which was Copyright 1987, 1988,
+ * 1989, Nixdorf Computer AG and TELES GmbH, Berlin (Elk 1.2 has been written
+ * by Oliver Laumann for TELES Telematic Services, Berlin, in a joint project
+ * between TELES and Nixdorf Microprocessor Engineering, Berlin).
+ *
+ * Oliver Laumann, TELES GmbH, Nixdorf Computer AG and Sam Hocevar, as co-
+ * owners or individual owners of copyright in this software, grant to any
+ * person or company a worldwide, royalty free, license to
+ *
+ *    i) copy this software,
+ *   ii) prepare derivative works based on this software,
+ *  iii) distribute copies of this software or derivative works,
+ *   iv) perform this software, or
+ *    v) display this software,
+ *
+ * provided that this notice is not removed and that neither Oliver Laumann
+ * nor Teles nor Nixdorf are deemed to have made any representations as to
+ * the suitability of this software for any purpose nor are held responsible
+ * for any defects of this software.
+ *
+ * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
+ */
+
 #include "scheme.h"
 
 #define RTD(x)     ((struct S_Rtd *)POINTER(x))
@@ -15,25 +45,25 @@ struct S_Record {
 
 int T_Rtd, T_Record;
 
-static Object P_Rtdp (x) Object x; {
+static Object P_Rtdp (Object x) {
     return TYPE(x) == T_Rtd ? True : False;
 }
 
-static Object P_Recordp (x) Object x; {
+static Object P_Recordp (Object x) {
     return TYPE(x) == T_Record ? True : False;
 }
 
-static Object P_Rtd_Name (x) Object x; {
+static Object P_Rtd_Name (Object x) {
     Check_Type (x, T_Rtd);
     return RTD(x)->name;
 }
 
-static Object P_Rtd_Field_Names (x) Object x; {
+static Object P_Rtd_Field_Names (Object x) {
     Check_Type (x, T_Rtd);
     return RTD(x)->fields;
 }
 
-static Object P_Make_Record_Type (name, fields) Object name, fields; {
+static Object P_Make_Record_Type (Object name, Object fields) {
     Object s, ismem;
     GC_Node2;
 
@@ -56,17 +86,17 @@ static Object P_Make_Record_Type (name, fields) Object name, fields; {
     return s;
 }
 
-static Object P_Record_Type (x) Object x; {
+static Object P_Record_Type (Object x) {
     Check_Type (x, T_Record);
     return RECORD(x)->rtd;
 }
 
-static Object P_Record_Values (x) Object x; {
+static Object P_Record_Values (Object x) {
     Check_Type (x, T_Record);
     return RECORD(x)->values;
 }
 
-static Object P_Make_Record (rtd, values) Object rtd, values; {
+static Object P_Make_Record (Object rtd, Object values) {
     Object s;
     GC_Node2;
 
@@ -97,13 +127,14 @@ static int Record_Equal (Object a, Object b) {
 	   Equal (RECORD(a)->values, RECORD(b)->values);
 }
 
-static int Rtd_Print (x, port, raw, depth, length) Object x, port; {
+static int Rtd_Print (Object x, Object port, int raw, int depth, int length) {
     struct S_String *s = STRING(RTD(x)->name);
     Printf (port, "#[%.*s-record-type %lu]", s->size, s->data, POINTER(x));
     return 0;
 }
 
-static int Record_Print (x, port, raw, depth, length) Object x, port; {
+static int Record_Print (Object x, Object port,
+                         int raw, int depth, int length) {
     struct S_String *s = STRING(RTD(RECORD(x)->rtd)->name);
     Printf (port, "#[%.*s-record-type %lu]", s->size, s->data, POINTER(x));
     return 0;
