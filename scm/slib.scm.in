@@ -41,13 +41,13 @@
 ;;; (scheme-implementation-version) should return a string describing
 ;;; the version the scheme implementation loading this file.
 
-(define (scheme-implementation-version) "3.0")
+(define (scheme-implementation-version) "@VERSION@")
 
 ;;; (implementation-vicinity) should be defined to be the pathname of
 ;;; the directory where any auxillary files to your Scheme
 ;;; implementation reside.
 
-(define (implementation-vicinity) "/usr/share/elk")
+(define (implementation-vicinity) "@prefix@/share/elk")
 
 ;;; (library-vicinity) should be defined to be the pathname of the
 ;;; directory where files of Scheme library functions reside.
@@ -62,7 +62,7 @@
 ;	       ((MS-DOS) "C:\\SLIB\\")
 ;	       (else "")))))
 ;    (lambda () library-path)))
-(define (library-vicinity) "/usr/lib/slib/")
+(define (library-vicinity) "@prefix@/lib/slib/")
 
 ;;; *features* should be set to a list of symbols describing features
 ;;; of this implementation.  Suggestions for features are:
