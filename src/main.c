@@ -30,10 +30,20 @@
 
 #include "config.h"
 
+#ifdef WIN32
+#   include <windows.h>
+#endif
+
 #include <scheme.h>
 
-int main(int ac, char **av) {
-    Elk_Init(ac, av, 1, "");
+int main (int ac, char **av) {
+#ifdef WIN32
+    AllocConsole ();
+    freopen ("CONIN$", "r", stdin);
+    freopen ("CONOUT$", "w", stdout);
+    freopen ("CONOUT$", "w", stderr);
+#endif
+    Elk_Init (ac, av, 1, "");
     return 0;
 }
 
