@@ -99,7 +99,7 @@ static pageno_t firstpage, lastpage;
 
 static char *saved_heap_ptr;
 gcspace_t *space;
-static gcspace_t *type, *pmap;
+static gcspace_t *types, *pmap;
 static pageno_t *linked;
 
 static pageno_t current_pages, forwarded_pages;
@@ -197,8 +197,8 @@ static void TerminateGC ();
 #define IS_CLUSTER(a,b) (SAME_PHYSPAGE (PAGE_TO_ADDR ((a)), \
                                         PAGE_TO_ADDR ((b))) || \
                          (space[a] == space[b] && \
-                          type[(a)&hp_per_pp_mask] == OBJECTPAGE && \
-                          type[((b)&hp_per_pp_mask)+hp_per_pp] == OBJECTPAGE))
+                          types[(a)&hp_per_pp_mask] == OBJECTPAGE && \
+                          types[((b)&hp_per_pp_mask)+hp_per_pp] == OBJECTPAGE))
 
 /* check whether the (physical) page starting at address addr is protected
  * or not. SET_PROTECT and SET_UNPROTECT are used to set or clear the flag
@@ -327,7 +327,7 @@ static void DetermineCluster (gcptr_t *addr, int *len) {
     gcptr_t addr1;
 
     *len = 1;
-    while (type[ADDR_TO_PAGE (*addr)] != OBJECTPAGE) {
+    while (types[ADDR_TO_PAGE (*addr)] != OBJECTPAGE) {
         *addr -= bytes_per_pp;
         (*len)++;
     }
@@ -335,7 +335,7 @@ static void DetermineCluster (gcptr_t *addr, int *len) {
 
     while (ADDR_TO_PAGE(addr1) <= lastpage &&
             space[ADDR_TO_PAGE(addr1)] > 0 &&
-            type[ADDR_TO_PAGE(addr1)] != OBJECTPAGE) {
+            types[ADDR_TO_PAGE(addr1)] != OBJECTPAGE) {
         addr1 += bytes_per_pp;
         (*len)++;
     }
@@ -534,24 +534,24 @@ void Make_Heap (int size) {
     lastpage = firstpage+logical_pages-1;
 
     space = (gcspace_t *)malloc (logical_pages*sizeof (gcspace_t));
-    type = (gcspace_t *)malloc ((logical_pages + 1)*sizeof (gcspace_t));
+    types = (gcspace_t *)malloc ((logical_pages + 1)*sizeof (gcspace_t));
     pmap = (gcspace_t *)malloc (physical_pages*sizeof (gcspace_t));
     linked = (pageno_t *)malloc (logical_pages*sizeof (pageno_t));
-    if (!space || !type || !pmap || !linked) {
+    if (!space || !types || !pmap || !linked) {
         free (heap_ptr);
         if (space) free ((char*)space);
-        if (type) free ((char*)type);
+        if (types) free ((char*)types);
         if (pmap) free ((char*)pmap);
         if (linked) free ((char*)linked);
         Fatal_Error ("cannot allocate heap maps");
     }
 
-    memset (type, 0, (logical_pages + 1)*sizeof (gcspace_t));
+    memset (types, 0, (logical_pages + 1)*sizeof (gcspace_t));
     memset (pmap, 0, physical_pages*sizeof (gcspace_t));
     memset (linked, 0, logical_pages*sizeof (unsigned int));
     space -= firstpage; /* to index the arrays with the heap page number */
-    type -= firstpage;
-    type[lastpage+1] = OBJECTPAGE;
+    types -= firstpage;
+    types[lastpage+1] = OBJECTPAGE;
     linked -= firstpage;
 #ifndef ARRAY_BROKEN
     pmap -= (PAGE_TO_ADDR (firstpage) >> pp_shift);
@@ -688,7 +688,7 @@ static int ExpandHeap (char *reason) {
     /* FIXME: memmove! */
     for (i = firstpage; i <= lastpage; i++) {
         new_link[i + offset] = linked[i] + offset;
-        new_type[i + offset] = type[i];
+        new_type[i + offset] = types[i];
     }
     for (addr = PAGE_TO_ADDR (firstpage); addr <= PAGE_TO_ADDR (lastpage);
          addr += bytes_per_pp) {
@@ -716,7 +716,7 @@ static int ExpandHeap (char *reason) {
     last_forward_freepage += offset;
 
     free ((char*)(linked+firstpage));
-    free ((char*)(type+firstpage));
+    free ((char*)(types+firstpage));
     free ((char*)(space+firstpage));
 
 #ifndef ARRAY_BROKEN
@@ -726,7 +726,7 @@ static int ExpandHeap (char *reason) {
 #endif
 
     linked = new_link;
-    type = new_type;
+    types = new_type;
     space = new_space;
     pmap = new_pmap;
     firstpage = new_first;
@@ -755,7 +755,7 @@ void Free_Heap () {
     free (saved_heap_ptr);
 
     free ((char*)(linked+firstpage));
-    free ((char*)(type+firstpage));
+    free ((char*)(types+firstpage));
     free ((char*)(space+firstpage));
 
 #ifndef ARRAY_BROKEN
@@ -834,10 +834,10 @@ static void AllocPage (pageno_t npg) {
 
         if (cont_free == npg) {
             space[first_freepage] = current_space;
-            type[first_freepage] = OBJECTPAGE;
+            types[first_freepage] = OBJECTPAGE;
             for (n = 1; n < npg; n++) {
                 space[first_freepage+n] = current_space;
-                type[first_freepage+n] = CONTPAGE;
+                types[first_freepage+n] = CONTPAGE;
             }
             current_freep = PAGE_TO_OBJ (first_freepage);
             current_free = npg*PAGEWORDS;
@@ -968,7 +968,7 @@ static void AllocForwardPage (Object bad) {
             allocated_pages++;
             forwarded_pages++;
             space[forward_freepage] = forward_space;
-            type[forward_freepage] = OBJECTPAGE;
+            types[forward_freepage] = OBJECTPAGE;
             forward_freep = PAGE_TO_OBJ (forward_freepage);
             forward_free = PAGEWORDS;
             AddQueue (forward_freepage);
@@ -1240,7 +1240,7 @@ static void RescanPages () {
 }
 
 static int ScanCluster (gcptr_t addr) {
-    register pageno_t page, lastpage;
+    register pageno_t page, last;
     pageno_t npages;
     int n = 0;
 
@@ -1252,9 +1252,9 @@ static int ScanCluster (gcptr_t addr) {
     UnprotectCluster ((gcptr_t)scanfirst, (int)npages);
 
  rescan_cluster:
-    lastpage = ADDR_TO_PAGE ((gcptr_t)scanlast);
-    for (page = ADDR_TO_PAGE ((gcptr_t)scanfirst); page <= lastpage; page++) {
-        if (STABLE (page) && type[page] == OBJECTPAGE) {
+    last = ADDR_TO_PAGE ((gcptr_t)scanlast);
+    for (page = ADDR_TO_PAGE ((gcptr_t)scanfirst); page <= last; page++) {
+        if (STABLE (page) && types[page] == OBJECTPAGE) {
             scanpointer = PAGE_TO_OBJ (page);
 #ifdef ALIGN_8BYTE
             ScanPage (scanpointer + 1, scanpointer + PAGEWORDS);
