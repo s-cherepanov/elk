@@ -1,5 +1,5 @@
 NULL = 
-nodist_HEADERS = \
+pkginclude_HEADERS = \
 	compat.h \
 	cstring.h \
 	exception.h \

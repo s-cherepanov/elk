@@ -373,6 +373,7 @@ AC_OUTPUT([
   examples/Makefile
   lib/Makefile
   lib/misc/Makefile
+  lib/unix/Makefile
   scm/Makefile
   src/Makefile
   util/Makefile
