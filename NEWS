@@ -1,512 +1,517 @@
-$Id: foo$
+$Id$
 
-Changes from release 3.0 to release 4.0
+Changes between 3.0 and 4.0:
+----------------------------
 
-Changes from release 2.2 to release 3.0
+  * Nothing yet.
 
-   General:
+Changes between 2.2 and 3.0:
+----------------------------
 
-     o  A new C/C++ Programmer's Manual for Elk is now available
-	(60+ pages with many examples).  See doc/README (item `cprog')
-	and doc/cprog.
+General:
 
-     o  The documentation has been prepared for translation to HTML
-	using the (Elk-based) `unroff' package.
+  * A new C/C++ Programmer's Manual for Elk is now available
+    (60+ pages with many examples).  See doc/README (item `cprog')
+    and doc/cprog.
 
-     o  Elk now uses a new Scheme object representation (a `struct' rather
-	than an `unsigned long') to make it work on 64-bit architectures
-	and to allow for larger heaps, a wider range of fixnums, and more
-	first-class Scheme types.
-     o  As a consequence, the `pointer_constant_high_bits' are gone, as
-	is util/pchb.c.
+  * The documentation has been prepared for translation to HTML
+    using the (Elk-based) `unroff' package.
 
-     o  Elk has been ported to and tested on these new platforms (config
-	files are included in the distribution):
+  * Elk now uses a new Scheme object representation (a `struct' rather
+    than an `unsigned long') to make it work on 64-bit architectures
+    and to allow for larger heaps, a wider range of fixnums, and more
+    first-class Scheme types.
 
-	   DEC/Alpha, OSF/1
-	   HP 9000, HP-UX 10.0
-	   i386/486, BSDI BSD/OS
-	   i386/486, Linux
-	   IBM PowerPC, AIX 4.1
+  * As a consequence, the `pointer_constant_high_bits' are gone, as
+    is util/pchb.c.
 
-     o  A number of config files for obsolete platforms have been removed
-	from the distribution; config files for platforms where Elk 3.0
-	could not be tested are in config/untested.  util/sgihack.c is gone.
+  * Elk has been ported to and tested on these new platforms (config
+    files are included in the distribution):
 
-     o  Extension initialization and finalization functions now begin
-        with `elk_init_' rather than just `init_' to avoid name conflicts.
+      DEC/Alpha, OSF/1
+      HP 9000, HP-UX 10.0
+      i386/486, BSDI BSD/OS
+      i386/486, Linux
+      IBM PowerPC, AIX 4.1
 
-     o  The directory `contrib' has been removed from the distribution,
-	as most of the contributions either were no longer maintained
-	or have been made an official part of the distribution.
-	contrib/eval-string is now available as lib/misc/elk-eval.c.
+  * A number of config files for obsolete platforms have been removed
+    from the distribution; config files for platforms where Elk 3.0
+    could not be tested are in config/untested.  util/sgihack.c is gone.
 
-     o  Site/platform-specific information such as the various X11 `load
-	libraries', machine name, operating system name, as well as the
-	Elk version number are now available as Scheme variables in
-	scm/siteinfo.scm.  The file is created automatically and can be
-	loaded via `(require 'siteinfo)'.
+  * Extension initialization and finalization functions now begin
+    with `elk_init_' rather than just `init_' to avoid name conflicts.
 
-     o  Most of the improvements in scm/debug-new.scm have been merged
-	into the baseline debug.scm and the former has been removed.
-	The inspector now starts at the correct frame when called after
-	an error.
+  * The directory `contrib' has been removed from the distribution,
+    as most of the contributions either were no longer maintained
+    or have been made an official part of the distribution.
+    contrib/eval-string is now available as lib/misc/elk-eval.c.
 
-     o  examples/CC/class.c is a simple Elk extension demonstrating
-	encapsulation of a C++ class in a Scheme type.
+  * Site/platform-specific information such as the various X11 `load
+    libraries', machine name, operating system name, as well as the
+    Elk version number are now available as Scheme variables in
+    scm/siteinfo.scm.  The file is created automatically and can be
+    loaded via `(require 'siteinfo)'.
 
-     o  The file README has been renamed ROADMAP; RELEASE is now README.
+  * Most of the improvements in scm/debug-new.scm have been merged
+    into the baseline debug.scm and the former has been removed.
+    The inspector now starts at the correct frame when called after
+    an error.
 
-   Interpreter kernel:
+  * examples/CC/class.c is a simple Elk extension demonstrating
+    encapsulation of a C++ class in a Scheme type.
 
-     o  Many bugs have been fixed, and the code has been made `64-bit clean'.
+  * The file README has been renamed ROADMAP; RELEASE is now README.
 
-     o  New functions for application writers to read/set the `error tag'
-	displayed in error messages and the application name (Get_Error_Tag,
-	Set_Error_Tag, Set_App_Name).
+Interpreter kernel:
 
-     o  When dynamically loading objects, the C++ static constructors are
-	now called _before_ all extension initializers.  Ditto for C++
-	destructors and extension finalizers.
+  * Many bugs have been fixed, and the code has been made `64-bit clean'.
 
-     o  New function for application/extension writers to load a file
-	whose name is given as a C string (Load_File).
-     o  Load_Source_Port has been made `official' and may be used from
-	outside the interpreter.
+  * New functions for application writers to read/set the `error tag'
+    displayed in error messages and the application name (Get_Error_Tag,
+    Set_Error_Tag, Set_App_Name).
 
-     o  New functions for application/extension writers to convert
-	Scheme numbers to C unsigned int/long: Get_Unsigned,
-	Get_Unsigned_Long, Get_Exact_Unsigned, Get_Exact_Unsigned_Long.
-	New function Get_Exact_Long.
+  * When dynamically loading objects, the C++ static constructors are
+    now called _before_ all extension initializers.  Ditto for C++
+    destructors and extension finalizers.
 
-     o  The `round' primitive now rounds to even for numbers halfway
-	between two integers.
+  * New function for application/extension writers to load a file
+    whose name is given as a C string (Load_File).
+  * Load_Source_Port has been made `official' and may be used from
+    outside the interpreter.
 
-     o  The reader doesn't impose a limit on the length of strings and
-	symbols any longer.
+  * New functions for application/extension writers to convert
+    Scheme numbers to C unsigned int/long: Get_Unsigned,
+    Get_Unsigned_Long, Get_Exact_Unsigned, Get_Exact_Unsigned_Long.
+    New function Get_Exact_Long.
 
-     o  The dynamic loading implementations now use the environment
-	variable TMPDIR if present.
+  * The `round' primitive now rounds to even for numbers halfway
+    between two integers.
 
-     o  `dump' now works under SGI Irix 5.x.
+  * The reader doesn't impose a limit on the length of strings and
+    symbols any longer.
 
-     o  New constants ELK_MINOR and ELK_MAJOR for application/extension
-	writers.
+  * The dynamic loading implementations now use the environment
+    variable TMPDIR if present.
 
-     o  Symbols containing special characters now print correctly when
-	output with `write'.
+  * `dump' now works under SGI Irix 5.x.
 
-     o  Various optimizations in the interpreter's inner loop to compensate
-	for the performance loss caused by the struct-based object
-	representation on some platforms.
+  * New constants ELK_MINOR and ELK_MAJOR for application/extension
+    writers.
 
-   Extensions:
+  * Symbols containing special characters now print correctly when
+    output with `write'.
 
-     o  The X11 extensions now work with X11 Release 6, Sun OpenWindows 3.x,
-	and Sun Motif.
+  * Various optimizations in the interpreter's inner loop to compensate
+    for the performance loss caused by the struct-based object
+    representation on some platforms.
 
-     o  Extension-specific include files (unix.h, xlib.h, xt.h) are now
-	installed in a subdirectory $install_dir/include/extensions
-	for use by applications.
+Extensions:
 
-     o  The object files for Athena or Motif widgets are now loaded
-	by means of `require'.
+  * The X11 extensions now work with X11 Release 6, Sun OpenWindows 3.x,
+    and Sun Motif.
 
-     o  New POSIX-style regular expression extension (see doc/regexp and
-	examples/regexp).
+  * Extension-specific include files (unix.h, xlib.h, xt.h) are now
+    installed in a subdirectory $install_dir/include/extensions
+    for use by applications.
 
-     o  The file hunk.c has been removed from lib/misc, as it no longer
-	serves any purpose.
+  * The object files for Athena or Motif widgets are now loaded
+    by means of `require'.
 
-     o  Several bugs have been fixed in the UNIX and X11 extensions.
+  * New POSIX-style regular expression extension (see doc/regexp and
+    examples/regexp).
 
+  * The file hunk.c has been removed from lib/misc, as it no longer
+    serves any purpose.
 
+  * Several bugs have been fixed in the UNIX and X11 extensions.
 
-Changes from release 2.1 to release 2.2
+Changes between 2.1 and 2.2:
+----------------------------
 
-   General:
+General:
 
-     o  Elk ported to new platforms: SGI Irix 5.1, HP-UX 9.0
+  * Elk ported to new platforms: SGI Irix 5.1, HP-UX 9.0
 
-     o  All Scheme files now end with the suffix `.scm'
-     o  Introduced new symbols in the config files to be used by the
-	UNIX extension
-     o  Reorganized the include files.  Split external declarations
-	into `private' (intern.h) and `public' (extern.h) declarations
-	to be used by extensions
+  * All Scheme files now end with the suffix `.scm'
+  * Introduced new symbols in the config files to be used by the
+    UNIX extension
+  * Reorganized the include files.  Split external declarations
+    into `private' (intern.h) and `public' (extern.h) declarations
+    to be used by extensions
 
-     o  It's no longer necessary to specify multiple destination
-	directories in the site file (only install_dir; subdirectories
-	are created automatically)
-     o  `init_objects' is gone from the site file, see INSTALL for a
-	new, simpler way to link extensions or an application with Elk
-	statically
-     o  New directory $install_dir/lib is created with files module.o,
-        standalone.o and shell scripts linkscheme, makedl, and ldflags
-	(see INSTALL)
+  * It's no longer necessary to specify multiple destination
+    directories in the site file (only install_dir; subdirectories
+    are created automatically)
+  * `init_objects' is gone from the site file, see INSTALL for a
+    new, simpler way to link extensions or an application with Elk
+    statically
+  * New directory $install_dir/lib is created with files module.o,
+    standalone.o and shell scripts linkscheme, makedl, and ldflags
+    (see INSTALL)
 
-     o  Elk can now be used by applications that must have their own
-	main() function.  See INSTALL for details.
+  * Elk can now be used by applications that must have their own
+    main() function.  See INSTALL for details.
 
-   Interpreter kernel:
+Interpreter kernel:
 
-     o  New primitives to allow blocking of signals from within Scheme
-	code: disable-interrupts, enable-interrupts
-     o  Changed Disable_Interrupts and Enable_Interrupts macros to
-	allow nesting and to handle signals used by extensions
-	(specifically by the new UNIX extension)
-     o  Extended representation of continuations to carry current
-	interrupt nesting level and restore it when being called
-     o  (Re-)enable interrupts in toplevel on error
-     o  Added default signal handlers for SIGPIPE and SIGHUP to clean
-	up temporary files
+  * New primitives to allow blocking of signals from within Scheme
+    code: disable-interrupts, enable-interrupts
+  * Changed Disable_Interrupts and Enable_Interrupts macros to
+    allow nesting and to handle signals used by extensions
+    (specifically by the new UNIX extension)
+  * Extended representation of continuations to carry current
+    interrupt nesting level and restore it when being called
+  * (Re-)enable interrupts in toplevel on error
+  * Added default signal handlers for SIGPIPE and SIGHUP to clean
+    up temporary files
 
-     o  New primitive: `features'
-     o  `require' now appends .scm to feature name to obtain file name
-	(if no file name has been specified and if the feature name
-	doesn't have a suffix yet)
-     o  Features elk:dump and elk:load-object are provided by the
-	interpreter if dump and dynamic loading are supported
+  * New primitive: `features'
+  * `require' now appends .scm to feature name to obtain file name
+    (if no file name has been specified and if the feature name
+    doesn't have a suffix yet)
+  * Features elk:dump and elk:load-object are provided by the
+    interpreter if dump and dynamic loading are supported
 
-     o  Implemented Register_Onfork() and Call_Onfork() to provide
-	`fork handlers' (used, for instance, by the UNIX extension)
-     o  Added fork handlers to the dynamic loading implementations to
-	create links for the temporary files
+  * Implemented Register_Onfork() and Call_Onfork() to provide
+    `fork handlers' (used, for instance, by the UNIX extension)
+  * Added fork handlers to the dynamic loading implementations to
+    create links for the temporary files
 
-     o  Added a close function to I/O ports to allow for pipe-based ports
-     o  New primitive: char-ready?
+  * Added a close function to I/O ports to allow for pipe-based ports
+  * New primitive: char-ready?
 
-     o  Added a check to the code that restarts a dumped interpreter
-        to detect that the start address of the stack has been moved
-	with respect to the original invocation (this happens between
-	Sun-4c and Sun-4m architectures, for instance)
+  * Added a check to the code that restarts a dumped interpreter
+    to detect that the start address of the stack has been moved
+    with respect to the original invocation (this happens between
+    Sun-4c and Sun-4m architectures, for instance)
 
-     o  Modified math.c to implement the distinction between exact and
-        inexact numbers as required by the language definition
-     o  New primitives: exact->inexact, inexact->exact
-     o  The number prefixes #e and #i are now supported
-     o  Floating point numbers are no longer automatically reduced to
-	integers; new conversion function Make_Flonum(double) in
-	addition to Make_Reduced_Flonum(double)
-     o  Added new conversion functions to cleanly distinguish between
-	C ints and longs:  Get_Long(Object), Make_Long(long),
-	Make_Unsigned_Long(unsigned long), and functions to convert
-	bignums from/to C longs
-     o  New conversion functions for exact integers:
-	Get_Exact_Integer(Object) and Get_Exact_Long(Object)
+  * Modified math.c to implement the distinction between exact and
+    inexact numbers as required by the language definition
+  * New primitives: exact->inexact, inexact->exact
+  * The number prefixes #e and #i are now supported
+  * Floating point numbers are no longer automatically reduced to
+    integers; new conversion function Make_Flonum(double) in
+    addition to Make_Reduced_Flonum(double)
+  * Added new conversion functions to cleanly distinguish between
+    C ints and longs:  Get_Long(Object), Make_Long(long),
+    Make_Unsigned_Long(unsigned long), and functions to convert
+    bignums from/to C longs
+  * New conversion functions for exact integers:
+    Get_Exact_Integer(Object) and Get_Exact_Long(Object)
 
-     o  Removed the unique `void' type; #v is now converted into the empty
-	symbol by the reader; void? remains for compatibility
+  * Removed the unique `void' type; #v is now converted into the empty
+    symbol by the reader; void? remains for compatibility
 
-     o  Implemented reader table for #-syntax
-     o  New function Define_Reader() to allow extensions to register
-	their own read syntaxes (used by the new bitstring extension)
-     o  Exported parts of the reader to simplify writing new reader
-        functions in extensions
+  * Implemented reader table for #-syntax
+  * New function Define_Reader() to allow extensions to register
+    their own read syntaxes (used by the new bitstring extension)
+  * Exported parts of the reader to simplify writing new reader
+    functions in extensions
 
-     o  New functions/macros to convert Scheme strings and/or symbols
-	into C strings (to be used by extension writers): Get_String,
-	Get_Strsym, Get_String_Stack, Get_Strsym_Stack; see src/cstring.c
-     o  Now obsolete: Declare_C_Strings, Dispose_C_Strings, Make_C_String
+  * New functions/macros to convert Scheme strings and/or symbols
+    into C strings (to be used by extension writers): Get_String,
+    Get_Strsym, Get_String_Stack, Get_Strsym_Stack; see src/cstring.c
+  * Now obsolete: Declare_C_Strings, Dispose_C_Strings, Make_C_String
 
-     o  Bug fixes:
-	  o  fixed a few bugs in the implementation of continuations and
-	     tail call optimization and in the generational, incremental
-	     garbage collector
-          o  there was a bug in the interaction between the garbage
-	     collector and `dump'
-	  o  identified additional critical sections to be protected
-	     from delivery of signals
-	  o  initscheme.scm wasn't resolved against the load-path
-	  o  quasiquotation now also works for vectors (kudos to
-	     Tor Lillqvist for suggesting a simple fix)
-	  o  a bug in src/load-ld.c could cause the first static variable
-	     in a dynamically loaded .o file to not be zeroed
+  * Bug fixes:
+      o  fixed a few bugs in the implementation of continuations and
+         tail call optimization and in the generational, incremental
+         garbage collector
+      o  there was a bug in the interaction between the garbage
+         collector and `dump'
+      o  identified additional critical sections to be protected
+         from delivery of signals
+      o  initscheme.scm wasn't resolved against the load-path
+      o  quasiquotation now also works for vectors (kudos to
+         Tor Lillqvist for suggesting a simple fix)
+      o  a bug in src/load-ld.c could cause the first static variable
+         in a dynamically loaded .o file to not be zeroed
 
-   Extensions:
+Extensions:
 
-     o  New UNIX extension; see doc/unix for the reference manual and
-	examples/unix for a few demonstration programs
+  * New UNIX extension; see doc/unix for the reference manual and
+    examples/unix for a few demonstration programs
 
-     o  New record extension; see doc/record for the reference manual.
-	The `struct' extension is now obsolete
+  * New record extension; see doc/record for the reference manual.
+    The `struct' extension is now obsolete
     
-     o  New arbitrary-length bitstring extension; see doc/bitstring
-	for the manual
-   
+  * New arbitrary-length bitstring extension; see doc/bitstring
+    for the manual
 
-Changes from release 2.0 to release 2.1
+Changes between 2.0 and 2.1:
+----------------------------
 
-   General:
+General:
 
-     o  New configuration files for the 386/486-PC running 386BSD and
-        DOS/DJGPP, for Suns running Solaris 2.1 (SunOS 5.1, and for
-	the Convex C230 running ConvexOS.
-     o  Reorganized the config files and the site file to allow for
-        configuration of the generational, incremental garbage collector
-     o  Introduced several new symbols in the config files to simplify
-        installation on several systems
-     o  Added new targets to all Makefiles to allow `cross-localization'
-        of the source tree (see comments in DOS section in MACHINES)
+  * New configuration files for the 386/486-PC running 386BSD and
+    DOS/DJGPP, for Suns running Solaris 2.1 (SunOS 5.1, and for
+    the Convex C230 running ConvexOS.
+  * Reorganized the config files and the site file to allow for
+    configuration of the generational, incremental garbage collector
+  * Introduced several new symbols in the config files to simplify
+    installation on several systems
+  * Added new targets to all Makefiles to allow `cross-localization'
+    of the source tree (see comments in DOS section in MACHINES)
 
-   Interpreter kernel:
+Interpreter kernel:
 
-     o  Added a generational, incremental garbage collector
-     o  New primitives: garbage-collect-status, collect-incremental
-     o  Reorganized the source files to accommodate the new garbage
-        collector and to separate garbage collector specific code
-        from code common to both garbage collectors
+  * Added a generational, incremental garbage collector
+  * New primitives: garbage-collect-status, collect-incremental
+  * Reorganized the source files to accommodate the new garbage
+    collector and to separate garbage collector specific code
+    from code common to both garbage collectors
 
-     o  Empty list no longer counts as false; added primitive
-        `empty-list-is-false-for-backward-compatibility'
+  * Empty list no longer counts as false; added primitive
+    `empty-list-is-false-for-backward-compatibility'
 
-     o  Changed delimiter character in load-path argument of -p option
-	from comma to colon
-     o  Initialize load-path from ELK_LOADPATH environment variable
-	(if present)
+  * Changed delimiter character in load-path argument of -p option
+    from comma to colon
+  * Initialize load-path from ELK_LOADPATH environment variable
+    (if present)
 
-     o  Added argument to -v option to control which messages to print
-	(linker command, init/finit functions)
-     o  It's no longer considered an error if an object file contains
-	no initializers
-	    
-     o  Completely rewritten implementations of `dump' for ELF (SysVR4,
-        Solaris 2.x), ECOFF (Ultrix, Irix), and HP9000 a.out formats;
-        the HP version now correctly handles shared libraries
-     o  Added support for dynamic loading under SysVR4 and Solaris 2.x
-	(see comments in MACHINES)
-     o  Added code to read symbol table of object files on the Convex
+  * Added argument to -v option to control which messages to print
+    (linker command, init/finit functions)
+  * It's no longer considered an error if an object file contains
+    no initializers
+        
+  * Completely rewritten implementations of `dump' for ELF (SysVR4,
+    Solaris 2.x), ECOFF (Ultrix, Irix), and HP9000 a.out formats;
+    the HP version now correctly handles shared libraries
+  * Added support for dynamic loading under SysVR4 and Solaris 2.x
+    (see comments in MACHINES)
+  * Added code to read symbol table of object files on the Convex
 
-     o  Bug fixes:
-          o  dynamic-wind was completely broken; fixed it
-	  o  fixed a bug in the code that checks for the stack growing
-	     direction (caused dumped images to crash on startup)
-	  o  fixed a bug in the equal? predicate (could enter an
-	     infinite loop when applied to environments)
-     o  Fixed a number of portability problems, among them:
-	  o  added O_BINARY flag to open() calls and "b" mode to fopen()
-	     calls where necessary
-	  o  added support for the many different ways to purge a file
-	     pointer and tty file descriptor (src/read.c, src/print.c)
+  * Bug fixes:
+      o  dynamic-wind was completely broken; fixed it
+      o  fixed a bug in the code that checks for the stack growing
+         direction (caused dumped images to crash on startup)
+      o  fixed a bug in the equal? predicate (could enter an
+         infinite loop when applied to environments)
+  * Fixed a number of portability problems, among them:
+      o  added O_BINARY flag to open() calls and "b" mode to fopen()
+         calls where necessary
+      o  added support for the many different ways to purge a file
+         pointer and tty file descriptor (src/read.c, src/print.c)
 
-     o  Integrated the functionality of the `libutil.a' library from
-	older releases into the interpreter kernel (conversion of
-	symbols and lists of symbols to bit masks and vice versa;
-	routines to manage a pool of weak pointers to objects, used
-	mainly by the Elk X extensions
+  * Integrated the functionality of the `libutil.a' library from
+    older releases into the interpreter kernel (conversion of
+    symbols and lists of symbols to bit masks and vice versa;
+    routines to manage a pool of weak pointers to objects, used
+    mainly by the Elk X extensions
 
-   Extensions:
+Extensions:
 
-     o  Removed libutil.a (lib/util/*); moved the code into the
-        interpreter kernel (src/terminate.c; src/symbol.c); removed
-	libutil.a from the default load-libraries
-     o  Renamed lib/misc/c++.[co] to lib/misc/newhandler.[co] (c++.c isn't
-	a valid filename under DOS)
-     o  Added finit function to lib/misc/monitor.c to switch off
-	monitoring and write mon.out on exit
+  * Removed libutil.a (lib/util/*); moved the code into the
+    interpreter kernel (src/terminate.c; src/symbol.c); removed
+    libutil.a from the default load-libraries
+  * Renamed lib/misc/c++.[co] to lib/misc/newhandler.[co] (c++.c isn't
+    a valid filename under DOS)
+  * Added finit function to lib/misc/monitor.c to switch off
+    monitoring and write mon.out on exit
 
-   Elk/X:
+Elk/X:
 
-     o  The X extensions are no longer pre-linked against the required
-	X libraries (by means of ld -r); resolving against system libs
-	now always takes place at load time
-     o  make-gcontext and copy-gcontext now can be called with a drawable
-	(i.e. pixmap or window)
-     o  New primitives: alloc-color alloc-named-color
-     o  Removed window-unique-id primitive
-     o  Fixed a few bugs in the Xt extension (editres now works with
-	Scheme programs); removed an artificial limitation
-     o  Defined a GC visit function for widgets that visits each widget's
-        parents and the children of composite widgets
-     o  Added support for Motif gadgets
+  * The X extensions are no longer pre-linked against the required
+    X libraries (by means of ld -r); resolving against system libs
+    now always takes place at load time
+  * make-gcontext and copy-gcontext now can be called with a drawable
+    (i.e. pixmap or window)
+  * New primitives: alloc-color alloc-named-color
+  * Removed window-unique-id primitive
+  * Fixed a few bugs in the Xt extension (editres now works with
+    Scheme programs); removed an artificial limitation
+  * Defined a GC visit function for widgets that visits each widget's
+    parents and the children of composite widgets
+  * Added support for Motif gadgets
 
+Changes between 1.5 and 2.0:
+----------------------------
 
-Changes from release 1.5 to release 2.0
-
-   General:
+General:
     
-     o  The build and install process has been improved significantly (see
-	file INSTALL)
-     o  Added a new directory "config" that holds the system-specific
-	configuration files and the site-file
-     o  Added a build shell script and a unified Makefile to all
-	directories; "build" creates the ``real'' Makefiles containing
-	system- and site-specific details during the make process
-     o  Added install, lint, clean, and distclean targets to all
-	Makefiles
-     o  Placed files that are needed during runtime (dynamically loadable
-	object files, Scheme files, the interpreter itself) into separate
-	directories; added "make install" to put files there
+  * The build and install process has been improved significantly (see
+    file INSTALL)
+  * Added a new directory "config" that holds the system-specific
+    configuration files and the site-file
+  * Added a build shell script and a unified Makefile to all
+    directories; "build" creates the ``real'' Makefiles containing
+    system- and site-specific details during the make process
+  * Added install, lint, clean, and distclean targets to all
+    Makefiles
+  * Placed files that are needed during runtime (dynamically loadable
+    object files, Scheme files, the interpreter itself) into separate
+    directories; added "make install" to put files there
 
-     o  Simplified porting Elk to new systems (assembly language support
-	and a stack-extending version of "alloca" are no longer required)
-     o  Tested on several new systems (IBM RS/6000, HP9000/700, SGI,
-	Sony; see the file MACHINES)
+  * Simplified porting Elk to new systems (assembly language support
+    and a stack-extending version of "alloca" are no longer required)
+  * Tested on several new systems (IBM RS/6000, HP9000/700, SGI,
+    Sony; see the file MACHINES)
 
-     o  Placed new files CONTRIBUTORS, MIGRATE, and TODO into the toplevel
-	directory of the distribution
-     o  Added a directory "util" that contains tools to simplify porting
-	Elk to new environments and other utilities that are useful on
-	some systems
-     o  Added a directory "scripts" that holds the shell scripts used
-	to link instances of the interpreter and extensions.
-     o  Removed "stk" directory with test programs (no longer needed)
+  * Placed new files CONTRIBUTORS, MIGRATE, and TODO into the toplevel
+    directory of the distribution
+  * Added a directory "util" that contains tools to simplify porting
+    Elk to new environments and other utilities that are useful on
+    some systems
+  * Added a directory "scripts" that holds the shell scripts used
+    to link instances of the interpreter and extensions.
+  * Removed "stk" directory with test programs (no longer needed)
 
-     o  Added ANSI C prototypes and C++ "extern C" to all include files
+  * Added ANSI C prototypes and C++ "extern C" to all include files
 
-   Interpreter kernel:
+Interpreter kernel:
 
-     o  Placed include files into a separate directory (include)
-     o  Reorganized the source files (separate source files for different
-        a.out formats and different dynamic loading mechanisms)
-     o  Changed the way new Scheme objects are allocated to support the
-	generational garbage collector (not yet present in Elk)
-     o  Rewrote the code implementing continuations to support full
-	call/cc on all machines
-     o  Fixed tail recursion optimization
-     o  Added support for POSIX signals (as alternative to BSD reliable
-	signals)
-     o  Removed several artificial limitations (such as max. number of
-	before-GC and after-GC functions and statically GC-linked objects)
-     o  Removed code that depended on max. number of open files per process
-     o  Added bi-directional ports (input-output-ports); new primitive:
-	open-input-output-port
-     o  New primitive: port-line-number
-     o  Reader now prints line number on syntax error
-     o  Max. length of a pathname is now determined correctly (using the
-	POSIX incantations if applicable)
-     o  Added code to support dynamic loading under HP-UX (src/load-shl.c)
-     o  Added code to call extension finalization functions and C++
-	destructors on termination
-     o  Fixed and improved the code to call extension initialization
-	functions and C++ constructors on startup or when loading
-	extensions
-     o  Improved the mechanism to suppress initialization of statically
-	linked extensions on startup ("dont_init_if_name" in config/site)
-     o  Can use ANSI "atexit" as alternative to redefining "exit"
-     o  Added option -p to specify load path
-     o  Scheme file "initscheme" is now loaded before the toplevel is
-	loaded
-     o  Changed "rand" to use rand() if random() isn't there
-     o  re-entrant-continuations? primitive is no longer needed (returns
-	always #t now)
-     o  Added a general mechanism to register termination functions for
-	individual objects (e.g. to close files on GC); see src/terminate.c
-     o  linkscheme shell script improved; added code to support the
-	stupid AIX linker
-     o  Fixed numerous things that caused lint or "gcc -ansi" to complain
-     o  Changed the dynamic loading, "dump", and a.out symbol table reading
-	code in numerous places to make it work on new systems and to make
-	it more readable and maintainable
+  * Placed include files into a separate directory (include)
+  * Reorganized the source files (separate source files for different
+    a.out formats and different dynamic loading mechanisms)
+  * Changed the way new Scheme objects are allocated to support the
+    generational garbage collector (not yet present in Elk)
+  * Rewrote the code implementing continuations to support full
+    call/cc on all machines
+  * Fixed tail recursion optimization
+  * Added support for POSIX signals (as alternative to BSD reliable
+    signals)
+  * Removed several artificial limitations (such as max. number of
+    before-GC and after-GC functions and statically GC-linked objects)
+  * Removed code that depended on max. number of open files per process
+  * Added bi-directional ports (input-output-ports); new primitive:
+    open-input-output-port
+  * New primitive: port-line-number
+  * Reader now prints line number on syntax error
+  * Max. length of a pathname is now determined correctly (using the
+    POSIX incantations if applicable)
+  * Added code to support dynamic loading under HP-UX (src/load-shl.c)
+  * Added code to call extension finalization functions and C++
+    destructors on termination
+  * Fixed and improved the code to call extension initialization
+    functions and C++ constructors on startup or when loading
+    extensions
+  * Improved the mechanism to suppress initialization of statically
+    linked extensions on startup ("dont_init_if_name" in config/site)
+  * Can use ANSI "atexit" as alternative to redefining "exit"
+  * Added option -p to specify load path
+  * Scheme file "initscheme" is now loaded before the toplevel is
+    loaded
+  * Changed "rand" to use rand() if random() isn't there
+  * re-entrant-continuations? primitive is no longer needed (returns
+    always #t now)
+  * Added a general mechanism to register termination functions for
+    individual objects (e.g. to close files on GC); see src/terminate.c
+  * linkscheme shell script improved; added code to support the
+    stupid AIX linker
+  * Fixed numerous things that caused lint or "gcc -ansi" to complain
+  * Changed the dynamic loading, "dump", and a.out symbol table reading
+    code in numerous places to make it work on new systems and to make
+    it more readable and maintainable
 
-   Extensions:
+Extensions:
 
-     o  Combined lib/util/symbol.o and lib/util/objects.o into new library
-	libutil.a; put this library into the default "load-libraries"
-     o  Moved lib/util/string.c and lib/util/string.h into the interpreter
-     o  Moved files from lib directory into new subdirectory "misc"
-     o  Added POSIX sysconf stuff to unix.c to determine max. number of
-        open files per process
+  * Combined lib/util/symbol.o and lib/util/objects.o into new library
+    libutil.a; put this library into the default "load-libraries"
+  * Moved lib/util/string.c and lib/util/string.h into the interpreter
+  * Moved files from lib directory into new subdirectory "misc"
+  * Added POSIX sysconf stuff to unix.c to determine max. number of
+    open files per process
 
-   Elk/X:
+Elk/X:
 
-     o  Made the code mostly "lint clean" and "gcc -ansi clean"
-     o  Fixed bogus variable definitions in xlib.h and xt.h
-     o  Xlib: added support for client-message event
-     o  Xt: added code to avoid a bug in Motif 1.1.4
-     o  Xt: added optional "mask" argument to context-add-input
-     o  Removed site-dependent information from scm/xwidgets (file is
-	now created from scm/xwidgets.src during the build process)
-     o  Renamed widget .d files that were longer than 14 characters;
-	added ALIASES file for each widget set containing mappings from
-	real widget names to short names
+  * Made the code mostly "lint clean" and "gcc -ansi clean"
+  * Fixed bogus variable definitions in xlib.h and xt.h
+  * Xlib: added support for client-message event
+  * Xt: added code to avoid a bug in Motif 1.1.4
+  * Xt: added optional "mask" argument to context-add-input
+  * Removed site-dependent information from scm/xwidgets (file is
+    now created from scm/xwidgets.src during the build process)
+  * Renamed widget .d files that were longer than 14 characters;
+    added ALIASES file for each widget set containing mappings from
+    real widget names to short names
 
-   Documentation:
+Documentation:
 
-     o  Added sub-directory "paper" containing a draft version of a
-	paper about Elk
+  * Added sub-directory "paper" containing a draft version of a
+    paper about Elk
 
-   User-contributed extensions:
+User-contributed extensions:
 
-     o  A foreign function interface, an Elk Shell, and a vector extension
-	have been contributed by J. P. Lewis (contrib/zelk).
+  * A foreign function interface, an Elk Shell, and a vector extension
+    have been contributed by J. P. Lewis (contrib/zelk).
 
+Changes between 1.4 and 1.5:
+----------------------------
 
-Changes from release 1.4 to release 1.5
+General:
+  * Added a "contrib" directory for user-contributed extensions
+    that I have not fully tested and/or integrated into Elk
+  * Renamed ORIGIN to COPYRIGHT
 
-   General:
-     o  Added a "contrib" directory for user-contributed extensions
-	that I have not fully tested and/or integrated into Elk
-     o  Renamed ORIGIN to COPYRIGHT
+Interpreter kernel:
+  * Added support for the Amiga, A/UX and System V Release 4
+    (ELF a.out format)
+  * Added special load-library for MIPS (-lc_G0)
+  * Extension-interface: replaced Val() by Var_Set()/Var_Get()
+  * Modified load, autoload, and require so that multiple .o-files
+    can be loaded simultaneously
+  * Added -1+ as a synonym for 1-
+  * Bug fixes:
+      o  fixed a GC-related bug
+      o  fixed a bug that occurred when allocating a very large heap
+      o  fixed a bug in case-insensitive string comparison
+      o  fixed a bug in macro "when"
+      o  changed and clarified semantics of print-depth/print-length
+  * IEEE 1178/R^4RS compatibility:
+      o  replaced close-port by close-input-port and close-output-port
+      o  added primitives caaaar .. cddddr
+      o  added peek-char primitive
+      o  added -i option for case-insensitive operation
+  * Removed -bc option
+  * Removed CBREAK-hack in read-char
 
-   Interpreter kernel:
-     o  Added support for the Amiga, A/UX and System V Release 4
-	(ELF a.out format)
-     o  Added special load-library for MIPS (-lc_G0)
-     o  Extension-interface: replaced Val() by Var_Set()/Var_Get()
-     o  Modified load, autoload, and require so that multiple .o-files
-	can be loaded simultaneously
-     o  Added -1+ as a synonym for 1-
-     o  Bug fixes:
-          o  fixed a GC-related bug
-          o  fixed a bug that occurred when allocating a very large heap
-	  o  fixed a bug in case-insensitive string comparison
-	  o  fixed a bug in macro "when"
-	  o  changed and clarified semantics of print-depth/print-length
-     o  IEEE 1178/R^4RS compatibility:
-          o  replaced close-port by close-input-port and close-output-port
-          o  added primitives caaaar .. cddddr
-          o  added peek-char primitive
-          o  added -i option for case-insensitive operation
-     o  Removed -bc option
-     o  Removed CBREAK-hack in read-char
+Elk/X:
+  * Fixed several GC-related bugs (objects belonging to Xlib/Xt are
+    no longer terminated by garbage collector when unreferenced)
+  * Fixed a bug in the interface to the Grip widget
+  * Modified code to load widgets to make use of new capability to
+    load multiple .o-files
 
-   Elk/X:
-     o  Fixed several GC-related bugs (objects belonging to Xlib/Xt are
-	no longer terminated by garbage collector when unreferenced)
-     o  Fixed a bug in the interface to the Grip widget
-     o  Modified code to load widgets to make use of new capability to
-	load multiple .o-files
+Documentation:
+  * Interpreter kernel:  documented new functions, clarified
+    some sections
+  * Xlib/Xt:  documented X-related behavior of garbage collector,
+    pointed out GC-related pitfalls
 
-   Documentation:
-     o  Interpreter kernel:  documented new functions, clarified
-	some sections
-     o  Xlib/Xt:  documented X-related behavior of garbage collector,
-	pointed out GC-related pitfalls
+Changes between 1.3 and 1.4:
+----------------------------
 
+Interpreter kernel:
+  * Support for the NeXT machines added
+  * New primitive list? provided
+  * Two bugs in the tail recursion code fixed
+  * -v option to trace /bin/ld-calls
+  * man-page written
 
-Changes from release 1.3 to release 1.4
+Elk/X:
+  * Tested under X11R5
+  * X11R3 and earlier versions are no longer supported
+  * The HP-widget code has been removed from the distribution
 
-   Interpreter kernel:
-     o  Support for the NeXT machines added
-     o  New primitive list? provided
-     o  Two bugs in the tail recursion code fixed
-     o  -v option to trace /bin/ld-calls
-     o  man-page written
+  * New Xlib-primitives:  install-colormap  uninstall-colormap
+    list-installed-colormaps  xlib-release-5-or-later?
 
-   Elk/X:
-     o  Tested under X11R5
-     o  X11R3 and earlier versions are no longer supported
-     o  The HP-widget code has been removed from the distribution
+  * Xt interface now supports actions and accelerator tables
+  * Bug in set-context-fallback-resources! fixed
+  * New Xt-functions:  widget-name  widget-translate-coordinates
+    application-initialize  context-add-action  install-accelerators
+    install-all-accelerators  xt-release-5-or-later?
 
-     o  New Xlib-primitives:  install-colormap  uninstall-colormap
-	list-installed-colormaps  xlib-release-5-or-later?
+  * Support for new widget classes: menubutton panner porthole repeater
+    simplemenu sme smebsb smeline stripchart tree
+  * vpaned renamed to paned
 
-     o  Xt interface now supports actions and accelerator tables
-     o  Bug in set-context-fallback-resources! fixed
-     o  New Xt-functions:  widget-name  widget-translate-coordinates
-        application-initialize  context-add-action  install-accelerators
-        install-all-accelerators  xt-release-5-or-later?
+  * Example programs have been moved into a new examples directory
+    with sub-directories for Scheme, Xlib, Xaw, Motif
 
-     o  Support for new widget classes: menubutton panner porthole repeater
-        simplemenu sme smebsb smeline stripchart tree
-     o  vpaned renamed to paned
+  * New Xaw example programs that demonstrate the new widget classes,
+    accelerators, actions, etc.
 
-     o  Example programs have been moved into a new examples directory
-	with sub-directories for Scheme, Xlib, Xaw, Motif
+Other extensions:
+  * Interface to the GNU gdbm-library
 
-     o  New Xaw example programs that demonstrate the new widget classes,
-	accelerators, actions, etc.
-
-   Other extensions:
-     o  Interface to the GNU gdbm-library
