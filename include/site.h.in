@@ -54,7 +54,7 @@
 #if defined(__cplusplus)
 #  define extern_c extern "C"
 #else
-#  define extern_c /* */
+#  define extern_c extern
 #endif
 
 /* Directory separator */
