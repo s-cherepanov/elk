@@ -6,7 +6,7 @@ AC_PREREQ(2.50)
 AC_CONFIG_AUX_DIR(autotools)
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(elk, 3.99.1)
+AM_INIT_AUTOMAKE(elk, 3.99.2-cvs)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -19,22 +19,22 @@ AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 
-AC_CHECK_HEADERS(stdint.h inttypes.h sys/_inttypes.h)
-if test "${ac_cv_header_stdint_h}" = "yes"; then
-  STDINT_HEADER="stdint.h"
-elif test "${ac_cv_header_inttypes_h}" = "yes"; then
-  STDINT_HEADER="inttypes.h"
-elif test "${ac_cv_header_sys__inttypes_h}" = "yes"; then
-  STDINT_HEADER="sys/_inttypes.h"
-else
-  AC_MSG_ERROR([cannot find C99 integer headers])
-fi
+AC_CHECK_HEADERS(inttypes.h,
+  [STDINT_HEADER="<inttypes.h>"],
+  [AC_CHECK_HEADERS(sys/inttypes.h,
+    [STDINT_HEADER="<sys/inttypes.h>"],
+    [AC_CHECK_HEADERS(sys/_inttypes.h,
+      [STDINT_HEADER="<sys/_inttypes.h>"],
+      [AC_CHECK_HEADERS(stdint.h,
+        [STDINT_HEADER="<stdint.h>"],
+        [AC_MSG_ERROR([cannot find C99 integer headers])])])])])
+AC_DEFINE_UNQUOTED(STDINT_HEADER, [${STDINT_HEADER}], [Define the C99 integer types header])
 AC_SUBST(STDINT_HEADER)
 
 # $system should contain the name of this file.  It may be used by some
 # of the build scripts to do things that are specific to one single
 # type of system.
-AC_DEFINE(SYSTEMTYPE, "${target_os}", Our operating system)
+AC_DEFINE_UNQUOTED(SYSTEMTYPE, ["${target_os}"], [Our operating system])
 
 # Does the system support the vprintf library function?  If not,
 # availability of the (non-portable) _doprnt function is assumed.
@@ -336,7 +336,8 @@ fi
 # function actually extend the stack?  If in doubt, extract alloca.o
 # from the C library and check if it contains the symbols malloc and free.
 # If this is the case, forget it.
-AC_CHECK_FUNCS(alloca)
+AC_FUNC_ALLOCA
+dnl AC_CHECK_FUNCS(alloca)
 
 # Must <alloca.h> be included to use alloca?  Is "#pragma alloca" required?
 AC_CHECK_HEADERS(alloca.h)

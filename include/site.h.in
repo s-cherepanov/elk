@@ -1,4 +1,4 @@
-/* site.h.in: Site-local settings.
+/* site.h.in: Site-local features.
  *
  * $Id$
  *
@@ -28,8 +28,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-/* The C99 integers header */
-#include <@STDINT_HEADER@>
+/* The C99 integer types header */
+#include @STDINT_HEADER@
 
 /* C Compiler features */
 #ifndef __GNUC__
