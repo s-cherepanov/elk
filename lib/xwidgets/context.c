@@ -157,7 +157,7 @@ static Object P_Set_Context_Fallback_Resources (int argc, Object *argv) {
             Check_Type (argv[i], T_String);
             sp = STRING(argv[i]);
             p[i] = XtMalloc (sp->size + 1);
-            bcopy (sp->data, p[i], sp->size);
+            memcpy (p[i], sp->data, sp->size);
             p[i][sp->size] = 0;
         }
         p[i] = 0;

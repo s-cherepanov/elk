@@ -101,7 +101,7 @@ Object Obarray_Lookup (register char const *str, register int len) {
     for (p = VECTOR(Obarray)->data[h]; !Nullp (p); p = sym->next) {
         sym = SYMBOL(p);
         s = STRING(sym->name);
-        if (s->size == len && bcmp (s->data, str, len) == 0)
+        if (s->size == len && memcmp (s->data, str, len) == 0)
             return p;
     }
     return Make_Integer (h);

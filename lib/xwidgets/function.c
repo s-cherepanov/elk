@@ -45,8 +45,8 @@ int Register_Function (Object x) {
         GC_Link (x);
         v = Make_Vector (max_functions, Null);
         GC_Unlink;
-        bcopy ((char *)VECTOR(Functions)->data, (char *)VECTOR(v)->data,
-            i * sizeof (Object));
+        memcpy ((char *)VECTOR(v)->data, (char *)VECTOR(Functions)->data,
+                i * sizeof (Object));
         Functions = v;
     }
     VECTOR(Functions)->data[i] = x;

@@ -119,7 +119,7 @@ again:
     case T_String: {
         struct S_String *p1 = STRING(x1), *p2 = STRING(x2);
         return p1->size == p2->size &&
-            bcmp (p1->data, p2->data, p1->size) == 0;
+            memcmp (p1->data, p2->data, p1->size) == 0;
     }
     case T_Vector: {
         struct S_Vector *p1 = VECTOR(x1), *p2 = VECTOR(x2);

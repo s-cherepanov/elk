@@ -116,12 +116,12 @@ void Get_All_Resources (int sub, Widget w, WidgetClass c, XtResource **rp,
     *np = nr + snr + cnr;
     *cp = cnr;
     *rp = (XtResource *)XtMalloc (*np * sizeof (XtResource));
-    bcopy ((char *)r, (char *)*rp, nr * sizeof (XtResource));
+    memcpy ((char *)*rp, (char *)r, nr * sizeof (XtResource));
     XtFree ((char *)r);
     if (snr)
-        bcopy ((char *)sr, (char *)(*rp + nr), snr * sizeof (XtResource));
+        memcpy ((char *)(*rp + nr), (char *)sr, snr * sizeof (XtResource));
     if (cnr) {
-        bcopy ((char *)cr, (char *)(*rp + nr+snr), cnr * sizeof (XtResource));
+        memcpy ((char *)(*rp + nr+snr), (char *)cr, cnr * sizeof (XtResource));
         XtFree ((char *)cr);
     }
 }
@@ -192,7 +192,7 @@ void Convert_Args (int ac, Object *av, ArgList to, Widget widget,
         } else if (dt == T_Float) {
             float f = (float)Get_Double (val);
             to[i].name = res;
-            bcopy ((char *)&f, (char *)&to[i].value, sizeof f);
+            memcpy ((char *)&to[i].value, (char *)&f, sizeof f);
         } else if (dt == T_Dimension || dt == T_Position || dt == T_Cardinal
                 || dt == T_Fixnum) {
             XtSetArg (to[i], res, Get_Integer (val));

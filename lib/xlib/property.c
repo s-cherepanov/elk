@@ -140,7 +140,7 @@ static Object P_Get_Property (Object w, Object prop, Object type, Object start,
             Object s;
             x = Make_String ((char *)0, (int)nitems);
             s = Car (t) = x;
-            bcopy ((char *)data, STRING(s)->data, (int)nitems);
+            memcpy (STRING(s)->data, (char *)data, (int)nitems);
         } else {
             Object v;
             GC_Node;

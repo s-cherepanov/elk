@@ -63,7 +63,7 @@ static int Bitstring_Equal(Object b1, Object b2) {
 
     if (a->len != b->len)
         return 0;
-    return !bcmp(a->data, b->data, bits_to_bytes(a->len));
+    return !memcmp(a->data, b->data, bits_to_bytes(a->len));
 }
 
 static Object P_Bitstring_Equalp(Object a, Object b) {
@@ -105,7 +105,7 @@ static Object Make_Bitstring(unsigned int len) {
     int nbytes = bits_to_bytes(len);
 
     b = Alloc_Object(sizeof(struct S_Bitstring) + nbytes-1, T_Bitstring, 0);
-    bzero((char *)BITSTRING(b)->data, nbytes);
+    memset((char *)BITSTRING(b)->data, 0, nbytes);
     BITSTRING(b)->tag = Null;
     BITSTRING(b)->len = len;
     return b;
