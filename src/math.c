@@ -475,7 +475,8 @@ Object P_Inexact_To_Exact (Object n) {
     /*NOTREACHED*/
 }
 
-#define General_Generic_Predicate(prim,op,bigop) Object prim (Object x) {\
+#define General_Generic_Predicate(prim,op,bigop)\
+Object prim (Object x) {\
     register int ret;\
     Check_Number (x);\
     switch (TYPE(x)) {\
@@ -525,7 +526,8 @@ Object P_Oddp (Object x) {
     return EQ(tmp,True) ? False : True;
 }
 
-#define General_Generic_Compare(name,op,bigop) int name (Object x, Object y) {\
+#define General_Generic_Compare(name,op)\
+int Generic_##name (Object x, Object y) {\
     Object b; register int ret;\
     GC_Node;\
     \
@@ -539,7 +541,7 @@ Object P_Oddp (Object x) {
         case T_Bignum:\
             GC_Link (y);\
             b = Integer_To_Bignum (FIXNUM(x));\
-            ret = bigop (b, y);\
+            ret = Bignum_##name (b, y);\
             GC_Unlink;\
             return ret;\
         default: /* Just to avoid compiler warnings */\
@@ -552,7 +554,12 @@ Object P_Oddp (Object x) {
         case T_Flonum:\
             return FLONUM(x)->val op FLONUM(y)->val;\
         case T_Bignum:\
-            return FLONUM(x)->val op Bignum_To_Double (y);\
+            GC_Link(y);\
+            b = Double_To_Bignum(FLONUM(x)->val);\
+            ret = Bignum_##name (b, y);\
+            GC_Unlink;\
+            return ret;\
+            /*return FLONUM(x)->val op Bignum_To_Double (y);*/\
         default: /* Just to avoid compiler warnings */\
             return 0;\
         }\
@@ -561,13 +568,18 @@ Object P_Oddp (Object x) {
         case T_Fixnum:\
             GC_Link (x);\
             b = Integer_To_Bignum (FIXNUM(y));\
-            ret = bigop (x, b);\
+            ret = Bignum_##name (x, b);\
             GC_Unlink;\
             return ret;\
         case T_Flonum:\
-            return Bignum_To_Double (x) op FLONUM(y)->val;\
+            GC_Link(x);\
+            b = Double_To_Bignum(FLONUM(y)->val);\
+            ret = Bignum_##name (x, b);\
+            GC_Unlink;\
+            return ret;\
+            /*return Bignum_To_Double (x) op FLONUM(y)->val;*/\
         case T_Bignum:\
-            return bigop (x, y);\
+            return Bignum_##name (x, y);\
         default: /* Just to avoid compiler warnings */\
             return 0;\
         }\
@@ -577,11 +589,11 @@ Object P_Oddp (Object x) {
     /*NOTREACHED*/ /* ...but lint never sees it */\
 }
 
-General_Generic_Compare (Generic_Equal,      ==, Bignum_Equal)
-General_Generic_Compare (Generic_Less,        <, Bignum_Less)
-General_Generic_Compare (Generic_Greater,     >, Bignum_Greater)
-General_Generic_Compare (Generic_Eq_Less,    <=, Bignum_Eq_Less)
-General_Generic_Compare (Generic_Eq_Greater, >=, Bignum_Eq_Greater)
+General_Generic_Compare (Equal, ==)
+General_Generic_Compare (Less, <)
+General_Generic_Compare (Greater, >)
+General_Generic_Compare (Eq_Less, <=)
+General_Generic_Compare (Eq_Greater, >=)
 
 Object General_Compare (int argc, Object *argv, register int (*op)()) {
     register int i;

@@ -36,4 +36,10 @@ Generational/Incremental Garbage Collector
 
    o  The percentage displayed at the end of a GC run is sometimes wrong.
 
-   o Almost no Unix commands work under Win32, and they are badly disabled.
+Other bugs
+
+   Almost no Unix commands work under Win32, and they are badly disabled.
+
+   bignum/double comparisons are not perfect, see scm's scm_bigdblcomp
+   for a better implementation.
+
