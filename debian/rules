@@ -12,19 +12,26 @@
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
-build: build-stamp
-build-stamp:
+configure: configure-stamp
+configure-stamp:
 	dh_testdir
 
-	$(MAKE) SUBDIRS='include scripts src scm lib/misc lib/unix\
-	 lib/xlib lib/xt lib/xaw lib/xm lib/xm/xt'
+	./configure --prefix=/usr
+
+	touch configure-stamp
+
+build: build-stamp
+build-stamp: configure-stamp
+	dh_testdir
+
+	$(MAKE)
 
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp
+	rm -f build-stamp configure-stamp
 
 	-$(MAKE) -i distclean
 
@@ -39,8 +46,6 @@ install: build
 
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/elk
 
-	mv $(CURDIR)/debian/elk/usr/bin/scheme \
-	   $(CURDIR)/debian/elk/usr/bin/scheme-elk
 	install -m 644 debian/elk.ini $(CURDIR)/debian/elk/usr/share/elk
 
 	mv $(CURDIR)/debian/elk/usr/lib/*.so.* \
@@ -49,6 +54,7 @@ install: build
 	mv $(CURDIR)/debian/elk/usr/include/elk/* \
 	   $(CURDIR)/debian/libelk0-dev/usr/include/elk/
 	mv $(CURDIR)/debian/elk/usr/lib/*.so \
+	   $(CURDIR)/debian/elk/usr/lib/*.la \
 	   $(CURDIR)/debian/elk/usr/lib/*.a \
 	   $(CURDIR)/debian/libelk0-dev/usr/lib/
 
@@ -70,7 +76,7 @@ binary-indep: build install
 #	dh_installmanpages
 #	dh_installinfo
 #	dh_undocumented
-	dh_installchangelogs CHANGES
+	dh_installchangelogs NEWS
 #	dh_link
 	dh_compress
 	dh_fixperms
@@ -98,9 +104,9 @@ binary-arch: build install
 	dh_installman
 #	dh_installinfo
 #	dh_undocumented
-	dh_installchangelogs CHANGES
+	dh_installchangelogs NEWS
 	dh_strip
-	dh_link usr/bin/scheme-elk usr/bin/elk
+	dh_link usr/bin/elk usr/bin/scheme-elk
 	dh_compress
 	dh_fixperms
 	dh_installdeb

@@ -92,10 +92,10 @@ WIDGET_SET= xm
 	../../scripts/makedl \$@ \$@
 
 .d.c:
-	LD_LIBRARY_PATH=../../src ../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$@ \$(WIDGET_SET)
+	LD_LIBRARY_PATH=../../src ../../src/elk \$(SCMFLAGS) -l mkwidget.scm \$< \$@ \$(WIDGET_SET)
 
 .d.o:
-	LD_LIBRARY_PATH=../../src ../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$*.c \$(WIDGET_SET)
+	LD_LIBRARY_PATH=../../src ../../src/elk \$(SCMFLAGS) -l mkwidget.scm \$< \$*.c \$(WIDGET_SET)
 	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $sys_incl -c \$*.c
 	../../scripts/makedl \$@ \$@
 
