@@ -389,8 +389,8 @@ AC_DEFINE(HEAP_SIZE, 1024, [FIXME HARD])
 # subdirectories) are created automatically, but $install_dir isn't.
 # Make sure $install_dir doesn't point to the top of the source tree
 # (i.e. choose a subdirectory or a directory outside the source tree).
-AC_DEFINE(SCM_DIR, "/usr/share/elk", [FIXME HARD])
-AC_DEFINE(OBJ_DIR, "/usr/lib/elk", [FIXME HARD])
+AC_DEFINE_UNQUOTED(SCM_DIR, "${prefix}/share/elk", [Data directory])
+AC_DEFINE_UNQUOTED(LIB_DIR, "${prefix}/lib/elk", [Plugins directory])
 
 #define FIND_AOUT defined(USE_LD) || defined(CAN_DUMP) || defined(INIT_OBJECTS)
 AC_DEFINE(FIND_AOUT, 1, [FIXME HARD])
@@ -468,7 +468,7 @@ AC_SUBST(MOTIF_CFLAGS)
 AC_SUBST(MOTIF_LIBS)
 
 dnl  Export variables
-INCLUDES="${INCLUDES} -I\$(top_srcdir)/include"
+INCLUDES="${INCLUDES} -I\$(top_srcdir)/include -I\$(top_builddir)/include"
 ELK_LIBS="${ELK_LIBS} -lm"
 AC_SUBST(INCLUDES)
 AC_SUBST(ELK_LIBS)

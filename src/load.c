@@ -48,7 +48,7 @@ void Init_Load () {
     Define_Variable (&V_Load_Path, "load-path",
         Cons (Make_String (".", 1),
         Cons (Make_String (SCM_DIR, sizeof (SCM_DIR) - 1),
-        Cons (Make_String (OBJ_DIR, sizeof (OBJ_DIR) - 1), Null))));
+        Cons (Make_String (LIB_DIR, sizeof (LIB_DIR) - 1), Null))));
     Define_Variable (&V_Load_Noisilyp, "load-noisily?", False);
     Define_Variable (&V_Load_Libraries, "load-libraries", Make_String ("", 0));
 }
