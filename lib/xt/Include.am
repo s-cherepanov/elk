@@ -6,13 +6,13 @@ SOURCES_XT = \
 	../xt/classname.c \
 	../xt/context.c \
 	../xt/converter.c \
-	../xt/error.c \
 	../xt/function.c \
 	../xt/identifier.c \
-	../xt/init.c \
-	../xt/objects.c \
 	../xt/popup.c \
 	../xt/resource.c \
 	../xt/translation.c \
 	../xt/widget.c \
+	../xt/xterror.c \
+	../xt/xtinit.c \
+	../xt/xtobjects.c \
 	$(NULL)
