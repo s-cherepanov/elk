@@ -38,8 +38,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef HAVE_GETRLIMIT
-#   include <sys/time.h>
+#ifdef HAVE_STRUCT_RLIMIT
+#   ifdef HAVE_SYS_TIME_H
+#       include <sys/time.h>
+#   endif
 #   ifdef HAVE_SYS_RESOURCE_H
 #       include <sys/resource.h>
 #   endif
@@ -49,12 +51,12 @@
 #   include <windows.h>
 #endif
 
-#ifdef FIND_AOUT
-#   ifdef HAVE_UNISTD_H
-#       include <unistd.h>
-#   else
-#       include <sys/file.h>
-#   endif
+#ifdef HAVE_UNISTD_H
+#   include <unistd.h>
+#endif
+
+#ifdef HAVE_SYS_FILE_H
+#   include <sys/file.h>
 #endif
 
 #include "kernel.h"
@@ -392,7 +394,7 @@ void Init_Everything () {
 }
 
 void Get_Stack_Limit () {
-#ifdef HAVE_GETRLIMIT
+#ifdef HAVE_STRUCT_RLIMIT
     struct rlimit rl;
 
     if (getrlimit (RLIMIT_STACK, &rl) == -1) {

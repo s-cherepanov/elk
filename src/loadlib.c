@@ -37,12 +37,16 @@
 #include <string.h>
 #include <unistd.h>
 
-#if defined (HAVE_MACH_O_DYLD_H)
-#   include <mach-o/dyld.h>
-#elif defined (WIN32)
+#if defined (HAVE_DL_DYLD)
+#   if defined (HAVE_MACH_O_DYLD_H)
+#       include <mach-o/dyld.h>
+#   endif
+#elif defined (HAVE_DL_WINDOWS)
 #   include <windows.h>
-#elif defined (HAVE_IMAGE_H)
-#   include <image.h>
+#elif defined (HAVE_DL_BEOS)
+#   if defined (HAVE_IMAGE_H)
+#       include <image.h>
+#   endif
 #elif defined (HAVE_DL_DLOPEN)
 #   if defined (HAVE_DLFCN_H)
 #       include <dlfcn.h>
@@ -96,7 +100,7 @@ void Dlopen_File (char *obj) {
 
     /* NSUnLinkModule (handle, FALSE); */
 
-#elif defined (WIN32)
+#elif defined (HAVE_DL_WINDOWS)
     void *handle;
 
     if (Verb_Load)
@@ -170,7 +174,7 @@ void Dlopen_File (char *obj) {
         if (sym)
             sp->value = (unsigned long int)(intptr_t)NSAddressOfSymbol (sym);
 
-#elif defined (WIN32)
+#elif defined (HAVE_DL_WINDOWS)
         sp->value = (unsigned long int)(intptr_t)GetProcAddress (handle, sp->name);
 
 #elif defined (HAVE_DL_BEOS)

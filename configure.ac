@@ -56,6 +56,25 @@ case "${target_os}" in
 esac
 ELK_LIBS="${ELK_LIBS} ${MATH_LIBS}"
 
+# Various required  headers
+AC_CHECK_HEADERS(pwd.h grp.h sys/resource.h)
+
+# The UNIX extension likes to know which of the following system calls,
+# library functions, and include files are supported by the system.
+AC_CHECK_HEADERS(utime.h sys/utime.h sys/wait.h sys/times.h dirent.h netdb.h)
+AC_CHECK_FUNCS(waitpid wait3 wait4 vfork uname gethostname gettimeofday ftime)
+AC_CHECK_FUNCS(mktemp tmpnam tempnam getcwd getwd rename regcomp environ)
+AC_MSG_CHECKING(for __environ in unistd.h)
+AC_EGREP_HEADER(__environ, unistd.h,
+ [AC_MSG_RESULT(yes)
+  AC_DEFINE(__ENVIRON_IN_UNISTD_H, 1, Define if <unistd.h> defines __environ)],
+ [AC_MSG_RESULT(no)])
+AC_MSG_CHECKING(for environ in unistd.h)
+AC_EGREP_HEADER(environ, unistd.h,
+ [AC_MSG_RESULT(yes)
+  AC_DEFINE(ENVIRON_IN_UNISTD_H, 1, Define if <unistd.h> defines environ)],
+ [AC_MSG_RESULT(no)])
+
 # Does the system support the vprintf library function?  If not,
 # availability of the (non-portable) _doprnt function is assumed.
 AC_CHECK_FUNCS(vprintf)
@@ -197,6 +216,7 @@ fi
 if test "${ac_cv_my_can_load_lib}" = "no"; then
   AC_CHECK_LIB(kernel32, main,
    [ELK_LIBS="${ELK_LIBS} -lkernel32"
+    AC_DEFINE(HAVE_DL_WINDOWS, 1, [Define if you have Windows' LoadLibrary])
     ac_cv_my_can_load_lib=yes])
 fi
 
@@ -309,6 +329,24 @@ AC_CHECK_HEADERS(termio.h termios.h)
 # stack size of the running program.  If this function is not supported,
 # set max_stack_size to a (fixed) maximum stack size (in bytes).
 AC_CHECK_FUNCS(getrlimit)
+AC_CACHE_CHECK([for struct rlimit],
+  [ac_cv_have_struct_rlimit],
+  [AC_TRY_COMPILE(
+    [#ifdef HAVE_SYS_TIME_H
+     #   include <sys/time.h>
+     #endif
+     #ifdef HAVE_SYS_RESOURCE_H
+     #   include <sys/resource.h>
+     #endif
+     #ifdef HAVE_UNISTD_H
+     #   include <unistd.h>
+     #endif],
+    [struct rlimit rl;],
+    ac_cv_have_struct_rlimit=yes,
+    ac_cv_have_struct_rlimit=no)])
+if test "${ac_cv_have_struct_rlimit}" = "yes"; then
+  AC_DEFINE(HAVE_STRUCT_RLIMIT, 1, [Define if you have struct rlimit])
+fi
 AC_DEFINE(DEFAULT_MAX_STACK_SIZE, 1024*1024, [Define default max stack size])
 
 # Is the mprotect system call supported?  The generational garbage collector
@@ -377,22 +415,6 @@ AC_DEFINE(LD_NAME, "ld", [FIXME HARD])
 # __STDC__ is not defined?
 AC_DEFINE(ANSI_CPP, 1, [FIXME HARD])
 
-# The UNIX extension likes to know which of the following system calls,
-# library functions, and include files are supported by the system.
-AC_CHECK_HEADERS(utime.h sys/utime.h sys/wait.h sys/times.h dirent.h netdb.h)
-AC_CHECK_FUNCS(waitpid wait3 wait4 vfork uname gethostname gettimeofday ftime)
-AC_CHECK_FUNCS(mktemp tmpnam tempnam getcwd getwd rename regcomp environ)
-AC_MSG_CHECKING(for __environ in unistd.h)
-AC_EGREP_HEADER(__environ, unistd.h,
- [AC_MSG_RESULT(yes)
-  AC_DEFINE(__ENVIRON_IN_UNISTD_H, 1, Define if <unistd.h> defines __environ)],
- [AC_MSG_RESULT(no)])
-AC_MSG_CHECKING(for environ in unistd.h)
-AC_EGREP_HEADER(environ, unistd.h,
- [AC_MSG_RESULT(yes)
-  AC_DEFINE(ENVIRON_IN_UNISTD_H, 1, Define if <unistd.h> defines environ)],
- [AC_MSG_RESULT(no)])
-
 # Element type of the gidset argument of getgroups(); typically int
 # or gid_t.  Only needed by the UNIX extension.
 AC_DEFINE(GETGROUPS_TYPE, gid_t, [FIXME HARD])
@@ -415,8 +437,6 @@ AC_DEFINE_UNQUOTED(LIB_DIR, "${prefix}/lib/elk", [Plugins directory])
 
 #define FIND_AOUT defined(USE_LD) || defined(CAN_DUMP) || defined(INIT_OBJECTS)
 AC_DEFINE(FIND_AOUT, 1, [FIXME HARD])
-
-AC_CHECK_HEADERS(pwd.h grp.h sys/resource.h)
 
 dnl
 dnl  Check for available compiler features
