@@ -64,5 +64,5 @@ void Check_Result_Vector(Object x, unsigned int len) {
 }
 
 void elk_init_unix_unix() {
-    P_Provide(Intern("unix.so"));
+    P_Provide(Intern("unix.la"));
 }

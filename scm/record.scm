@@ -2,7 +2,7 @@
 ;;;
 ;;; The Scheme layer of the record extension.
 
-(require 'record.so)
+(require 'record.la)
 
 (define (record-field-index name fields)
   (let loop ((fields fields) (index 0))

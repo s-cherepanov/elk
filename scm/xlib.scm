@@ -2,7 +2,7 @@
 ;;;
 ;;; The Scheme part of the Xlib extension.
 
-(require 'xlib.so)
+(require 'xlib.la)
 
 (define (create-window . args)
   (apply-with-keywords

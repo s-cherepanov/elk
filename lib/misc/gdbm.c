@@ -288,5 +288,5 @@ void elk_init_lib_gdbm () {
     T_Gdbm_fh = Define_Type (0, "gdbm-file", NOFUNC,
         sizeof (struct S_gdbm_fh), Gdbm_fh_Equal, Gdbm_fh_Equal,
         Gdbm_fh_Print, NOFUNC);
-    P_Provide (Intern ("gdbm.so"));
+    P_Provide (Intern ("gdbm.la"));
 }

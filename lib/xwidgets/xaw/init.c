@@ -31,5 +31,5 @@
 #include "scheme.h"
 
 void elk_init_xaw_init () {
-    P_Provide (Intern ("xaw-widgets.so"));
+    P_Provide (Intern ("xaw-widgets.la"));
 }

@@ -10,7 +10,7 @@
 ;;;
 ;;; slot  =  slot-name  or  (slot-name initial-value)
 
-(require 'struct.so)
+(require 'struct.la)
 
 (define-macro (define-structure name . slot-descr)
   (internal-define-structure name slot-descr #t))

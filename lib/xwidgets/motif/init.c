@@ -31,5 +31,5 @@
 #include "scheme.h"
 
 void elk_init_motif_init () {
-    P_Provide (Intern ("motif-widgets.so"));
+    P_Provide (Intern ("motif-widgets.la"));
 }

@@ -97,7 +97,7 @@ void Check_Loadarg (Object x) {
         f = Car (tail);
         if (TYPE(f) != T_Symbol && TYPE(f) != T_String)
             Wrong_Type_Combination (f, "string or symbol");
-        if (!Has_Suffix (f, ".so"))
+        if (!Has_Suffix (f, ".la"))
             Primitive_Error ("~s: not an object file", f);
     }
 }
@@ -112,13 +112,13 @@ Object General_Load (Object what, Object env) {
     Switch_Environment (env);
     Check_Loadarg (what);
     if (TYPE(what) == T_Pair) {
-        if (Has_Suffix (Car (what), ".so"))
+        if (Has_Suffix (Car (what), ".la"))
 #ifdef CAN_LOAD_LIB
             Load_Library (what)
 #endif
             ;
     }
-    else if (Has_Suffix (what, ".so"))
+    else if (Has_Suffix (what, ".la"))
 #ifdef CAN_LOAD_LIB
         Load_Library (Cons (what, Null))
 #endif

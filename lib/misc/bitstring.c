@@ -564,5 +564,5 @@ void elk_init_lib_bitstring() {
     Def_Prim(P_Bitstring_Andnot, "bitstring-andnot!",           2, 2, EVAL);
     Def_Prim(P_Bitstring_Xor,    "bitstring-xor!",              2, 2, EVAL);
     Def_Prim(P_Substring_Move,   "bitstring-substring-move!",   5, 5, EVAL);
-    P_Provide (Intern ("bitstring.so"));
+    P_Provide (Intern ("bitstring.la"));
 }

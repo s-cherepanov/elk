@@ -57,7 +57,7 @@ void elk_init_xlib_init () {
                         "xlib-release-5-or-later?",               0, 0, EVAL);
     Define_Primitive (P_Xlib_Release_6_Or_Laterp,
                         "xlib-release-6-or-later?",               0, 0, EVAL);
-    P_Provide (Intern ("xlib.so"));
+    P_Provide (Intern ("xlib.la"));
 }
 
 #if defined(XLIB_RELEASE_5_OR_LATER) && (defined(sun) || defined(__sun__)) &&\
