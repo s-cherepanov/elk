@@ -383,7 +383,7 @@ AC_DEFINE(ANSI_CPP, 1, [FIXME HARD])
 
 # The UNIX extension likes to know which of the following system calls,
 # library functions, and include files are supported by the system.
-AC_CHECK_HEADERS(utime.h sys/utime.h sys/wait.h dirent.h)
+AC_CHECK_HEADERS(utime.h sys/utime.h sys/wait.h dirent.h netdb.h)
 AC_CHECK_FUNCS(waitpid wait3 wait4 vfork uname gethostname gettimeofday ftime)
 AC_CHECK_FUNCS(mktemp tmpnam tempnam getcwd getwd rename regcomp)
 

@@ -35,6 +35,9 @@
 #if defined(HAVE_UNAME) && !defined(HAVE_GETHOSTNAME)
 #  include <sys/utsname.h>
 #endif
+#ifdef HAVE_NETDB_H
+#  include <netdb.h>
+#endif
 
 #define L_LINK_MAX     0
 #define L_NAME_MAX     1
