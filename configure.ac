@@ -164,6 +164,7 @@ fi
 
 if test "${ac_cv_my_have_elf}" = "yes"; then
   AC_DEFINE(HAVE_LIBELF, 1, Define if you have libelf.)
+  ELK_LIBS="${ELK_LIBS} -lelf"
   ac_cv_my_can_dump=yes
   ac_cv_my_can_load_obj=yes
   ac_cv_my_can_load_lib=yes
@@ -470,7 +471,9 @@ AC_SUBST(MOTIF_LIBS)
 
 dnl  Export variables
 INCLUDES="${INCLUDES} -I\$(top_srcdir)/include"
+ELK_LIBS="${ELK_LIBS} -lm -ldl"
 AC_SUBST(INCLUDES)
+AC_SUBST(ELK_LIBS)
 
 AC_OUTPUT([
   Makefile
