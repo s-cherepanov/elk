@@ -42,8 +42,12 @@
 #endif
 #endif
 
-#ifdef FIONREAD_H
-#  include FIONREAD_H
+#if defined(FIONREAD_IN_TERMIOS_H)
+#   include <termios.h>
+#elif defined(FIONREAD_IN_SYS_IOCTL_H)
+#   include <sys/ioctl.h>
+#elif defined(FIONREAD_IN_SYS_FILIO_H)
+#   include <sys/filio.h>
 #endif
 
 #include "kernel.h"

@@ -34,7 +34,7 @@ AC_SUBST(STDINT_HEADER)
 # $system should contain the name of this file.  It may be used by some
 # of the build scripts to do things that are specific to one single
 # type of system.
-AC_DEFINE(SYSTEMTYPE, "i486-linux-gcc", [FIXME HARD])
+AC_DEFINE(SYSTEMTYPE, "${target_os}", Our operating system)
 
 # Does the system support the vprintf library function?  If not,
 # availability of the (non-portable) _doprnt function is assumed.
@@ -63,7 +63,24 @@ dnl FIXME
 AC_CHECK_HEADERS(unistd.h)
 
 # If the FIONREAD ioctl command is defined, which file must be included?
-AC_DEFINE(FIONREAD_H, <termios.h>, [FIXME HARD])
+AC_MSG_CHECKING(for FIONREAD in termios.h)
+AC_EGREP_HEADER(FIONREAD, termios.h, [
+  AC_MSG_RESULT(yes) AC_DEFINE(FIONREAD_IN_TERMIOS_H, 1, Define if <termios.h> defines FIONREAD)
+],[
+  AC_MSG_RESULT(no)
+  AC_MSG_CHECKING(for FIONREAD in sys/ioctl.h)
+  AC_EGREP_HEADER(FIONREAD, sys/ioctl.h, [
+    AC_MSG_RESULT(yes) AC_DEFINE(FIONREAD_IN_SYS_IOCTL_H, 1, Define if <sys/ioctl.h> defines FIONREAD)
+  ],[
+    AC_MSG_RESULT(no)
+    AC_MSG_CHECKING(for FIONREAD in sys/filio.h)
+    AC_EGREP_HEADER(FIONREAD, sys/filio.h, [
+      AC_MSG_RESULT(yes) AC_DEFINE(FIONREAD_IN_SYS_FILIO_H, 1, Define if <sys/filio.h> defines FIONREAD)
+    ],[
+      AC_MSG_RESULT(no)
+    ])
+  ])
+])
 
 # What is the name of the a.out include file?
 AC_DEFINE(AOUT_H, <a.out.h>, [FIXME HARD])
@@ -122,21 +139,35 @@ AC_DEFINE(POSIX_SIGNALS, 1, [FIXME HARD])
 if false; then
   AC_DEFINE(COFF, 1, [FIXME HARD])
 fi
+
 if false; then
   AC_DEFINE(ECOFF, 1, [FIXME HARD])
 fi
+
 if false; then
   AC_DEFINE(XCOFF, 1, [FIXME HARD])
 fi
-AC_DEFINE(ELF, 1, [FIXME HARD])
+
+AC_CHECK_LIB(elf, elf_begin, ac_cv_my_have_elf=yes, ac_cv_my_have_elf=no)
+
 if false; then
   AC_DEFINE(MACH_O, 1, [FIXME HARD])
 fi
+
 if false; then
   AC_DEFINE(CONVEX_AOUT, 1, [FIXME HARD])
 fi
+
 if false; then
   AC_DEFINE(HP9K, 1, [FIXME HARD])
+fi
+
+ac_cv_my_have_aout_format=yes
+if test "${ac_cv_my_have_elf}" = "yes"; then
+  AC_DEFINE(HAVE_LIBELF, 1, Define if you have libelf.)
+else
+  :
+  dnl AC_MSG_ERROR([could not handle the native object format, if you are running Linux please install the libelf development headers])
 fi
 
 # Which mechanism should be used to dynamically load object files?
@@ -389,8 +420,7 @@ dnl
 CFLAGS="${CFLAGS_save}"
 LDFLAGS="${LDFLAGS_save}"
 
-ac_cv_my_have_gdbm=no
-AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_my_have_gdbm=yes)
+AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_my_have_gdbm=yes, ac_cv_my_have_gdbm=no)
 AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_my_have_gdbm}" = "yes")
 
 AC_PATH_X
@@ -464,8 +494,8 @@ AC_OUTPUT([
 
 cat << EOF
 
-Configuration summary
----------------------
+Elk configuration summary
+-------------------------
 build C++ plugins: ${ac_cv_my_have_cxx}
 libgdbm support: ${ac_cv_my_have_xaw}
 X11 support: ${ac_cv_my_have_x11}

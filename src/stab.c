@@ -41,7 +41,7 @@ void Free_Symbols (SYMTAB *);
 
 #if defined(MACH_O)
 #  include "stab-macho.c"
-#elif defined(ELF)
+#elif defined(HAVE_LIBELF)
 #  include "stab-elf.c"
 #elif defined(COFF) || defined(XCOFF)
 #  include "stab-coff.c"
