@@ -1,6 +1,6 @@
 . ../config/system
 . ../config/site
-. ../debian/arch-config || true
+test -f ../debian/arch-config && . ../debian/arch-config
 
 case _$aout_format in
 _coff)   dump=dump-vanilla.c; stab=stab-coff.c;;
