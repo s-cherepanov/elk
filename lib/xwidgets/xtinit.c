@@ -73,5 +73,10 @@ void elk_init_xt_init () {
     Define_Primitive (P_Xt_Release_6_Or_Laterp, "xt-release-6-or-later?",
         0, 0, EVAL);
     XtToolkitInitialize ();
-    P_Provide (Intern ("xt.la"));
+#ifdef USING_MOTIF
+    P_Provide (Intern ("motif.la"));
+#endif
+#ifdef USING_XAW
+    P_Provide (Intern ("xaw.la"));
+#endif
 }

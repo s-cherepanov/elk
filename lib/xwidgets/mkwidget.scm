@@ -129,14 +129,20 @@
 
 (define (feature-name fn)
   (let ((i (substring? ".d" fn)))
+(display "filename: ") (display fn) (newline)
     (if (not i)
 	(error 'mkwidget "bad filename suffix in ~a (expected .d)" fn))
     (string->symbol (substring fn 0 i))))
 
 (define args (command-line-args))
-(if (not (= (length args) 3))
-    (error 'mkwidget "expected three arguments"))
-(define widget-set (string->symbol (caddr args)))
+(if (not (= (length args) 2))
+    (error 'mkwidget "expected two arguments"))
+(define widget-set 
+  (let ((n (substring? "/" (cadr args))))
+(display (cadr args))(newline)
+    (if n
+      (string->symbol (substring (cadr args) 0 n))
+      'unknown)))
 (set! f (open-output-file (cadr args)))
 (load (car args))
 (if (not type-name)
