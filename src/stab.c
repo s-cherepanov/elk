@@ -37,7 +37,7 @@
 
 void Free_Symbols (SYMTAB *);
 
-#if defined(CAN_LOAD_OBJ) || defined (INIT_OBJECTS)
+#if defined(CAN_LOAD_LIB) || defined (INIT_OBJECTS)
 
 #if defined(MACH_O)
 #  include "stab-macho.c"

@@ -42,8 +42,8 @@ void Init_Features () {
 #ifdef CAN_DUMP
     P_Provide (Intern ("elk:dump"));
 #endif
-#ifdef CAN_LOAD_OBJ
-    P_Provide (Intern ("elk:load-object"));
+#ifdef CAN_LOAD_LIB
+    P_Provide (Intern ("elk:load-lib"));
 #endif
 }
 

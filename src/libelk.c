@@ -56,7 +56,6 @@
 extern void Call_Initializers (SYMTAB *, char *, int);
 extern void Load_Source (Object);
 extern void Call_Finalizers ();
-extern void Finit_Load ();
 extern void Generational_GC_Reinitialize ();
 extern int Check_Stack_Grows_Down ();
 extern void Make_Heap (int);
@@ -105,16 +104,13 @@ char *A_Out_Name;
 char *Find_Executable();
 #endif
 
-#if defined(CAN_LOAD_OBJ) || defined(INIT_OBJECTS)
+#if defined(CAN_LOAD_LIB) || defined(INIT_OBJECTS)
 SYMTAB *The_Symbols;
 #endif
 
 void Exit_Handler () {
-#if defined(CAN_LOAD_OBJ) || defined(INIT_OBJECTS)
+#if defined(CAN_LOAD_LIB) || defined(INIT_OBJECTS)
     Call_Finalizers ();
-#endif
-#ifdef CAN_LOAD_OBJ
-    Finit_Load ();
 #endif
     Free_Heap ();
 }

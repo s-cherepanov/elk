@@ -22,6 +22,7 @@ libelk_la_SOURCES = \
 	libelk.c \
 	list.c \
 	load.c \
+	loadlib.c \
 	malloc.c \
 	math.c \
 	onfork.c \
@@ -47,10 +48,6 @@ EXTRA_DIST = \
 	dump-vanilla.c \
 	heap-gen.c \
 	heap-sc.c \
-	load-dl.c \
-	load-ld.c \
-	load-rld.c \
-	load-shl.c \
 	stab-bsd.c \
 	stab-coff.c \
 	stab-convex.c \

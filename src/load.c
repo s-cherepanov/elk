@@ -30,6 +30,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "kernel.h"
 
 Object V_Load_Path, V_Load_Noisilyp, V_Load_Libraries;
@@ -37,17 +39,10 @@ Object V_Load_Path, V_Load_Noisilyp, V_Load_Libraries;
 char *Loader_Input;  /* tmp file name used by load.xx.c */
 
 extern void Switch_Environment (Object);
-void Load_Source (Object);
-
-#if defined(USE_LD)
-#  include "load-ld.c"
-#elif defined(USE_RLD)
-#  include "load-rld.c"
-#elif defined(USE_SHL)
-#  include "load-shl.c"
-#elif defined(USE_DLOPEN)
-#  include "load-dl.c"
+#ifdef CAN_LOAD_LIB
+extern void Load_Library (Object libs);
 #endif
+void Load_Source (Object);
 
 void Init_Load () {
     Define_Variable (&V_Load_Path, "load-path",
@@ -102,7 +97,7 @@ void Check_Loadarg (Object x) {
         f = Car (tail);
         if (TYPE(f) != T_Symbol && TYPE(f) != T_String)
             Wrong_Type_Combination (f, "string or symbol");
-        if (!Has_Suffix (f, ".o") && !Has_Suffix (f, ".so"))
+        if (!Has_Suffix (f, ".so"))
             Primitive_Error ("~s: not an object file", f);
     }
 }
