@@ -11,12 +11,16 @@ AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AM_PROG_CC_C_O
+AC_PROG_CXX
+AM_CONDITIONAL(HAVE_CXX, test -n "$CXX")
 AC_PROG_LIBTOOL
 AC_STDC_HEADERS
 
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
+
+AC_CHECK_HEADERS(stdint.h inttypes.h sys/_inttypes.h)
 
 # $system should contain the name of this file.  It may be used by some
 # of the build scripts to do things that are specific to one single

@@ -4,13 +4,13 @@ pkglib_LTLIBRARIES = \
 	bitstring.la \
 	elk-eval.la \
 	hack.la \
-	newhandler.la \
 	regexp.la \
 	debug.la \
 	gdbm.la \
 	monitor.la \
 	record.la \
 	struct.la \
+	$(newhandler_la) \
 	$(NULL)
 
 bitstring_la_SOURCES = bitstring.c
@@ -24,10 +24,6 @@ elk_eval_la_LIBADD = $(top_builddir)/src/libelk.la
 hack_la_SOURCES = hack.c
 hack_la_LDFLAGS = -module -avoid-version
 hack_la_LIBADD = $(top_builddir)/src/libelk.la
-
-newhandler_la_SOURCES = newhandler.cpp
-newhandler_la_LDFLAGS = -module -avoid-version
-newhandler_la_LIBADD = $(top_builddir)/src/libelk.la
 
 regexp_la_SOURCES = regexp.c
 regexp_la_LDFLAGS = -module -avoid-version
@@ -52,4 +48,11 @@ record_la_LIBADD = $(top_builddir)/src/libelk.la
 struct_la_SOURCES = struct.c
 struct_la_LDFLAGS = -module -avoid-version
 struct_la_LIBADD = $(top_builddir)/src/libelk.la
+
+if HAVE_CXX
+newhandler_la = newhandler.la
+newhandler_la_SOURCES = newhandler.cpp
+newhandler_la_LDFLAGS = -module -avoid-version
+newhandler_la_LIBADD = $(top_builddir)/src/libelk.la
+endif
 
