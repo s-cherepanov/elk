@@ -32,7 +32,7 @@
 
 static Object V_Xt_Warning_Handler;
 
-void Xt_Warning (msg) char *msg; {
+void Xt_Warning (char *msg) {
     Object args, fun;
 
     args = Cons (Make_String (msg, strlen (msg)), Null);
@@ -43,7 +43,7 @@ void Xt_Warning (msg) char *msg; {
     (void)P_Newline (0, (Object *)0);
 }
 
-elk_init_xt_error () {
+void elk_init_xt_error () {
     Define_Variable (&V_Xt_Warning_Handler, "xt-warning-handler", Null);
     XtSetWarningHandler (Xt_Warning);
 }

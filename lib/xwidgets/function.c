@@ -30,11 +30,11 @@
 
 #include "xt.h"
 
-static max_functions = 512;
+static int max_functions = 512;
 static Object Functions;
 
-int Register_Function (x) Object x; {
-    register i;
+int Register_Function (Object x) {
+    register int i;
     Object v;
     GC_Node;
 
@@ -53,15 +53,15 @@ int Register_Function (x) Object x; {
     return i;
 }
 
-Object Get_Function (i) int i; {
+Object Get_Function (int i) {
     return VECTOR(Functions)->data[i];
 }
 
-void Deregister_Function (i) int i; {
+void Deregister_Function (int i) {
     VECTOR(Functions)->data[i] = Null;
 }
 
-elk_init_xt_function () {
+void elk_init_xt_function () {
     Functions = Make_Vector (max_functions, Null);
     Global_GC_Link (Functions);
 }

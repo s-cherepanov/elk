@@ -33,7 +33,7 @@
 
 (prolog
 
-"static Object Get_Scrollbar_CB (p) XmScrollBarCallbackStruct *p; {
+"static Object Get_Scrollbar_CB (XmScrollBarCallbackStruct *p) {
     Object ret, s;
     GC_Node2;
 

@@ -76,7 +76,7 @@
 
 (prolog
 
-"Object Get_Any_CB (p) XmAnyCallbackStruct *p; {
+"Object Get_Any_CB (XmAnyCallbackStruct *p) {
     Object args, ret;
     GC_Node2;
 
@@ -95,7 +95,7 @@
 
 (prolog
 
-"Object Get_Selection_CB (p) XmSelectionBoxCallbackStruct *p; {
+"Object Get_Selection_CB (XmSelectionBoxCallbackStruct *p) {
     Object ret, s;
     char *text;
     GC_Node2;
@@ -114,7 +114,7 @@
 
 (prolog
 
-"static XtArgVal Scheme_To_String_Table (x) Object x; {
+"static XtArgVal Scheme_To_String_Table (Object x) {
     Object t;
     char *s;
     XmString *tab;

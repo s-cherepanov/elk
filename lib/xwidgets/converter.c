@@ -41,7 +41,7 @@ typedef struct {
 
 static CONVERTER ctab[MAX_CONVERTER], *clast = ctab;
 
-void Define_Converter_To_Scheme (name, c) char *name; PFX2S c; {
+void Define_Converter_To_Scheme (char *name, PFX2S c) {
     Set_Error_Tag ("c->scheme");
     if (clast == ctab+MAX_CONVERTER)
         Primitive_Error ("too many converters");
@@ -51,7 +51,7 @@ void Define_Converter_To_Scheme (name, c) char *name; PFX2S c; {
     clast++;
 }
 
-void Define_Converter_To_C (name, c) char *name; PFS2X c; {
+void Define_Converter_To_C (char *name, PFS2X c) {
     Set_Error_Tag ("scheme->c");
     if (clast == ctab+MAX_CONVERTER)
         Primitive_Error ("too many converters");
@@ -61,7 +61,7 @@ void Define_Converter_To_C (name, c) char *name; PFS2X c; {
     clast++;
 }
 
-PFX2S Find_Converter_To_Scheme (name) char *name; {
+PFX2S Find_Converter_To_Scheme (char *name) {
     register CONVERTER *p;
 
     for (p = ctab; p < clast; p++)
@@ -70,7 +70,7 @@ PFX2S Find_Converter_To_Scheme (name) char *name; {
     return 0;
 }
 
-PFS2X Find_Converter_To_C (name) char *name; {
+PFS2X Find_Converter_To_C (char *name) {
     register CONVERTER *p;
 
     for (p = ctab; p < clast; p++)

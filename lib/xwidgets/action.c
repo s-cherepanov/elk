@@ -40,16 +40,14 @@ typedef struct action {
 ACTION *actions;
 
 /*ARGSUSED*/
-static void Dummy_Action (w, ep, argv, argc) Widget w; XEvent *ep;
-        String *argv; int *argc; {
+static void Dummy_Action (Widget w, XEvent *ep, String *argv, int *argc) {
 }
 
-void Action_Hook (w, client_data, name, ep, argv, argc)
-        Widget w; XtPointer client_data; char *name; XEvent *ep;
-        char **argv; int *argc; {
+void Action_Hook (Widget w, XtPointer client_data, char *name, XEvent *ep,
+                  char **argv, int *argc) {
     ACTION *ap;
     Object args, params, tail;
-    register i;
+    register int i;
     GC_Node3;
 
     for (ap = actions; ap; ap = ap->next) {
@@ -74,7 +72,7 @@ void Action_Hook (w, client_data, name, ep, argv, argc)
     }
 }
 
-static Object P_Context_Add_Action (c, s, p) Object c, s, p; {
+static Object P_Context_Add_Action (Object c, Object s, Object p) {
     ACTION *ap;
     XtActionsRec a;
 
@@ -92,10 +90,10 @@ static Object P_Context_Add_Action (c, s, p) Object c, s, p; {
     return Void;
 }
 
-void Free_Actions (con) XtAppContext con; {
+void Free_Actions (XtAppContext con) {
     register ACTION *p, **pp;
 
-    for (pp = &actions; p = *pp; ) {
+    for (pp = &actions; (p = *pp); ) {
         if (p->con == con) {
             Deregister_Function (p->num);
             XtFree (p->name);
@@ -105,6 +103,6 @@ void Free_Actions (con) XtAppContext con; {
     }
 }
 
-elk_init_xt_action () {
+void elk_init_xt_action () {
     Define_Primitive (P_Context_Add_Action, "context-add-action", 3, 3, EVAL);
 }

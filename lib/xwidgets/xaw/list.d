@@ -31,8 +31,8 @@
 
 (prolog
 "
-static char **Get_List (x) Object x; {
-    register i, n;
+static char **Get_List (Object x) {
+    register int i, n;
     register char *s, **l;
     Alloca_Begin;
 

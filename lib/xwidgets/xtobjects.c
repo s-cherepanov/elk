@@ -32,8 +32,8 @@
 
 #include "xt.h"
 
-Match_Xt_Obj (x, v) Object x; va_list v; {
-    register type = TYPE(x);
+int Match_Xt_Obj (Object x, va_list v) {
+    register int type = TYPE(x);
 
     if (type == T_Context) {
         return va_arg (v, XtAppContext) == CONTEXT(x)->context;

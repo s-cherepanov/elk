@@ -44,8 +44,8 @@
 
 (prolog
 
-"static void Post_Handler (w, client_data, event, unused) Widget w;
-	XtPointer client_data; XEvent *event; Boolean *unused; {
+"static void Post_Handler (Widget w, XtPointer client_data, XEvent *event,
+                          Boolean *unused) {
     unsigned int b;
     Arg a;
     XButtonPressedEvent *ep = (XButtonPressedEvent *)event;
@@ -61,7 +61,7 @@
 
 (prolog
 
-"static Object Get_Row_Column_CB (p) XmRowColumnCallbackStruct *p; {
+"static Object Get_Row_Column_CB (XmRowColumnCallbackStruct *p) {
     Object ret, s;
     GC_Node2;
 

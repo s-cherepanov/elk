@@ -31,8 +31,7 @@
 
 (prolog
 
-"static void Get_Value (w, client_data, value) Widget w;
-	XtPointer client_data; XtPointer value; {
+"static void Get_Value (Widget w, XtPointer client_data, XtPointer value) {
     Object ret;
 
     ret = Funcall (Get_Function ((int)client_data), Null, 0);

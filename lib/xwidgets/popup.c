@@ -37,7 +37,7 @@ static SYMDESCR Grab_Kind_Syms[] = {
     { 0, 0 }
 };
 
-static Object P_Create_Popup_Shell (argc, argv) Object *argv; {
+static Object P_Create_Popup_Shell (int argc, Object *argv) {
     ArgList a;
     char *name = 0;
     Object x, class, parent, ret;
@@ -61,20 +61,20 @@ static Object P_Create_Popup_Shell (argc, argv) Object *argv; {
     return ret;
 }
 
-static Object P_Popup (shell, grab_kind) Object shell, grab_kind; {
+static Object P_Popup (Object shell, Object grab_kind) {
     Check_Widget (shell);
     XtPopup (WIDGET(shell)->widget, Symbols_To_Bits (grab_kind, 0,
         Grab_Kind_Syms));
     return Void;
 }
 
-static Object P_Popdown (shell) Object shell; {
+static Object P_Popdown (Object shell) {
     Check_Widget (shell);
     XtPopdown (WIDGET(shell)->widget);
     return Void;
 }
 
-elk_init_xt_popup () {
+void elk_init_xt_popup () {
     Define_Primitive (P_Create_Popup_Shell, "create-popup-shell",
                                             2, MANY, VARARGS);
     Define_Primitive (P_Popup,   "popup",   2, 2, EVAL);

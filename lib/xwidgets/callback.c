@@ -30,18 +30,20 @@
 
 #include "xt.h"
 
+void Remove_All_Callbacks (Widget w);
+
 typedef struct {
     PFX2S converter;
     int num;
 } CLIENT_DATA;
 
-Object Get_Callbackfun (c) XtPointer c; {
+Object Get_Callbackfun (XtPointer c) {
     register CLIENT_DATA *cd = (CLIENT_DATA *)c;
     return cd ? Get_Function (cd->num) : False;
 }
 
-static void Callback_Proc (w, client_data, call_data) Widget w;
-        XtPointer client_data, call_data; {
+static void Callback_Proc (Widget w, XtPointer client_data,
+                           XtPointer call_data) {
     register CLIENT_DATA *cd = (CLIENT_DATA *)client_data;
     Object args;
     GC_Node;
@@ -56,8 +58,8 @@ static void Callback_Proc (w, client_data, call_data) Widget w;
 }
 
 /*ARGSUSED*/
-void Destroy_Callback_Proc (w, client_data, call_data) Widget w;
-        XtPointer client_data, call_data; {
+void Destroy_Callback_Proc (Widget w, XtPointer client_data,
+                            XtPointer call_data) {
     Object x;
 
     x = Find_Object (T_Widget, (GENERIC)0, Match_Xt_Obj, w);
@@ -77,13 +79,13 @@ void Destroy_Callback_Proc (w, client_data, call_data) Widget w;
  * must be called to remove the Destroy_Callback_Proc() and put
  * it back to the end of the callback list.
  */
-void Fiddle_Destroy_Callback (w) Widget w; {
+void Fiddle_Destroy_Callback (Widget w) {
     XtRemoveCallback (w, XtNdestroyCallback, Destroy_Callback_Proc,
         (XtPointer)0);
     XtAddCallback (w, XtNdestroyCallback, Destroy_Callback_Proc, (XtPointer)0);
 }
 
-void Check_Callback_List (x) Object x; {
+void Check_Callback_List (Object x) {
     Object tail;
 
     Check_List (x);
@@ -91,9 +93,9 @@ void Check_Callback_List (x) Object x; {
         Check_Procedure (Car (tail));
 }
 
-static Object P_Add_Callbacks (w, name, cbl) Object w, name, cbl; {
+static Object P_Add_Callbacks (Object w, Object name, Object cbl) {
     register char *s;
-    register n;
+    register int n;
     XtCallbackList callbacks;
     Alloca_Begin;
 
@@ -114,10 +116,10 @@ static Object P_Add_Callbacks (w, name, cbl) Object w, name, cbl; {
     return Void;
 }
 
-void Fill_Callbacks (src, dst, n, conv) Object src; XtCallbackList dst;
-        register n; PFX2S conv; {
+void Fill_Callbacks (Object src, XtCallbackList dst, register int n,
+                     PFX2S conv) {
     register CLIENT_DATA *cd;
-    register i, j;
+    register int i, j;
     Object tail;
 
     for (i = 0, tail = src; i < n; i++, tail = Cdr (tail)) {
@@ -130,12 +132,12 @@ void Fill_Callbacks (src, dst, n, conv) Object src; XtCallbackList dst;
     }
 }
 
-Remove_All_Callbacks (w) Widget w; {
+void Remove_All_Callbacks (Widget w) {
     Arg a[1];
     XtCallbackList c;
     XtResource *r;
     int nr, nc;
-    register i, j;
+    register int i, j;
 
     Get_All_Resources (0, w, XtClass (w), &r, &nr, &nc);
     for (j = 0; j < nr; j++) {
@@ -154,6 +156,6 @@ Remove_All_Callbacks (w) Widget w; {
     XtFree ((char *)r);
 }
 
-elk_init_xt_callback () {
+void elk_init_xt_callback () {
     Define_Primitive (P_Add_Callbacks, "add-callbacks", 3, 3, EVAL);
 }

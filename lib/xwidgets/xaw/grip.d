@@ -35,7 +35,7 @@
 
 (c->scheme 'callback:grip-callback
 "   Object args, ret, t;
-    register i;
+    register unsigned int i;
     GripCallData p = (GripCallData)x;
     GC_Node3;
 

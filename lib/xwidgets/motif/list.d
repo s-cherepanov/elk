@@ -33,7 +33,7 @@
 
 (prolog
 
-"static Object String_Table_To_Scheme (tab, len) XmString *tab; {
+"static Object String_Table_To_Scheme (XmString *tab, int len) {
     Object ret, tail;
     char *text;
     GC_Node2;
@@ -60,7 +60,7 @@
 
 (prolog
 
-"static Object Get_List_CB (p) XmListCallbackStruct *p; {
+"static Object Get_List_CB (XmListCallbackStruct *p) {
     Object ret, s;
     char *text;
     GC_Node2;

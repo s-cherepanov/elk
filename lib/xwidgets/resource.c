@@ -48,7 +48,7 @@
 #define T_Cardinal           -10
 #define T_Accelerators       -11
 
-static Resource_To_Scheme_Type (t) register char *t; {
+static int Resource_To_Scheme_Type (register char *t) {
     if (streq (XtRAcceleratorTable, t))
         return T_Accelerators;
     else if (streq (XtRBackingStore, t))
@@ -102,8 +102,8 @@ static Resource_To_Scheme_Type (t) register char *t; {
     return T_Unknown;
 }
 
-void Get_All_Resources (sub, w, c, rp, np, cp) Widget w; WidgetClass c;
-        XtResource **rp; int *np, *cp; {
+void Get_All_Resources (int sub, Widget w, WidgetClass c, XtResource **rp,
+                        int *np, int *cp) {
     XtResource *r, *sr, *cr;
     int nr, snr = 0, cnr = 0;
 
@@ -126,10 +126,10 @@ void Get_All_Resources (sub, w, c, rp, np, cp) Widget w; WidgetClass c;
     }
 }
 
-void Convert_Args (ac, av, to, widget, class) Object *av; ArgList to;
-        Widget widget; WidgetClass class; {
+void Convert_Args (int ac, Object *av, ArgList to, Widget widget,
+                   WidgetClass class) {
     register char *name, *res;
-    register i, j, k;
+    register int i, j, k;
     Object arg, val;
     XtResource *r;
     int nr, nc;
@@ -274,9 +274,9 @@ done: ;
     XtFree ((char *)r);
 }
 
-Object Get_Values (w, ac, av) Widget w; Object *av; {
+Object Get_Values (Widget w, int ac, Object *av) {
     register char *name;
-    register i, j;
+    register int i, j;
     Object arg;
     XtResource *r;
     int nr, nc;
@@ -334,9 +334,9 @@ Object Get_Values (w, ac, av) Widget w; Object *av; {
 
         if (converter) {
             o = converter (*(XtArgVal *)val);
-        } else if (converter = Find_Converter_To_Scheme (argl[i].name)) {
+        } else if ((converter = Find_Converter_To_Scheme (argl[i].name))) {
             o = converter (*(XtArgVal *)val);
-        } else if (converter = Find_Converter_To_Scheme (r[j].resource_type)) {
+        } else if ((converter = Find_Converter_To_Scheme (r[j].resource_type))) {
             o = converter (*(XtArgVal *)val);
         } else if (t == T_String_Or_Symbol) {
             char *s = *(char **)val;
@@ -344,7 +344,7 @@ Object Get_Values (w, ac, av) Widget w; Object *av; {
             if (s == 0) s = "";
             o = Make_String (s, strlen (s));
         } else if (t == T_Callbacklist) {
-            register i, n;
+            register int i, n;
             Object ret, tail;
             XtCallbackList callbacks = *(XtCallbackList *)val;
             GC_Node;
@@ -422,7 +422,7 @@ Object Get_Values (w, ac, av) Widget w; Object *av; {
 
 /* Convert `mapped-when-managed' to `mappedWhenManaged'.
  */
-void Make_Resource_Name (s) register char *s; {
+void Make_Resource_Name (register char *s) {
     register char *p;
 
     for (p = s; *s; ) {
@@ -437,7 +437,7 @@ void Make_Resource_Name (s) register char *s; {
     *p = '\0';
 }
 
-Object Get_Resources (c, fun, freeit) WidgetClass c; void (*fun)(); {
+Object Get_Resources (WidgetClass c, void (*fun)(), int freeit) {
     XtResource *r;
     register XtResource *p;
     int nr;

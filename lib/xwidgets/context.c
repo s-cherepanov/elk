@@ -52,7 +52,7 @@ Generic_Equal (Context, CONTEXT, context)
 
 Generic_Print (Context, "#[context %lu]", POINTER(x))
 
-static Object Internal_Make_Context (finalize, context) XtAppContext context; {
+static Object Internal_Make_Context (int finalize, XtAppContext context) {
     Object c;
 
     c = Find_Object (T_Context, (GENERIC)0, Match_Xt_Obj, context);
@@ -71,15 +71,15 @@ static Object Internal_Make_Context (finalize, context) XtAppContext context; {
 }
 
 /* Backwards compatibility: */
-Object Make_Context (context) XtAppContext context; {
+Object Make_Context (XtAppContext context) {
     return Internal_Make_Context (1, context);
 }
 
-Object Make_Context_Foreign (context) XtAppContext context; {
+Object Make_Context_Foreign (XtAppContext context) {
     return Internal_Make_Context (0, context);
 }
 
-void Check_Context (c) Object c; {
+void Check_Context (Object c) {
     Check_Type (c, T_Context);
     if (CONTEXT(c)->free)
         Primitive_Error ("invalid context: ~s", c);
@@ -89,7 +89,7 @@ static Object P_Create_Context () {
     return Make_Context (XtCreateApplicationContext ());
 }
 
-static Object P_Destroy_Context (c) Object c; {
+static Object P_Destroy_Context (Object c) {
     Check_Context (c);
     Free_Actions (CONTEXT(c)->context);
     XtDestroyApplicationContext (CONTEXT(c)->context);
@@ -98,12 +98,12 @@ static Object P_Destroy_Context (c) Object c; {
     return Void;
 }
 
-static Object P_Initialize_Display (c, d, name, class)
-        Object c, d, name, class; {
+static Object P_Initialize_Display (Object c, Object d, Object name,
+                                    Object class) {
     register char *sn = 0, *sc = "", *sd = 0;
     Display *dpy;
     extern char **Argv;
-    extern First_Arg, Argc;
+    extern int First_Arg, Argc;
     int argc = Argc - First_Arg + 1;
 
     Argv[First_Arg-1] = "elk";
@@ -124,25 +124,27 @@ static Object P_Initialize_Display (c, d, name, class)
         (XrmOptionDescRec *)0, 0, &argc, &Argv[First_Arg-1]);
     Argc = First_Arg + argc - 1;
     if (dpy == 0)
+    {
         if (sd)
             Primitive_Error ("cannot open display ~s", d);
         else
             Primitive_Error ("cannot open display");
+    }
     return Make_Display (0, dpy);
 }
 
 /* Due to a bug in Xt this function drops core when invoked with a
  * display not owned by Xt.
  */
-static Object P_Display_To_Context (d) Object d; {
+static Object P_Display_To_Context (Object d) {
     Check_Type (d, T_Display);
     return
         Make_Context_Foreign (XtDisplayToApplicationContext (DISPLAY(d)->dpy));
 }
 
-static Object P_Set_Context_Fallback_Resources (argc, argv) Object *argv; {
+static Object P_Set_Context_Fallback_Resources (int argc, Object *argv) {
     register char **p = 0;
-    register i;
+    register int i;
     struct S_String *sp;
     Object con;
 
@@ -164,19 +166,20 @@ static Object P_Set_Context_Fallback_Resources (argc, argv) Object *argv; {
     return Void;
 }
 
-static Object P_Context_Main_Loop (c) Object c; {
+static Object P_Context_Main_Loop (Object c) {
     Check_Context (c);
     XtAppMainLoop (CONTEXT(c)->context);
     /*NOTREACHED*/
+    return Void;
 }
 
-static Object P_Context_Pending (c) Object c; {
+static Object P_Context_Pending (Object c) {
     Check_Context (c);
     return Bits_To_Symbols ((unsigned long)XtAppPending (CONTEXT(c)->context),
         1, XtIM_Syms);
 }
 
-static Object P_Context_Process_Event (argc, argv) Object *argv; {
+static Object P_Context_Process_Event (int argc, Object *argv) {
     XtInputMask mask = XtIMAll;
 
     Check_Context (argv[0]);
@@ -186,7 +189,7 @@ static Object P_Context_Process_Event (argc, argv) Object *argv; {
     return Void;
 }
 
-static Boolean Work_Proc (client_data) XtPointer client_data; {
+static Boolean Work_Proc (XtPointer client_data) {
     Object ret;
 
     ret = Funcall (Get_Function ((int)client_data), Null, 0);
@@ -195,9 +198,9 @@ static Boolean Work_Proc (client_data) XtPointer client_data; {
     return Truep (ret);
 }
 
-static Object P_Context_Add_Work_Proc (c, p) Object c, p; {
+static Object P_Context_Add_Work_Proc (Object c, Object p) {
     XtWorkProcId id;
-    register i;
+    register int i;
 
     Check_Context (c);
     Check_Procedure (p);
@@ -206,16 +209,15 @@ static Object P_Context_Add_Work_Proc (c, p) Object c, p; {
     return Make_Id ('w', (XtPointer)id, i);
 }
 
-static Object P_Remove_Work_Proc (id) Object id; {
+static Object P_Remove_Work_Proc (Object id) {
     XtRemoveWorkProc ((XtWorkProcId)Use_Id (id, 'w'));
     Deregister_Function (IDENTIFIER(id)->num);
     return Void;
 }
 
-static void Timeout_Proc (client_data, id)
-        XtPointer client_data; XtIntervalId *id; {
+static void Timeout_Proc (XtPointer client_data, XtIntervalId *id) {
     Object proc, args;
-    register i = (int)client_data;
+    register int i = (int)client_data;
 
     args = Cons (Make_Id ('t', (XtPointer)*id, i), Null);
     proc = Get_Function (i);
@@ -223,9 +225,9 @@ static void Timeout_Proc (client_data, id)
     (void)Funcall (proc, args, 0);
 }
 
-static Object P_Context_Add_Timeout (c, n, p) Object c, n, p; {
+static Object P_Context_Add_Timeout (Object c, Object n, Object p) {
     XtIntervalId id;
-    register i;
+    register int i;
 
     Check_Context (c);
     Check_Procedure (p);
@@ -235,15 +237,14 @@ static Object P_Context_Add_Timeout (c, n, p) Object c, n, p; {
     return Make_Id ('t', (XtPointer)id, i);
 }
 
-static Object P_Remove_Timeout (id) Object id; {
+static Object P_Remove_Timeout (Object id) {
     XtRemoveTimeOut ((XtIntervalId)Use_Id (id, 't'));
     Deregister_Function (IDENTIFIER(id)->num);
     return Void;
 }
 
 /*ARGSUSED*/
-static void Input_Proc (client_data, src, id) XtPointer client_data; int *src;
-        XtInputId *id; {
+static void Input_Proc (XtPointer client_data, int *src, XtInputId *id) {
     Object p, args;
     GC_Node2;
 
@@ -256,11 +257,11 @@ static void Input_Proc (client_data, src, id) XtPointer client_data; int *src;
     (void)Funcall (Cdr (p), args, 0);
 }
 
-static Object P_Context_Add_Input (argc, argv) Object *argv; {
+static Object P_Context_Add_Input (int argc, Object *argv) {
     Object c, src, p;
     XtInputId id;
     XtInputMask m;
-    register i;
+    register int i;
 
     c = argv[0], src = argv[1], p = argv[2];
     Check_Context (c);
@@ -285,13 +286,13 @@ static Object P_Context_Add_Input (argc, argv) Object *argv; {
     return Make_Id ('i', (XtPointer)id, i);
 }
 
-static Object P_Remove_Input (id) Object id; {
+static Object P_Remove_Input (Object id) {
     XtRemoveInput ((XtInputId)Use_Id (id, 'i'));
     Deregister_Function (IDENTIFIER(id)->num);
     return Void;
 }
 
-elk_init_xt_context () {
+void elk_init_xt_context () {
     Generic_Define (Context, "context", "context?");
     Define_Primitive (P_Create_Context,     "create-context",     0, 0, EVAL);
     Define_Primitive (P_Destroy_Context,    "destroy-context",    1, 1, EVAL);

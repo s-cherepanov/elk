@@ -54,7 +54,7 @@ Generic_Simple_Equal (Class, CLASS, wclass)
 
 Generic_Print (Class, "#[class %s]", CLASS(x)->name)
 
-Object Make_Class (class, name) WidgetClass class; char *name; {
+Object Make_Class (WidgetClass class, char *name) {
     Object c;
 
     c = Find_Object (T_Class, (GENERIC)0, Match_Xt_Obj, class);
@@ -70,7 +70,7 @@ Object Make_Class (class, name) WidgetClass class; char *name; {
     return c;
 }
 
-Object Make_Widget_Class (class) WidgetClass class; {
+Object Make_Widget_Class (WidgetClass class) {
     register CLASS_INFO *p;
 
     for (p = ctab; p < clast; p++)
@@ -80,7 +80,7 @@ Object Make_Widget_Class (class) WidgetClass class; {
     /*NOTREACHED*/
 }
 
-static Object P_Find_Class (name) Object name; {
+static Object P_Find_Class (Object name) {
     register CLASS_INFO *p;
     register char *s = Get_Strsym (name);
 
@@ -92,7 +92,7 @@ static Object P_Find_Class (name) Object name; {
     /*NOTREACHED*/
 }
 
-static Object P_Class_Existsp (name) Object name; {
+static Object P_Class_Existsp (Object name) {
     register CLASS_INFO *p;
     register char *s = Get_Strsym (name);
 
@@ -103,7 +103,7 @@ static Object P_Class_Existsp (name) Object name; {
     return False;
 }
 
-char *Class_Name (class) WidgetClass class; {
+char *Class_Name (WidgetClass class) {
     register CLASS_INFO *p;
 
     for (p = ctab; p < clast && p->class != class; p++)
@@ -113,8 +113,8 @@ char *Class_Name (class) WidgetClass class; {
     return p->name;
 }
 
-void Get_Sub_Resource_List (class, rp, np) WidgetClass class;
-        XtResourceList *rp; Cardinal *np; {
+void Get_Sub_Resource_List (WidgetClass class, XtResourceList *rp,
+                            Cardinal *np) {
     register CLASS_INFO *p;
 
     for (p = ctab; p < clast && p->class != class; p++)
@@ -125,23 +125,22 @@ void Get_Sub_Resource_List (class, rp, np) WidgetClass class;
     *rp = p->sub_resources;
 }
 
-static Object P_Class_Resources (c) Object c; {
+static Object P_Class_Resources (Object c) {
     Check_Type (c, T_Class);
     return Get_Resources (CLASS(c)->wclass, XtGetResourceList, 1);
 }
 
-static Object P_Class_Constraint_Resources (c) Object c; {
+static Object P_Class_Constraint_Resources (Object c) {
     Check_Type (c, T_Class);
     return Get_Resources (CLASS(c)->wclass, XtGetConstraintResourceList, 1);
 }
 
-static Object P_Class_Sub_Resources (c) Object c; {
+static Object P_Class_Sub_Resources (Object c) {
     Check_Type (c, T_Class);
     return Get_Resources (CLASS(c)->wclass, Get_Sub_Resource_List, 0);
 }
 
-void Define_Class (name, class, r, nr) char *name; WidgetClass class;
-        XtResourceList r; {
+void Define_Class (char *name, WidgetClass class, XtResourceList r, int nr) {
     Set_Error_Tag ("define-class");
     if (clast == ctab+MAX_CLASS)
         Primitive_Error ("too many widget classes");
@@ -166,7 +165,7 @@ void Define_Class (name, class, r, nr) char *name; WidgetClass class;
     clast++;
 }
 
-void Define_Callback (cl, s, has_arg) char *cl, *s; {
+void Define_Callback (char *cl, char *s, int has_arg) {
     register CLASS_INFO *p;
 
     Set_Error_Tag ("define-callback");
@@ -182,8 +181,7 @@ void Define_Callback (cl, s, has_arg) char *cl, *s; {
     Primitive_Error ("undefined class");
 }
 
-PFX2S Find_Callback_Converter (c, name, sname) WidgetClass c; char *name;
-        Object sname; {
+PFX2S Find_Callback_Converter (WidgetClass c, char *name, Object sname) {
     register CLASS_INFO *p;
     register CALLBACK_INFO *q;
     PFX2S conv;
@@ -208,7 +206,7 @@ PFX2S Find_Callback_Converter (c, name, sname) WidgetClass c; char *name;
                             if (conv == 0) {
                                 sprintf (msg,
                                     "no callback converter for %s or %s",
-                                        s1, s2, name);
+                                        s1, s2);
                                 Primitive_Error (msg);
                             }
                         }
@@ -221,7 +219,7 @@ PFX2S Find_Callback_Converter (c, name, sname) WidgetClass c; char *name;
     /*NOTREACHED*/
 }
 
-elk_init_xt_class () {
+void elk_init_xt_class () {
     Generic_Define (Class, "class", "class?");
     Define_Primitive (P_Find_Class,        "find-class",        1, 1, EVAL);
     Define_Primitive (P_Class_Resources,   "class-resources",   1, 1, EVAL);

@@ -30,7 +30,7 @@
 
 #include "xt.h"
 
-XtTranslations Get_Translations (t) Object t; {
+XtTranslations Get_Translations (Object t) {
     register char *s;
     XtTranslations ret;
     Alloca_Begin;
@@ -42,19 +42,19 @@ XtTranslations Get_Translations (t) Object t; {
     return ret;
 }
 
-static Object P_Augment_Translations (w, t) Object w, t; {
+static Object P_Augment_Translations (Object w, Object t) {
     Check_Widget (w);
     XtAugmentTranslations (WIDGET(w)->widget, Get_Translations (t));
     return Void;
 }
 
-static Object P_Override_Translations (w, t) Object w, t; {
+static Object P_Override_Translations (Object w, Object t) {
     Check_Widget (w);
     XtOverrideTranslations (WIDGET(w)->widget, Get_Translations (t));
     return Void;
 }
 
-static Object P_Uninstall_Translations (w) Object w; {
+static Object P_Uninstall_Translations (Object w) {
     Check_Widget (w);
     XtUninstallTranslations (WIDGET(w)->widget);
     return Void;
@@ -63,18 +63,18 @@ static Object P_Uninstall_Translations (w) Object w; {
 /* Due to a bug in Xt these functions drop core when invoked with a
  * display not owned by Xt.
  */
-static Object P_Multi_Click_Time (d) Object d; {
+static Object P_Multi_Click_Time (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (XtGetMultiClickTime (DISPLAY(d)->dpy));
 }
 
-static Object P_Set_Multi_Click_Time (d, t) Object d, t; {
+static Object P_Set_Multi_Click_Time (Object d, Object t) {
     Check_Type (d, T_Display);
     XtSetMultiClickTime (DISPLAY(d)->dpy, Get_Integer (t));
     return Void;
 }
 
-elk_init_xt_translation () {
+void elk_init_xt_translation () {
     Define_Primitive (P_Augment_Translations,
                         "augment-translations",                  2, 2, EVAL);
     Define_Primitive (P_Override_Translations,

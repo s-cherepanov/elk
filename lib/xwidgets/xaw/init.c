@@ -30,6 +30,6 @@
 
 #include "scheme.h"
 
-elk_init_xaw_init () {
+void elk_init_xaw_init () {
     P_Provide (Intern ("xaw-widgets.so"));
 }

@@ -58,10 +58,10 @@ extern WidgetClass vendorShellWidgetClass;
  * it isn't removed by the optimizer.
  */
 
-static dummy (w) WidgetClass w; {
+static void dummy (WidgetClass w) {
 }
 
-elk_init_xt_init () {
+void elk_init_xt_init () {
     extern WidgetClass vendorShellWidgetClass;
 
     dummy(vendorShellWidgetClass);

@@ -30,7 +30,7 @@
 
 #include "xt.h"
 
-XtAccelerators Get_Accelerators (a) Object a; {
+XtAccelerators Get_Accelerators (Object a) {
     register char *s;
     XtAccelerators ret;
     Alloca_Begin;
@@ -42,14 +42,14 @@ XtAccelerators Get_Accelerators (a) Object a; {
     return ret;
 }
 
-static Object P_Install_Accelerators (dst, src) Object dst, src; {
+static Object P_Install_Accelerators (Object dst, Object src) {
     Check_Widget (dst);
     Check_Widget (src);
     XtInstallAccelerators (WIDGET(dst)->widget, WIDGET(src)->widget);
     return Void;
 }
 
-static Object P_Install_All_Accelerators (dst, src) Object dst, src; {
+static Object P_Install_All_Accelerators (Object dst, Object src) {
     Check_Widget (dst);
     Check_Widget (src);
     XtInstallAllAccelerators (WIDGET(dst)->widget, WIDGET(src)->widget);
@@ -57,7 +57,7 @@ static Object P_Install_All_Accelerators (dst, src) Object dst, src; {
 
 }
 
-elk_init_xt_accelerator () {
+void elk_init_xt_accelerator () {
     Define_Primitive (P_Install_Accelerators,
                         "install-accelerators",       2, 2, EVAL);
     Define_Primitive (P_Install_All_Accelerators,

@@ -40,7 +40,7 @@ Generic_Equal (Widget, WIDGET, widget)
 
 Generic_Print (Widget, "#[widget %lu]", POINTER(x))
 
-static Object Internal_Make_Widget (finalize, widget) Widget widget; {
+static Object Internal_Make_Widget (int finalize, Widget widget) {
     Object w;
 
     if (widget == 0)
@@ -60,33 +60,33 @@ static Object Internal_Make_Widget (finalize, widget) Widget widget; {
 }
 
 /* Backwards compatibility: */
-Object Make_Widget (widget) Widget widget; {
+Object Make_Widget (Widget widget) {
     return Internal_Make_Widget (1, widget);
 }
 
-Object Make_Widget_Foreign (widget) Widget widget; {
+Object Make_Widget_Foreign (Widget widget) {
     return Internal_Make_Widget (0, widget);
 }
 
-void Check_Widget (w) Object w; {
+void Check_Widget (Object w) {
     Check_Type (w, T_Widget);
     if (WIDGET(w)->free)
         Primitive_Error ("invalid widget: ~s", w);
 }
 
-void Check_Widget_Class (w, class) Object w; WidgetClass class; {
+void Check_Widget_Class (Object w, WidgetClass class) {
     Check_Widget (w);
     if (XtClass (WIDGET(w)->widget) != class)
         Primitive_Error ("widget not of expected class: ~s", w);
 }
 
-static Object P_Destroy_Widget (w) Object w; {
+static Object P_Destroy_Widget (Object w) {
     Check_Widget (w);
     XtDestroyWidget (WIDGET(w)->widget);
     return Void;
 }
 
-static Object P_Create_Shell (argc, argv) Object *argv; {
+static Object P_Create_Shell (int argc, Object *argv) {
     register char *sn = 0, *sc = 0;
     ArgList a;
     Object name, class, w, d, ret;
@@ -106,7 +106,7 @@ static Object P_Create_Shell (argc, argv) Object *argv; {
     return ret;
 }
 
-static Object P_Create_Widget (argc, argv) Object *argv; {
+static Object P_Create_Widget (int argc, Object *argv) {
     ArgList a;
     char *name = 0;
     Object x, class, parent, ret;
@@ -131,34 +131,34 @@ static Object P_Create_Widget (argc, argv) Object *argv; {
     return ret;
 }
 
-static Object P_Realize_Widget (w) Object w; {
+static Object P_Realize_Widget (Object w) {
     Check_Widget (w);
     XtRealizeWidget (WIDGET(w)->widget);
     return Void;
 }
 
-static Object P_Unrealize_Widget (w) Object w; {
+static Object P_Unrealize_Widget (Object w) {
     Check_Widget (w);
     XtUnrealizeWidget (WIDGET(w)->widget);
     return Void;
 }
 
-static Object P_Widget_Realizedp (w) Object w; {
+static Object P_Widget_Realizedp (Object w) {
     Check_Widget (w);
     return XtIsRealized (WIDGET(w)->widget) ? True : False;
 }
 
-static Object P_Widget_Display (w) Object w; {
+static Object P_Widget_Display (Object w) {
     Check_Widget (w);
     return Make_Display (0, XtDisplayOfObject (WIDGET(w)->widget));
 }
 
-static Object P_Widget_Parent (w) Object w; {
+static Object P_Widget_Parent (Object w) {
     Check_Widget (w);
     return Make_Widget_Foreign (XtParent (WIDGET(w)->widget));
 }
 
-static Object P_Widget_Name (w) Object w; {
+static Object P_Widget_Name (Object w) {
     char *s;
 
     Check_Widget (w);
@@ -166,19 +166,19 @@ static Object P_Widget_Name (w) Object w; {
     return Make_String (s, strlen (s));
 }
 
-static Object P_Widget_To_Window (w) Object w; {
+static Object P_Widget_To_Window (Object w) {
     Check_Widget (w);
     return Make_Window (0, XtDisplayOfObject (WIDGET(w)->widget),
         XtWindow (WIDGET(w)->widget));
 }
 
-static Object P_Widget_Compositep (w) Object w; {
+static Object P_Widget_Compositep (Object w) {
     Check_Widget (w);
     return XtIsComposite (WIDGET(w)->widget) ? True : False;
 }
 
-static Object Manage_Unmanage (children, f) Object children; void (*f)(); {
-    register i, n;
+static Object Manage_Unmanage (Object children, void (*f)()) {
+    register int i, n;
     Widget *buf;
     Object tail;
     Alloca_Begin;
@@ -198,60 +198,60 @@ static Object Manage_Unmanage (children, f) Object children; void (*f)(); {
     return Void;
 }
 
-static Object P_Manage_Children (children) Object children; {
+static Object P_Manage_Children (Object children) {
     return Manage_Unmanage (children, XtManageChildren);
 }
 
-static Object P_Unmanage_Children (children) Object children; {
+static Object P_Unmanage_Children (Object children) {
     return Manage_Unmanage (children, XtUnmanageChildren);
 }
 
-static Object P_Widget_Managedp (w) Object w; {
+static Object P_Widget_Managedp (Object w) {
     Check_Widget (w);
     return XtIsManaged (WIDGET(w)->widget) ? True : False;
 }
 
-static Object P_Widget_Class (w) Object w; {
+static Object P_Widget_Class (Object w) {
     Check_Widget (w);
     return Make_Widget_Class (XtClass (WIDGET(w)->widget));
 }
 
-static Object P_Widget_Superclass (w) Object w; {
+static Object P_Widget_Superclass (Object w) {
     Check_Widget (w);
     if (XtClass (WIDGET(w)->widget) == widgetClass)
         return Sym_None;
     return Make_Widget_Class (XtSuperclass (WIDGET(w)->widget));
 }
 
-static Object P_Widget_Subclassp (w, c) Object w, c; {
+static Object P_Widget_Subclassp (Object w, Object c) {
     Check_Widget (w);
     Check_Type (c, T_Class);
     return XtIsSubclass (WIDGET(w)->widget, CLASS(c)->wclass) ? True : False;
 }
 
-static Object P_Set_Mapped_When_Managed (w, m) Object w, m; {
+static Object P_Set_Mapped_When_Managed (Object w, Object m) {
     Check_Widget (w);
     Check_Type (m, T_Boolean);
     XtSetMappedWhenManaged (WIDGET(w)->widget, EQ(m, True));
     return Void;
 }
 
-static Object P_Map_Widget (w) Object w; {
+static Object P_Map_Widget (Object w) {
     Check_Widget (w);
     XtMapWidget (WIDGET(w)->widget);
     return Void;
 }
 
-static Object P_Unmap_Widget (w) Object w; {
+static Object P_Unmap_Widget (Object w) {
     Check_Widget (w);
     XtUnmapWidget (WIDGET(w)->widget);
     return Void;
 }
 
-static Object P_Set_Values (argc, argv) Object *argv; {
+static Object P_Set_Values (int argc, Object *argv) {
     ArgList a;
     Widget w;
-    register i, n = (argc-1)/2;
+    register int i, n = (argc-1)/2;
     Alloca_Begin;
 
     Check_Widget (argv[0]);
@@ -265,7 +265,7 @@ static Object P_Set_Values (argc, argv) Object *argv; {
     return Void;
 }
 
-static Object P_Get_Values (argc, argv) Object *argv; {
+static Object P_Get_Values (int argc, Object *argv) {
     Widget w;
 
     Check_Widget (argv[0]);
@@ -273,39 +273,37 @@ static Object P_Get_Values (argc, argv) Object *argv; {
     return Get_Values (w, argc-1, argv+1);
 }
 
-static Object P_Widget_Context (w) Object w; {
+static Object P_Widget_Context (Object w) {
     Check_Widget (w);
     return
         Make_Context_Foreign (XtWidgetToApplicationContext (WIDGET(w)->widget));
 }
 
-static Object P_Set_Sensitive (w, s) Object w, s; {
+static Object P_Set_Sensitive (Object w, Object s) {
     Check_Widget (w);
     Check_Type (s, T_Boolean);
     XtSetSensitive (WIDGET(w)->widget, EQ(s, True));
     return Void;
 }
 
-static Object P_Sensitivep (w) Object w; {
+static Object P_Sensitivep (Object w) {
     Check_Widget (w);
     return XtIsSensitive (WIDGET(w)->widget) ? True : False;
 }
 
-static Object P_Window_To_Widget (w) Object w; {
+static Object P_Window_To_Widget (Object w) {
     Check_Type (w, T_Window);
     return Make_Widget_Foreign (XtWindowToWidget (WINDOW(w)->dpy,
         WINDOW(w)->win));
 }
 
-static Object P_Name_To_Widget (root, name) Object root, name; {
-    register char *s;
-
+static Object P_Name_To_Widget (Object root, Object name) {
     Check_Widget (root);
     return Make_Widget_Foreign (XtNameToWidget (WIDGET(root)->widget,
         Get_Strsym (name)));
 }
 
-static Object P_Widget_Translate_Coordinates (w, x, y) Object w, x, y; {
+static Object P_Widget_Translate_Coordinates (Object w, Object x, Object y) {
     Position root_x, root_y;
 
     Check_Widget (w);
@@ -324,12 +322,12 @@ static Object P_Widget_Translate_Coordinates (w, x, y) Object w, x, y; {
 #include <X11/CompositeP.h>
 #undef XtIsComposite
 
-static Widget_Visit (root, func) Object *root; int (*func)(); {
+static int Widget_Visit (Object *root, int (*func)()) {
     Object obj;
     Widget w = WIDGET(*root)->widget;
 
     if (WIDGET(*root)->free == 0 && XtIsComposite (w)) {
-        int i;
+        unsigned int i;
         CompositeRec *comp = (CompositeRec *)w;
 
         for (i = 0; i < comp->composite.num_children; i++) {
@@ -338,15 +336,16 @@ static Widget_Visit (root, func) Object *root; int (*func)(); {
             if (TYPE(obj) == T_Widget)
                 func (&obj);
         }
-        while (w = XtParent (w)) {
+        while ((w = XtParent (w))) {
             obj = Find_Object (T_Widget, (GENERIC)0, Match_Xt_Obj, w);
             if (TYPE(obj) == T_Widget)
                 func (&obj);
         }
     }
+    return 0;
 }
 
-elk_init_xt_widget () {
+void elk_init_xt_widget () {
     T_Widget = Define_Type (0, "widget", NOFUNC, sizeof (struct S_Widget),
         Widget_Equal, Widget_Equal, Widget_Print, Widget_Visit);
     Define_Primitive (P_Widgetp,           "widget?",           1, 1, EVAL);

@@ -33,7 +33,7 @@
 
 (prolog
 
-"static Object Get_Scale_CB (p) XmScaleCallbackStruct *p; {
+"static Object Get_Scale_CB (XmScaleCallbackStruct *p) {
     Object ret, s;
     extern SYMDESCR Reason_Syms[];
     GC_Node2;
