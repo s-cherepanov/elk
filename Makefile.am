@@ -1,7 +1,7 @@
 NULL = 
 
 SUBDIRS = src lib scm scripts
-DIST_SUBDIRS = $(SUBDIRS) autotools config debian doc examples util
+DIST_SUBDIRS = $(SUBDIRS) autotools debian doc examples util
 
 EXTRA_DIST = \
 	CONTRIBUTORS \
