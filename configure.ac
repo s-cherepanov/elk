@@ -437,8 +437,8 @@ AC_DEFINE(HEAP_SIZE, 1024, [FIXME HARD])
 # The directory where all files are installed by running "make install". We
 # cannot use AC_DEFINE_UNQUOTED here because ${prefix} is not set until the
 # end of the configure script. Thanks to Phillip Rulon for spotting that.
-CPPFLAGS="${CPPFLAGS} -DSCM_DIR=\\\"\$(prefix)/share/elk\\\""
-CPPFLAGS="${CPPFLAGS} -DLIB_DIR=\\\"\$(prefix)/lib/elk\\\""
+CPPFLAGS="${CPPFLAGS} -DSCM_DIR=\"\\\"\$(prefix)/share/elk\\\"\""
+CPPFLAGS="${CPPFLAGS} -DLIB_DIR=\"\\\"\$(prefix)/lib/elk\\\"\""
 
 #define FIND_AOUT defined(USE_LD) || defined(CAN_DUMP) || defined(INIT_OBJECTS)
 AC_DEFINE(FIND_AOUT, 1, [FIXME HARD])
