@@ -28,6 +28,6 @@ SCM_FILES = \
 	unix.scm \
 	xlib.scm \
 	xt.scm \
-	xwidgets.scm \
+	xaw.scm \
 	$(NULL)
 

@@ -6,7 +6,7 @@
 (define site-lib-xaw "")
 (define site-lib-xmotif "")
 
-(require 'xt)
+(require 'xaw)
 
 (define widget-subdirectory 'xaw)
 

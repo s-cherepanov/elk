@@ -11,10 +11,10 @@
     (fluid-let ((load-libraries
 		  (string-append site-force-load-xm " " site-lib-xmotif " "
 			         load-libraries)))
-      (require 'xt.so 'xt-motif.so))
+      (require 'xaw.so 'xt-motif.so))
     (fluid-let ((load-libraries
 		  (string-append site-lib-xt " " load-libraries)))
-      (require 'xt.so)))
+      (require 'xaw.so)))
 
 (load 'xlib.scm)
 
