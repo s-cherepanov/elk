@@ -34,41 +34,41 @@ C_LINKAGE_BEGIN
 /* autoload.c
  */
 extern Object V_Autoload_Notifyp;
-extern Object Do_Autoload P_((Object, Object));
+extern Object Do_Autoload (Object, Object);
 
 /* bignum.c
  */
-extern int Bignum_Zero P_((Object));
-extern int Bignum_Positive P_((Object));
-extern int Bignum_Negative P_((Object));
-extern int Bignum_Even P_((Object));
-extern Object Make_Bignum P_((const char*, int, int));
-extern Object Integer_To_Bignum P_((int));
-extern Object Bignum_Divide P_((Object, Object));
-extern Object Bignum_Abs P_((Object));
-extern Object Bignum_Plus P_((Object, Object));
-extern Object Bignum_Minus P_((Object, Object));
-extern Object Bignum_Fixnum_Multiply P_((Object, Object));
-extern Object Bignum_Multiply P_((Object, Object));
-extern Object Bignum_Fixnum_Divide P_((Object, Object));
-extern Object Double_To_Bignum P_((double));
-extern Object Unsigned_To_Bignum P_((unsigned));
-extern Object Long_To_Bignum P_((long));
-extern Object Unsigned_Long_To_Bignum P_((unsigned long));
-extern unsigned Bignum_To_Unsigned P_((Object));
-extern unsigned long Bignum_To_Unsigned_Long P_((Object));
-extern long Bignum_To_Long P_((Object));
-extern Object Bignum_To_String P_((Object, int));
-extern int Bignum_Equal P_((Object, Object));
-extern int Bignum_Greater P_((Object, Object));
-extern int Bignum_Less P_((Object, Object));
-extern int Bignum_Eq_Less P_((Object, Object));
-extern int Bignum_Eq_Greater P_((Object, Object));
+extern int Bignum_Zero (Object);
+extern int Bignum_Positive (Object);
+extern int Bignum_Negative (Object);
+extern int Bignum_Even (Object);
+extern Object Make_Bignum (const char*, int, int);
+extern Object Integer_To_Bignum (int);
+extern Object Bignum_Divide (Object, Object);
+extern Object Bignum_Abs (Object);
+extern Object Bignum_Plus (Object, Object);
+extern Object Bignum_Minus (Object, Object);
+extern Object Bignum_Fixnum_Multiply (Object, Object);
+extern Object Bignum_Multiply (Object, Object);
+extern Object Bignum_Fixnum_Divide (Object, Object);
+extern Object Double_To_Bignum (double);
+extern Object Unsigned_To_Bignum (unsigned);
+extern Object Long_To_Bignum (long);
+extern Object Unsigned_Long_To_Bignum (unsigned long);
+extern unsigned Bignum_To_Unsigned (Object);
+extern unsigned long Bignum_To_Unsigned_Long (Object);
+extern long Bignum_To_Long (Object);
+extern Object Bignum_To_String (Object, int);
+extern int Bignum_Equal (Object, Object);
+extern int Bignum_Greater (Object, Object);
+extern int Bignum_Less (Object, Object);
+extern int Bignum_Eq_Less (Object, Object);
+extern int Bignum_Eq_Greater (Object, Object);
 
 /* cont.c
  */
 extern WIND *First_Wind, *Last_Wind;
-extern Object Internal_Call_CC P_((int, Object));
+extern Object Internal_Call_CC (int, Object);
 
 /* dump.c
  */
@@ -76,8 +76,8 @@ extern Object Dump_Control_Point;
 
 /* env.c
  */
-extern Object Add_Binding P_((Object, Object, Object));
-extern Object Lookup_Symbol P_((Object, int));
+extern Object Add_Binding (Object, Object, Object);
+extern Object Lookup_Symbol (Object, int);
 
 /* error.c
  */
@@ -86,7 +86,7 @@ extern char *appname;
 
 /* exception.c
  */
-extern void Install_Intr_Handler P_((void));
+extern void Install_Intr_Handler (void);
 
 /* heap.c
  */
@@ -97,18 +97,18 @@ extern int GC_In_Progress;
 
 /* io.c
  */
-extern Object General_Open_File P_((Object, int, Object));
+extern Object General_Open_File (Object, int, Object);
 
 /* load.c
  */
 extern char *Loader_Input;
 extern Object V_Load_Path, V_Load_Noisilyp, V_Load_Libraries;
-extern void Check_Loadarg P_((Object));
-extern Object General_Load P_((Object, Object));
+extern void Check_Loadarg (Object);
+extern Object General_Load (Object, Object);
 
 /* list.c
  */
-extern Object General_Assoc P_((Object, Object, int));
+extern Object General_Assoc (Object, Object, int);
 
 /* libelk.c
  */
@@ -122,41 +122,40 @@ extern SYMTAB *The_Symbols;
 extern char *Scm_Dir;
 extern char *Lib_Dir;
 #ifndef HAVE_ATEXIT
-extern void exit P_((int));
+extern void exit (int);
 #endif
 
 /* math.c
  */
-extern char *Flonum_To_String P_((Object));
+extern char *Flonum_To_String (Object);
 
 /* proc.c
  */
 extern Object Sym_Lambda, Sym_Macro;
-extern void Funcall_Control_Point P_((Object, Object, int));
+extern void Funcall_Control_Point (Object, Object, int);
 extern Object Make_Primitive
-    P_((Object(*)(ELLIPSIS), const char*, int, int, enum discipline));
+    (Object(*)(), const char*, int, int, enum discipline);
 
 /* read.c
  */
 extern Object Sym_Quote;
 extern Object Sym_Quasiquote, Sym_Unquote, Sym_Unquote_Splicing;
-extern Object Parse_Number P_((Object, const char*, int));
+extern Object Parse_Number (Object, const char*, int);
 
 /* stab.c
  */
-extern SYMTAB *Snarf_Symbols P_((ELLIPSIS));  /* varying args */
-extern SYMTAB *Open_File_And_Snarf_Symbols P_((char *));
+extern SYMTAB *Open_File_And_Snarf_Symbols (char *);
 
 /* stkmem.c
  */
 #ifndef HAVE_ALLOCA
-extern Object Save_GC_Nodes P_((void));
+extern Object Save_GC_Nodes (void);
 #endif
 
 /* string.c
  */
 extern char Char_Map[];
-extern Object General_Make_String P_((const char*, unsigned int, int));
+extern Object General_Make_String (const char*, unsigned int, int);
 
 /* symbol.c
  */
@@ -168,6 +167,6 @@ extern int Num_Types, Max_Type;
 
 /* vector.c
  */
-extern Object List_To_Vector P_((Object, int));
+extern Object List_To_Vector (Object, int);
 
 C_LINKAGE_END

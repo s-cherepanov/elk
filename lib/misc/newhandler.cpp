@@ -25,5 +25,5 @@ extern "C" void elk_init_lib_cplusplus () {
     New_Handler = Null;
     Global_GC_Link (New_Handler);
     std::new_handler (New_Handler_Proc);
-    Define_Primitive ((Object (*)(...))P_Set_New_Handler, "set-c++-new-handler!", 1, 1, EVAL);
+    Define_Primitive ((Object (*)())P_Set_New_Handler, "set-c++-new-handler!", 1, 1, EVAL);
 }

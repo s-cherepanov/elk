@@ -41,7 +41,7 @@ extern unsigned long Intr_Level;
     extern int Sigmask_Old, Sigmask_Block;
 #else
     C_LINKAGE_BEGIN
-    extern void Intr_Handler P_((int));
+    extern void Intr_Handler (int);
     C_LINKAGE_END
 #endif
 

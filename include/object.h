@@ -75,7 +75,7 @@ typedef struct {
    extern gcspace_t *space;
    extern gcspace_t current_space;
    C_LINKAGE_BEGIN
-   extern int Visit P_((Object*));    /* required for REVIVE_OBJ below */
+   extern int Visit (Object*);            /* required for REVIVE_OBJ below */
    C_LINKAGE_END
 
 #  ifdef ARRAY_BROKEN
@@ -95,7 +95,7 @@ typedef struct {
 #  define REVIVE_OBJ(obj)  Visit (&obj);
 #else
    C_LINKAGE_BEGIN
-   extern int Visit P_((Object*));    /* required in heap.c */
+   extern int Visit (Object*);        /* required in heap.c */
    C_LINKAGE_END
 #  define IS_ALIVE(obj)    WAS_FORWARDED(obj)
 #  define REVIVE_OBJ(obj)
@@ -185,7 +185,7 @@ struct S_Vector {
 enum discipline { EVAL, NOEVAL, VARARGS };
 struct S_Primitive {
     Object tag;
-    Object (*fun) P_((ELLIPSIS));
+    Object (*fun) ();
     const char *name;
     int minargs;
     int maxargs;    /* Or MANY */
@@ -209,7 +209,7 @@ typedef struct wind {
 typedef struct funct {
     struct funct *next;
     char *name;
-    void (*func) P_((void));
+    void (*func) (void);
 } FUNCT;
 
 typedef struct gcnode {
@@ -261,7 +261,7 @@ struct S_Port {
     unsigned int ptr;
     FILE *file;
     unsigned int lno;
-    int (*closefun) P_((FILE*));
+    int (*closefun) (FILE*);
 };
 #define P_OPEN    1 /* flags */
 #define P_INPUT   2
@@ -298,12 +298,12 @@ struct S_Macro {
 typedef struct {
     int haspointer;
     const char *name;
-    int (*size) P_((Object));
+    int (*size) (Object);
     int const_size;
-    int (*eqv) P_((Object, Object));
-    int (*equal) P_((Object, Object));
-    int (*print) P_((Object, Object, int, int, int));
-    int (*visit) P_((Object*, int (*)(Object*)));
+    int (*eqv) (Object, Object);
+    int (*equal) (Object, Object);
+    int (*print) (Object, Object, int, int, int);
+    int (*visit) (Object*, int (*)(Object*));
 } TYPEDESCR;
 
 #ifdef ELK_USE_PROTOTYPES
@@ -335,8 +335,8 @@ typedef struct {
 
 /* PFO, GENERIC, and MATCHFUN exist for backwards compatibility
  */
-typedef Object (*PFO) P_((Object));
-typedef int (*MATCHFUN) P_((ELLIPSIS));
+typedef Object (*PFO) (Object);
+typedef int (*MATCHFUN) ();
 #define GENERIC char*
 
 typedef struct weak_node {
@@ -359,4 +359,4 @@ typedef struct {
 
 /* Function that can be registered as a reader by Define_Reader():
  */
-typedef Object (*READFUN) P_((Object, int, int));
+typedef Object (*READFUN) (Object, int, int);

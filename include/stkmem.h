@@ -43,7 +43,7 @@
 
 #if !defined(alloca) && !defined(__GNUC__)
 C_LINKAGE_BEGIN
-extern char *alloca P_((int));
+extern char *alloca (int);
 C_LINKAGE_END
 #endif
 
@@ -62,7 +62,7 @@ C_LINKAGE_END
 #else /* HAVE_ALLOCA */
 
 extern MEM_NODE *Mem_List;
-extern char *Mem_Alloc P_((unsigned));
+extern char *Mem_Alloc (unsigned);
 
 #define Alloca_Begin MEM_NODE *_mem_first = 0
 #define Alloca(ret,type,size) {\

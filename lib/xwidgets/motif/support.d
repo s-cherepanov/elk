@@ -76,7 +76,8 @@
 
 (prolog
 
-"Object Get_Any_CB (XmAnyCallbackStruct *p) {
+"Object Get_Any_CB (void *_p) {
+    XmAnyCallbackStruct *p = _p;
     Object args, ret;
     GC_Node2;
 
@@ -95,7 +96,8 @@
 
 (prolog
 
-"Object Get_Selection_CB (XmSelectionBoxCallbackStruct *p) {
+"Object Get_Selection_CB (void *_p) {
+    XmSelectionBoxCallbackStruct *p = _p;
     Object ret, s;
     char *text;
     GC_Node2;

@@ -34,6 +34,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#include <stdarg.h>
+
 #undef True
 #undef False
 
@@ -158,69 +160,69 @@ typedef struct {
 
 C_LINKAGE_BEGIN
 
-extern Colormap Get_Colormap P_((Object));
-extern Cursor Get_Cursor P_((Object));
-extern Drawable Get_Drawable P_((Object, Display**));
-extern Font Get_Font P_((Object));
-extern int Get_Screen_Number P_((Display*, Object));
-extern Object Get_Event_Args P_((XEvent*));
-extern Pixmap Get_Pixmap P_((Object));
-extern Time Get_Time P_((Object));
-extern Window Get_Window P_((Object));
-extern XColor *Get_Color P_((Object));
-extern unsigned long int Get_Pixel P_((Object));
-extern void Destroy_Event_Args P_((Object));
-extern int Encode_Event P_((Object));
-extern int Match_X_Obj P_((ELLIPSIS));
-extern void Open_Font_Maybe P_((Object));
-extern Object Make_Atom P_((Atom));
-extern Object Make_Color P_((unsigned int, unsigned int, unsigned int));
-extern Object Make_Colormap P_((int, Display*, Colormap));
-extern Object Make_Cursor P_((Display*, Cursor));
-extern Object Make_Cursor_Foreign P_((Display*, Cursor));
-extern Object Make_Display P_((int, Display*));
-extern Object Make_Font P_((Display*, Object, Font, XFontStruct*));
-extern Object Make_Font_Foreign P_((Display*, Object, Font, XFontStruct*));
-extern Object Make_Gc P_((int, Display*, GC));
-extern Object Make_Pixel P_((unsigned long int));
-extern Object Make_Pixmap P_((Display*, Pixmap));
-extern Object Make_Pixmap_Foreign P_((Display*, Pixmap));
-extern Object Make_Window P_((int, Display*, Window));
-extern Object P_Close_Display P_((Object));
-extern Object P_Close_Font P_((Object));
-extern Object P_Destroy_Window P_((Object));
-extern Object P_Free_Colormap P_((Object));
-extern Object P_Free_Cursor P_((Object));
-extern Object P_Free_Gc P_((Object));
-extern Object P_Free_Pixmap P_((Object));
-extern Object P_Window_Unique_Id P_((Object));
+extern Colormap Get_Colormap (Object);
+extern Cursor Get_Cursor (Object);
+extern Drawable Get_Drawable (Object, Display**);
+extern Font Get_Font (Object);
+extern int Get_Screen_Number (Display*, Object);
+extern Object Get_Event_Args (XEvent*);
+extern Pixmap Get_Pixmap (Object);
+extern Time Get_Time (Object);
+extern Window Get_Window (Object);
+extern XColor *Get_Color (Object);
+extern unsigned long int Get_Pixel (Object);
+extern void Destroy_Event_Args (Object);
+extern int Encode_Event (Object);
+extern int Match_X_Obj (Object, va_list);
+extern void Open_Font_Maybe (Object);
+extern Object Make_Atom (Atom);
+extern Object Make_Color (unsigned int, unsigned int, unsigned int);
+extern Object Make_Colormap (int, Display*, Colormap);
+extern Object Make_Cursor (Display*, Cursor);
+extern Object Make_Cursor_Foreign (Display*, Cursor);
+extern Object Make_Display (int, Display*);
+extern Object Make_Font (Display*, Object, Font, XFontStruct*);
+extern Object Make_Font_Foreign (Display*, Object, Font, XFontStruct*);
+extern Object Make_Gc (int, Display*, GC);
+extern Object Make_Pixel (unsigned long int);
+extern Object Make_Pixmap (Display*, Pixmap);
+extern Object Make_Pixmap_Foreign (Display*, Pixmap);
+extern Object Make_Window (int, Display*, Window);
+extern Object P_Close_Display (Object);
+extern Object P_Close_Font (Object);
+extern Object P_Destroy_Window (Object);
+extern Object P_Free_Colormap (Object);
+extern Object P_Free_Cursor (Object);
+extern Object P_Free_Gc (Object);
+extern Object P_Free_Pixmap (Object);
+extern Object P_Window_Unique_Id (Object);
 extern Object Record_To_Vector
-    P_((RECORD*, int, Object, Display*, unsigned long int));
+    (RECORD*, int, Object, Display*, unsigned long int);
 extern unsigned long int Vector_To_Record
-    P_((Object, unsigned int, Object, RECORD*));
+    (Object, unsigned int, Object, RECORD*);
 
-extern void elk_init_xlib_client P_(());
-extern void elk_init_xlib_color P_(());
-extern void elk_init_xlib_colormap P_(());
-extern void elk_init_xlib_cursor P_(());
-extern void elk_init_xlib_display P_(());
-extern void elk_init_xlib_error P_(());
-extern void elk_init_xlib_event P_(());
-extern void elk_init_xlib_extension P_(());
-extern void elk_init_xlib_font P_(());
-extern void elk_init_xlib_gcontext P_(());
-extern void elk_init_xlib_grab P_(());
-extern void elk_init_xlib_graphics P_(());
-extern void elk_init_xlib_key P_(());
-extern void elk_init_xlib_objects P_(());
-extern void elk_init_xlib_pixel P_(());
-extern void elk_init_xlib_pixmap P_(());
-extern void elk_init_xlib_property P_(());
-extern void elk_init_xlib_text P_(());
-extern void elk_init_xlib_type P_(());
-extern void elk_init_xlib_util P_(());
-extern void elk_init_xlib_window P_(());
-extern void elk_init_xlib_wm P_(());
+extern void elk_init_xlib_client ();
+extern void elk_init_xlib_color ();
+extern void elk_init_xlib_colormap ();
+extern void elk_init_xlib_cursor ();
+extern void elk_init_xlib_display ();
+extern void elk_init_xlib_error ();
+extern void elk_init_xlib_event ();
+extern void elk_init_xlib_extension ();
+extern void elk_init_xlib_font ();
+extern void elk_init_xlib_gcontext ();
+extern void elk_init_xlib_grab ();
+extern void elk_init_xlib_graphics ();
+extern void elk_init_xlib_key ();
+extern void elk_init_xlib_objects ();
+extern void elk_init_xlib_pixel ();
+extern void elk_init_xlib_pixmap ();
+extern void elk_init_xlib_property ();
+extern void elk_init_xlib_text ();
+extern void elk_init_xlib_type ();
+extern void elk_init_xlib_util ();
+extern void elk_init_xlib_window ();
+extern void elk_init_xlib_wm ();
 
 C_LINKAGE_END
 

@@ -52,11 +52,11 @@ extern char *index();
 extern Object Unix_Errobj, V_Call_Errhandler;
 extern SYMDESCR Lseek_Syms[];
 
-Object Integer_Pair P_((int, int));
-Object Syms_To_List P_((SYMDESCR*));
+Object Integer_Pair (int, int);
+Object Syms_To_List (SYMDESCR*);
 
-extern void Check_Result_Vector P_((Object, unsigned int));
-extern int Num_Filedescriptors P_(());
+extern void Check_Result_Vector (Object, unsigned int);
+extern int Num_Filedescriptors ();
 
 #define Get_Filename_Or_Filedescr(obj,fd,fn) \
     switch (TYPE(obj)) {\

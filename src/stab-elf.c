@@ -42,8 +42,7 @@
 extern void Free_Symbols (SYMTAB *);
 
 SYMTAB *
-Snarf_Symbols (lf)
-     int        lf;
+Snarf_Symbols (int lf)
 {
     SYMTAB      *tab = NULL;
     register SYM *sp, **nextp;

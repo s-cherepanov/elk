@@ -36,6 +36,8 @@
 #  include <X11/StringDefs.h>
 #undef Object
 
+#include <stdarg.h>
+
 #if XtSpecificationRelease < 4
  #error "Xt Release 3 or earlier no longer supported"
 #endif
@@ -48,8 +50,8 @@
 #  define XT_RELEASE_6_OR_LATER
 #endif
 
-typedef XtArgVal (*PFS2X) P_((Object));
-typedef Object (*PFX2S) P_((XtArgVal));
+typedef XtArgVal (*PFS2X) (Object);
+typedef Object (*PFX2S) (XtArgVal);
 
 extern int T_Context;
 extern int T_Class;
@@ -93,64 +95,63 @@ extern WidgetClass compositeWidgetClass;
 
 C_LINKAGE_BEGIN
 
-extern void Check_Callback_List P_((Object));
-extern void Check_Context P_((Object));
-extern void Check_Widget P_((Object));
-extern void Check_Widget_Class P_((Object, WidgetClass));
-extern void Convert_Args P_((int, Object*, ArgList, Widget, WidgetClass));
-extern void Define_Callback P_((char*, char*, int));
-extern void Define_Class
-    P_((char *, WidgetClass, XtResourceList, int));
-extern void Define_Converter_To_C P_((char*, PFS2X));
-extern void Define_Converter_To_Scheme P_((char*, PFX2S));
-extern void Fiddle_Destroy_Callback P_((Widget));
-extern void Fill_Callbacks P_((Object, XtCallbackList, int, PFX2S));
-extern void Free_Actions P_((XtAppContext));
+extern void Check_Callback_List (Object);
+extern void Check_Context (Object);
+extern void Check_Widget (Object);
+extern void Check_Widget_Class (Object, WidgetClass);
+extern void Convert_Args (int, Object*, ArgList, Widget, WidgetClass);
+extern void Define_Callback (char*, char*, int);
+extern void Define_Class (char *, WidgetClass, XtResourceList, int);
+extern void Define_Converter_To_C (char*, PFS2X);
+extern void Define_Converter_To_Scheme (char*, PFX2S);
+extern void Fiddle_Destroy_Callback (Widget);
+extern void Fill_Callbacks (Object, XtCallbackList, int, PFX2S);
+extern void Free_Actions (XtAppContext);
 extern void Get_All_Resources
-    P_((int, Widget, WidgetClass, XtResource**, int*, int*));
-extern void Make_Resource_Name P_((char*));
-extern int Match_Xt_Obj P_((ELLIPSIS));
-extern Object Get_Callbackfun P_((XtPointer));
-extern Object Get_Function P_((int));
+    (int, Widget, WidgetClass, XtResource**, int*, int*);
+extern void Make_Resource_Name (char*);
+extern int Match_Xt_Obj (Object, va_list);
+extern Object Get_Callbackfun (XtPointer);
+extern Object Get_Function (int);
 extern Object Get_Resources
-    P_((WidgetClass, void (*)(WidgetClass, XtResourceList*, Cardinal*), int));
-extern Object Get_Values P_((Widget, int, Object*));
-extern Object Make_Class P_((WidgetClass, char*));
-extern Object Make_Context P_((XtAppContext));
-extern Object Make_Context_Foreign P_((XtAppContext));
-extern Object Make_Id P_((int, XtPointer, int));
-extern Object Make_Widget P_((Widget));
-extern Object Make_Widget_Foreign P_((Widget));
-extern Object Make_Widget_Class P_((WidgetClass));
-extern PFX2S Find_Callback_Converter P_((WidgetClass, char*, Object));
-extern PFX2S Find_Converter_To_Scheme P_((char*));
-extern PFS2X Find_Converter_To_C P_((char*));
-extern int Register_Function P_((Object));
-extern void Deregister_Function P_((int));
-extern XtAccelerators Get_Accelerators P_((Object));
-extern XtTranslations Get_Translations P_((Object));
-extern XtPointer Use_Id P_((Object, int));
-extern void Xt_Warning P_((char*));
-extern char *Class_Name P_((WidgetClass));
-extern void Action_Hook P_((Widget, XtPointer, char*, XEvent*, char**, int*));
-extern void Destroy_Callback_Proc P_((Widget, XtPointer, XtPointer));
-extern void Get_Sub_Resource_List P_((WidgetClass, XtResourceList*, Cardinal*));
-extern Object Xt_Class_Name P_((WidgetClass));
-extern Object Get_Selection_CB P_((ELLIPSIS));    /* xm/support.d */
-extern Object Get_Any_CB P_((ELLIPSIS));          /* xm/support.d */
+    (WidgetClass, void (*)(WidgetClass, XtResourceList*, Cardinal*), int);
+extern Object Get_Values (Widget, int, Object*);
+extern Object Make_Class (WidgetClass, char*);
+extern Object Make_Context (XtAppContext);
+extern Object Make_Context_Foreign (XtAppContext);
+extern Object Make_Id (int, XtPointer, int);
+extern Object Make_Widget (Widget);
+extern Object Make_Widget_Foreign (Widget);
+extern Object Make_Widget_Class (WidgetClass);
+extern PFX2S Find_Callback_Converter (WidgetClass, char*, Object);
+extern PFX2S Find_Converter_To_Scheme (char*);
+extern PFS2X Find_Converter_To_C (char*);
+extern int Register_Function (Object);
+extern void Deregister_Function (int);
+extern XtAccelerators Get_Accelerators (Object);
+extern XtTranslations Get_Translations (Object);
+extern XtPointer Use_Id (Object, int);
+extern void Xt_Warning (char*);
+extern char *Class_Name (WidgetClass);
+extern void Action_Hook (Widget, XtPointer, char*, XEvent*, char**, int*);
+extern void Destroy_Callback_Proc (Widget, XtPointer, XtPointer);
+extern void Get_Sub_Resource_List (WidgetClass, XtResourceList*, Cardinal*);
+extern Object Xt_Class_Name (WidgetClass);
+extern Object Get_Selection_CB (void *); /* xm/support.d */
+extern Object Get_Any_CB (void *); /* xm/support.d */
 
-extern void elk_init_xt_accelerator P_(());
-extern void elk_init_xt_action P_(());
-extern void elk_init_xt_callback P_(());
-extern void elk_init_xt_class P_(());
-extern void elk_init_xt_context P_(());
-extern void elk_init_xt_function P_(());
-extern void elk_init_xt_identifier P_(());
-extern void elk_init_xt_popup P_(());
-extern void elk_init_xt_translation P_(());
-extern void elk_init_xt_widget P_(());
-extern void elk_init_xt_error P_(());
-extern void elk_init_xt_init P_(());
+extern void elk_init_xt_accelerator ();
+extern void elk_init_xt_action ();
+extern void elk_init_xt_callback ();
+extern void elk_init_xt_class ();
+extern void elk_init_xt_context ();
+extern void elk_init_xt_function ();
+extern void elk_init_xt_identifier ();
+extern void elk_init_xt_popup ();
+extern void elk_init_xt_translation ();
+extern void elk_init_xt_widget ();
+extern void elk_init_xt_error ();
+extern void elk_init_xt_init ();
 
 C_LINKAGE_END
 
