@@ -231,14 +231,13 @@ static void Load_Lib (Object libs) {
         if (eol == NULL || eol == dlname)
             continue;
         *eol = '\0';
-        path = strdup (STRING(PORT(port)->name)->data);
+        path = Get_String (PORT(port)->name);
         eol = strrchr (path, SEPARATOR_CHAR);
         if (eol == NULL)
             eol = path;
         *eol = '\0';
         lib = malloc (strlen (path) + 1 + strlen (dlname) + 1);
         sprintf (lib, "%s" SEPARATOR_STRING "%s", path, dlname);
-        free (path);
         break;
     }
     (void)P_Close_Input_Port (port);
