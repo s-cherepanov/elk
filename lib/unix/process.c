@@ -39,13 +39,13 @@
 
 #ifndef WIN32
 
-#ifdef ENVIRON_IN_UNISTD_H
+#ifndef ENVIRON_IN_UNISTD_H
 /* "extern" in front of the next declaration causes the Ultrix 4.2 linker
  * to fail, but omitting it no longer works with modern C compilers: */
 extern char **environ;
 #endif
 
-#ifdef HAVE_ENVIRON
+#if defined(HAVE_ENVIRON) && !defined(SYS_DARWIN)
 static Object P_Environ() {
     Object ret, cell, str;
     char *p, **ep;

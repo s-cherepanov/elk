@@ -47,6 +47,9 @@ case "${target_os}" in
     ELK_LDFLAGS="${ELK_LDFLAGS} -no-undefined"
     MATH_LIBS=""
     ;;
+  *darwin*)
+    AC_DEFINE(SYS_DARWIN, 1, Define if the system is Darwin)],
+    ;;
 esac
 ELK_LIBS="${ELK_LIBS} ${MATH_LIBS}"
 
