@@ -57,6 +57,7 @@ AC_OUTPUT([
   doc/Makefile
   examples/Makefile
   lib/Makefile
+  lib/misc/Makefile
   scm/Makefile
   scripts/Makefile
   src/Makefile

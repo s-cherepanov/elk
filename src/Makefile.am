@@ -41,6 +41,6 @@ libelk_la_SOURCES = \
 	$(NULL)
 
 bin_PROGRAMS = elk
-elk_LDADD = libelk.la
+elk_LDADD = $(top_builddir)/src/libelk.la
 elk_SOURCES = main.c
 
