@@ -127,24 +127,11 @@
   (check-string 'define-widget-class class 'class)
   (set! classes (cons (list name class sub-resources) classes)))
 
-(define (filename-to-widget-name fn)
-  (let loop ((w widget-aliases))
-    (cond
-      ((null? w)
-	fn)
-      ((eq? (cdar w) fn)
-	(caar w))
-      (else
-	(loop (cdr w))))))
-
 (define (feature-name fn)
   (let ((i (substring? ".d" fn)))
     (if (not i)
 	(error 'mkwidget "bad filename suffix in ~a (expected .d)" fn))
-    (filename-to-widget-name (string->symbol (substring fn 0 i)))))
-
-(define widget-aliases)
-(load 'ALIASES)
+    (string->symbol (substring fn 0 i))))
 
 (define args (command-line-args))
 (if (not (= (length args) 3))
