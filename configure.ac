@@ -463,26 +463,30 @@ AC_SUBST(X_CFLAGS)
 AC_SUBST(X_LIBS)
 
 if test "${cross_compiling}" = "no"; then
-  AC_CHECK_LIB(Xmu, XmuDrawLogo,
-   [ac_cv_my_have_xmu=yes
-    XMU_CFLAGS="-I${x_includes}"
-    XMU_LIBS="-L${x_libraries} -lXt -lSM -lICE -lXext -lX11"],
-   [ac_cv_my_have_xmu=no],
-   [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+  AC_CHECK_LIB(Xt, XtDisplayTranslations,
+   [ac_cv_my_have_xt=yes
+    AC_CHECK_LIB(Xmu, XmuDrawLogo,
+     [XT_CFLAGS="-I${x_includes}"
+      XT_LIBS="-L${x_libraries} -lXmu -lXt -lSM -lICE -lXext -lX11"],
+     [XT_CFLAGS="-I${x_includes}"
+      XT_LIBS="-L${x_libraries} -lXt -lSM -lICE -lXext -lX11"],
+     [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])],
+   [ac_cv_my_have_xt=no],
+   [[-lSM -lICE -lXext -lX11 -L${x_libraries}]])
 else
-  ac_cv_my_have_xmu="no (cross-compiling)"
+  ac_cv_my_have_xt=no
 fi
-AM_CONDITIONAL(HAVE_XMU, test "${ac_cv_my_have_xmu}" = "yes")
-AC_SUBST(XMU_CFLAGS)
-AC_SUBST(XMU_LIBS)
+AM_CONDITIONAL(HAVE_XT, test "${ac_cv_my_have_xt}" = "yes")
+AC_SUBST(XT_CFLAGS)
+AC_SUBST(XT_LIBS)
 
 if test "${cross_compiling}" = "no"; then
   AC_CHECK_LIB(Xaw, XawTextSearch,
    [ac_cv_my_have_xaw=yes
     XAW_CFLAGS="-I${x_includes}"
-    XAW_LIBS="-L${x_libraries} -lXaw ${XMU_LIBS}"],
+    XAW_LIBS="-L${x_libraries} -lXaw ${XT_LIBS}"],
    [ac_cv_my_have_xaw=no],
-   [[${XMU_LIBS}]])
+   [[${XT_LIBS}]])
 else
   ac_cv_my_have_xaw="no (cross-compiling)"
 fi
@@ -494,9 +498,9 @@ if test "${cross_compiling}" = "no"; then
   AC_CHECK_LIB(Xm, XmStringConcat,
    [ac_cv_my_have_motif=yes
     MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
-    MOTIF_LIBS="-L${x_libraries} -lXm ${XMU_LIBS}"],
+    MOTIF_LIBS="-L${x_libraries} -lXm ${XT_LIBS}"],
    [ac_cv_my_have_motif=no],
-   [[${XMU_LIBS}]])
+   [[${XT_LIBS}]])
 else
   ac_cv_my_have_motif="no (cross-compiling)"
 fi

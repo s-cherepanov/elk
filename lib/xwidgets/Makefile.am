@@ -6,14 +6,14 @@ EXTRA_DIST = MISSING mkwidget.scm
 
 lib_LTLIBRARIES = $(libelk_xt_la)
 
-if HAVE_XMU
+if HAVE_XT
 libelk_xt_la = libelk-xt.la
 endif
 
 libelk_xt_la_SOURCES = $(SOURCES_XT)
-libelk_xt_la_CFLAGS = -I$(srcdir)/../xlib @XMU_CFLAGS@
+libelk_xt_la_CFLAGS = -I$(srcdir)/../xlib @XT_CFLAGS@
 libelk_xt_la_LDFLAGS = -no-undefined
-libelk_xt_la_LIBADD = $(top_builddir)/src/libelk.la ../xlib/libelk-xlib.la @XMU_LIBS@
+libelk_xt_la_LIBADD = $(top_builddir)/src/libelk.la ../xlib/libelk-xlib.la @XT_LIBS@
 
 extensions_HEADERS = xt.h
 extensionsdir = $(pkgincludedir)/extensions
