@@ -5,11 +5,11 @@ are invoked by Elk when loading a compiled C++ file (when exiting).
 
 o  Compile the shared object, for instance:
 
-   CC -pic -shared -I/usr/elk/include constructor.cpp -o constructor.so -lelk
+   CC -pic -shared constructor.cpp -o constructor.so -lelk
 
    or:
 
-   g++ -fPIC -shared -I/usr/include/elk constructor.ppc -o constructor.so -lelk
+   g++ -fPIC -shared constructor.ppc -o constructor.so -lelk
 
 o  Now "(load 'constructor.so)", observe the "invoking constructor" message,
    and evaluate "(test)", which should return 3.  Terminate the interpreter
@@ -28,7 +28,7 @@ o  If static constructors don't get called when loading compiled C++ files,
    your C++ compiler is probably using a naming convention for static
    constructors and destructors that is not anticipated by the current
    version of Elk.
-   
+
    In this case, you may want to find out what kind of names are used
    (by applying "nm" to an object file) and add the name prefixes to
    the Init_Prefixes and Finit_Prefixes lists in src/stab.c in the Elk
@@ -36,7 +36,7 @@ o  If static constructors don't get called when loading compiled C++ files,
 ----------------------------------------------------------------------*/
 
 
-#include "scheme.h"
+#include <elk/scheme.h>
 
 #include <iostream>
 
@@ -47,7 +47,9 @@ public:
        std::cerr << "[invoking constructor]" << std::endl;
        i = 3;
     }
-    ~C() { std::cerr << "[invoking destructor]" << std::endl; }
+    ~C() {
+       std::cerr << "[invoking destructor]" << std::endl;
+    }
 };
 
 C c;

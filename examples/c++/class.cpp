@@ -9,7 +9,7 @@ See constructor.cpp in this directory for compilation instructions.
 Here is a transcript showing a test run under Linux using the
 GNU g++ compiler:
 
-    % g++ -shared -fPIC -I/usr/include/elk class.cpp -o class.so -lelk
+    % g++ -shared -fPIC class.cpp -o class.so -lelk
     %
     % scheme
     > (load 'class.so)
@@ -45,7 +45,7 @@ void foo::write_val(int newval) {
 
 /* ---------------------------------- */
 
-#include "scheme.h"
+#include <elk/scheme.h>
 
 struct S_Foo {
     Object tag; class foo foo;
