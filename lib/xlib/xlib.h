@@ -242,54 +242,54 @@ extern Object Sym_None, Sym_Now, Sym_Char_Info, Sym_Conf;
  *
  *   int T_Pixmap;
  *
- *   static Object P_Pixmapp (x) Object x; {
+ *   static Object P_Pixmapp (Object x) {
  *        return TYPE(x) == T_Pixmap ? True : False;
  *   }
  */
 #define Generic_Predicate(type) int conc(T_,type);\
 \
-static Object conc3(P_,type,p) (x) Object x; {\
+static Object conc3(P_,type,p) (Object x) {\
     return TYPE(x) == conc(T_,type) ? True : False;\
 }
 
 /* Generic_Equal (Pixmap, PIXMAP, pm) generates:
  *
- *    static Pixmap_Equal (x, y) Object x, y; {
+ *    static Pixmap_Equal (Object x, Object y) {
  *        return PIXMAP(x)->pm == PIXMAP(y)->field
  *            && !PIXMAP(x)->free && !PIXMAP(y)->free;
  *    }
  */
-#define Generic_Equal(type,cast,field) static conc(type,_Equal) (x, y)\
-        Object x, y; {\
+#define Generic_Equal(type,cast,field) static int conc(type,_Equal)\
+            (Object x, Object y) {\
     return cast(x)->field == cast(y)->field\
         && !cast(x)->free && !cast(y)->free;\
 }
 
 /* Same as above, but doesn't check for ->free:
  */
-#define Generic_Simple_Equal(type,cast,field) static conc(type,_Equal) (x, y)\
-        Object x, y; {\
+#define Generic_Simple_Equal(type,cast,field) static int conc(type,_Equal)\
+            (Object x, Object y) {\
     return cast(x)->field == cast(y)->field;\
 }
 
 /* Same as above, but also checks ->dpy
  */
-#define Generic_Equal_Dpy(type,cast,field) static conc(type,_Equal)\
-            (x, y)\
-        Object x, y; {\
+#define Generic_Equal_Dpy(type,cast,field) static int conc(type,_Equal)\
+            (Object x, Object y) {\
     return cast(x)->field == cast(y)->field && cast(x)->dpy == cast(y)->dpy\
         && !cast(x)->free && !cast(y)->free;\
 }
 
 /* Generic_Print (Pixmap, "#[pixmap %u]", PIXMAP(x)->pm) generates:
  *
- *    static Pixmap_Print (x, port, raw, depth, len) Object x, port; {
+ *    static Pixmap_Print (Object x, Object port, int raw, int depth, int len) {
  *        Printf (port, "#[pixmap %u]", PIXMAP(x)->pm);
  *    }
  */
-#define Generic_Print(type,fmt,how) static conc(type,_Print)\
-        (x, port, raw, depth, len) Object x, port; {\
+#define Generic_Print(type,fmt,how) static int conc(type,_Print)\
+            (Object x, Object port, int raw, int depth, int len) {\
     Printf (port, fmt, (unsigned)how);\
+    return 0;\
 }
 
 /* Generic_Define (Pixmap, "pixmap", "pixmap?") generates:
@@ -305,13 +305,13 @@ static Object conc3(P_,type,p) (x) Object x; {\
 
 /* Generic_Get_Display (Pixmap, PIXMAP) generates:
  *
- *    static Object P_Pixmap_Display (x) Object x; {
+ *    static Object P_Pixmap_Display (Object x) {
  *        Check_Type (x, T_Pixmap);
  *        return Make_Display (PIXMAP(x)->dpy);
  *    }
  */
 #define Generic_Get_Display(type,cast) static Object conc3(P_,type,_Display)\
-        (x) Object x; {\
+            (Object x) {\
     Check_Type (x, conc(T_,type));\
     return Make_Display (0, cast(x)->dpy);\
 }

@@ -30,6 +30,8 @@
 
 #include "xlib.h"
 
+#include <string.h>
+
 Object Sym_Now;
 
 Generic_Predicate (Atom)
@@ -38,7 +40,7 @@ Generic_Simple_Equal (Atom, ATOM, atom)
 
 Generic_Print (Atom, "#[atom %lu]", ATOM(x)->atom)
 
-Object Make_Atom (a) Atom a; {
+Object Make_Atom (Atom a) {
     Object atom;
 
     if (a == None)
@@ -54,21 +56,21 @@ Object Make_Atom (a) Atom a; {
 }
 
 /* Should be used with care */
-static Object P_Make_Atom (n) Object n; {
+static Object P_Make_Atom (Object n) {
     return Make_Atom ((Atom)Get_Long (n));
 }
 
-static Object P_Intern_Atom (d, name) Object d, name; {
+static Object P_Intern_Atom (Object d, Object name) {
     Check_Type (d, T_Display);
     return Make_Atom (XInternAtom (DISPLAY(d)->dpy, Get_Strsym (name), 0));
 }
 
-static Object P_Find_Atom (d, name) Object d, name; {
+static Object P_Find_Atom (Object d, Object name) {
     Check_Type (d, T_Display);
     return Make_Atom (XInternAtom (DISPLAY(d)->dpy, Get_Strsym (name), 1));
 }
 
-static Object P_Atom_Name (d, a) Object d, a; {
+static Object P_Atom_Name (Object d, Object a) {
     register char *s;
 
     Check_Type (d, T_Display);
@@ -79,8 +81,8 @@ static Object P_Atom_Name (d, a) Object d, a; {
     return Make_String (s, strlen (s));
 }
 
-static Object P_List_Properties (w) Object w; {
-    register i;
+static Object P_List_Properties (Object w) {
+    register int i;
     int n;
     register Atom *ap;
     Object v;
@@ -103,14 +105,14 @@ static Object P_List_Properties (w) Object w; {
     return v;
 }
 
-static Object P_Get_Property (w, prop, type, start, len, deletep)
-        Object w, prop, type, start, len, deletep; {
+static Object P_Get_Property (Object w, Object prop, Object type, Object start,
+                              Object len, Object deletep) {
     Atom req_type = AnyPropertyType, actual_type;
     int format;
     unsigned long nitems, bytes_left;
     unsigned char *data;
     Object ret, t, x;
-    register i;
+    register unsigned int i;
     GC_Node2;
 
     Check_Type (w, T_Window);
@@ -162,9 +164,9 @@ static Object P_Get_Property (w, prop, type, start, len, deletep)
     return ret;
 }
 
-static Object P_Change_Property (w, prop, type, format, mode, data)
-        Object w, prop, type, format, mode, data; {
-    register i, m, x, nitems, f;
+static Object P_Change_Property (Object w, Object prop, Object type,
+                                 Object format, Object mode, Object data) {
+    register int i, m, x, nitems, f;
     char *buf;
     Alloca_Begin;
 
@@ -200,16 +202,16 @@ static Object P_Change_Property (w, prop, type, format, mode, data)
     return Void;
 }
 
-static Object P_Delete_Property (w, prop) Object w, prop; {
+static Object P_Delete_Property (Object w, Object prop) {
     Check_Type (w, T_Window);
     Check_Type (prop, T_Atom);
     XDeleteProperty (WINDOW(w)->dpy, WINDOW(w)->win, ATOM(prop)->atom);
     return Void;
 }
 
-static Object P_Rotate_Properties (w, v, delta) Object w, v, delta; {
+static Object P_Rotate_Properties (Object w, Object v, Object delta) {
     Atom *p;
-    register i, n;
+    register int i, n;
     Alloca_Begin;
 
     Check_Type (w, T_Window);
@@ -229,8 +231,8 @@ static Object P_Rotate_Properties (w, v, delta) Object w, v, delta; {
     return Void;
 }
 
-static Object P_Set_Selection_Owner (d, s, owner, time) Object d, s, owner,
-        time; {
+static Object P_Set_Selection_Owner (Object d, Object s, Object owner,
+                                     Object time) {
     Check_Type (d, T_Display);
     Check_Type (s, T_Atom);
     XSetSelectionOwner (DISPLAY(d)->dpy, ATOM(s)->atom, Get_Window (owner),
@@ -238,15 +240,15 @@ static Object P_Set_Selection_Owner (d, s, owner, time) Object d, s, owner,
     return Void;
 }
 
-static Object P_Selection_Owner (d, s) Object d, s; {
+static Object P_Selection_Owner (Object d, Object s) {
     Check_Type (d, T_Display);
     Check_Type (s, T_Atom);
     return Make_Window (0, DISPLAY(d)->dpy,
         XGetSelectionOwner (DISPLAY(d)->dpy, ATOM(s)->atom));
 }
 
-static Object P_Convert_Selection (s, target, prop, w, time)
-        Object s, target, prop, w, time; {
+static Object P_Convert_Selection (Object s, Object target, Object prop,
+                                   Object w, Object time) {
     Atom p = None;
 
     Check_Type (s, T_Atom);
@@ -261,7 +263,7 @@ static Object P_Convert_Selection (s, target, prop, w, time)
     return Void;
 }
 
-elk_init_xlib_property () {
+void elk_init_xlib_property () {
     Define_Symbol (&Sym_Now, "now");
     Generic_Define (Atom, "atom", "atom?");
     Define_Primitive (P_Make_Atom,         "make-atom",          1, 1, EVAL);

@@ -30,6 +30,8 @@
 
 #include "xlib.h"
 
+#include <string.h>
+
 #define MAX_ARGS 14
 
 static Object Argl, Argv;
@@ -82,14 +84,14 @@ struct predicate_arg {
 };
 
 /*ARGSUSED*/
-static Event_Predicate (dpy, ep, ptr) Display *dpy; XEvent *ep;
+static int Event_Predicate (Display *dpy, XEvent *ep,
 #ifdef XLIB_RELEASE_5_OR_LATER
-                XPointer ptr; {
+                XPointer ptr) {
 #else
-                char *ptr; {
+                char *ptr) {
 #endif
     struct predicate_arg *ap = (struct predicate_arg *)ptr;
-    register i;
+    register int i;
     Object args;
     GC_Node;
 
@@ -110,9 +112,9 @@ static Event_Predicate (dpy, ep, ptr) Display *dpy; XEvent *ep;
  * peek?: don't discard processed events.
  */
 
-static Object P_Handle_Events (argl) Object argl; {
+static Object P_Handle_Events (Object argl) {
     Object next, clause, func, ret, funcs[LASTEvent], args;
-    register i, discard, peek;
+    register int i, discard, peek;
     Display *dpy;
     char *errmsg = "event occurs more than once";
     GC_Node3; struct gcnode gcv;
@@ -192,13 +194,13 @@ static Object P_Handle_Events (argl) Object argl; {
     return ret;
 }
 
-static Object Get_Time_Arg (t) Time t; {
+static Object Get_Time_Arg (Time t) {
     return t == CurrentTime ? Sym_Now : Make_Unsigned_Long ((unsigned long)t);
 }
 
-Object Get_Event_Args (ep) XEvent *ep; {
+Object Get_Event_Args (XEvent *ep) {
     Object tmpargs[MAX_ARGS];
-    register e, i;
+    register int e, i;
     register Object *a, *vp;
     struct gcnode gcv;
     Object dummy;
@@ -422,7 +424,7 @@ Object Get_Event_Args (ep) XEvent *ep; {
     } break;
     case ClientMessage: {
         register XClientMessageEvent *p = (XClientMessageEvent *)ep;
-        register i;
+        register int i;
 
         a[1] = Make_Window (0, p->display, p->window);
         a[2] = Make_Atom (p->message_type);
@@ -463,18 +465,18 @@ Object Get_Event_Args (ep) XEvent *ep; {
     return Argl;
 }
 
-void Destroy_Event_Args (args) Object args; {
+void Destroy_Event_Args (Object args) {
     Object t;
 
     for (t = args; !Nullp (t); t = Cdr (t))
         Car (t) = Null;
 }
 
-Encode_Event (e) Object e; {
+int Encode_Event (Object e) {
     Object s;
     register char *p;
     register struct event_desc *ep;
-    register n;
+    register int n;
 
     Check_Type (e, T_Symbol);
     s = SYMBOL(e)->name;
@@ -487,10 +489,10 @@ Encode_Event (e) Object e; {
     return ep-Event_Table;
 }
 
-static Object P_Get_Motion_Events (w, from, to) Object w, from, to; {
+static Object P_Get_Motion_Events (Object w, Object from, Object to) {
     XTimeCoord *p;
     int n;
-    register i;
+    register int i;
     Object e, ret;
     GC_Node2;
 
@@ -511,9 +513,9 @@ static Object P_Get_Motion_Events (w, from, to) Object w, from, to; {
     return ret;
 }
 
-static Object P_Event_Listen (d, wait_flag) Object d, wait_flag; {
+static Object P_Event_Listen (Object d, Object wait_flag) {
     Display *dpy;
-    register n;
+    register int n;
     XEvent e;
 
     Check_Type (d, T_Display);
@@ -527,9 +529,9 @@ static Object P_Event_Listen (d, wait_flag) Object d, wait_flag; {
     return Make_Integer (n);
 }
 
-elk_init_xlib_event () {
+void elk_init_xlib_event () {
     Object t;
-    register i;
+    register int i;
 
     Argl = P_Make_List (Make_Integer (MAX_ARGS), Null);
     Global_GC_Link (Argl);

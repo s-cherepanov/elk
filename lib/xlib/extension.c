@@ -30,10 +30,12 @@
 
 #include "xlib.h"
 
-static Object P_List_Extensions (d) Object d; {
+#include <string.h>
+
+static Object P_List_Extensions (Object d) {
     Object ret;
     int n;
-    register i;
+    register int i;
     register char **p;
     GC_Node;
 
@@ -54,7 +56,7 @@ static Object P_List_Extensions (d) Object d; {
     return ret;
 }
 
-static Object P_Query_Extension (d, name) Object d, name; {
+static Object P_Query_Extension (Object d, Object name) {
     int opcode, event, error;
     Object ret, t;
     GC_Node2;
@@ -72,7 +74,7 @@ static Object P_Query_Extension (d, name) Object d, name; {
     return ret;
 }
 
-elk_init_xlib_extension () {
+void elk_init_xlib_extension () {
     Define_Primitive (P_List_Extensions,    "list-extensions",   1, 1, EVAL);
     Define_Primitive (P_Query_Extension,    "query-extension",   2, 2, EVAL);
 }

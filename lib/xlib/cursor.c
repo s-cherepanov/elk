@@ -38,8 +38,7 @@ Generic_Print (Cursor, "#[cursor %lu]", CURSOR(x)->cursor)
 
 Generic_Get_Display (Cursor, CURSOR)
 
-static Object Internal_Make_Cursor (finalize, dpy, cursor)
-        Display *dpy; Cursor cursor; {
+static Object Internal_Make_Cursor (int finalize, Display *dpy, Cursor cursor) {
     Object c;
 
     if (cursor == None)
@@ -58,22 +57,22 @@ static Object Internal_Make_Cursor (finalize, dpy, cursor)
 }
 
 /* Backwards compatibility: */
-Object Make_Cursor (dpy, cursor) Display *dpy; Cursor cursor; {
+Object Make_Cursor (Display *dpy, Cursor cursor) {
     return Internal_Make_Cursor (1, dpy, cursor);
 }
 
-Object Make_Cursor_Foreign (dpy, cursor) Display *dpy; Cursor cursor; {
+Object Make_Cursor_Foreign (Display *dpy, Cursor cursor) {
     return Internal_Make_Cursor (0, dpy, cursor);
 }
 
-Cursor Get_Cursor (c) Object c; {
+Cursor Get_Cursor (Object c) {
     if (EQ(c, Sym_None))
         return None;
     Check_Type (c, T_Cursor);
     return CURSOR(c)->cursor;
 }
 
-Object P_Free_Cursor (c) Object c; {
+Object P_Free_Cursor (Object c) {
     Check_Type (c, T_Cursor);
     if (!CURSOR(c)->free)
         XFreeCursor (CURSOR(c)->dpy, CURSOR(c)->cursor);
@@ -82,8 +81,8 @@ Object P_Free_Cursor (c) Object c; {
     return Void;
 }
 
-static Object P_Create_Cursor (srcp, maskp, x, y, f, b)
-        Object srcp, maskp, x, y, f, b; {
+static Object P_Create_Cursor (Object srcp, Object maskp, Object x, Object y,
+                               Object f, Object b) {
     Pixmap sp = Get_Pixmap (srcp), mp;
     Display *d = PIXMAP(srcp)->dpy;
 
@@ -92,8 +91,8 @@ static Object P_Create_Cursor (srcp, maskp, x, y, f, b)
         Get_Color (f), Get_Color (b), Get_Integer (x), Get_Integer (y)));
 }
 
-static Object P_Create_Glyph_Cursor (srcf, srcc, maskf, maskc, f, b)
-        Object srcf, srcc, maskf, maskc, f, b; {
+static Object P_Create_Glyph_Cursor (Object srcf, Object srcc, Object maskf,
+                                     Object maskc, Object f, Object b) {
     Font sf = Get_Font (srcf), mf;
     Display *d = FONT(srcf)->dpy;
 
@@ -103,14 +102,14 @@ static Object P_Create_Glyph_Cursor (srcf, srcc, maskf, maskc, f, b)
         Get_Color (f), Get_Color (b)));
 }
 
-static Object P_Recolor_Cursor (c, f, b) Object c, f, b; {
+static Object P_Recolor_Cursor (Object c, Object f, Object b) {
     Check_Type (c, T_Cursor);
     XRecolorCursor (CURSOR(c)->dpy, CURSOR(c)->cursor, Get_Color (f),
         Get_Color (b));
     return Void;
 }
 
-elk_init_xlib_cursor () {
+void elk_init_xlib_cursor () {
     Generic_Define (Cursor, "cursor", "cursor?");
     Define_Primitive (P_Cursor_Display, "cursor-display", 1, 1, EVAL);
     Define_Primitive (P_Free_Cursor,    "free-cursor",    1, 1, EVAL);

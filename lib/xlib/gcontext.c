@@ -40,7 +40,7 @@ Generic_Print (Gc, "#[gcontext %lu]", GCONTEXT(x)->gc)
 
 Generic_Get_Display (Gc, GCONTEXT)
 
-Object Make_Gc (finalize, dpy, g) Display *dpy; GC g; {
+Object Make_Gc (int finalize, Display *dpy, GC g) {
     Object gc;
 
     if (g == None)
@@ -58,7 +58,7 @@ Object Make_Gc (finalize, dpy, g) Display *dpy; GC g; {
     return gc;
 }
 
-static Object P_Create_Gc (w, g) Object w, g; {
+static Object P_Create_Gc (Object w, Object g) {
     unsigned long mask;
     Display *dpy;
     Drawable dr;
@@ -68,7 +68,7 @@ static Object P_Create_Gc (w, g) Object w, g; {
     return Make_Gc (1, dpy, XCreateGC (dpy, dr, mask, &GCV));
 }
 
-static Object P_Copy_Gc (gc, w) Object gc, w; {
+static Object P_Copy_Gc (Object gc, Object w) {
     GC dst;
     Display *dpy;
     Drawable dr;
@@ -80,7 +80,7 @@ static Object P_Copy_Gc (gc, w) Object gc, w; {
     return Make_Gc (1, dpy, dst);
 }
 
-static Object P_Change_Gc (gc, g) Object gc, g; {
+static Object P_Change_Gc (Object gc, Object g) {
     unsigned long mask;
 
     Check_Type (gc, T_Gc);
@@ -89,7 +89,7 @@ static Object P_Change_Gc (gc, g) Object gc, g; {
     return Void;
 }
 
-Object P_Free_Gc (g) Object g; {
+Object P_Free_Gc (Object g) {
     Check_Type (g, T_Gc);
     if (!GCONTEXT(g)->free)
         XFreeGC (GCONTEXT(g)->dpy, GCONTEXT(g)->gc);
@@ -98,7 +98,7 @@ Object P_Free_Gc (g) Object g; {
     return Void;
 }
 
-static Object P_Query_Best_Size (d, w, h, shape) Object d, w, h, shape; {
+static Object P_Query_Best_Size (Object d, Object w, Object h, Object shape) {
     unsigned int rw, rh;
 
     Check_Type (d, T_Display);
@@ -109,10 +109,10 @@ static Object P_Query_Best_Size (d, w, h, shape) Object d, w, h, shape; {
     return Cons (Make_Integer (rw), Make_Integer (rh));
 }
 
-static Object P_Set_Gcontext_Clip_Rectangles (gc, x, y, v, ord)
-        Object gc, x, y, v, ord; {
+static Object P_Set_Gcontext_Clip_Rectangles (Object gc, Object x, Object y,
+                                              Object v, Object ord) {
     register XRectangle *p;
-    register i, n;
+    register int i, n;
     Alloca_Begin;
 
     Check_Type (gc, T_Gc);
@@ -137,9 +137,9 @@ static Object P_Set_Gcontext_Clip_Rectangles (gc, x, y, v, ord)
     return Void;
 }
 
-static Object P_Set_Gcontext_Dashlist (gc, off, v) Object gc, off, v; {
+static Object P_Set_Gcontext_Dashlist (Object gc, Object off, Object v) {
     register char *p;
-    register i, n, d;
+    register int i, n, d;
     Alloca_Begin;
 
     Check_Type (gc, T_Gc);
@@ -164,7 +164,7 @@ static Object P_Set_Gcontext_Dashlist (gc, off, v) Object gc, off, v; {
     GCSubwindowMode | GCGraphicsExposures | GCClipXOrigin | GCClipYOrigin |\
     GCDashOffset | GCArcMode)
 
-static Object P_Get_Gc_Values (gc) Object gc; {
+static Object P_Get_Gc_Values (Object gc) {
     unsigned long mask = ValidGCValuesBits;
 
     Check_Type (gc, T_Gc);
@@ -174,7 +174,7 @@ static Object P_Get_Gc_Values (gc) Object gc; {
         mask);
 }
 
-elk_init_xlib_gcontext () {
+void elk_init_xlib_gcontext () {
     Define_Symbol (&Sym_Gc, "gcontext");
     Generic_Define (Gc, "gcontext", "gcontext?");
     Define_Primitive (P_Gc_Display,      "gcontext-display",    1, 1, EVAL);

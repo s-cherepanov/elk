@@ -30,10 +30,10 @@
 
 #include "xlib.h"
 
-extern XDrawText(), XDrawText16();
+extern int XDrawText(), XDrawText16();
 static Object Sym_1byte, Sym_2byte;
 
-static Two_Byte (format) Object format; {
+static int Two_Byte (Object format) {
     Check_Type (format, T_Symbol);
     if (EQ(format, Sym_1byte))
         return 0;
@@ -41,17 +41,18 @@ static Two_Byte (format) Object format; {
         return 1;
     Primitive_Error ("index format must be '1-byte or '2-byte");
     /*NOTREACHED*/
+    return 0;
 }
 
-static Get_1_Byte_Char (x) Object x; {
-    register c = Get_Integer (x);
+static int Get_1_Byte_Char (Object x) {
+    register int c = Get_Integer (x);
     if (c < 0 || c > 255)
         Range_Error (x);
     return c;
 }
 
-static Get_2_Byte_Char (x) Object x; {
-    register c = Get_Integer (x);
+static int Get_2_Byte_Char (Object x) {
+    register int c = Get_Integer (x);
     if (c < 0 || c > 65535)
         Range_Error (x);
     return c;
@@ -63,12 +64,13 @@ static Get_2_Byte_Char (x) Object x; {
  * long strings.
  */
 
-static Object Internal_Text_Metrics (font, t, f, width) Object font, t, f; {
+static Object Internal_Text_Metrics (Object font, Object t, Object f,
+                                     int width) {
     char *s;
     XChar2b *s2;
     XFontStruct *info;
     Object *data;
-    register i, n;
+    register int i, n;
     int dir, fasc, fdesc;
     Alloca_Begin;
 
@@ -80,7 +82,7 @@ static Object Internal_Text_Metrics (font, t, f, width) Object font, t, f; {
     if (Two_Byte (f)) {
         Alloca (s2, XChar2b*, n * sizeof (XChar2b));
         for (i = 0; i < n; i++) {
-            register c = Get_2_Byte_Char (data[i]);
+            register int c = Get_2_Byte_Char (data[i]);
             s2[i].byte1 = (c >> 8) & 0xff;
             s2[i].byte2 = c & 0xff;
         }
@@ -102,19 +104,20 @@ static Object Internal_Text_Metrics (font, t, f, width) Object font, t, f; {
         Char_Info_Size, Sym_Char_Info, FONT(font)->dpy, ~0L);
 }
 
-static Object P_Text_Width (font, t, f) Object font, t, f; {
+static Object P_Text_Width (Object font, Object t, Object f) {
     return Internal_Text_Metrics (font, t, f, 1);
 }
 
-static Object P_Text_Extents (font, t, f) Object font, t, f; {
+static Object P_Text_Extents (Object font, Object t, Object f) {
     return Internal_Text_Metrics (font, t, f, 0);
 }
 
-static Object P_Draw_Image_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
+static Object P_Draw_Image_Text (Object d, Object gc, Object x, Object y,
+                                 Object t, Object f) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
     Object *data;
-    register i, n;
+    register int i, n;
     char *s;
     XChar2b *s2;
     Alloca_Begin;
@@ -126,7 +129,7 @@ static Object P_Draw_Image_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
     if (Two_Byte (f)) {
         Alloca (s2, XChar2b*, n * sizeof (XChar2b));
         for (i = 0; i < n; i++) {
-            register c = Get_2_Byte_Char (data[i]);
+            register int c = Get_2_Byte_Char (data[i]);
             s2[i].byte1 = (c >> 8) & 0xff;
             s2[i].byte2 = c & 0xff;
         }
@@ -143,11 +146,12 @@ static Object P_Draw_Image_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
     return Void;
 }
 
-static Object P_Draw_Poly_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
+static Object P_Draw_Poly_Text (Object d, Object gc, Object x, Object y,
+                                Object t, Object f) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
     Object *data;
-    register i, n, j, k;
+    register int i, n, j, k;
     int twobyte, nitems;
     XTextItem *items;
     int (*func)();
@@ -173,7 +177,7 @@ static Object P_Draw_Poly_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
                 Alloca (p, XChar2b*, (i-k) * sizeof (XChar2b));
                 ((XTextItem16 *)items)[j].chars = p;
                 for ( ; k < i; k++, p++) {
-                    register c = Get_2_Byte_Char (data[k]);
+                    register int c = Get_2_Byte_Char (data[k]);
                     p->byte1 = (c >> 8) & 0xff;
                     p->byte2 = c & 0xff;
                 }
@@ -200,7 +204,7 @@ static Object P_Draw_Poly_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
     return Void;
 }
 
-elk_init_xlib_text () {
+void elk_init_xlib_text () {
     Define_Primitive (P_Text_Width,       "text-width",        3, 3, EVAL);
     Define_Primitive (P_Text_Extents,     "xlib-text-extents", 3, 3, EVAL);
     Define_Primitive (P_Draw_Image_Text,  "draw-image-text",   6, 6, EVAL);

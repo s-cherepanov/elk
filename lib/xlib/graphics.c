@@ -30,11 +30,12 @@
 
 #include "xlib.h"
 
-extern XDrawPoints(), XDrawLines(), XDrawRectangle(), XFillRectangle();
-extern XDrawRectangles(), XFillRectangles(), XDrawArc(), XFillArc();
-extern XDrawArcs(), XFillArcs(), XFillPolygon();
+extern int XDrawPoints(), XDrawLines(), XDrawRectangle(), XFillRectangle();
+extern int XDrawRectangles(), XFillRectangles(), XDrawArc(), XFillArc();
+extern int XDrawArcs(), XFillArcs(), XFillPolygon();
 
-static Object P_Clear_Area (win, x, y, w, h, e) Object win, x, y, w, h, e; {
+static Object P_Clear_Area (Object win, Object x, Object y, Object w, Object h,
+                            Object e) {
     Check_Type (win, T_Window);
     Check_Type (e, T_Boolean);
     XClearArea (WINDOW(win)->dpy, WINDOW(win)->win, Get_Integer (x),
@@ -42,8 +43,9 @@ static Object P_Clear_Area (win, x, y, w, h, e) Object win, x, y, w, h, e; {
     return Void;
 }
 
-static Object P_Copy_Area (src, gc, sx, sy, w, h, dst, dx, dy) Object src, gc,
-        sx, sy, w, h, dst, dx, dy; {
+static Object P_Copy_Area (Object src, Object gc, Object sx, Object sy,
+                           Object w, Object h, Object dst, Object dx,
+                           Object dy) {
     Display *dpy;
     Drawable ddst = Get_Drawable (dst, &dpy), dsrc = Get_Drawable (src, &dpy);
 
@@ -54,8 +56,9 @@ static Object P_Copy_Area (src, gc, sx, sy, w, h, dst, dx, dy) Object src, gc,
     return Void;
 }
 
-static Object P_Copy_Plane (src, gc, plane, sx, sy, w, h, dst, dx, dy)
-        Object src, gc, plane, sx, sy, w, h, dst, dx, dy; {
+static Object P_Copy_Plane (Object src, Object gc, Object plane, Object sx,
+                            Object sy, Object w, Object h, Object dst,
+                            Object dx, Object dy) {
     Display *dpy;
     Drawable ddst = Get_Drawable (dst, &dpy), dsrc = Get_Drawable (src, &dpy);
     register unsigned long p;
@@ -70,7 +73,7 @@ static Object P_Copy_Plane (src, gc, plane, sx, sy, w, h, dst, dx, dy)
     return Void;
 }
 
-static Object P_Draw_Point (d, gc, x, y) Object d, gc, x, y; {
+static Object P_Draw_Point (Object d, Object gc, Object x, Object y) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
 
@@ -79,12 +82,13 @@ static Object P_Draw_Point (d, gc, x, y) Object d, gc, x, y; {
     return Void;
 }
 
-static Object Internal_Draw_Points (d, gc, v, relative, func, shape)
-        Object d, gc, v, relative, shape; int (*func)(); {
+static Object Internal_Draw_Points (Object d, Object gc, Object v,
+                                    Object relative,
+                                    int (*func)(), Object shape) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
     register XPoint *p;
-    register i, n;
+    register int i, n;
     int rel, sh;
     Alloca_Begin;
 
@@ -111,12 +115,12 @@ static Object Internal_Draw_Points (d, gc, v, relative, func, shape)
     return Void;
 }
 
-static Object P_Draw_Points (d, gc, v, relative) Object d, gc, v, relative; {
+static Object P_Draw_Points (Object d, Object gc, Object v, Object relative) {
     return Internal_Draw_Points (d, gc, v, relative, XDrawPoints, Null);
 }
 
-static Object P_Draw_Line (d, gc, x1, y1, x2, y2)
-        Object d, gc, x1, y1, x2, y2; {
+static Object P_Draw_Line (Object d, Object gc, Object x1, Object y1,
+                           Object x2, Object y2) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
 
@@ -126,15 +130,15 @@ static Object P_Draw_Line (d, gc, x1, y1, x2, y2)
     return Void;
 }
 
-static Object P_Draw_Lines (d, gc, v, relative) Object d, gc, v, relative; {
+static Object P_Draw_Lines (Object d, Object gc, Object v, Object relative) {
     return Internal_Draw_Points (d, gc, v, relative, XDrawLines, Null);
 }
 
-static Object P_Draw_Segments (d, gc, v) Object d, gc, v; {
+static Object P_Draw_Segments (Object d, Object gc, Object v) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
     register XSegment *p;
-    register i, n;
+    register int i, n;
     Alloca_Begin;
 
     Check_Type (gc, T_Gc);
@@ -157,8 +161,8 @@ static Object P_Draw_Segments (d, gc, v) Object d, gc, v; {
     return Void;
 }
 
-static Object Internal_Draw_Rectangle (d, gc, x, y, w, h, func)
-        Object d, gc, x, y, w, h; int (*func)(); {
+static Object Internal_Draw_Rectangle (Object d, Object gc, Object x, Object y,
+                                       Object w, Object h, int (*func)()) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
 
@@ -168,20 +172,22 @@ static Object Internal_Draw_Rectangle (d, gc, x, y, w, h, func)
     return Void;
 }
 
-static Object P_Draw_Rectangle (d, gc, x, y, w, h) Object d, gc, x, y, w, h; {
+static Object P_Draw_Rectangle (Object d, Object gc, Object x, Object y,
+                                Object w, Object h) {
     return Internal_Draw_Rectangle (d, gc, x, y, w, h, XDrawRectangle);
 }
 
-static Object P_Fill_Rectangle (d, gc, x, y, w, h) Object d, gc, x, y, w, h; {
+static Object P_Fill_Rectangle (Object d, Object gc, Object x, Object y,
+                                Object w, Object h) {
     return Internal_Draw_Rectangle (d, gc, x, y, w, h, XFillRectangle);
 }
 
-static Object Internal_Draw_Rectangles (d, gc, v, func)
-        Object d, gc, v; int (*func)(); {
+static Object Internal_Draw_Rectangles (Object d, Object gc, Object v,
+                                        int (*func)()) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
     register XRectangle *p;
-    register i, n;
+    register int i, n;
     Alloca_Begin;
 
     Check_Type (gc, T_Gc);
@@ -204,16 +210,17 @@ static Object Internal_Draw_Rectangles (d, gc, v, func)
     return Void;
 }
 
-static Object P_Draw_Rectangles (d, gc, v) Object d, gc, v; {
+static Object P_Draw_Rectangles (Object d, Object gc, Object v) {
     return Internal_Draw_Rectangles (d, gc, v, XDrawRectangles);
 }
 
-static Object P_Fill_Rectangles (d, gc, v) Object d, gc, v; {
+static Object P_Fill_Rectangles (Object d, Object gc, Object v) {
     return Internal_Draw_Rectangles (d, gc, v, XFillRectangles);
 }
 
-static Object Internal_Draw_Arc (d, gc, x, y, w, h, a1, a2, func)
-        Object d, gc, x, y, w, h, a1, a2; int (*func)(); {
+static Object Internal_Draw_Arc (Object d, Object gc, Object x, Object y,
+                                 Object w, Object h, Object a1, Object a2,
+                                 int (*func)()) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
 
@@ -223,22 +230,22 @@ static Object Internal_Draw_Arc (d, gc, x, y, w, h, a1, a2, func)
     return Void;
 }
 
-static Object P_Draw_Arc (d, gc, x, y, w, h, a1, a2)
-        Object d, gc, x, y, w, h, a1, a2; {
+static Object P_Draw_Arc (Object d, Object gc, Object x, Object y, Object w,
+                          Object h, Object a1, Object a2) {
     return Internal_Draw_Arc (d, gc, x, y, w, h, a1, a2, XDrawArc);
 }
 
-static Object P_Fill_Arc (d, gc, x, y, w, h, a1, a2)
-        Object d, gc, x, y, w, h, a1, a2; {
+static Object P_Fill_Arc (Object d, Object gc, Object x, Object y, Object w,
+                          Object h, Object a1, Object a2) {
     return Internal_Draw_Arc (d, gc, x, y, w, h, a1, a2, XFillArc);
 }
 
-static Object Internal_Draw_Arcs (d, gc, v, func) Object d, gc, v;
-        int (*func)(); {
+static Object Internal_Draw_Arcs (Object d, Object gc, Object v,
+                                  int (*func)()) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
     register XArc *p;
-    register i, n;
+    register int i, n;
     Alloca_Begin;
 
     Check_Type (gc, T_Gc);
@@ -263,20 +270,20 @@ static Object Internal_Draw_Arcs (d, gc, v, func) Object d, gc, v;
     return Void;
 }
 
-static Object P_Draw_Arcs (d, gc, v) Object d, gc, v; {
+static Object P_Draw_Arcs (Object d, Object gc, Object v) {
     return Internal_Draw_Arcs (d, gc, v, XDrawArcs);
 }
 
-static Object P_Fill_Arcs (d, gc, v) Object d, gc, v; {
+static Object P_Fill_Arcs (Object d, Object gc, Object v) {
     return Internal_Draw_Arcs (d, gc, v, XFillArcs);
 }
 
-static Object P_Fill_Polygon (d, gc, v, relative, shape)
-        Object d, gc, v, relative, shape; {
+static Object P_Fill_Polygon (Object d, Object gc, Object v, Object relative,
+                              Object shape) {
     return Internal_Draw_Points (d, gc, v, relative, XFillPolygon, shape);
 }
 
-elk_init_xlib_graphics () {
+void elk_init_xlib_graphics () {
     Define_Primitive (P_Clear_Area,        "clear-area",       6, 6, EVAL);
     Define_Primitive (P_Copy_Area,         "copy-area",        9, 9, EVAL);
     Define_Primitive (P_Copy_Plane,        "copy-plane",      10,10, EVAL);

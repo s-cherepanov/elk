@@ -32,7 +32,8 @@
 
 static Object Sym_Pointer_Root;
 
-static Object P_Reparent_Window (w, parent, x, y) Object w, parent, x, y; {
+static Object P_Reparent_Window (Object w, Object parent, Object x,
+                                 Object y) {
     Check_Type (w, T_Window);
     Check_Type (parent, T_Window);
     XReparentWindow (WINDOW(w)->dpy, WINDOW(w)->win, WINDOW(parent)->win,
@@ -40,19 +41,19 @@ static Object P_Reparent_Window (w, parent, x, y) Object w, parent, x, y; {
     return Void;
 }
 
-static Object P_Install_Colormap (c) Object c; {
+static Object P_Install_Colormap (Object c) {
     Check_Type (c, T_Colormap);
     XInstallColormap (COLORMAP(c)->dpy, COLORMAP(c)->cm);
     return Void;
 }
 
-static Object P_Uninstall_Colormap (c) Object c; {
+static Object P_Uninstall_Colormap (Object c) {
     Check_Type (c, T_Colormap);
     XUninstallColormap (COLORMAP(c)->dpy, COLORMAP(c)->cm);
     return Void;
 }
 
-static Object P_List_Installed_Colormaps (w) Object w; {
+static Object P_List_Installed_Colormaps (Object w) {
     int i, n;
     Colormap *ret;
     Object v;
@@ -73,8 +74,8 @@ static Object P_List_Installed_Colormaps (w) Object w; {
     return v;
 }
 
-static Object P_Set_Input_Focus (d, win, revert_to, time) Object d, win,
-    revert_to, time; {
+static Object P_Set_Input_Focus (Object d, Object win, Object revert_to,
+                                 Object time) {
     Window focus = PointerRoot;
 
     Check_Type (d, T_Display);
@@ -85,7 +86,7 @@ static Object P_Set_Input_Focus (d, win, revert_to, time) Object d, win,
     return Void;
 }
 
-static Object P_Input_Focus (d) Object d; {
+static Object P_Input_Focus (Object d) {
     Window win;
     int revert_to;
     Object ret, x;
@@ -103,8 +104,9 @@ static Object P_Input_Focus (d) Object d; {
     return ret;
 }
 
-static Object P_General_Warp_Pointer (dpy, dst, dstx, dsty, src, srcx, srcy,
-        srcw, srch) Object dpy, dst, dstx, dsty, src, srcx, srcy, srcw, srch; {
+static Object P_General_Warp_Pointer (Object dpy, Object dst, Object dstx,
+                                      Object dsty, Object src, Object srcx,
+                                      Object srcy, Object srcw, Object srch) {
     Check_Type (dpy, T_Display);
     XWarpPointer (DISPLAY(dpy)->dpy, Get_Window (src), Get_Window (dst),
         Get_Integer (srcx), Get_Integer (srcy), Get_Integer (srcw),
@@ -112,8 +114,8 @@ static Object P_General_Warp_Pointer (dpy, dst, dstx, dsty, src, srcx, srcy,
     return Void;
 }
 
-static Object P_Bell (argc, argv) Object *argv; {
-    register percent = 0;
+static Object P_Bell (int argc, Object *argv) {
+    register int percent = 0;
 
     Check_Type (argv[0], T_Display);
     if (argc == 2) {
@@ -125,30 +127,30 @@ static Object P_Bell (argc, argv) Object *argv; {
     return Void;
 }
 
-static Object P_Set_Access_Control (dpy, on) Object dpy, on; {
+static Object P_Set_Access_Control (Object dpy, Object on) {
     Check_Type (dpy, T_Display);
     Check_Type (on, T_Boolean);
     XSetAccessControl (DISPLAY(dpy)->dpy, EQ(on, True));
     return Void;
 }
 
-static Object P_Change_Save_Set (win, mode) Object win, mode; {
+static Object P_Change_Save_Set (Object win, Object mode) {
     Check_Type (win, T_Window);
     XChangeSaveSet (WINDOW(win)->dpy, WINDOW(win)->win,
         Symbols_To_Bits (mode, 0, Saveset_Syms));
     return Void;
 }
 
-static Object P_Set_Close_Down_Mode (dpy, mode) Object dpy, mode; {
+static Object P_Set_Close_Down_Mode (Object dpy, Object mode) {
     Check_Type (dpy, T_Display);
     XSetCloseDownMode (DISPLAY(dpy)->dpy,
         Symbols_To_Bits (mode, 0, Closemode_Syms));
     return Void;
 }
 
-static Object P_Get_Pointer_Mapping (dpy) Object dpy; {
+static Object P_Get_Pointer_Mapping (Object dpy) {
     unsigned char map[256];
-    register i, n;
+    register int i, n;
     Object ret;
 
     Check_Type (dpy, T_Display);
@@ -159,8 +161,8 @@ static Object P_Get_Pointer_Mapping (dpy) Object dpy; {
     return ret;
 }
 
-static Object P_Set_Pointer_Mapping (dpy, map) Object dpy, map; {
-    register i, n;
+static Object P_Set_Pointer_Mapping (Object dpy, Object map) {
+    register int i, n;
     register unsigned char *p;
     Object ret;
     Alloca_Begin;
@@ -177,7 +179,7 @@ static Object P_Set_Pointer_Mapping (dpy, map) Object dpy, map; {
     return ret;
 }
 
-elk_init_xlib_wm () {
+void elk_init_xlib_wm () {
     Define_Primitive (P_Reparent_Window,  "reparent-window",  4, 4, EVAL);
     Define_Primitive (P_Install_Colormap, "install-colormap", 1, 1, EVAL);
     Define_Primitive (P_Uninstall_Colormap,

@@ -30,12 +30,14 @@
 
 #include "xlib.h"
 
+#include <string.h>
+
 Object Sym_Char_Info;
 static Object Sym_Font_Info, Sym_Min, Sym_Max;
 
 Generic_Predicate (Font)
 
-static Font_Equal (x, y) Object x, y; {
+static int Font_Equal (Object x, Object y) {
     Font id1 = FONT(x)->id, id2 = FONT(y)->id;
     if (id1 && id2)
         return id1 == id2 && FONT(x)->dpy == FONT(y)->dpy;
@@ -43,16 +45,18 @@ static Font_Equal (x, y) Object x, y; {
         return 0;
 }
 
-Generic_Print (Font, "#[font %lu]", FONT(x)->id ? FONT(x)->id : POINTER(x))
+Generic_Print (Font, "#[font %lu]", FONT(x)->id ? FONT(x)->id
+                                                : (unsigned int)FIXNUM(x))
 
-static Font_Visit (fp, f) Object *fp; int (*f)(); {
+static int Font_Visit (Object *fp, int (*f)()) {
     (*f)(&FONT(*fp)->name);
+    return 0;
 }
 
 Generic_Get_Display (Font, FONT)
 
-static Object Internal_Make_Font (finalize, dpy, name, id, info)
-        Display *dpy; Object name; Font id; XFontStruct *info; {
+static Object Internal_Make_Font (int finalize, Display *dpy, Object name,
+                                  Font id, XFontStruct *info) {
     Object f;
     GC_Node;
 
@@ -71,23 +75,22 @@ static Object Internal_Make_Font (finalize, dpy, name, id, info)
 }
 
 /* Backwards compatibility: */
-Object Make_Font (dpy, name, id, info)
-        Display *dpy; Object name; Font id; XFontStruct *info; {
+Object Make_Font (Display *dpy, Object name, Font id, XFontStruct *info) {
     return Internal_Make_Font (1, dpy, name, id, info);
 }
 
-Object Make_Font_Foreign (dpy, name, id, info)
-        Display *dpy; Object name; Font id; XFontStruct *info; {
+Object Make_Font_Foreign (Display *dpy, Object name, Font id,
+                          XFontStruct *info) {
     return Internal_Make_Font (0, dpy, name, id, info);
 }
 
-Font Get_Font (f) Object f; {
+Font Get_Font (Object f) {
     Check_Type (f, T_Font);
     Open_Font_Maybe (f);
     return FONT(f)->id;
 }
 
-static XFontStruct *Internal_Open_Font (d, name) Display *d; Object name; {
+static XFontStruct *Internal_Open_Font (Display *d, Object name) {
     register char *s;
     XFontStruct *p;
     Alloca_Begin;
@@ -101,7 +104,7 @@ static XFontStruct *Internal_Open_Font (d, name) Display *d; Object name; {
     return p;
 }
 
-static Object P_Open_Font (d, name) Object d, name; {
+static Object P_Open_Font (Object d, Object name) {
     XFontStruct *p;
 
     Check_Type (d, T_Display)
@@ -109,7 +112,7 @@ static Object P_Open_Font (d, name) Object d, name; {
     return Make_Font (DISPLAY(d)->dpy, name, p->fid, p);
 }
 
-void Open_Font_Maybe (f) Object f; {
+void Open_Font_Maybe (Object f) {
     Object name;
     XFontStruct *p;
 
@@ -124,7 +127,7 @@ void Open_Font_Maybe (f) Object f; {
     }
 }
 
-Object P_Close_Font (f) Object f; {
+Object P_Close_Font (Object f) {
     Check_Type (f, T_Font);
     if (FONT(f)->id)
         XUnloadFont (FONT(f)->dpy, FONT(f)->id);
@@ -133,12 +136,12 @@ Object P_Close_Font (f) Object f; {
     return Void;
 }
 
-static Object P_Font_Name (f) Object f; {
+static Object P_Font_Name (Object f) {
     Check_Type (f, T_Font);
     return FONT(f)->name;
 }
 
-static Object P_Gcontext_Font (g) Object g; {
+static Object P_Gcontext_Font (Object g) {
     register struct S_Gc *p;
     register XFontStruct *info;
 
@@ -150,11 +153,11 @@ static Object P_Gcontext_Font (g) Object g; {
     return Make_Font_Foreign (p->dpy, False, (Font)0, info);
 }
 
-static Object Internal_List_Fonts (d, pat, with_info) Object d, pat; {
+static Object Internal_List_Fonts (Object d, Object pat, int with_info) {
     char **ret;
     int n;
     XFontStruct *iret;
-    register i;
+    register int i;
     Object f, v;
     Display *dpy;
     GC_Node2;
@@ -184,24 +187,24 @@ static Object Internal_List_Fonts (d, pat, with_info) Object d, pat; {
     return v;
 }
 
-static Object P_List_Font_Names (d, pat) Object d, pat; {
+static Object P_List_Font_Names (Object d, Object pat) {
     return Internal_List_Fonts (d, pat, 0);
 }
 
-static Object P_List_Fonts (d, pat) Object d, pat; {
+static Object P_List_Fonts (Object d, Object pat) {
     return Internal_List_Fonts (d, pat, 1);
 }
 
-static Object P_Font_Info (f) Object f; {
+static Object P_Font_Info (Object f) {
     Check_Type (f, T_Font);
     FI = *FONT(f)->info;
     return Record_To_Vector (Font_Info_Rec, Font_Info_Size,
         Sym_Font_Info, FONT(f)->dpy, ~0L);
 }
 
-static Object P_Char_Info (f, index) Object f, index; {
-    register t = TYPE(index);
-    register unsigned i;
+static Object P_Char_Info (Object f, Object index) {
+    register int t = TYPE(index);
+    register unsigned int i;
     register XCharStruct *cp;
     register XFontStruct *p;
     char *msg = "argument must be integer, character, 'min, or 'max";
@@ -227,7 +230,7 @@ static Object P_Char_Info (f, index) Object f, index; {
                 Range_Error (index);
             i -= p->min_char_or_byte2;
         } else {
-            register unsigned b1 = i & 0xff, b2 = (i >> 8) & 0xff;
+            register unsigned int b1 = i & 0xff, b2 = (i >> 8) & 0xff;
             if (b1 < p->min_byte1 || b1 > p->max_byte1 ||
                     b2 < p->min_char_or_byte2 || b2 > p->max_char_or_byte2)
                 Range_Error (index);
@@ -243,8 +246,8 @@ static Object P_Char_Info (f, index) Object f, index; {
         Sym_Char_Info, FONT(f)->dpy, ~0L);
 }
 
-static Object P_Font_Properties (f) Object f; {
-    register i, n;
+static Object P_Font_Properties (Object f) {
+    register int i, n;
     Object v, a, val, x;
     GC_Node4;
 
@@ -264,7 +267,7 @@ static Object P_Font_Properties (f) Object f; {
     return v;
 }
 
-static Object P_Font_Path (d) Object d; {
+static Object P_Font_Path (Object d) {
     Object v;
     int i, n;
     char **ret;
@@ -287,9 +290,9 @@ static Object P_Font_Path (d) Object d; {
     return P_Vector_To_List (v);
 }
 
-static Object P_Set_Font_Path (d, p) Object d, p; {
+static Object P_Set_Font_Path (Object d, Object p) {
     register char **path;
-    register i, n;
+    register int i, n;
     Object c;
     Alloca_Begin;
 
@@ -306,7 +309,7 @@ static Object P_Set_Font_Path (d, p) Object d, p; {
     return Void;
 }
 
-elk_init_xlib_font () {
+void elk_init_xlib_font () {
     Define_Symbol (&Sym_Font_Info, "font-info");
     Define_Symbol (&Sym_Char_Info, "char-info");
     Define_Symbol (&Sym_Min, "min");

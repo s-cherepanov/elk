@@ -38,8 +38,7 @@ Generic_Print (Pixmap, "#[pixmap %lu]", PIXMAP(x)->pm)
 
 Generic_Get_Display (Pixmap, PIXMAP)
 
-static Object Internal_Make_Pixmap (finalize, dpy, pix)
-        Display *dpy; Pixmap pix; {
+static Object Internal_Make_Pixmap (int finalize, Display *dpy, Pixmap pix) {
     Object pm;
 
     if (pix == None)
@@ -58,20 +57,20 @@ static Object Internal_Make_Pixmap (finalize, dpy, pix)
 }
 
 /* Backwards compatibility: */
-Object Make_Pixmap (dpy, pix) Display *dpy; Pixmap pix; {
+Object Make_Pixmap (Display *dpy, Pixmap pix) {
     return Internal_Make_Pixmap (1, dpy, pix);
 }
 
-Object Make_Pixmap_Foreign (dpy, pix) Display *dpy; Pixmap pix; {
+Object Make_Pixmap_Foreign (Display *dpy, Pixmap pix) {
     return Internal_Make_Pixmap (0, dpy, pix);
 }
 
-Pixmap Get_Pixmap (p) Object p; {
+Pixmap Get_Pixmap (Object p) {
     Check_Type (p, T_Pixmap);
     return PIXMAP(p)->pm;
 }
 
-Object P_Free_Pixmap (p) Object p; {
+Object P_Free_Pixmap (Object p) {
     Check_Type (p, T_Pixmap);
     if (!PIXMAP(p)->free)
         XFreePixmap (PIXMAP(p)->dpy, PIXMAP(p)->pm);
@@ -80,7 +79,7 @@ Object P_Free_Pixmap (p) Object p; {
     return Void;
 }
 
-static Object P_Create_Pixmap (d, w, h, depth) Object d, w, h, depth; {
+static Object P_Create_Pixmap (Object d, Object w, Object h, Object depth) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
 
@@ -88,9 +87,9 @@ static Object P_Create_Pixmap (d, w, h, depth) Object d, w, h, depth; {
         Get_Integer (h), Get_Integer (depth)));
 }
 
-static Object P_Create_Bitmap_From_Data (win, data, pw, ph)
-        Object win, data, pw, ph; {
-    register w, h;
+static Object P_Create_Bitmap_From_Data (Object win, Object data, Object pw,
+                                         Object ph) {
+    register int w, h;
 
     Check_Type (win, T_Window);
     Check_Type (data, T_String);
@@ -103,9 +102,11 @@ static Object P_Create_Bitmap_From_Data (win, data, pw, ph)
             STRING(data)->data, w, h));
 }
 
-static Object P_Create_Pixmap_From_Bitmap_Data (win, data, pw, ph, fg, bg,
-        depth) Object win, data, pw, ph, fg, bg, depth; {
-    register w, h;
+static Object P_Create_Pixmap_From_Bitmap_Data (Object win, Object data,
+                                                Object pw, Object ph,
+                                                Object fg, Object bg,
+                                                Object depth) {
+    register int w, h;
 
     Check_Type (win, T_Window);
     Check_Type (data, T_String);
@@ -119,7 +120,7 @@ static Object P_Create_Pixmap_From_Bitmap_Data (win, data, pw, ph, fg, bg,
                 Get_Integer (depth)));
 }
 
-static Object P_Read_Bitmap_File (d, fn) Object d, fn; {
+static Object P_Read_Bitmap_File (Object d, Object fn) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
     unsigned width, height;
@@ -146,7 +147,7 @@ static Object P_Read_Bitmap_File (d, fn) Object d, fn; {
     return ret;
 }
 
-static Object P_Write_Bitmap_File (argc, argv) Object *argv; {
+static Object P_Write_Bitmap_File (int argc, Object *argv) {
     Pixmap pm;
     int ret, xhot = -1, yhot = -1;
 
@@ -164,7 +165,7 @@ static Object P_Write_Bitmap_File (argc, argv) Object *argv; {
     return Bits_To_Symbols ((unsigned long)ret, 0, Bitmapstatus_Syms);
 }
 
-elk_init_xlib_pixmap () {
+void elk_init_xlib_pixmap () {
     Generic_Define (Pixmap, "pixmap", "pixmap?");
     Define_Primitive (P_Pixmap_Display,    "pixmap-display",    1, 1, EVAL);
     Define_Primitive (P_Free_Pixmap,       "free-pixmap",       1, 1, EVAL);

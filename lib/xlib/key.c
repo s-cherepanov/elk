@@ -30,11 +30,13 @@
 
 #include "xlib.h"
 
+#include <string.h>
+
 #ifdef XLIB_RELEASE_5_OR_LATER
 
 /* I don't know if XDisplayKeycodes() was already there in X11R4.
  */
-static Object P_Display_Min_Keycode (d) Object d; {
+static Object P_Display_Min_Keycode (Object d) {
     int mink, maxk;
 
     Check_Type (d, T_Display);
@@ -42,7 +44,7 @@ static Object P_Display_Min_Keycode (d) Object d; {
     return Make_Integer (mink);
 }
 
-static Object P_Display_Max_Keycode (d) Object d; {
+static Object P_Display_Max_Keycode (Object d) {
     int mink, maxk;
 
     Check_Type (d, T_Display);
@@ -51,12 +53,12 @@ static Object P_Display_Max_Keycode (d) Object d; {
 }
 
 #else
-static Object P_Display_Min_Keycode (d) Object d; {
+static Object P_Display_Min_Keycode (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (DISPLAY(d)->dpy->min_keycode);
 }
 
-static Object P_Display_Max_Keycode (d) Object d; {
+static Object P_Display_Max_Keycode (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (DISPLAY(d)->dpy->max_keycode);
 }
@@ -66,7 +68,7 @@ static Object P_Display_Max_Keycode (d) Object d; {
 
 /* I'm not sure if this works correctly in X11R4:
  */
-static Object P_Display_Keysyms_Per_Keycode (d) Object d; {
+static Object P_Display_Keysyms_Per_Keycode (Object d) {
     KeySym *ksyms;
     int mink, maxk, ksyms_per_kode;
 
@@ -78,7 +80,7 @@ static Object P_Display_Keysyms_Per_Keycode (d) Object d; {
 }
 
 #else
-static Object P_Display_Keysyms_Per_Keycode (d) Object d; {
+static Object P_Display_Keysyms_Per_Keycode (Object d) {
     Check_Type (d, T_Display);
     /* Force initialization: */
     Disable_Interrupts;
@@ -88,21 +90,21 @@ static Object P_Display_Keysyms_Per_Keycode (d) Object d; {
 }
 #endif
 
-static Object P_String_To_Keysym (s) Object s; {
+static Object P_String_To_Keysym (Object s) {
     KeySym k;
 
     k = XStringToKeysym (Get_Strsym (s));
     return k == NoSymbol ? False : Make_Unsigned_Long ((unsigned long)k);
 }
 
-static Object P_Keysym_To_String (k) Object k; {
+static Object P_Keysym_To_String (Object k) {
     register char *s;
 
     s = XKeysymToString ((KeySym)Get_Long (k));
     return s ? Make_String (s, strlen (s)) : False;
 }
 
-static Object P_Keycode_To_Keysym (d, k, index) Object d, k, index; {
+static Object P_Keycode_To_Keysym (Object d, Object k, Object index) {
     Object ret;
 
     Check_Type (d, T_Display);
@@ -113,7 +115,7 @@ static Object P_Keycode_To_Keysym (d, k, index) Object d, k, index; {
     return ret;
 }
 
-static Object P_Keysym_To_Keycode (d, k) Object d, k; {
+static Object P_Keysym_To_Keycode (Object d, Object k) {
     Object ret;
 
     Check_Type (d, T_Display);
@@ -124,10 +126,10 @@ static Object P_Keysym_To_Keycode (d, k) Object d, k; {
     return ret;
 }
 
-static Object P_Lookup_String (d, k, mask) Object d, k, mask; {
+static Object P_Lookup_String (Object d, Object k, Object mask) {
     XKeyEvent e;
     char buf[1024];
-    register len;
+    register int len;
     KeySym keysym_return;
     XComposeStatus status_return;
 
@@ -141,9 +143,9 @@ static Object P_Lookup_String (d, k, mask) Object d, k, mask; {
     return Make_String (buf, len);
 }
 
-static Object P_Rebind_Keysym (d, k, mods, str) Object d, k, mods, str; {
+static Object P_Rebind_Keysym (Object d, Object k, Object mods, Object str) {
     KeySym *p;
-    register i, n;
+    register int i, n;
     Alloca_Begin;
 
     Check_Type (d, T_Display);
@@ -159,7 +161,7 @@ static Object P_Rebind_Keysym (d, k, mods, str) Object d, k, mods, str; {
     return Void;
 }
 
-static Object P_Refresh_Keyboard_Mapping (w, event) Object w, event; {
+static Object P_Refresh_Keyboard_Mapping (Object w, Object event) {
     static XMappingEvent fake;
 
     Check_Type (w, T_Window);
@@ -171,7 +173,7 @@ static Object P_Refresh_Keyboard_Mapping (w, event) Object w, event; {
     return Void;
 }
 
-elk_init_xlib_key () {
+void elk_init_xlib_key () {
     Define_Primitive (P_Display_Min_Keycode, "display-min-keycode",
                                                               1, 1, EVAL);
     Define_Primitive (P_Display_Max_Keycode, "display-max-keycode",

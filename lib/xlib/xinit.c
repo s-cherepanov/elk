@@ -50,7 +50,7 @@ static Object P_Xlib_Release_6_Or_Laterp () {
 #endif
 }
 
-elk_init_xlib_init () {
+void elk_init_xlib_init () {
     Define_Primitive (P_Xlib_Release_4_Or_Laterp,
                         "xlib-release-4-or-later?",               0, 0, EVAL);
     Define_Primitive (P_Xlib_Release_5_Or_Laterp,

@@ -30,13 +30,15 @@
 
 #include "xlib.h"
 
+#include <stdlib.h>
+
 static Object V_X_Error_Handler, V_X_Fatal_Error_Handler;
 
 /* Default error handlers of the Xlib */
 extern int _XDefaultIOError();
 extern int _XDefaultError();
 
-static X_Fatal_Error (d) Display *d; {
+static int X_Fatal_Error (Display *d) {
     Object args, fun;
     GC_Node;
 
@@ -51,9 +53,10 @@ static X_Fatal_Error (d) Display *d; {
     _XDefaultIOError (d);
     exit (1);         /* In case the default handler doesn't exit() */
     /*NOTREACHED*/
+    return 0;
 }
 
-static X_Error (d, ep) Display *d; XErrorEvent *ep; {
+static int X_Error (Display *d, XErrorEvent *ep) {
     Object args, a, fun;
     GC_Node;
 
@@ -79,9 +82,10 @@ static X_Error (d, ep) Display *d; XErrorEvent *ep; {
         (void)Funcall (fun, args, 0);
     else
         _XDefaultError (d, ep);
+    return 0;
 }
 
-static X_After_Function (d) Display *d; {
+static int X_After_Function (Display *d) {
     Object args;
     GC_Node;
 
@@ -90,9 +94,10 @@ static X_After_Function (d) Display *d; {
     args = Cons (args, Null);
     GC_Unlink;
     (void)Funcall (DISPLAY(Car (args))->after, args, 0);
+    return 0;
 }
 
-static Object P_Set_After_Function (d, f) Object d, f; {
+static Object P_Set_After_Function (Object d, Object f) {
     Object old;
 
     Check_Type (d, T_Display);
@@ -107,12 +112,12 @@ static Object P_Set_After_Function (d, f) Object d, f; {
     return old;
 }
 
-static Object P_After_Function (d) Object d; {
+static Object P_After_Function (Object d) {
     Check_Type (d, T_Display);
     return DISPLAY(d)->after;
 }
 
-elk_init_xlib_error () {
+void elk_init_xlib_error () {
     Define_Variable (&V_X_Fatal_Error_Handler, "x-fatal-error-handler", Null);
     Define_Variable (&V_X_Error_Handler, "x-error-handler", Null);
     (void)XSetIOErrorHandler (X_Fatal_Error);

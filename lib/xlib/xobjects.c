@@ -34,8 +34,8 @@
 
 Object Sym_None;
 
-int Match_X_Obj (x, v) Object x; va_list v; {
-    register type = TYPE(x);
+int Match_X_Obj (Object x, va_list v) {
+    register int type = TYPE(x);
 
     if (type == T_Display) {
         return 1;
@@ -63,6 +63,6 @@ int Match_X_Obj (x, v) Object x; va_list v; {
     return 0;
 }
 
-elk_init_xlib_objects () {
+void elk_init_xlib_objects () {
     Define_Symbol (&Sym_None, "none");
 }

@@ -32,7 +32,7 @@
 
 Generic_Predicate (Color)
 
-static Color_Equal (Object x, Object y) {
+static int Color_Equal (Object x, Object y) {
     register XColor *p = &COLOR(x)->c, *q = &COLOR(y)->c;
     return p->red == q->red && p->green == q->green && p->blue == q->blue;
 }
@@ -59,7 +59,7 @@ XColor *Get_Color (Object c) {
     return &COLOR(c)->c;
 }
 
-static unsigned short Get_RGB_Value (x) Object x; {
+static unsigned short Get_RGB_Value (Object x) {
     double d;
 
     d = Get_Double (x);
@@ -68,11 +68,11 @@ static unsigned short Get_RGB_Value (x) Object x; {
     return (unsigned short)(d * 65535);
 }
 
-static Object P_Make_Color (r, g, b) Object r, g, b; {
+static Object P_Make_Color (Object r, Object g, Object b) {
     return Make_Color (Get_RGB_Value (r), Get_RGB_Value (g), Get_RGB_Value (b));
 }
 
-static Object P_Color_Rgb_Values (c) Object c; {
+static Object P_Color_Rgb_Values (Object c) {
     Object ret, t, x;
     GC_Node3;
 
@@ -90,7 +90,7 @@ static Object P_Color_Rgb_Values (c) Object c; {
     return ret;
 }
 
-static Object P_Query_Color (cmap, p) Object cmap, p; {
+static Object P_Query_Color (Object cmap, Object p) {
     XColor c;
     Colormap cm = Get_Colormap (cmap);
 
@@ -101,9 +101,9 @@ static Object P_Query_Color (cmap, p) Object cmap, p; {
     return Make_Color (c.red, c.green, c.blue);
 }
 
-static Object P_Query_Colors (cmap, v) Object cmap, v; {
+static Object P_Query_Colors (Object cmap, Object v) {
     Colormap cm = Get_Colormap (cmap);
-    register i, n;
+    register int i, n;
     Object ret;
     register XColor *p;
     GC_Node;
@@ -130,7 +130,7 @@ static Object P_Query_Colors (cmap, v) Object cmap, v; {
     return ret;
 }
 
-static Object P_Lookup_Color (cmap, name) Object cmap, name; {
+static Object P_Lookup_Color (Object cmap, Object name) {
     XColor visual, exact;
     Colormap cm = Get_Colormap (cmap);
     Object ret, x;
@@ -149,7 +149,7 @@ static Object P_Lookup_Color (cmap, name) Object cmap, name; {
     return ret;
 }
 
-elk_init_xlib_color () {
+void elk_init_xlib_color () {
     Generic_Define (Color, "color", "color?");
     Define_Primitive (P_Make_Color,       "make-color",       3, 3, EVAL);
     Define_Primitive (P_Color_Rgb_Values, "color-rgb-values", 1, 1, EVAL);

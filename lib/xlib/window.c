@@ -41,7 +41,7 @@ Generic_Print (Window, "#[window %lu]", WINDOW(x)->win)
 
 Generic_Get_Display (Window, WINDOW)
 
-Object Make_Window (finalize, dpy, win) Display *dpy; Window win; {
+Object Make_Window (int finalize, Display *dpy, Window win) {
     Object w;
 
     if (win == None)
@@ -62,14 +62,14 @@ Object Make_Window (finalize, dpy, win) Display *dpy; Window win; {
     return w;
 }
 
-Window Get_Window (w) Object w; {
+Window Get_Window (Object w) {
     if (EQ(w, Sym_None))
         return None;
     Check_Type (w, T_Window);
     return WINDOW(w)->win;
 }
 
-Drawable Get_Drawable (d, dpyp) Object d; Display **dpyp; {
+Drawable Get_Drawable (Object d, Display **dpyp) {
     if (TYPE(d) == T_Window) {
         *dpyp = WINDOW(d)->dpy;
         return (Drawable)WINDOW(d)->win;
@@ -81,8 +81,9 @@ Drawable Get_Drawable (d, dpyp) Object d; Display **dpyp; {
     /*NOTREACHED*/
 }
 
-static Object P_Create_Window (parent, x, y, width, height, border_width, attr)
-        Object parent, x, y, width, height, border_width, attr; {
+static Object P_Create_Window (Object parent, Object x, Object y, Object width,
+                               Object height, Object border_width,
+                               Object attr) {
     unsigned long mask;
     Window win;
 
@@ -96,7 +97,7 @@ static Object P_Create_Window (parent, x, y, width, height, border_width, attr)
     return Make_Window (1, WINDOW(parent)->dpy, win);
 }
 
-static Object P_Configure_Window (w, conf) Object w, conf; {
+static Object P_Configure_Window (Object w, Object conf) {
     unsigned long mask;
 
     Check_Type (w, T_Window);
@@ -105,7 +106,7 @@ static Object P_Configure_Window (w, conf) Object w, conf; {
     return Void;
 }
 
-static Object P_Change_Window_Attributes (w, attr) Object w, attr; {
+static Object P_Change_Window_Attributes (Object w, Object attr) {
     unsigned long mask;
 
     Check_Type (w, T_Window);
@@ -114,14 +115,14 @@ static Object P_Change_Window_Attributes (w, attr) Object w, attr; {
     return Void;
 }
 
-static Object P_Get_Window_Attributes (w) Object w; {
+static Object P_Get_Window_Attributes (Object w) {
     Check_Type (w, T_Window);
     XGetWindowAttributes (WINDOW(w)->dpy, WINDOW(w)->win, &WA);
     return Record_To_Vector (Win_Attr_Rec, Win_Attr_Size, Sym_Get_Attr,
         WINDOW(w)->dpy, ~0L);
 }
 
-static Object P_Get_Geometry (d) Object d; {
+static Object P_Get_Geometry (Object d) {
     Display *dpy;
     Drawable dr = Get_Drawable (d, &dpy);
 
@@ -133,19 +134,19 @@ static Object P_Get_Geometry (d) Object d; {
     return Record_To_Vector (Geometry_Rec, Geometry_Size, Sym_Geo, dpy, ~0L);
 }
 
-static Object P_Map_Window (w) Object w; {
+static Object P_Map_Window (Object w) {
     Check_Type (w, T_Window);
     XMapWindow (WINDOW(w)->dpy, WINDOW(w)->win);
     return Void;
 }
 
-static Object P_Unmap_Window (w) Object w; {
+static Object P_Unmap_Window (Object w) {
     Check_Type (w, T_Window);
     XUnmapWindow (WINDOW(w)->dpy, WINDOW(w)->win);
     return Void;
 }
 
-Object P_Destroy_Window (w) Object w; {
+Object P_Destroy_Window (Object w) {
     Check_Type (w, T_Window);
     if (!WINDOW(w)->free)
         XDestroyWindow (WINDOW(w)->dpy, WINDOW(w)->win);
@@ -154,36 +155,35 @@ Object P_Destroy_Window (w) Object w; {
     return Void;
 }
 
-static Object P_Destroy_Subwindows (w) Object w; {
+static Object P_Destroy_Subwindows (Object w) {
     Check_Type (w, T_Window);
     XDestroySubwindows (WINDOW(w)->dpy, WINDOW(w)->win);
     return Void;
 }
 
-static Object P_Map_Subwindows (w) Object w; {
+static Object P_Map_Subwindows (Object w) {
     Check_Type (w, T_Window);
     XMapSubwindows (WINDOW(w)->dpy, WINDOW(w)->win);
     return Void;
 }
 
-static Object P_Unmap_Subwindows (w) Object w; {
+static Object P_Unmap_Subwindows (Object w) {
     Check_Type (w, T_Window);
     XUnmapSubwindows (WINDOW(w)->dpy, WINDOW(w)->win);
     return Void;
 }
 
-static Object P_Circulate_Subwindows (w, dir) Object w, dir; {
+static Object P_Circulate_Subwindows (Object w, Object dir) {
     Check_Type (w, T_Window);
     XCirculateSubwindows (WINDOW(w)->dpy, WINDOW(w)->win,
         Symbols_To_Bits (dir, 0, Circulate_Syms));
     return Void;
 }
 
-static Object P_Query_Tree (w) Object w; {
+static Object P_Query_Tree (Object w) {
     Window root, parent, *children;
     Display *dpy;
-    int i;
-    unsigned n;
+    unsigned int i, n;
     Object v, ret;
     GC_Node2;
 
@@ -210,7 +210,8 @@ static Object P_Query_Tree (w) Object w; {
     return ret;
 }
 
-static Object P_Translate_Coordinates (src, x, y, dst) Object src, x, y, dst; {
+static Object P_Translate_Coordinates (Object src, Object x, Object y,
+                                       Object dst) {
     int rx, ry;
     Window child;
     Object l, t, z;
@@ -232,7 +233,7 @@ static Object P_Translate_Coordinates (src, x, y, dst) Object src, x, y, dst; {
     return l;
 }
 
-static Object P_Query_Pointer (win) Object win; {
+static Object P_Query_Pointer (Object win) {
     Object l, t, z;
     Bool ret;
     Window root, child;
@@ -260,7 +261,7 @@ static Object P_Query_Pointer (win) Object win; {
     return l;
 }
 
-elk_init_xlib_window () {
+void elk_init_xlib_window () {
     Define_Symbol (&Sym_Set_Attr, "set-window-attributes");
     Define_Symbol (&Sym_Get_Attr, "get-window-attributes");
     Define_Symbol (&Sym_Conf, "window-configuration");

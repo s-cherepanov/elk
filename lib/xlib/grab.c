@@ -32,20 +32,20 @@
 
 static Object Sym_Any;
 
-Time Get_Time (time) Object time; {
+Time Get_Time (Object time) {
     if (EQ(time, Sym_Now))
         return CurrentTime;
     return (Time)Get_Long (time);
 }
 
-static Get_Mode (m) Object m; {
+static int Get_Mode (Object m) {
     Check_Type (m, T_Boolean);
     return EQ(m, True) ? GrabModeSync : GrabModeAsync;
 }
 
-static Object P_Grab_Pointer (win, ownerp, events, psyncp, ksyncp, confine_to,
-        cursor, time) Object win, ownerp, events, psyncp, ksyncp, confine_to,
-        cursor, time; {
+static Object P_Grab_Pointer (Object win, Object ownerp, Object events,
+                              Object psyncp, Object ksyncp, Object confine_to,
+                              Object cursor, Object time) {
     Check_Type (win, T_Window);
     Check_Type (ownerp, T_Boolean);
     return Bits_To_Symbols ((unsigned long)XGrabPointer (WINDOW(win)->dpy,
@@ -56,15 +56,15 @@ static Object P_Grab_Pointer (win, ownerp, events, psyncp, ksyncp, confine_to,
         0, Grabstatus_Syms);
 }
 
-static Object P_Ungrab_Pointer (d, time) Object d, time; {
+static Object P_Ungrab_Pointer (Object d, Object time) {
     Check_Type (d, T_Display);
     XUngrabPointer (DISPLAY(d)->dpy, Get_Time (time));
     return Void;
 }
 
-static Object P_Grab_Button (win, button, mods, ownerp, events, psyncp, ksyncp,
-        confine_to, cursor) Object win, button, mods, ownerp, events,
-        psyncp, ksyncp, confine_to, cursor; {
+static Object P_Grab_Button (Object win, Object button, Object mods,
+                             Object ownerp, Object events, Object psyncp,
+                             Object ksyncp, Object confine_to, Object cursor) {
     Check_Type (win, T_Window);
     Check_Type (ownerp, T_Boolean);
     XGrabButton (WINDOW(win)->dpy, Symbols_To_Bits (button, 0, Button_Syms),
@@ -75,23 +75,23 @@ static Object P_Grab_Button (win, button, mods, ownerp, events, psyncp, ksyncp,
     return Void;
 }
 
-static Object P_Ungrab_Button (win, button, mods) Object win, button, mods; {
+static Object P_Ungrab_Button (Object win, Object button, Object mods) {
     Check_Type (win, T_Window);
     XUngrabButton (WINDOW(win)->dpy, Symbols_To_Bits (button, 0, Button_Syms),
         Symbols_To_Bits (mods, 1, State_Syms), WINDOW(win)->win);
     return Void;
 }
 
-static Object P_Change_Active_Pointer_Grab (d, events, cursor, time)
-        Object d, events, cursor, time; {
+static Object P_Change_Active_Pointer_Grab (Object d, Object events,
+                                            Object cursor, Object time) {
     Check_Type (d, T_Display);
     XChangeActivePointerGrab (DISPLAY(d)->dpy, Symbols_To_Bits (events, 1,
         Event_Syms), Get_Cursor (cursor), Get_Time (time));
     return Void;
 }
 
-static Object P_Grab_Keyboard (win, ownerp, psyncp, ksyncp, time) Object win,
-        ownerp, psyncp, ksyncp, time; {
+static Object P_Grab_Keyboard (Object win, Object ownerp, Object psyncp,
+                               Object ksyncp, Object time) {
     Check_Type (win, T_Window);
     Check_Type (ownerp, T_Boolean);
     return Bits_To_Symbols ((unsigned long)XGrabKeyboard (WINDOW(win)->dpy,
@@ -100,14 +100,14 @@ static Object P_Grab_Keyboard (win, ownerp, psyncp, ksyncp, time) Object win,
         0, Grabstatus_Syms);
 }
 
-static Object P_Ungrab_Keyboard (d, time) Object d, time; {
+static Object P_Ungrab_Keyboard (Object d, Object time) {
     Check_Type (d, T_Display);
     XUngrabKeyboard (DISPLAY(d)->dpy, Get_Time (time));
     return Void;
 }
 
-static Object P_Grab_Key (win, key, mods, ownerp, psyncp, ksyncp) Object win,
-        key, mods, ownerp, psyncp, ksyncp; {
+static Object P_Grab_Key (Object win, Object key, Object mods, Object ownerp,
+                          Object psyncp, Object ksyncp) {
     int keycode = AnyKey;
 
     Check_Type (win, T_Window);
@@ -120,7 +120,7 @@ static Object P_Grab_Key (win, key, mods, ownerp, psyncp, ksyncp) Object win,
     return Void;
 }
 
-static Object P_Ungrab_Key (win, key, mods) Object win, key, mods; {
+static Object P_Ungrab_Key (Object win, Object key, Object mods) {
     int keycode = AnyKey;
 
     Check_Type (win, T_Window);
@@ -131,26 +131,26 @@ static Object P_Ungrab_Key (win, key, mods) Object win, key, mods; {
     return Void;
 }
 
-static Object P_Allow_Events (d, mode, time) Object d, mode, time; {
+static Object P_Allow_Events (Object d, Object mode, Object time) {
     Check_Type (d, T_Display);
     XAllowEvents (DISPLAY(d)->dpy, Symbols_To_Bits (mode, 0,
         Allow_Events_Syms), Get_Time (time));
     return Void;
 }
 
-static Object P_Grab_Server (d) Object d; {
+static Object P_Grab_Server (Object d) {
     Check_Type (d, T_Display);
     XGrabServer (DISPLAY(d)->dpy);
     return Void;
 }
 
-static Object P_Ungrab_Server (d) Object d; {
+static Object P_Ungrab_Server (Object d) {
     Check_Type (d, T_Display);
     XUngrabServer (DISPLAY(d)->dpy);
     return Void;
 }
 
-elk_init_xlib_grab () {
+void elk_init_xlib_grab () {
     Define_Primitive (P_Grab_Pointer,    "grab-pointer",    8, 8, EVAL);
     Define_Primitive (P_Ungrab_Pointer,  "ungrab-pointer",  2, 2, EVAL);
     Define_Primitive (P_Grab_Button,     "grab-button",     9, 9, EVAL);

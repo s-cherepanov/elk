@@ -30,6 +30,8 @@
 
 #include "xlib.h"
 
+#include <string.h>
+
 static Object Sym_Wm_Hints, Sym_Size_Hints;
 
 static Object P_Iconify_Window (Object w, Object scr) {
@@ -81,8 +83,8 @@ static Object P_Wm_Command (Object w) {
     return ret;
 }
 
-static String_List_To_Text_Property (Object x, XTextProperty *ret) {
-    register i, n;
+static void String_List_To_Text_Property (Object x, XTextProperty *ret) {
+    register int i, n;
     register char **s;
     Object t;
     Alloca_Begin;
@@ -101,7 +103,7 @@ static String_List_To_Text_Property (Object x, XTextProperty *ret) {
 
 static Object Text_Property_To_String_List (XTextProperty *p) {
     int n;
-    register i;
+    register int i;
     char **s;
     Object x, ret, t;
     GC_Node2;
@@ -232,7 +234,7 @@ static Object P_Set_Wm_Class (Object w, Object name, Object class) {
 }
 
 static Object P_Set_Wm_Command (Object w, Object cmd) {
-    register i, n;
+    register int i, n;
     register char **argv;
     Object c;
     Alloca_Begin;
@@ -304,7 +306,7 @@ static Object P_Set_Size_Hints (Object w, Object a, Object h) {
 
     Check_Type (w, T_Window);
     Check_Type (a, T_Atom);
-    bzero ((char *)&SZH, sizeof (SZH));        /* Not portable? */
+    memset ((char *)&SZH, 0, sizeof (SZH));        /* Not portable? */
     mask = Vector_To_Record (h, Size_Hints_Size, Sym_Size_Hints,
         Size_Hints_Rec);
     if ((mask & (PPosition|USPosition)) == (PPosition|USPosition))
@@ -349,7 +351,7 @@ static Object P_Icon_Sizes (Object w) {
 }
 
 static Object P_Set_Icon_Sizes (Object w, Object v) {
-    register i, n;
+    register int i, n;
     XIconSize *p;
     Alloca_Begin;
 
@@ -393,7 +395,7 @@ static Object P_Set_Transient_For (Object w, Object pw) {
     return Void;
 }
 
-elk_init_xlib_client () {
+void elk_init_xlib_client () {
     Define_Symbol (&Sym_Wm_Hints, "wm-hints");
     Define_Symbol (&Sym_Size_Hints, "size-hints");
     Define_Primitive (P_Iconify_Window,   "iconify-window",    2, 2, EVAL);

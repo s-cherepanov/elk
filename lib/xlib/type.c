@@ -299,8 +299,8 @@ RECORD Size_Hints_Rec[] = {
 };
 int Size_Hints_Size = sizeof Size_Hints_Rec / sizeof (RECORD);
 
-unsigned long Vector_To_Record (v, len, sym, rp) Object v, sym;
-        register RECORD *rp; {
+unsigned long Vector_To_Record (Object v, int len, Object sym,
+                                register RECORD *rp) {
     register Object *p;
     unsigned long mask = 0;
 
@@ -365,9 +365,9 @@ unsigned long Vector_To_Record (v, len, sym, rp) Object v, sym;
     return mask;
 }
 
-Object Record_To_Vector (rp, len, sym, dpy, flags) Object sym;
-        register RECORD *rp; Display *dpy; unsigned long flags; {
-    register i;
+Object Record_To_Vector (register RECORD *rp, int len, Object sym,
+                         Display *dpy, unsigned long flags) {
+    register int i;
     Object v, x;
     GC_Node2;
 
@@ -391,13 +391,13 @@ Object Record_To_Vector (rp, len, sym, dpy, flags) Object sym;
         case T_PIXEL:
             x = Make_Pixel (*(unsigned long *)rp->slot); break;
         case T_PIXMAP:
-            if (*(unsigned long *)rp->slot == ~0L)
+            if (*(unsigned long *)rp->slot == ~0UL)
                 x = Sym_None;
             else
                 x = Make_Pixmap_Foreign (dpy, *(Pixmap *)rp->slot);
             break;
         case T_FONT:
-            if (*(unsigned long *)rp->slot == ~0L)
+            if (*(unsigned long *)rp->slot == ~0UL)
                 x = Sym_None;
             else {
                 register XFontStruct *info;
@@ -793,10 +793,9 @@ SYMDESCR Error_Syms[] = {
     { 0, 0 }
 };
 
-static Init_Record (rec, size, name, var) RECORD *rec; char *name;
-        Object *var; {
+static void Init_Record (RECORD *rec, int size, char *name, Object *var) {
     Object list, tail, cell;
-    register i;
+    register int i;
     char buf[128];
     GC_Node2;
 
@@ -815,7 +814,7 @@ static Init_Record (rec, size, name, var) RECORD *rec; char *name;
     GC_Unlink;
 }
 
-elk_init_xlib_type () {
+void elk_init_xlib_type () {
     Init_Record (Set_Attr_Rec, Set_Attr_Size, "set-window-attributes",
         &Set_Attr_Slots);
     Init_Record (Conf_Rec, Conf_Size, "window-configuration", &Conf_Slots);

@@ -38,7 +38,7 @@ Generic_Print (Colormap, "#[colormap %lu]", COLORMAP(x)->cm)
 
 Generic_Get_Display (Colormap, COLORMAP)
 
-Object Make_Colormap (finalize, dpy, cmap) Display *dpy; Colormap cmap; {
+Object Make_Colormap (int finalize, Display *dpy, Colormap cmap) {
     Object cm;
 
     if (cmap == None)
@@ -56,12 +56,12 @@ Object Make_Colormap (finalize, dpy, cmap) Display *dpy; Colormap cmap; {
     return cm;
 }
 
-Colormap Get_Colormap (c) Object c; {
+Colormap Get_Colormap (Object c) {
     Check_Type (c, T_Colormap);
     return COLORMAP(c)->cm;
 }
 
-Object P_Free_Colormap (c) Object c; {
+Object P_Free_Colormap (Object c) {
     Check_Type (c, T_Colormap);
     if (!COLORMAP(c)->free)
         XFreeColormap (COLORMAP(c)->dpy, COLORMAP(c)->cm);
@@ -70,7 +70,7 @@ Object P_Free_Colormap (c) Object c; {
     return Void;
 }
 
-static Object P_Alloc_Color (cmap, color) Object cmap, color; {
+static Object P_Alloc_Color (Object cmap, Object color) {
     XColor c;
     Colormap cm = Get_Colormap (cmap);
     int r;
@@ -84,7 +84,7 @@ static Object P_Alloc_Color (cmap, color) Object cmap, color; {
     return Make_Pixel (c.pixel);
 }
 
-static Object P_Alloc_Named_Color (cmap, name) Object cmap, name; {
+static Object P_Alloc_Named_Color (Object cmap, Object name) {
     Colormap cm = Get_Colormap (cmap);
     XColor screen, exact;
     int r;
@@ -109,7 +109,7 @@ static Object P_Alloc_Named_Color (cmap, name) Object cmap, name; {
     return ret;
 }
 
-elk_init_xlib_colormap () {
+void elk_init_xlib_colormap () {
     Generic_Define (Colormap, "colormap", "colormap?");
     Define_Primitive (P_Colormap_Display, "colormap-display", 1, 1, EVAL);
     Define_Primitive (P_Free_Colormap,    "free-colormap",    1, 1, EVAL);

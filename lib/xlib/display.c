@@ -30,20 +30,25 @@
 
 #include "xlib.h"
 
-static Display_Visit (dp, f) Object *dp; int (*f)(); {
+#include <string.h>
+
+static int Display_Visit (Object *dp, int (*f)()) {
     (*f)(&DISPLAY(*dp)->after);
+    return 0;
 }
 
 Generic_Predicate (Display)
 
 Generic_Equal (Display, DISPLAY, dpy)
 
-static Display_Print (d, port, raw, depth, length) Object d, port; {
+static int Display_Print (Object d, Object port,
+                          int raw, int depth, int length) {
     Printf (port, "#[display %lu %s]", (unsigned)DISPLAY(d)->dpy,
         DisplayString (DISPLAY(d)->dpy));
+    return 0;
 }
 
-Object Make_Display (finalize, dpy) Display *dpy; {
+Object Make_Display (int finalize, Display *dpy) {
     Object d;
 
     d = Find_Object (T_Display, (GENERIC)dpy, Match_X_Obj);
@@ -58,7 +63,7 @@ Object Make_Display (finalize, dpy) Display *dpy; {
     return d;
 }
 
-static Object P_Open_Display (argc, argv) Object *argv; {
+static Object P_Open_Display (int argc, Object *argv) {
     register char *s;
     Display *dpy;
 
@@ -73,7 +78,7 @@ static Object P_Open_Display (argc, argv) Object *argv; {
     return Make_Display (1, dpy);
 }
 
-Object P_Close_Display (d) Object d; {
+Object P_Close_Display (Object d) {
     register struct S_Display *p;
 
     Check_Type (d, T_Display);
@@ -87,13 +92,13 @@ Object P_Close_Display (d) Object d; {
     return Void;
 }
 
-static Object P_Display_Default_Root_Window (d) Object d; {
+static Object P_Display_Default_Root_Window (Object d) {
     Check_Type (d, T_Display);
     return Make_Window (0, DISPLAY(d)->dpy,
         DefaultRootWindow (DISPLAY(d)->dpy));
 }
 
-static Object P_Display_Default_Colormap (d) Object d; {
+static Object P_Display_Default_Colormap (Object d) {
     register Display *dpy;
 
     Check_Type (d, T_Display);
@@ -101,7 +106,7 @@ static Object P_Display_Default_Colormap (d) Object d; {
     return Make_Colormap (0, dpy, DefaultColormap (dpy, DefaultScreen (dpy)));
 }
 
-static Object P_Display_Default_Gcontext (d) Object d; {
+static Object P_Display_Default_Gcontext (Object d) {
     register Display *dpy;
 
     Check_Type (d, T_Display);
@@ -109,7 +114,7 @@ static Object P_Display_Default_Gcontext (d) Object d; {
     return Make_Gc (0, dpy, DefaultGC (dpy, DefaultScreen (dpy)));
 }
 
-static Object P_Display_Default_Depth (d) Object d; {
+static Object P_Display_Default_Depth (Object d) {
     register Display *dpy;
 
     Check_Type (d, T_Display);
@@ -117,32 +122,32 @@ static Object P_Display_Default_Depth (d) Object d; {
     return Make_Integer (DefaultDepth (dpy, DefaultScreen (dpy)));
 }
 
-static Object P_Display_Default_Screen_Number (d) Object d; {
+static Object P_Display_Default_Screen_Number (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (DefaultScreen (DISPLAY(d)->dpy));
 }
 
-int Get_Screen_Number (dpy, scr) Display *dpy; Object scr; {
-    register s;
+int Get_Screen_Number (Display *dpy, Object scr) {
+    register int s;
 
     if ((s = Get_Integer (scr)) < 0 || s > ScreenCount (dpy)-1)
         Primitive_Error ("invalid screen number");
     return s;
 }
 
-static Object P_Display_Cells (d, scr) Object d, scr; {
+static Object P_Display_Cells (Object d, Object scr) {
     Check_Type (d, T_Display);
     return Make_Integer (DisplayCells (DISPLAY(d)->dpy,
         Get_Screen_Number (DISPLAY(d)->dpy, scr)));
 }
 
-static Object P_Display_Planes (d, scr) Object d, scr; {
+static Object P_Display_Planes (Object d, Object scr) {
     Check_Type (d, T_Display);
     return Make_Integer (DisplayPlanes (DISPLAY(d)->dpy,
         Get_Screen_Number (DISPLAY(d)->dpy, scr)));
 }
 
-static Object P_Display_String (d) Object d; {
+static Object P_Display_String (Object d) {
     register char *s;
 
     Check_Type (d, T_Display);
@@ -150,7 +155,7 @@ static Object P_Display_String (d) Object d; {
     return Make_String (s, strlen (s));
 }
 
-static Object P_Display_Vendor (d) Object d; {
+static Object P_Display_Vendor (Object d) {
     register char *s;
     Object ret, name;
     GC_Node;
@@ -165,90 +170,90 @@ static Object P_Display_Vendor (d) Object d; {
     return ret;
 }
 
-static Object P_Display_Protocol_Version (d) Object d; {
+static Object P_Display_Protocol_Version (Object d) {
     Check_Type (d, T_Display);
     return Cons (Make_Integer (ProtocolVersion (DISPLAY(d)->dpy)),
         Make_Integer (ProtocolRevision (DISPLAY(d)->dpy)));
 }
 
-static Object P_Display_Screen_Count (d) Object d; {
+static Object P_Display_Screen_Count (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (ScreenCount (DISPLAY(d)->dpy));
 }
 
-static Object P_Display_Image_Byte_Order (d) Object d; {
+static Object P_Display_Image_Byte_Order (Object d) {
     Check_Type (d, T_Display);
     return Bits_To_Symbols ((unsigned long)ImageByteOrder (DISPLAY(d)->dpy),
         0, Byte_Order_Syms);
 }
 
-static Object P_Display_Bitmap_Unit (d) Object d; {
+static Object P_Display_Bitmap_Unit (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (BitmapUnit (DISPLAY(d)->dpy));
 }
 
-static Object P_Display_Bitmap_Bit_Order (d) Object d; {
+static Object P_Display_Bitmap_Bit_Order (Object d) {
     Check_Type (d, T_Display);
     return Bits_To_Symbols ((unsigned long)BitmapBitOrder (DISPLAY(d)->dpy),
         0, Byte_Order_Syms);
 }
 
-static Object P_Display_Bitmap_Pad (d) Object d; {
+static Object P_Display_Bitmap_Pad (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (BitmapPad (DISPLAY(d)->dpy));
 }
 
-static Object P_Display_Width (d) Object d; {
+static Object P_Display_Width (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (DisplayWidth (DISPLAY(d)->dpy,
         DefaultScreen (DISPLAY(d)->dpy)));
 }
 
-static Object P_Display_Height (d) Object d; {
+static Object P_Display_Height (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (DisplayHeight (DISPLAY(d)->dpy,
         DefaultScreen (DISPLAY(d)->dpy)));
 }
 
-static Object P_Display_Width_Mm (d) Object d; {
+static Object P_Display_Width_Mm (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (DisplayWidthMM (DISPLAY(d)->dpy,
         DefaultScreen (DISPLAY(d)->dpy)));
 }
 
-static Object P_Display_Height_Mm (d) Object d; {
+static Object P_Display_Height_Mm (Object d) {
     Check_Type (d, T_Display);
     return Make_Integer (DisplayHeightMM (DISPLAY(d)->dpy,
         DefaultScreen (DISPLAY(d)->dpy)));
 }
 
-static Object P_Display_Motion_Buffer_Size (d) Object d; {
+static Object P_Display_Motion_Buffer_Size (Object d) {
     Check_Type (d, T_Display);
     return Make_Unsigned_Long (XDisplayMotionBufferSize (DISPLAY(d)->dpy));
 }
 
-static Object P_Display_Flush_Output (d) Object d; {
+static Object P_Display_Flush_Output (Object d) {
     Check_Type (d, T_Display);
     XFlush (DISPLAY(d)->dpy);
     return Void;
 }
 
-static Object P_Display_Wait_Output (d, discard) Object d, discard; {
+static Object P_Display_Wait_Output (Object d, Object discard) {
     Check_Type (d, T_Display);
     Check_Type (discard, T_Boolean);
     XSync (DISPLAY(d)->dpy, EQ(discard, True));
     return Void;
 }
 
-static Object P_No_Op (d) Object d; {
+static Object P_No_Op (Object d) {
     Check_Type (d, T_Display);
     XNoOp (DISPLAY(d)->dpy);
     return Void;
 }
 
-static Object P_List_Depths (d, scr) Object d, scr; {
+static Object P_List_Depths (Object d, Object scr) {
     int num;
-    register *p, i;
+    register int *p, i;
     Object ret;
 
     Check_Type (d, T_Display);
@@ -262,10 +267,10 @@ static Object P_List_Depths (d, scr) Object d, scr; {
     return ret;
 }
 
-static Object P_List_Pixmap_Formats (d) Object d; {
+static Object P_List_Pixmap_Formats (Object d) {
     register XPixmapFormatValues *p;
     int num;
-    register i;
+    register int i;
     Object ret;
     GC_Node;
 
@@ -288,7 +293,7 @@ static Object P_List_Pixmap_Formats (d) Object d; {
     return ret;
 }
 
-elk_init_xlib_display () {
+void elk_init_xlib_display () {
     T_Display = Define_Type (0, "display", NOFUNC, sizeof (struct S_Display),
         Display_Equal, Display_Equal, Display_Print, Display_Visit);
     Define_Primitive (P_Displayp,        "display?",         1, 1, EVAL);

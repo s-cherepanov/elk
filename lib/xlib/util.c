@@ -30,17 +30,20 @@
 
 #include "xlib.h"
 
-static Object P_Get_Default (d, program, option) Object d, program, option; {
+#include <string.h>
+
+static Object P_Get_Default (Object d, Object program, Object option) {
     register char *ret;
 
     Check_Type (d, T_Display);
-    if (ret = XGetDefault (DISPLAY(d)->dpy, Get_Strsym (program),
-            Get_Strsym (option)))
+    ret = XGetDefault (DISPLAY(d)->dpy, Get_Strsym (program),
+                       Get_Strsym (option));
+    if (ret)
         return Make_String (ret, strlen (ret));
     return False;
 }
 
-static Object P_Resource_Manager_String (d) Object d; {
+static Object P_Resource_Manager_String (Object d) {
     register char *ret;
 
     Check_Type (d, T_Display);
@@ -48,9 +51,9 @@ static Object P_Resource_Manager_String (d) Object d; {
     return ret ? Make_String (ret, strlen (ret)) : False;
 }
 
-static Object P_Parse_Geometry (string) Object string; {
+static Object P_Parse_Geometry (Object string) {
     Object ret, t;
-    register mask;
+    register int mask;
     int x, y;
     unsigned w, h;
 
@@ -65,7 +68,7 @@ static Object P_Parse_Geometry (string) Object string; {
     return ret;
 }
 
-static Object P_Parse_Color (d, cmap, spec) Object d, cmap, spec; {
+static Object P_Parse_Color (Object d, Object cmap, Object spec) {
     XColor ret;
 
     Check_Type (d, T_Display);
@@ -75,7 +78,7 @@ static Object P_Parse_Color (d, cmap, spec) Object d, cmap, spec; {
     return False;
 }
 
-elk_init_xlib_util () {
+void elk_init_xlib_util () {
     Define_Primitive (P_Get_Default,       "get-default",         3, 3, EVAL);
     Define_Primitive (P_Resource_Manager_String,
                         "resource-manager-string",                1, 1, EVAL);
