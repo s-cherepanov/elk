@@ -409,7 +409,7 @@ AC_OUTPUT([
   lib/xlib/Makefile
   lib/xwidgets/Makefile
   lib/xwidgets/xaw/Makefile
-  lib/xwidgets/motif/Makefile
+  lib/xwidgets/xm/Makefile
   scm/Makefile
   scm/slib.scm
   src/Makefile

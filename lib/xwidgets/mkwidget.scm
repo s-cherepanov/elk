@@ -24,13 +24,13 @@
     (set! type-name name)
     (format f "#include \"../xt.h\"~%")
     (case widget-set
-      (motif
+      (xm
 	(format f "#include <Xm/Xm.h>~%")))
     (if (and (not (eqv? include "")) (not (null? include)))
 	(begin
 	  (define dir)
 	  (case widget-set
-	    (motif
+	    (xm
 	     (set! dir "Xm"))
 	    (xaw
 	     (set! dir "X11/Xaw")))

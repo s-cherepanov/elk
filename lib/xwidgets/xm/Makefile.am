@@ -2,15 +2,15 @@ NULL =
 
 EXTRA_DIST = $(D_FILES)
 
-pkglib_LTLIBRARIES = motif-widgets.la
+pkglib_LTLIBRARIES = xm-widgets.la
 
-nodist_motif_widgets_la_SOURCES = $(C_FILES)
-motif_widgets_la_CFLAGS = -I$(srcdir)/../../xlib @XM_CFLAGS@
-motif_widgets_la_LDFLAGS = -module -avoid-version -u XmIsMotifWMRunning
-motif_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XM_LIBS@
+nodist_xm_widgets_la_SOURCES = $(C_FILES)
+xm_widgets_la_CFLAGS = -I$(srcdir)/../../xlib @XM_CFLAGS@
+xm_widgets_la_LDFLAGS = -module -avoid-version -u XmIsMotifWMRunning
+xm_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XM_LIBS@
 
 .d.c:
-	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ motif
+	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ xm
 
 clean: clean-local
 clean-local:
