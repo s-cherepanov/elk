@@ -1,4 +1,281 @@
 ------------------------------------------------------------------------
+rev 125:  sam | 2003-09-08 00:07:33 +0200 (Mon, 08 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /src/loadlib.c
+
+  * Implemented the dyld plugin loader for OS X.
+
+------------------------------------------------------------------------
+rev 124:  sam | 2003-09-07 22:23:47 +0200 (Sun, 07 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Added a check for Darwin's dyld API, that we'll prefer over dlopen.
+
+------------------------------------------------------------------------
+rev 123:  sam | 2003-09-07 16:41:10 +0200 (Sun, 07 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/xwidgets/xaw/Makefile.am
+
+  * Fixed the build of the xaw plugin.
+
+------------------------------------------------------------------------
+rev 122:  sam | 2003-09-07 16:28:01 +0200 (Sun, 07 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /src/print.c
+   M /src/read.c
+
+  * Fixed many tests for termio.h, termios.h, TIOCFLUSH, etc.
+
+------------------------------------------------------------------------
+rev 121:  sam | 2003-09-07 15:13:18 +0200 (Sun, 07 Sep 2003) | 4 lines
+Changed paths:
+   M /src/Makefile.am
+   M /src/loadlib.c
+   D /src/stab-unix.c
+   A /src/stab-vanilla.c (from /src/stab-unix.c:119)
+
+  * Renamed stab-unix.c to stab-vanilla.c.
+  * Implemented string parsing in stab-vanilla.c, so that libelf is no
+    longer required.
+
+------------------------------------------------------------------------
+rev 120:  sam | 2003-09-07 15:12:27 +0200 (Sun, 07 Sep 2003) | 3 lines
+Changed paths:
+   M /src/stab.c
+
+  * Fixed a crash for symbols found in the list but that dlopen() could not
+    properly load.
+
+------------------------------------------------------------------------
+rev 119:  sam | 2003-09-07 13:25:04 +0200 (Sun, 07 Sep 2003) | 4 lines
+Changed paths:
+   M /src/Makefile.am
+   M /src/stab-elf.c
+   A /src/stab-unix.c
+   M /src/stab.c
+
+  * Disabled non-libelf stab files.
+  * Added a stab-unix.c file which is a placeholder for future nm|objdump
+    implementations.
+
+------------------------------------------------------------------------
+rev 118:  sam | 2003-09-07 13:18:38 +0200 (Sun, 07 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Fixed a typo in the configuration summary.
+
+------------------------------------------------------------------------
+rev 117:  sam | 2003-09-07 11:56:55 +0200 (Sun, 07 Sep 2003) | 2 lines
+Changed paths:
+   M /src/loadlib.c
+
+  * Oops, fixed a misplaced #ifdef.
+
+------------------------------------------------------------------------
+rev 116:  sam | 2003-09-07 11:55:56 +0200 (Sun, 07 Sep 2003) | 4 lines
+Changed paths:
+   M /src/Makefile.am
+   M /src/feature.c
+   M /src/libelk.c
+   D /src/load-dl.c
+   D /src/load-ld.c
+   D /src/load-rld.c
+   D /src/load-shl.c
+   M /src/load.c
+   A /src/loadlib.c (from /src/load-dl.c:107)
+   M /src/stab.c
+
+  * Renamed load-dl.c into loadlib.c.
+  * Removed support for bizarre dynamic linkers, will re-add them later.
+  * Removed support for object linking with ld.
+
+------------------------------------------------------------------------
+rev 115:  sam | 2003-09-07 03:33:17 +0200 (Sun, 07 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /src/load.c
+
+  * Got rid of CAN_LOAD_OBJ. We'll only use dlopen()-like functions now.
+
+------------------------------------------------------------------------
+rev 114:  sam | 2003-09-06 18:19:02 +0200 (Sat, 06 Sep 2003) | 3 lines
+Changed paths:
+   M /configure.ac
+   M /src/Makefile.am
+
+  * Removed the hardcoded -lelf from src/Makefile.am.
+  * Moved the hardcoded -lm -ldl from src/Makefile.am to configure.ac.
+
+------------------------------------------------------------------------
+rev 113:  sam | 2003-09-06 18:05:42 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Conditionally define CAN_DUMP, CAN_LOAD_OBJ and CAN_LOAD_LIB.
+
+------------------------------------------------------------------------
+rev 112:  sam | 2003-09-06 18:05:13 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /src/libelk.c
+
+  * Fixed a compile problem when CAN_DUMP is not defined.
+
+------------------------------------------------------------------------
+rev 111:  sam | 2003-09-06 17:43:16 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /src/dump.c
+
+  * Fixed typo (HAVE_ELF/HAVE_LIBELF).
+
+------------------------------------------------------------------------
+rev 110:  sam | 2003-09-06 17:41:48 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /src/heap-gen.c
+
+  * Renamed "link" into "linked" because of namespace collision with libc.
+
+------------------------------------------------------------------------
+rev 109:  sam | 2003-09-06 17:30:43 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /include/misc.h
+   M /include/object.h
+   M /src/dump-elf.c
+   M /src/dump.c
+   M /src/env.c
+   M /src/heap-gen.c
+   M /src/heap.c
+   M /src/libelk.c
+
+  * Replaced ptrdiff_t with intptr_t.
+
+------------------------------------------------------------------------
+rev 108:  sam | 2003-09-06 17:29:30 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /src/Makefile.am
+
+  * Removed -DINIT_OBJECTS from the compilation flags.
+
+------------------------------------------------------------------------
+rev 107:  sam | 2003-09-06 16:46:24 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /include/object.h
+   M /src/dump-elf.c
+   M /src/libelk.c
+
+  * <malloc.h> is deprecated, replaced with <stdlib.h>.
+
+------------------------------------------------------------------------
+rev 106:  sam | 2003-09-06 16:45:29 +0200 (Sat, 06 Sep 2003) | 4 lines
+Changed paths:
+   M /configure.ac
+   M /debian/changelog
+   M /include/kernel.h
+   M /include/scheme.h
+   M /src/read.c
+   M /src/stab.c
+
+  * Checked for libelf, and replaced hardcoded #define ELF with HAVE_LIBELF
+    tests.
+  * #include "site.h" in kernel.h.
+
+------------------------------------------------------------------------
+rev 105:  sam | 2003-09-06 14:33:55 +0200 (Sat, 06 Sep 2003) | 3 lines
+Changed paths:
+   M /configure.ac
+   M /include/extern.h
+   M /include/misc.h
+   M /include/site.h.in
+   M /src/error.c
+   M /src/exception.c
+   M /src/libelk.c
+   M /src/proc.c
+   M /src/read.c
+
+  * Removed the autoconf check for __attribute__((noreturn)) and used plain
+    C checks.
+
+------------------------------------------------------------------------
+rev 104:  sam | 2003-09-06 13:27:05 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   D /lib/xlib/Include.am
+   M /lib/xlib/Makefile.am
+
+  * Removed lib/xlib/Include.am because no other plugin needs it.
+
+------------------------------------------------------------------------
+rev 103:  sam | 2003-09-06 13:25:29 +0200 (Sat, 06 Sep 2003) | 4 lines
+Changed paths:
+   M /include
+   M /include/Makefile.am
+   M /include/kernel.h
+   M /include/scheme.h
+   A /include/site.h.in
+   M /lib/misc/bitstring.c
+   M /lib/misc/debug.c
+   M /lib/misc/elk-eval.c
+   M /lib/misc/gdbm.c
+   M /lib/misc/hack.c
+   M /lib/misc/monitor.c
+   M /lib/misc/record.c
+   M /lib/misc/regexp.c
+   M /lib/misc/struct.c
+   M /lib/unix/unix.h
+   M /lib/xlib/xlib.h
+   M /src/autoload.c
+   M /src/bignum.c
+   M /src/bool.c
+   M /src/char.c
+   M /src/cont.c
+   M /src/cstring.c
+   M /src/debug.c
+   M /src/dump.c
+   M /src/env.c
+   M /src/error.c
+   M /src/exception.c
+   M /src/feature.c
+   M /src/heap.c
+   M /src/io.c
+   M /src/libelk.c
+   M /src/list.c
+   M /src/load.c
+   M /src/main.c
+   M /src/malloc.c
+   M /src/math.c
+   M /src/onfork.c
+   M /src/prim.c
+   M /src/print.c
+   M /src/proc.c
+   M /src/promise.c
+   M /src/read.c
+   M /src/special.c
+   M /src/stab.c
+   M /src/stkmem.c
+   M /src/string.c
+   M /src/symbol.c
+   M /src/terminate.c
+   M /src/type.c
+   M /src/vector.c
+
+  * scheme.h and kernel.h no longer include config.h
+  * Hence included config.h in all C files.
+  * Added site.h which will replace config.h for installed headers.
+
+------------------------------------------------------------------------
+rev 102:  sam | 2003-09-06 13:23:33 +0200 (Sat, 06 Sep 2003) | 2 lines
+Changed paths:
+   M /ChangeLog
+   M /Makefile.am
+   M /debian/elk.docs
+   M /debian/elkdoc.docs
+   M /debian/rules
+
+  * Added a ChangeLog file (simple "svn log -v").
+
+------------------------------------------------------------------------
 rev 101:  sam | 2003-09-06 13:20:46 +0200 (Sat, 06 Sep 2003) | 3 lines
 Changed paths:
    M /scm/Makefile.am
