@@ -82,9 +82,6 @@ AC_EGREP_HEADER(FIONREAD, termios.h, [
   ])
 ])
 
-# What is the name of the a.out include file?
-AC_DEFINE(AOUT_H, <a.out.h>, [FIXME HARD])
-
 # If getdtablesize() is available to determine the maximum number of open
 # files per process, set getdtablesize=yes.
 # Alternatively, if POSIX-style sysconf() can be called with _SC_OPEN_MAX,
@@ -149,6 +146,7 @@ if false; then
 fi
 
 AC_CHECK_LIB(elf, elf_begin, ac_cv_my_have_elf=yes, ac_cv_my_have_elf=no)
+AM_CONDITIONAL(HAVE_LIBELF, test "${ac_cv_my_have_elf}" = "yes")
 
 if false; then
   AC_DEFINE(MACH_O, 1, [FIXME HARD])
@@ -166,58 +164,29 @@ if test "${ac_cv_my_have_elf}" = "yes"; then
   AC_DEFINE(HAVE_LIBELF, 1, Define if you have libelf.)
   ELK_LIBS="${ELK_LIBS} -lelf"
   ac_cv_my_can_dump=yes
-  ac_cv_my_can_load_lib=yes
 else
   ac_cv_my_can_dump=no
-  ac_cv_my_can_load_lib=no
   dnl AC_MSG_ERROR([could not handle the native object format, if you are running Linux please install the libelf development headers])
 fi
 
 # Which mechanism should be used to dynamically load object files?
-# Possible values currently are:
-#
-#    ld        BSD-style incremental loading based on ld -A
-#    rld       NeXT-style rld_load()
-#    shl       HP-UX shl_load()
-#    dl        SysVR4/SunOS5 dlopen()
-#
-# Leave load_obj empty if dynamic loading is not supported.
+ac_cv_my_can_load_lib=no
+AC_CHECK_HEADERS(dlfcn.h, ac_cv_my_can_load_lib=yes)
+AC_CHECK_HEADERS(a.out.h, ac_cv_my_can_load_lib=yes)
+
 if test "${ac_cv_my_can_load_lib}" = "yes"; then
   AC_DEFINE(CAN_LOAD_LIB, 1, [FIXME HARD])
 fi
 
-if false; then
-  AC_DEFINE(USE_LD, 1, [FIXME HARD])
-fi
-if false; then
-  AC_DEFINE(USE_RLD, 1, [FIXME HARD])
-fi
-if false; then
-  AC_DEFINE(USE_SHL, 1, [FIXME HARD])
-fi
-AC_DEFINE(USE_DLOPEN, 1, [FIXME HARD])
+# Systems with "aout_format=ecoff" may require a call to the cacheflush
+# system call after an object file has been loaded.  Which include file
+# has to be included in this case?
+AC_DEFINE(CACHECTL_H, <sys/cachectl.h>, [FIXME HARD])
 
-    # Linker options to produce a shared object from a .o file.
-    # Only used if load_obj=dl.
-    AC_DEFINE(LDFLAGS_SHARED, "-shared", [FIXME HARD])
-
-    # The libraries against which dynamically loaded files are resolved
-    # at the time they are loaded.
-    AC_DEFINE(LOAD_LIBRARIES, "", [FIXME HARD])
-
-    # Additional flags to be passed to the linker for an incremental
-    # linker run (ld -A).  Ignored unless load_obj=ld.
-    AC_DEFINE(INC_LDFLAGS, "-x -static", [FIXME HARD])
-
-    # Systems with "aout_format=ecoff" may require a call to the cacheflush
-    # system call after an object file has been loaded.  Which include file
-    # has to be included in this case?
-    AC_DEFINE(CACHECTL_H, <sys/cachectl.h>, [FIXME HARD])
-
-    # Is the ANSI-C atexit function supported to register an exit handler?
-    # If not, the exit library function will be redefined and will end in
-    # a call to _exit.
-    AC_CHECK_FUNCS(atexit)
+# Is the ANSI-C atexit function supported to register an exit handler?
+# If not, the exit library function will be redefined and will end in
+# a call to _exit.
+AC_CHECK_FUNCS(atexit)
 
 # Do the names of external functions in the symbol table always begin
 # with a special character (such as underline)?  If so, syms_begin_with
@@ -506,7 +475,7 @@ cat << EOF
 Elk configuration summary
 -------------------------
 build C++ plugins: ${ac_cv_my_have_cxx}
-libgdbm support: ${ac_cv_my_have_xaw}
+libgdbm support: ${ac_cv_my_have_gdbm}
 X11 support: ${ac_cv_my_have_x11}
 Xaw support: ${ac_cv_my_have_xaw}
 Motif support: ${ac_cv_my_have_motif}
