@@ -82,42 +82,48 @@ static Object P_Make_Record (rtd, values) Object rtd, values; {
     return s;
 }
 
-static Rtd_Eqv (a, b) Object a, b; { return EQ(a,b); }
+static int Rtd_Eqv (Object a, Object b) {
+    return EQ(a,b);
+}
 #define Record_Eqv Rtd_Eqv
 
-static Rtd_Equal (a, b) Object a, b; {
+static int Rtd_Equal (Object a, Object b) {
     return EQ(RTD(a)->name, RTD(b)->name) &&
 	   Equal (RTD(a)->fields, RTD(b)->fields);
 }
 
-static Record_Equal (a, b) Object a, b; {
+static int Record_Equal (Object a, Object b) {
     return EQ(RECORD(a)->rtd, RECORD(b)->rtd) &&
 	   Equal (RECORD(a)->values, RECORD(b)->values);
 }
 
-static Rtd_Print (x, port, raw, depth, length) Object x, port; {
+static int Rtd_Print (x, port, raw, depth, length) Object x, port; {
     struct S_String *s = STRING(RTD(x)->name);
     Printf (port, "#[%.*s-record-type %lu]", s->size, s->data, POINTER(x));
+    return 0;
 }
 
-static Record_Print (x, port, raw, depth, length) Object x, port; {
+static int Record_Print (x, port, raw, depth, length) Object x, port; {
     struct S_String *s = STRING(RTD(RECORD(x)->rtd)->name);
     Printf (port, "#[%.*s-record-type %lu]", s->size, s->data, POINTER(x));
+    return 0;
 }
 
-static Rtd_Visit (sp, f) register Object *sp; register (*f)(); {
+static int Rtd_Visit (register Object *sp, register int (*f)()) {
     (*f)(&RTD(*sp)->name);
     (*f)(&RTD(*sp)->fields);
+    return 0;
 }
 
-static Record_Visit (sp, f) register Object *sp; register (*f)(); {
+static int Record_Visit (register Object *sp, register int (*f)()) {
     (*f)(&RECORD(*sp)->rtd);
     (*f)(&RECORD(*sp)->values);
+    return 0;
 }
 
 #define Def_Prim Define_Primitive
 
-elk_init_lib_record () {
+void elk_init_lib_record () {
     T_Rtd = Define_Type (0, "record-type", NOFUNC, sizeof (struct S_Rtd),
 	Rtd_Eqv, Rtd_Equal, Rtd_Print, Rtd_Visit);
     Def_Prim (P_Rtdp,             "record-type?",             1, 1, EVAL);

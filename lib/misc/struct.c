@@ -96,7 +96,7 @@ static Structure_Visit (sp, f) register Object *sp; register (*f)(); {
     (*f)(&STRUCT(*sp)->values);
 }
 
-elk_init_lib_struct () {
+void elk_init_lib_struct () {
     T_Struct = Define_Type (0, "structure", NOFUNC, sizeof (struct S_Struct),
 	Structure_Eqv, Structure_Equal, Structure_Print, Structure_Visit);
     Define_Primitive (P_Structurep,       "structure?",       1, 1, EVAL);

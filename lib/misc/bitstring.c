@@ -1,3 +1,6 @@
+#include <string.h>
+#include <stdlib.h>
+
 #include "scheme.h"
 
 #define BITSTRING(x)     ((struct S_Bitstring *)POINTER(x))
@@ -23,7 +26,7 @@ static int Bitstring_Size(Object b) {
     return sizeof(struct S_Bitstring) + bits_to_bytes(BITSTRING(b)->len) - 1;
 }
 
-static Bitstring_Equal(Object b1, Object b2) {
+static int Bitstring_Equal(Object b1, Object b2) {
     struct S_Bitstring *a = BITSTRING(b1), *b = BITSTRING(b2);
 
     if (a->len != b->len)
@@ -47,7 +50,8 @@ static char *Digits(unsigned char c, int n) {
 
 /* Print starting with MSB
  */
-static Bitstring_Print(Object x, Object port, int raw, int depth, int length) {
+static int Bitstring_Print(Object x, Object port, int raw, int depth,
+                           int length) {
     int i, rem;
     struct S_Bitstring *b = BITSTRING(x);
     GC_Node2;
@@ -55,11 +59,13 @@ static Bitstring_Print(Object x, Object port, int raw, int depth, int length) {
     GC_Link2(x, port);
     Printf(port, "#*");
     i = bits_to_bytes(b->len) - 1;
-    if (rem = b->len % 8)
+    rem = b->len;
+    if (rem % 8)
 	Printf(port, Digits(b->data[i--], rem));
     for ( ; i >= 0; i--)
 	Printf(port, Digits(b->data[i], 8));
     GC_Unlink;
+    return 0;
 }
 
 static Object Make_Bitstring(unsigned int len) {
@@ -112,10 +118,10 @@ static int Ulong_Size(ul) unsigned long ul; {
     return n;
 }
 
-static Object Ulong_To_Bitstring(ul, len) unsigned long ul; unsigned len; {
+static Object Ulong_To_Bitstring(unsigned long ul, unsigned int len) {
     Object ret;
     struct S_Bitstring *b;
-    int i, siz = Ulong_Size(ul);
+    unsigned int i, siz = Ulong_Size(ul);
     char buf[50];
 
     ret = Make_Bitstring(len);
@@ -129,17 +135,17 @@ static Object Ulong_To_Bitstring(ul, len) unsigned long ul; unsigned len; {
     return ret;
 }
 
-static int Bigbits(b) struct S_Bignum *b; {
+static unsigned int Bigbits(b) struct S_Bignum *b; {
     return b->usize ? (Ulong_Size((unsigned long)b->data[b->usize-1]) +
 	    (b->usize-1) * sizeof(gran_t) * 8) : 0;
 }
 
-static Object Bignum_To_Bitstring(big, len) Object big; unsigned len; {
+static Object Bignum_To_Bitstring(Object big, unsigned int len) {
     char buf[50];
     Object ret;
     struct S_Bitstring *b;
     struct S_Bignum *bn;
-    int k, i, n;
+    unsigned int k, i, n;
     GC_Node;
 
     if (Bigbits(BIGNUM(big)) > len) {
@@ -220,7 +226,8 @@ static Object P_Bitstring_Ref(bs, inx) Object bs, inx; {
 
     Check_Type(bs, T_Bitstring);
     b = BITSTRING(bs);
-    if ((i = Get_Integer(inx)) < 0 || i >= b->len)
+    i = Get_Integer(inx);
+    if (i < 0 || i >= (int)b->len)
 	Range_Error(inx);
     return b->data[i/8] & 1 << i % 8 ? True : False;
 }
@@ -232,7 +239,8 @@ static Object P_Bitstring_Set(bs, inx, val) Object bs, inx, val; {
     Check_Type(bs, T_Bitstring);
     Check_Type(val, T_Boolean);
     b = BITSTRING(bs);
-    if ((i = Get_Integer(inx)) < 0 || i >= b->len)
+    i = Get_Integer(inx);
+    if (i < 0 || i >= (int)b->len)
 	Range_Error(inx);
     j = i/8;
     mask = 1 << i%8;
@@ -269,7 +277,8 @@ static Object P_Bitstring_Fill(bs, fill) Object bs, fill; {
 	printf("bitstrings must be of same length\n"); exit(1);\
     }\
     i = bits_to_bytes(a->len) - 1;\
-    if (rem = a->len % 8) {\
+    rem = a->len % 8;\
+    if (rem % 8) {\
 	a->data[i] op b->data[i];\
 	a->data[i--] &= masks2[rem];\
     }\
@@ -339,9 +348,9 @@ static Object P_Substring_Move(b1, from, to, b2, dst)
 
     if (start1 < 0 || start1 > end1)
 	Range_Error(from);
-    if (end1 > a->len)
+    if (end1 > (int)a->len)
 	Range_Error(to);
-    if (start2 < 0 || end2 > b->len)
+    if (start2 < 0 || end2 > (int)b->len)
 	Range_Error(dst);
 
     if (a == b && start2 < start1) { /* copy forward (LSB to MSB) */
@@ -413,7 +422,7 @@ static Object P_Substring_Move(b1, from, to, b2, dst)
 	if (off1 == off2) {
 	    if (off1 < 7) {
 		if (len <= off1)
-		    mask = masks2[len] << off1-len+1;
+		    mask = masks2[len] << (off1-len+1);
 		else
 		    mask = masks2[off1+1];
 		b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
@@ -422,7 +431,7 @@ static Object P_Substring_Move(b1, from, to, b2, dst)
 	    for (; len >= 8; len -= 8)
 		b->data[j--] = a->data[i--];
 	    if (len > 0) {
-		mask = masks2[len] << 8 - len;
+		mask = masks2[len] << (8 - len);
 		b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
 	    }
 	} else {
@@ -436,7 +445,7 @@ static Object P_Substring_Move(b1, from, to, b2, dst)
 		n = off1 + 1;
 		mask = masks2[n];
 		if (len < n) {
-		    mask = masks2[len] << n-len;
+		    mask = masks2[len] << (n-len);
 		    n = len;
 		}
 		if (off2 + 1 >= n) { /* rest of src byte fits into dst byte */
@@ -453,7 +462,7 @@ static Object P_Substring_Move(b1, from, to, b2, dst)
 		} else {  /* nope, copy as many bits as fit into dst bye */
 
 		    n = off2 + 1;
-		    mask = masks2[n] << off1-n+1;
+		    mask = masks2[n] << (off1-n+1);
 		    dmask = mask >> shift;
 		    b->data[j] = (b->data[j] & ~dmask) |
 			(unsigned int)(a->data[i] & mask) >> shift;
@@ -501,7 +510,7 @@ static Object Bitstring_Read(port, chr, konst) Object port; int chr, konst; {
 
 #define Def_Prim Define_Primitive
 
-elk_init_lib_bitstring() {
+void elk_init_lib_bitstring() {
     T_Bitstring = Define_Type(0, "bitstring", Bitstring_Size, 0,
 	Bitstring_Equal, Bitstring_Equal, Bitstring_Print, NOFUNC);
     Define_Reader('*', Bitstring_Read);

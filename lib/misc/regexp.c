@@ -7,6 +7,8 @@
 
 #include "scheme.h"
 
+#include <string.h>
+
 #ifdef HAVE_REGCOMP
 
 #include <sys/types.h>
@@ -51,17 +53,17 @@ static Object P_Matchp(x) Object x; {
     return TYPE(x) == T_Match ? True : False;
 }
 
-static Regexp_Eqv(a, b) Object a, b; {
+static int Regexp_Eqv(Object a, Object b) {
     return EQ(REGEXP(a)->pattern, REGEXP(b)->pattern)
 	&& REGEXP(a)->flags == REGEXP(b)->flags;
 }
 
-static Regexp_Equal(a, b) Object a, b; {
+static int Regexp_Equal(Object a, Object b) {
     return Equal(REGEXP(a)->pattern, REGEXP(b)->pattern)
 	&& REGEXP(a)->flags == REGEXP(b)->flags;
 }
 
-static Match_Equal(a, b) Object a, b; {
+static int Match_Equal(Object a, Object b) {
     size_t i;
     struct S_Match *ap = MATCH(a), *bp = MATCH(b);
 
@@ -79,26 +81,28 @@ static int Match_Size(m) Object m; {
     return sizeof(struct S_Match) + (MATCH(m)->num - 1) * sizeof(regmatch_t);
 }
 
-static Regexp_Visit(p, f) Object *p; int (*f)(); {
+static int Regexp_Visit(Object *p, int (*f)()) {
     f(&REGEXP(*p)->pattern);
+    return 0;
 }
 
-static Regexp_Print(x, port, raw, depth, length) Object x, port; {
+static int Regexp_Print(Object x, Object port, int raw, int depth, int length) {
     Format(port, "#[regexp ~s]", 12, 1, &REGEXP(x)->pattern);
+    return 0;
 }
 
-static Match_Print(x, port, raw, depth, length) Object x, port; {
+static int Match_Print(Object x, Object port, int raw, int depth, int length) {
     Printf(port, "#[regexp-match %lu]", POINTER(x));
+    return 0;
 }
 
-static Object Terminate_Regexp(r) Object r; {
+static Object Terminate_Regexp(Object r) {
     regfree(&REGEXP(r)->r);
     return Void;
 }
 
-static Object P_Make_Regexp(argc, argv) Object *argv; {
+static Object P_Make_Regexp(int argc, Object *argv) {
     Object r;
-    char *s;
     char msg[256];
     int flags = 0, ret;
 
@@ -121,17 +125,17 @@ static Object P_Make_Regexp(argc, argv) Object *argv; {
     return r;
 }
 
-static Object P_Regexp_Pattern(r) Object r; {
+static Object P_Regexp_Pattern(Object r) {
     Check_Type(r, T_Regexp);
     return REGEXP(r)->pattern;
 }
 
-static Object P_Regexp_Flags(r) Object r; {
+static Object P_Regexp_Flags(Object r) {
     Check_Type(r, T_Regexp);
     return Bits_To_Symbols((unsigned long)REGEXP(r)->flags, 1, Compile_Syms);
 }
 
-static Object P_Regexp_Exec(argc, argv) Object *argv; {
+static Object P_Regexp_Exec(int argc, Object *argv) {
     char *str, msg[256];
     Object r, m;
     size_t num;
@@ -171,12 +175,12 @@ static Object P_Regexp_Exec(argc, argv) Object *argv; {
     /*NOTREACHED*/
 }
 
-static Object P_Match_Number(m) Object m; {
+static Object P_Match_Number(Object m) {
     Check_Type(m, T_Match);
     return Make_Unsigned_Long((unsigned long)MATCH(m)->num);
 }
 
-static Object P_Match_Start(m, n) Object m, n; {
+static Object P_Match_Start(Object m, Object n) {
     size_t i;
 
     Check_Type(m, T_Match);
@@ -186,7 +190,7 @@ static Object P_Match_Start(m, n) Object m, n; {
     return Make_Unsigned_Long((unsigned long)MATCH(m)->matches[i].rm_so);
 }
 
-static Object P_Match_End(m, n) Object m, n; {
+static Object P_Match_End(Object m, Object n) {
     size_t i;
 
     Check_Type(m, T_Match);
@@ -201,7 +205,7 @@ static Object P_Match_End(m, n) Object m, n; {
 
 #endif /* HAVE_REGCOMP */
 
-elk_init_lib_regexp() {
+void elk_init_lib_regexp() {
 #ifdef HAVE_REGCOMP
     T_Regexp = Define_Type(0, "regexp", 0, sizeof(struct S_Regexp),
 	Regexp_Eqv, Regexp_Equal, Regexp_Print, Regexp_Visit);

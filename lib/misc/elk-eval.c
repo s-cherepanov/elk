@@ -12,6 +12,8 @@
  * arguments.
  */
 
+#include <string.h>
+
 #include "scheme.h"
 
 static Object in, out;
@@ -50,7 +52,7 @@ char *Elk_Eval(expr) char *expr; {
     return String_Eval(expr);
 }
 
-elk_init_eval() {
+void elk_init_eval() {
     in = P_Open_Input_String(Make_String("", 0));
     Global_GC_Link(in);
     out = P_Open_Output_String();

@@ -1,5 +1,7 @@
 #include "scheme.h"
 
+#include <new>
+
 #ifdef USE_ATTC_PLUS_PLUS
 #  define set_new_handler set_new_handler__FPFv_v
 #endif
@@ -19,9 +21,9 @@ static Object P_Set_New_Handler (Object p) {
     return old;
 }
 
-elk_init_lib_cplusplus () {
+extern "C" void elk_init_lib_cplusplus () {
     New_Handler = Null;
     Global_GC_Link (New_Handler);
-    set_new_handler (New_Handler_Proc);
-    Define_Primitive (P_Set_New_Handler, "set-c++-new-handler!", 1, 1, EVAL);
+    std::new_handler (New_Handler_Proc);
+    Define_Primitive ((Object (*)(...))P_Set_New_Handler, "set-c++-new-handler!", 1, 1, EVAL);
 }

@@ -6,6 +6,6 @@ static Object P_Debug (on) Object on; {
     return Void;
 }
 
-elk_init_lib_debug () {
+void elk_init_lib_debug () {
     Define_Primitive (P_Debug, "debug", 1, 1, EVAL);
 }

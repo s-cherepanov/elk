@@ -7,7 +7,7 @@ static Object P_Hack_Procedure_Environment (p, e) Object p, e; {
     return p;
 }
 
-elk_init_lib_hack () {
+void elk_init_lib_hack () {
     Define_Primitive (P_Hack_Procedure_Environment,
 	"hack-procedure-environment!", 2, 2, EVAL);
     P_Provide (Intern ("hack.so"));

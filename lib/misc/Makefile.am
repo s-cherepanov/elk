@@ -1,46 +1,55 @@
 NULL = 
 
-libelk_LTLIBRARIES = \
-	libbitstring.la \
-	libelk-eval.la \
-	libhack.la \
-	libnewhandler.la \
-	libregexp.la \
-	libdebug.la \
-	libgdbm.la \
-	libmonitor.la \
-	librecord.la \
-	libstruct.la \
+pkglib_LTLIBRARIES = \
+	bitstring.la \
+	elk-eval.la \
+	hack.la \
+	newhandler.la \
+	regexp.la \
+	debug.la \
+	gdbm.la \
+	monitor.la \
+	record.la \
+	struct.la \
 	$(NULL)
-libelkdir = /usr/lib/elk
 
-libbitstring_la_SOURCES = bitstring.c
-libbitstring_la_LIBADD = $(top_builddir)/src/libelk.la
+bitstring_la_SOURCES = bitstring.c
+bitstring_la_LDFLAGS = -module -avoid-version
+bitstring_la_LIBADD = $(top_builddir)/src/libelk.la
 
-libelk_eval_la_SOURCES = elk-eval.c
-libelk_eval_la_LIBADD = $(top_builddir)/src/libelk.la
+elk_eval_la_SOURCES = elk-eval.c
+elk_eval_la_LDFLAGS = -module -avoid-version
+elk_eval_la_LIBADD = $(top_builddir)/src/libelk.la
 
-libhack_la_SOURCES = hack.c
-libhack_la_LIBADD = $(top_builddir)/src/libelk.la
+hack_la_SOURCES = hack.c
+hack_la_LDFLAGS = -module -avoid-version
+hack_la_LIBADD = $(top_builddir)/src/libelk.la
 
-libnewhandler_la_SOURCES = newhandler.c
-libnewhandler_la_LIBADD = $(top_builddir)/src/libelk.la
+newhandler_la_SOURCES = newhandler.cpp
+newhandler_la_LDFLAGS = -module -avoid-version
+newhandler_la_LIBADD = $(top_builddir)/src/libelk.la
 
-libregexp_la_SOURCES = regexp.c
-libregexp_la_LIBADD = $(top_builddir)/src/libelk.la
+regexp_la_SOURCES = regexp.c
+regexp_la_LDFLAGS = -module -avoid-version
+regexp_la_LIBADD = $(top_builddir)/src/libelk.la
 
-libdebug_la_SOURCES = debug.c
-libdebug_la_LIBADD = $(top_builddir)/src/libelk.la
+debug_la_SOURCES = debug.c
+debug_la_LDFLAGS = -module -avoid-version
+debug_la_LIBADD = $(top_builddir)/src/libelk.la
 
-libgdbm_la_SOURCES = gdbm.c
-libgdbm_la_LIBADD = $(top_builddir)/src/libelk.la -lgdbm
+gdbm_la_SOURCES = gdbm.c
+gdbm_la_LDFLAGS = -module -avoid-version
+gdbm_la_LIBADD = $(top_builddir)/src/libelk.la -lgdbm
 
-libmonitor_la_SOURCES = monitor.c
-libmonitor_la_LIBADD = $(top_builddir)/src/libelk.la
+monitor_la_SOURCES = monitor.c
+monitor_la_LDFLAGS = -module -avoid-version
+monitor_la_LIBADD = $(top_builddir)/src/libelk.la
 
-librecord_la_SOURCES = record.c
-librecord_la_LIBADD = $(top_builddir)/src/libelk.la
+record_la_SOURCES = record.c
+record_la_LDFLAGS = -module -avoid-version
+record_la_LIBADD = $(top_builddir)/src/libelk.la
 
-libstruct_la_SOURCES = struct.c
-libstruct_la_LIBADD = $(top_builddir)/src/libelk.la
+struct_la_SOURCES = struct.c
+struct_la_LDFLAGS = -module -avoid-version
+struct_la_LIBADD = $(top_builddir)/src/libelk.la
 

@@ -52,11 +52,11 @@ static Object P_Monitor (on) Object on; {
     return Void;
 }
 
-elk_init_lib_monitor () {
+void elk_init_lib_monitor () {
     Define_Primitive (P_Monitor, "monitor", 1, 1, EVAL);
 }
 
-elk_finit_lib_monitor () {
+void elk_finit_lib_monitor () {
     if (monitoring) {
 	monitoring = 0;
 	printf ("[writing mon.out]\n");

@@ -69,6 +69,7 @@
 #include "scheme.h"
 #include <gdbm.h>
 #include <errno.h>
+#include <string.h>
 
 extern gdbm_error gdbm_errno;
 extern int errno;
@@ -104,9 +105,10 @@ int Gdbm_fh_Equal (a, b) Object a, b; {
 }
 
 /*ARGSUSED*/
-Gdbm_fh_Print (fh, port, raw, depth, len) Object fh, port;
+int Gdbm_fh_Print (fh, port, raw, depth, len) Object fh, port;
 	int /*Bool*/ raw; int depth, len; {
     Printf (port, "#[gdbm-file %lu]", GDBM_FH(fh)->fptr);
+    return 0;
 }
 
 Object P_Gdbm_filep (x) Object x; {
@@ -138,7 +140,7 @@ Object P_Gdbm_Open (argc, argv) Object *argv; {
     return Gdbm_fh;
 }
 
-GDBM_FILE Check_Fh (fh) Object fh; {
+void Check_Fh (fh) Object fh; {
     Check_Type (fh, T_Gdbm_fh);
     if (GDBM_FH(fh)->free)
 	Primitive_Error ("invalid gdbm-file: ~s", fh);
@@ -243,7 +245,7 @@ Object P_Gdbm_Error_Text () {
     return Make_String (gdbm_error_message, strlen (gdbm_error_message));
 }
 
-elk_init_lib_gdbm () {
+void elk_init_lib_gdbm () {
     Define_Primitive (P_Gdbm_Open, "gdbm-open", 3, 4, VARARGS);
     Define_Primitive (P_Gdbm_filep, "gdbm-file?", 1, 1, EVAL);
     Define_Primitive (P_Gdbm_Close, "gdbm-close", 1, 1, EVAL);
