@@ -101,7 +101,7 @@ binary-arch: build install
 #	dh_installinit
 #	dh_installcron
 #	dh_installmanpages
-	dh_installman
+	dh_installman doc/man/elk.1
 #	dh_installinfo
 #	dh_undocumented
 	dh_installchangelogs NEWS
