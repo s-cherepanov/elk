@@ -4,10 +4,10 @@ SUBDIRS = include src lib scm doc examples
 DIST_SUBDIRS = $(SUBDIRS) autotools debian util
 
 EXTRA_DIST = \
+	bootstrap \
 	BUGS \
 	MACHINES \
 	MIGRATE \
-	ROADMAP \
 	$(NULL)
 
 AUTOMAKE_OPTIONS = dist-bzip2

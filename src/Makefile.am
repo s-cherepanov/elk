@@ -40,6 +40,27 @@ libelk_la_SOURCES = \
 	vector.c \
 	$(NULL)
 
+EXTRA_DIST = \
+	dump-ecoff.c \
+	dump-elf.c \
+	dump-hp9k.c \
+	dump-vanilla.c \
+	heap-gen.c \
+	heap-sc.c \
+	load-dl.c \
+	load-ld.c \
+	load-rld.c \
+	load-shl.c \
+	stab-bsd.c \
+	stab-coff.c \
+	stab-convex.c \
+	stab-ecoff.c \
+	stab-elf.c \
+	stab-hp9k300.c \
+	stab-hp9k800.c \
+	stab-macho.c \
+	$(NULL)
+
 bin_PROGRAMS = elk
 elk_LDADD = $(top_builddir)/src/libelk.la
 elk_SOURCES = main.c
