@@ -30,13 +30,17 @@ ldflags:	src/ldflags ../config/system ../config/site
 	chmod +x \$@
 
 install: \$(FILES)
-	-@if [ ! -d $install_dir/lib ]; then \\
-	    echo mkdir $install_dir/lib; \\
-	    mkdir $install_dir/lib; \\
+	-@if [ ! -d $install_dir/bin ]; then \\
+	    echo mkdir $install_dir/bin; \\
+	    mkdir $install_dir/bin; \\
 	fi
-	cp linkscheme $install_dir/lib
-	cp makedl $install_dir/lib
-	cp ldflags $install_dir/lib
+	cp linkscheme $install_dir/bin
+	cp makedl $install_dir/bin
+	-@if [ ! -d $install_dir/lib/elk ]; then \\
+	    echo mkdir $install_dir/lib/elk; \\
+	    mkdir -p $install_dir/lib/elk; \\
+	fi
+	cp ldflags $install_dir/lib/elk
 
 distclean:
 	rm -f \$(FILES) Makefile.local

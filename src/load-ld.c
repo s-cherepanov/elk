@@ -48,7 +48,7 @@ Load_Object (names) Object names; {
 	Loader_Output = Safe_Malloc (strlen (tmpdir) + 20);
     }
     sprintf (Loader_Output, "%s/ldXXXXXX", tmpdir);
-    (void)mktemp (Loader_Output);
+    (void)mkstemp (Loader_Output);
 
     port = tail = fullnames = Null;
     GC_Link3 (port, tail, fullnames);
@@ -159,7 +159,7 @@ void Fork_Load () {
 	Disable_Interrupts;
 	newlink = Safe_Malloc (strlen (tmpdir) + 20);
 	sprintf (newlink, "%s/ldXXXXXX", tmpdir);
-	(void)mktemp (newlink);
+	(void)mkstemp (newlink);
 	(void)link (Loader_Input, newlink);
 	free (Loader_Input);
 	Loader_Input = newlink;

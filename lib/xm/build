@@ -102,22 +102,26 @@ text.o:			\$(H) text.d
 toggle-btn.o:		\$(H) toggle-btn.d
 
 install: \$(O)
-	-@if [ ! -d $install_dir/runtime ]; then \\
-	    echo mkdir $install_dir/runtime; \\
-	    mkdir $install_dir/runtime; \\
+	-@if [ ! -d $install_dir/lib ]; then \\
+	    echo mkdir $install_dir/lib; \\
+	    mkdir $install_dir/lib; \\
 	fi
-	-@if [ ! -d $install_dir/runtime/obj ]; then \\
-	    echo mkdir $install_dir/runtime/obj; \\
-	    mkdir $install_dir/runtime/obj; \\
+	-@if [ ! -d $install_dir/lib/elk ]; then \\
+	    echo mkdir $install_dir/lib/elk; \\
+	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/runtime/obj/xm ]; then \\
-	    echo mkdir $install_dir/runtime/obj/xm; \\
-	    mkdir $install_dir/runtime/obj/xm; \\
+	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
+	    echo mkdir $install_dir/lib/elk/obj; \\
+	    mkdir $install_dir/lib/elk/obj; \\
+	fi
+	-@if [ ! -d $install_dir/lib/elk/obj/xm ]; then \\
+	    echo mkdir $install_dir/lib/elk/obj/xm; \\
+	    mkdir $install_dir/lib/elk/obj/xm; \\
 	fi
 	@for i in \$(O) ALIASES ;\\
 	do \\
-	    echo cp \$\$i $install_dir/runtime/obj/xm; \\
-	    cp \$\$i $install_dir/runtime/obj/xm; \\
+	    echo cp \$\$i $install_dir/lib/elk/obj/xm; \\
+	    cp \$\$i $install_dir/lib/elk/obj/xm; \\
 	done
 
 lint:

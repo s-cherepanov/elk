@@ -1,6 +1,7 @@
 #include "kernel.h"
 
 #include <errno.h>
+#include <limits.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -21,7 +22,7 @@ extern char *getenv();
 
 char *stkbase;
 int Stack_Grows_Down;
-int Max_Stack;
+unsigned int Max_Stack;
 int Interpreter_Initialized;
 int GC_Debug = 0;
 int Case_Insensitive;
@@ -320,6 +321,7 @@ Get_Stack_Limit () {
 	perror ("getrlimit");
 	exit (1);
     }
+
     Max_Stack = rl.rlim_cur;
 #endif
     Max_Stack -= STACK_MARGIN;

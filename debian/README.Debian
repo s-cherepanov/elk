@@ -1,0 +1,30 @@
+elk for Debian
+--------------
+
+New location of files in Debian GNU/Linux version of Elk:
+---------------------------------------------------------
+
+	The default install location of files and directories in the
+Elk distribution does not comply with the FSSTND. This is the reason 
+why some reordering has been done for the Debian packaged version. 
+	However the documentation has not been changed. All relative
+and absolute paths referred therein are the original.
+	The following table relates the original locations to the new ones:
+
+	Original location		New location
+	.................		............
+
+$install_dir/bin/scheme			/usr/bin/scheme
+
+$install_dir/include/			/usr/include/elk/
+
+$install_dir/runtime/{scm,obj}/		/usr/lib/elk/{scm,obj}/
+
+$install_dir/lib/*.o			/usr/lib/elk/*.o
+
+$install_dir/lib/{linkscheme,makedl}	/usr/bin/{linkscheme,makedl}
+
+$install_dir/lib/ldflags		/usr/bin/ldflags-elk
+
+
+ -- Enrique Zanardi <ezanard@debian.org>, Mon, 26 Mar 2001 20:19:04 +0100

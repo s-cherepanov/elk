@@ -96,22 +96,26 @@ tree.o:		\$(H) tree.d
 viewport.o:	\$(H) viewport.d
 
 install: \$(O)
-	-@if [ ! -d $install_dir/runtime ]; then \\
-	    echo mkdir $install_dir/runtime; \\
-	    mkdir $install_dir/runtime; \\
+	-@if [ ! -d $install_dir/lib ]; then \\
+	    echo mkdir $install_dir/lib; \\
+	    mkdir $install_dir/lib; \\
 	fi
-	-@if [ ! -d $install_dir/runtime/obj ]; then \\
-	    echo mkdir $install_dir/runtime/obj; \\
-	    mkdir $install_dir/runtime/obj; \\
+	-@if [ ! -d $install_dir/lib/elk ]; then \\
+	    echo mkdir $install_dir/lib/elk; \\
+	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/runtime/obj/xaw ]; then \\
-	    echo mkdir $install_dir/runtime/obj/xaw; \\
-	    mkdir $install_dir/runtime/obj/xaw; \\
+	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
+	    echo mkdir $install_dir/lib/elk/obj; \\
+	    mkdir $install_dir/lib/elk/obj; \\
+	fi
+	-@if [ ! -d $install_dir/lib/elk/obj/xaw ]; then \\
+	    echo mkdir $install_dir/lib/elk/obj/xaw; \\
+	    mkdir $install_dir/lib/elk/obj/xaw; \\
 	fi
 	@for i in \$(O) ALIASES ;\\
 	do \\
-	    echo cp \$\$i $install_dir/runtime/obj/xaw; \\
-	    cp \$\$i $install_dir/runtime/obj/xaw; \\
+	    echo cp \$\$i $install_dir/lib/elk/obj/xaw; \\
+	    cp \$\$i $install_dir/lib/elk/obj/xaw; \\
 	done
 
 lint:

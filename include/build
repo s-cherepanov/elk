@@ -29,10 +29,14 @@ install:	\$(FILES)
 	    echo mkdir $install_dir/include; \\
 	    mkdir $install_dir/include; \\
 	fi
+	-@if [ ! -d $install_dir/include/elk ]; then \\
+	    echo mkdir $install_dir/include/elk; \\
+	    mkdir $install_dir/include/elk; \\
+	fi
 	@for i in \$(FILES) ;\\
 	do \\
-	    echo cp \$\$i $install_dir/include; \\
-	    cp \$\$i $install_dir/include; \\
+	    echo cp \$\$i $install_dir/include/elk; \\
+	    cp \$\$i $install_dir/include/elk; \\
 	done
 
 localize:	config.h

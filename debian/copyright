@@ -1,0 +1,50 @@
+This is Debian GNU/Linux's prepackaged version of the Extension Language Kit,
+an Scheme implementation.
+Elk was written by Oliver Laumann <net@informatik.uni-bremen.de>.
+
+This package was put together by me, Enrique Zanardi
+<ezanardi@molec1.dfis.ull.es>, from sources obtained from:
+ftp://ftp.uni-bremen.de/pub/programming/languages/scheme/elk/elk-3.0.tar.gz
+
+Changes:
+  * added Debian GNU/Linux package maintenance system files
+  * added config/system file with Linux-ELF specific information for
+    the Makefiles.
+  * modified config/site to look for the X libs and includes at the right 
+    place.
+  * modified */.../build* and config/site scripts to obtain FSSTND 
+    compliant installation. The new locations of the files are listed in 
+    addendum.txt 
+  * modified src/dump-elf.c as suggested in Elk-News web page to avoid
+    a "syms.h include file not found" compile-time error. (Just deleted
+    the "#include <syms.h>" line).
+
+
+Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
+(except for the contents of the directory `doc/usenix').
+
+This software was derived from Elk 1.2, which was Copyright 1987, 1988,
+1989, Nixdorf Computer AG and TELES GmbH, Berlin (Elk 1.2 has been written
+by Oliver Laumann (me) for TELES Telematic Services, Berlin, in a joint
+project between TELES and Nixdorf Microprocessor Engineering, Berlin).
+
+Oliver Laumann, TELES GmbH, and Nixdorf Computer AG, as co-owners or
+individual owners of copyright in this software, grant to any person or
+company a worldwide, royalty free, license to
+
+   i) copy this software,
+  ii) prepare derivative works based on this software,
+ iii) distribute copies of this software or derivative works,
+  iv) perform this software, or
+   v) display this software,
+
+provided that this notice is not removed and that neither Oliver Laumann
+nor Teles nor Nixdorf are deemed to have made any representations as to
+the suitability of this software for any purpose nor are held responsible
+for any defects of this software.
+
+THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
+
+Berlin, June 20, 1995
+
+Oliver Laumann  <net@informatik.uni-bremen.de>

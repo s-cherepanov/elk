@@ -39,7 +39,7 @@ char *Temp_Name (seq) int seq; {
 	    tmpdir = "/tmp";
 	tempname = Safe_Malloc (tmplen = strlen (tmpdir) + 20);
 	sprintf (tempname, "%s/ldXXXXXX", tmpdir);
-	(void)mktemp (tempname);
+	(void)mkstemp (tempname);
 	strcat (tempname, ".");
     }
     sprintf (strrchr (tempname, '.'), ".%d", seq);
@@ -55,7 +55,7 @@ void Fork_Load () {
     Disable_Interrupts;
     newtemp = Safe_Malloc (tmplen);
     sprintf (newtemp, "%s/ldXXXXXX", tmpdir);
-    (void)mktemp (newtemp);
+    (void)mkstemp (newtemp);
     strcat (newtemp, ".");
     for (i = 0; i < Seq_Num; i++) {
 	sprintf (strrchr (newtemp, '.'), ".%d", i);

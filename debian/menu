@@ -1,0 +1,2 @@
+?package(elk):needs=text section=Apps/Programming\
+  title="elk" command="/usr/bin/scheme-elk"

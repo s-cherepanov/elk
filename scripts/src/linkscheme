@@ -19,7 +19,7 @@ then
     echo Usage: "\$0: output-file [object-files]"
     exit 1
 fi
-ofile=$install_dir/lib/standalone.o
+ofile=$final_dir/lib/elk/standalone.o
 aout=\$1
 if [ -f \$aout ]
 then

@@ -88,7 +88,8 @@ extern Object General_Assoc P_((Object, Object, int));
  */
 extern char *stkbase, *A_Out_Name;
 extern int Stack_Grows_Down;
-extern int Max_Stack, Interpreter_Initialized, Was_Dumped;
+extern unsigned int Max_Stack;
+extern int Interpreter_Initialized, Was_Dumped;
 extern char *Brk_On_Dump;
 extern int Verb_Load, Verb_Init, Case_Insensitive;
 extern SYMTAB *The_Symbols;

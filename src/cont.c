@@ -76,7 +76,7 @@ Check_Stack_Grows_Down () {
  * It works independent of the direction into which the stack grows
  * (the stack grows upwards on HP-PA based machines and Pyramids).
  */
-int Stack_Size () {
+unsigned int Stack_Size () {
     char foo;
 
     return Stack_Grows_Down ? stkbase-&foo : &foo-stkbase;

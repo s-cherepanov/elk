@@ -108,24 +108,32 @@ xlib.pre: \$(O)
 	../../scripts/makedl \$@ \$(O)
 
 install: xlib.pre
-	-@if [ ! -d $install_dir/runtime ]; then \\
-	    echo mkdir $install_dir/runtime; \\
-	    mkdir $install_dir/runtime; \\
+	-@if [ ! -d $install_dir/lib ]; then \\
+	    echo mkdir $install_dir/lib; \\
+	    mkdir $install_dir/lib; \\
 	fi
-	-@if [ ! -d $install_dir/runtime/obj ]; then \\
-	    echo mkdir $install_dir/runtime/obj; \\
-	    mkdir $install_dir/runtime/obj; \\
+	-@if [ ! -d $install_dir/lib/elk ]; then \\
+	    echo mkdir $install_dir/lib/elk; \\
+	    mkdir $install_dir/lib/elk; \\
 	fi
-	cp xlib.pre $install_dir/runtime/obj/xlib.o
+	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
+	    echo mkdir $install_dir/lib/elk/obj; \\
+	    mkdir $install_dir/lib/elk/obj; \\
+	fi
+	cp xlib.pre $install_dir/lib/elk/obj/xlib.o
 	-@if [ ! -d $install_dir/include ]; then \\
 	    echo mkdir $install_dir/include; \\
 	    mkdir $install_dir/include; \\
 	fi
-	-@if [ ! -d $install_dir/include/extensions ]; then \\
-	    echo mkdir $install_dir/include/extensions; \\
-	    mkdir $install_dir/include/extensions; \\
+	-@if [ ! -d $install_dir/include/elk ]; then \\
+	    echo mkdir $install_dir/include/elk; \\
+	    mkdir $install_dir/include/elk; \\
 	fi
-	cp xlib.h $install_dir/include/extensions
+	-@if [ ! -d $install_dir/include/elk/extensions ]; then \\
+	    echo mkdir $install_dir/include/elk/extensions; \\
+	    mkdir $install_dir/include/elk/extensions; \\
+	fi
+	cp xlib.h $install_dir/include/elk/extensions
 
 lint:
 	lint \$(LINTFLAGS) -I\$(INC) $x11_incl \$(C)

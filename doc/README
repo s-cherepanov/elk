@@ -26,7 +26,7 @@ usenix/    A paper about Elk that has appeared in USENIX Computing
 	   Systems (vol. 7, no. 4, pp. 419-449, 1994).
 
 man/       This directory holds a brief online manual page for the Scheme
-	   interpreter component.  You may want to install in `/usr/man'
+	   interpreter component.  You may want to install in `/usr/share/man'
 	   on your system.  The manual page essentially describes the
 	   command line options of the interpreter.
 

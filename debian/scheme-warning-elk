@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "As there are a few scheme interpeters in Debian, you should invoke
+the one you want by using its full name. If you want to use elk, invoke
+'scheme-elk'. You may also define elk as the default scheme interpreter.
+To do so, run (as root) the following command:
+
+update-alternatives --install /usr/bin/scheme scheme /usr/bin/scheme-elk 20 \
+  --slave /usr/share/man/man1/scheme.1.gz scheme.1.gz /usr/share/man/man1/elk.1.gz
+
+Press any key to continue."
+
+read foo

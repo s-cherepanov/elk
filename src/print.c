@@ -3,6 +3,7 @@
 
 #include "kernel.h"
 
+#include <string.h>
 #include <errno.h>
 #include <ctype.h>
 #include <varargs.h>
@@ -557,7 +558,9 @@ Format (port, fmt, len, argc, argv) Object port; const char *fmt;
     char buf[256];
     extern sys_nerr;
 #ifndef __bsdi__
+ #ifndef __linux__
     extern char *sys_errlist[];
+ #endif
 #endif
     GC_Node;
     Alloca_Begin;
@@ -573,13 +576,9 @@ Format (port, fmt, len, argc, argv) Object port; const char *fmt;
 	    } else if (c == '%') {
 		Print_Char (port, '\n');
 	    } else if (c == 'e' || c == 'E') {
-		if (Saved_Errno > 0 && Saved_Errno < sys_nerr) {
-		    s = sys_errlist[Saved_Errno];
-		    sprintf (buf, "%c%s", isupper (*s) ? tolower (*s) :
-			*s, s+1);
-		} else {
-		    sprintf (buf, "error %d", Saved_Errno);
-		}
+		s = strerror(Saved_Errno);
+		sprintf (buf, "%c%s", isupper (*s) ? tolower (*s) :
+		    *s, *s ? "" : s+1);
 		Print_Object (Make_String (buf, strlen (buf)), port,
 		    c == 'E', 0, 0);
 	    } else {

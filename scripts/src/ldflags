@@ -2,6 +2,7 @@
 . ../config/site
 
 cat <<HERE
+#!/bin/sh
 # Echo the LDFLAGS required for linking the Elk interpreter kernel.
 
 echo $ldflags

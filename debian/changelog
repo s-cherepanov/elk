@@ -1,0 +1,90 @@
+elk (3.0-8.1) unstable; urgency=low
+
+  * New maintainer.
+  * Fixed spelling in the package description (Closes: #161056).
+  * Updated standards version to 3.5.9.0.
+  * Replaced sys_errlist usage with strerror calls, and mktemp with mkstemp.
+
+ -- Samuel Hocevar <sam@zoy.org>  Fri, 28 Mar 2003 10:30:34 +0100
+
+elk (3.0-8.1) unstable; urgency=low
+
+  * NMU.
+  * Added missing build dependencies (closes: #109854, #116532).
+  * Fix menu item (closes: #121004).
+  * Apply patch to make package lintian clean (closes: #126987).
+  * src/build: include debian/arch-config to specify build flags for
+    the alpha (-O0). May fix #59893.
+
+ -- Matthias Klose <doko@debian.org>  Fri, 11 Jan 2002 18:12:44 +0100
+
+elk (3.0-8) unstable; urgency=low
+
+  * documentation moved to /usr/share/doc (Closes: Bug#91451, Bug#91453)
+  * manpages moved to /usr/share/man (Closes: Bug#91148)
+  * elkdoc moved to section doc (Closes: Bug#35701)
+  * Updated to current policy (Closes: Bug#82811)
+  * Added Build-Depends line (Closes: Bug#70820)
+  * link to libgdbmg1 (Closes: Bug#75710, Bug#65457)
+ 
+ -- Enrique Zanardi <ezanard@debian.org>  Mon, 26 Mar 2001 21:14:03 +0100
+
+elk (3.0-7) frozen; urgency=high
+
+  * Just recompiled. If someone builds a program that links to elk 3.0-6 
+    and libc6 2.1.3 (potato version) it segfaults on start.
+    The version of sced that fixes RC bug #62971 depends on this version
+    of elk!
+ 
+ -- Enrique Zanardi <ezanard@debian.org>  Sat, 13 May 2000 13:06:01 +0100
+
+elk (3.0-6) frozen; urgency=low
+
+  * Don't strip modules. Bug#23772 wasn't fixed by the previous upload.
+    (Closes Bug#23772).
+ 
+ -- Enrique Zanardi <ezanard@debian.org>  Wed, 28 Oct 1998 20:09:58 +0000
+ 
+elk (3.0-5) frozen; urgency=low
+
+  * Renamed /usr/bin/scheme to /usr/bin/scheme-elk. /usr/bin/scheme is
+    now managed via update-alternatives. (Closes Bug#25295).
+  * Use --strip-unneeded for the modules. (Closes Bug#23772, Bug#26061).
+  * Moved /usr/bin/ldflags-elk to /usr/lib/elk/ldflags. (Closes Bug#26059).
+
+ -- Enrique Zanardi <ezanard@debian.org>  Tue, 27 Oct 1998 14:16:42 +0000
+
+elk (3.0-4) frozen; urgency=low
+
+  * Added copyright file in elkdoc. (Closes Bug#19298).
+  * Stripped obj files.
+  * Updated policy version.
+  * Added !/bin/sh in ldflags-elk.
+  * Added usr/lib/elk/scm/elk.ini to use slib with Elk.
+
+ -- Enrique Zanardi <ezanardi@molec1.dfis.ull.es>  Mon, 16 Mar 1998 12:47:07 +0000
+
+elk (3.0-3) unstable; urgency=low
+
+  * Removed hardcoded Architecture: i386. (Closes Bug#13618).
+
+ -- Enrique Zanardi <ezanardi@molec1.dfis.ull.es>  Sun, 25 Jan 1998 04:02:45 +0000
+
+elk (3.0-2) unstable; urgency=low
+
+  * Rebuilt with libc6
+  * Provide manpages for ldflags-elk, makedl and linkscheme (Bug#6280)
+  * Renamed changelog.upstream.gz changelog.gz
+  * Pristine sources
+
+ -- Enrique Zanardi <ezanardi@molec1.dfis.ull.es>  Sat, 27 Sep 1997 01:26:21 +0100
+
+elk (3.0-1) unstable; urgency=low
+
+  * Initial release
+
+ -- Enrique Zanardi <ezanardi@molec1.dfis.ull.es>  Wed, 30 Oct 1996 13:05:48 +0000
+
+Local variables:
+mode: debian-changelog
+End:

@@ -1,5 +1,6 @@
 . ../config/system
 . ../config/site
+. ../debian/arch-config
 
 case _$aout_format in
 _coff)   dump=dump-vanilla.c; stab=stab-coff.c;;
@@ -190,8 +191,12 @@ install: scheme standalone.o module.o
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
 	fi
-	cp standalone.o $install_dir/lib
-	cp module.o $install_dir/lib
+	-@if [ ! -d $install_dir/lib/elk ]; then \\
+	    echo mkdir $install_dir/lib/elk; \\
+	    mkdir $install_dir/lib/elk; \\
+	fi
+	cp standalone.o $install_dir/lib/elk
+	cp module.o $install_dir/lib/elk
 
 lint:
 	lint \$(LINTFLAGS) -I\$(INC) \$(C)
