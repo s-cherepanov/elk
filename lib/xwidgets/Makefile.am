@@ -1,3 +1,5 @@
+SUBDIRS = xaw motif
+
 NULL = 
 
 include ../xlib/Include.am

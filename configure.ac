@@ -406,10 +406,10 @@ AC_OUTPUT([
   lib/Makefile
   lib/misc/Makefile
   lib/unix/Makefile
-  lib/xaw/Makefile
   lib/xlib/Makefile
-  lib/xm/Makefile
-  lib/xt/Makefile
+  lib/xwidgets/Makefile
+  lib/xwidgets/xaw/Makefile
+  lib/xwidgets/motif/Makefile
   scm/Makefile
   scm/slib.scm
   src/Makefile

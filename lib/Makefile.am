@@ -1,1 +1,1 @@
-SUBDIRS = misc unix xaw xlib xm xt
+SUBDIRS = misc unix xlib xwidgets
