@@ -12,7 +12,7 @@ SCM_FILES = \
 	describe.scm \
 	$(gdbmtest_scm) \
 	initscheme.scm \
-	motif.scm \
+	$(motif_scm) \
 	oops.scm \
 	parse.scm \
 	pp.scm \
@@ -26,11 +26,23 @@ SCM_FILES = \
 	toplevel.scm \
 	trace.scm \
 	unix.scm \
-	xlib.scm \
-	xaw.scm \
-	xwidgets.scm \
+	$(xlib_scm) \
+	$(xaw_scm) \
+	$(xwidgets_scm) \
 	$(NULL)
 
 if HAVE_GDBM
 gdbmtest_scm = gdbmtest.scm
 endif
+if HAVE_X11
+xlib_scm = xlib.scm
+endif
+if HAVE_XAW
+xaw_scm = xaw.scm
+xwidgets_scm = xwidgets.scm
+endif
+if HAVE_MOTIF
+motif_scm = motif.scm
+xwidgets_scm = xwidgets.scm
+endif
+
