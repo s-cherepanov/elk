@@ -108,7 +108,7 @@ void Call_Initializers (SYMTAB *tab, char *addr, int which) {
         ;
 
     for (sp = tab->first; sp; sp = sp->next) {
-        if ((char *)sp->value < addr)
+        if (!sp->value || (char *)sp->value < addr)
             continue;
         p = sp->name;
 #ifdef SYMS_BEGIN_WITH
