@@ -433,6 +433,8 @@ dnl
 CFLAGS="${CFLAGS_save}"
 LDFLAGS="${LDFLAGS_save}"
 
+AM_CONDITIONAL(HAVE_MONITOR, false)
+
 AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_my_have_gdbm=yes, ac_cv_my_have_gdbm=no)
 AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_my_have_gdbm}" = "yes")
 

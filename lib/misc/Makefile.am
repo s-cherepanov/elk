@@ -7,7 +7,7 @@ pkglib_LTLIBRARIES = \
 	regexp.la \
 	debug.la \
 	$(gdbm_la) \
-	monitor.la \
+	$(monitor_la) \
 	record.la \
 	struct.la \
 	$(newhandler_la) \
@@ -40,6 +40,9 @@ gdbm_la_SOURCES = gdbm.c
 gdbm_la_LDFLAGS = -module -avoid-version
 gdbm_la_LIBADD = $(top_builddir)/src/libelk.la -lgdbm
 
+if HAVE_MONITOR
+monitor_la = monitor.la
+endif
 monitor_la_SOURCES = monitor.c
 monitor_la_LDFLAGS = -module -avoid-version
 monitor_la_LIBADD = $(top_builddir)/src/libelk.la
