@@ -591,6 +591,7 @@
   (newline)
   (SECTION 6 2)
   (test #f eqv? 1 f1.0)
+  (test #f eqv? 0 f0.0)
   (SECTION 6 5 5)
   (test #t inexact? f3.9)
   (test #t 'inexact? (inexact? (max f3.9 4)))
