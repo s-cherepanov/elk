@@ -9,9 +9,6 @@
 # Uncomment this to turn on verbose mode. 
 #export DH_VERBOSE=1
 
-# This is the debhelper compatability version to use.
-export DH_COMPAT=3
-
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
@@ -19,7 +16,6 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	# Add here commands to compile the package.
 ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),alpha)
 	echo 'cflags=`echo $${cflags} | sed s/-O./-O0/`' > debian/arch-config
 else
@@ -35,7 +31,6 @@ clean:
 	dh_testroot
 	rm -f build-stamp
 
-	# Add here commands to clean up after the build process.
 	-$(MAKE) -i distclean
 	rm -f debian/arch-config
 
@@ -48,7 +43,6 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/elk.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/elk
 
 	mv $(CURDIR)/debian/elk/usr/bin/scheme \
