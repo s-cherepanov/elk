@@ -192,6 +192,6 @@
 	  (if (caddr cb) 1 0)))
 (for-each (lambda (x) (display x f)) primitives)
 (for-each (lambda (x) (display x f)) converters)
-(format f "    P_Provide(Intern(\"~a:~a.o\"));~%" widget-set
+(format f "    P_Provide(Intern(\"~a:~a\"));~%" widget-set
         (feature-name (car args)))
 (format f "}~%")

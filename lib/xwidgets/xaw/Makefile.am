@@ -1,10 +1,10 @@
 NULL = 
 
-EXTRA_DIST = $(D_FILES)
+EXTRA_DIST = $(SOURCES_D)
 
 pkglib_LTLIBRARIES = xaw-widgets.la
 
-nodist_xaw_widgets_la_SOURCES = $(C_FILES)
+nodist_xaw_widgets_la_SOURCES = $(SOURCES_C)
 xaw_widgets_la_CFLAGS = -I$(srcdir)/../../xlib @XAW_CFLAGS@
 xaw_widgets_la_LDFLAGS = -module -avoid-version
 xaw_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
@@ -14,9 +14,9 @@ xaw_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
 
 clean: clean-local
 clean-local:
-	-rm -f $(C_FILES)
+	-rm -f $(SOURCES_C)
 
-C_FILES = \
+SOURCES_C = \
 	ascii.c \
 	box.c \
 	command.c \
@@ -42,7 +42,7 @@ C_FILES = \
 	viewport.c \
 	$(NULL)
 
-D_FILES = \
+SOURCES_D = \
 	ascii.d \
 	box.d \
 	command.d \

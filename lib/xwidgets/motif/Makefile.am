@@ -1,10 +1,10 @@
 NULL = 
 
-EXTRA_DIST = $(D_FILES)
+EXTRA_DIST = $(SOURCES_D)
 
 pkglib_LTLIBRARIES = motif-widgets.la
 
-nodist_motif_widgets_la_SOURCES = $(C_FILES)
+nodist_motif_widgets_la_SOURCES = $(SOURCES_C)
 motif_widgets_la_CFLAGS = -I$(srcdir)/../../xlib @XM_CFLAGS@
 motif_widgets_la_LDFLAGS = -module -avoid-version -u XmIsMotifWMRunning
 motif_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XM_LIBS@
@@ -14,9 +14,9 @@ motif_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XM_LIBS@
 
 clean: clean-local
 clean-local:
-	-rm -f $(C_FILES)
+	-rm -f $(SOURCES_C)
 
-C_FILES = \
+SOURCES_C = \
 	arrow-button.c \
 	bulletin-brd.c \
 	cascade-btn.c \
@@ -44,7 +44,7 @@ C_FILES = \
 	toggle-btn.c \
 	$(NULL)
 
-D_FILES = \
+SOURCES_D = \
 	arrow-button.d \
 	bulletin-brd.d \
 	cascade-btn.d \

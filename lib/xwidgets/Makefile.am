@@ -1,4 +1,4 @@
-SUBDIRS = xaw motif
+SUBDIRS = xaw motif .
 
 NULL = 
 
