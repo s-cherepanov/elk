@@ -33,6 +33,8 @@ libelk_la_SOURCES = \
 	read.c \
 	special.c \
 	stab.c \
+	$(stab_elf_c) \
+	$(stab_unix_c) \
 	stkmem.c \
 	string.c \
 	symbol.c \
@@ -40,6 +42,12 @@ libelk_la_SOURCES = \
 	type.c \
 	vector.c \
 	$(NULL)
+
+if HAVE_LIBELF
+stab_elf_c = stab-elf.c
+else
+stab_unix_c = stab-unix.c
+endif
 
 EXTRA_DIST = \
 	dump-ecoff.c \
@@ -52,7 +60,6 @@ EXTRA_DIST = \
 	stab-coff.c \
 	stab-convex.c \
 	stab-ecoff.c \
-	stab-elf.c \
 	stab-hp9k300.c \
 	stab-hp9k800.c \
 	stab-macho.c \

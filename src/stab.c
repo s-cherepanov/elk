@@ -39,7 +39,7 @@ void Free_Symbols (SYMTAB *);
 
 #if defined(CAN_LOAD_LIB) || defined (INIT_OBJECTS)
 
-#if defined(MACH_O)
+/*#if defined(MACH_O)
 #  include "stab-macho.c"
 #elif defined(HAVE_LIBELF)
 #  include "stab-elf.c"
@@ -53,9 +53,11 @@ void Free_Symbols (SYMTAB *);
 #  include "stab-hp9k300.c"
 #elif defined(hp9000s800) || defined(__hp9000s800) || defined(__hp9000s800__)
 #  include "stab-hp9k800.c"
-#else
+#elif defined(HAVE_A_OUT_H)
 #  include "stab-bsd.c"
-#endif
+#else
+#  include "stab-unix.c"
+#endif*/
 
 static SYMPREFIX Ignore_Prefixes[] =  {
     /* Currently none */
@@ -171,4 +173,4 @@ void Free_Symbols (SYMTAB *tab) {
         free (tab->strings);
     free ((char *)tab);
 }
-#endif /* CAN_LOAD_OBJ || INIT_OBJECTS */
+#endif /* CAN_LOAD_LIB || INIT_OBJECTS */

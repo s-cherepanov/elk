@@ -28,11 +28,16 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <libelf.h>
 #include <unistd.h>
+#include <string.h>
+
+#include "kernel.h"
 
 SYMTAB *
 Snarf_Symbols (lf)
@@ -144,3 +149,4 @@ Open_File_And_Snarf_Symbols (name)
     (void)close (f);
     return tab;
 }
+
