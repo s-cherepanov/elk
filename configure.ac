@@ -20,6 +20,9 @@ AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 
+# Check whether we are doing a native build
+AM_CONDITIONAL(NATIVE_BUILD, test "${cross_compile}" = "no")
+
 AC_CHECK_HEADERS(inttypes.h,
   [STDINT_HEADER="<inttypes.h>"],
   [AC_CHECK_HEADERS(sys/inttypes.h,
@@ -444,37 +447,45 @@ AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_my_have_gdbm}" = "yes")
 
 AC_PATH_X
 
-AC_CHECK_LIB(X11, XOpenDisplay, [
-  ac_cv_my_have_x11=yes
+AC_CHECK_LIB(X11, XOpenDisplay,
+ [ac_cv_my_have_x11=yes
   X_CFLAGS="-I${x_includes}"
-  X_LIBS="-lX11 -L${x_libraries}"
-], [ac_cv_my_have_x11=no],
-   [[-lXt -L${x_libraries}]])
+  X_LIBS="-lX11 -L${x_libraries}"],
+ [ac_cv_my_have_x11=no],
+ [[-lXt -L${x_libraries}]])
 AM_CONDITIONAL(HAVE_X11, test "${ac_cv_my_have_x11}" = "yes")
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_LIBS)
 
 AC_CHECK_LIB(Xmu, XmuDrawLogo,
-  [xmu_libraries="-lXmu"],
-  [xmu_libraries=""],
-  [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+ [xmu_libraries="-lXmu"],
+ [xmu_libraries=""],
+ [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
 
-AC_CHECK_LIB(Xaw, XawTextSearch, [
-  ac_cv_my_have_xaw=yes
-  XAW_CFLAGS="-I${x_includes}"
-  XAW_LIBS="-L${x_libraries} -lXaw ${xmu_libraries} -lXt -lSM -lICE -lXext -lX11"
-], [ac_cv_my_have_xaw=no],
+if "${cross_compile}" = "no"; then
+  AC_CHECK_LIB(Xaw, XawTextSearch,
+   [ac_cv_my_have_xaw=yes
+    XAW_CFLAGS="-I${x_includes}"
+    XAW_LIBS="-L${x_libraries} -lXaw ${xmu_libraries} -lXt -lSM -lICE -lXext -lX11"],
+   [ac_cv_my_have_xaw=no],
    [[${xmu_libraries} -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+else
+  ac_cv_my_have_xaw="no (cross-compiling)"
+fi
 AM_CONDITIONAL(HAVE_XAW, test "${ac_cv_my_have_xaw}" = "yes")
 AC_SUBST(XAW_CFLAGS)
 AC_SUBST(XAW_LIBS)
 
-AC_CHECK_LIB(Xm, XmStringConcat, [
-  ac_cv_my_have_motif=yes
-  MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
-  MOTIF_LIBS="-L${x_libraries} -lXm ${xmu_libraries} -lXt -lSM -lICE -lXext -lX11"
-], [ac_cv_my_have_motif=no],
+if "${cross_compile}" = "no"; then
+  AC_CHECK_LIB(Xm, XmStringConcat,
+   [ac_cv_my_have_motif=yes
+    MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
+    MOTIF_LIBS="-L${x_libraries} -lXm ${xmu_libraries} -lXt -lSM -lICE -lXext -lX11"],
+   [ac_cv_my_have_motif=no],
    [[${xmu_libraries} -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+else
+  ac_cv_my_have_motif="no (cross-compiling)"
+fi
 AM_CONDITIONAL(HAVE_MOTIF, test "${ac_cv_my_have_motif}" = "yes")
 AC_SUBST(MOTIF_CFLAGS)
 AC_SUBST(MOTIF_LIBS)
