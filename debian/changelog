@@ -3,6 +3,10 @@ elk (3.99.2-1) unstable; urgency=low
   * New upstream release.
   * Documentation is now built instead of being shipped in the tarball.
   * Fixed a bug in the garbage collector.
+  * debian/rules:
+    + Moved manpages to /usr/share/man (Closes: #210894).
+    + Ignore plugins in the dh_makeshlibs call.
+    + Removed the elk->scheme-elk link, it is done at make install time.
 
  -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sat, 13 Sep 2003 08:33:15 +0200
 

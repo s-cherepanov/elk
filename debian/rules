@@ -16,7 +16,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 
-	./configure --prefix=/usr
+	./configure --prefix=/usr --mandir=/usr/share/man
 
 	touch configure-stamp
 
@@ -112,7 +112,7 @@ binary-arch: build install
 	dh_compress
 	dh_fixperms
 	dh_installdeb
-	dh_makeshlibs
+	dh_makeshlibs -X usr/lib/elk
 #	dh_perl
 	dh_shlibdeps -L libelk0 -l debian/libelk0/usr/lib
 	dh_gencontrol

@@ -19,3 +19,7 @@ elk.1.html: elk.1
 clean:
 	rm -f elk.ps elk.1.html
 
+install-data-local:
+	rm -f "$(DESTDIR)$(mandir)/scheme-elk.1"
+	ln -s elk.1 "$(DESTDIR)$(mandir)/scheme-elk.1"
+
