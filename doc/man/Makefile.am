@@ -11,10 +11,10 @@ endif
 TROFF= groff -man -t
 UNROFF= unroff -man
 
-elk.ps: elk.1
+elk.ps: $(srcdir)/elk.1
 	$(TROFF) $? > $@
 
-elk.1.html: elk.1
+elk.1.html: $(srcdir)/elk.1
 	$(UNROFF) $?
 
 install-data-hook:

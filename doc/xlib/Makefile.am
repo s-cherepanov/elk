@@ -6,25 +6,26 @@ doc_DATA = xlib.ps
 docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
-MANUAL= xlib
-TROFF= groff -ms -t
-UNROFF= unroff -ms
+MANUAL = $(srcdir)/xlib.ms
+TROFF = groff -ms -t
+UNROFF = unroff -ms
 
-xlib.ps: xlib.ms index.ms
-	(cat xlib.ms ../util/tmac.index index.ms; echo ".Tc")\
+xlib.ps: $(MANUAL) index.ms
+	(cat $(MANUAL) $(srcdir)/../util/tmac.index index.ms; echo ".Tc") \
 	    | $(TROFF) 2> /dev/null > xlib.ps
 
-xlib.html: xlib.ms
+xlib.html: $(MANUAL)
 	(cat $?; echo ".Tc") | $(UNROFF) document=xlib
 
-index.ms: xlib.ms index.raw
-	sort -f -t'#' +1 -3 +0n index.raw | $(AWK) -f ../util/fixindex.awk\
-	    | $(AWK) -f ../util/block.awk >index.ms
+index.ms: $(MANUAL) index.raw
+	sort -f -t'#' +1 -3 +0n index.raw \
+	    | $(AWK) -f $(srcdir)/../util/fixindex.awk \
+	    | $(AWK) -f $(srcdir)/../util/block.awk >index.ms
 
-index.raw: xlib.ms
-	$(TROFF) xlib.ms 2> index.raw >/dev/null
+index.raw: $(MANUAL)
+	$(TROFF) $(MANUAL) 2> index.raw >/dev/null
 
 check:
-	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] xlib.ms |\
-	    grep -v "Empty command"
+	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] $(MANUAL) \
+	    | grep -v "Empty command"
 

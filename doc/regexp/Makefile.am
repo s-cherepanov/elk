@@ -6,25 +6,26 @@ doc_DATA = regexp.ps
 docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
-MANUAL= regexp
-TROFF= groff -ms -t
-UNROFF= unroff -ms
+MANUAL = $(srcdir)/regexp.ms
+TROFF = groff -ms -t
+UNROFF = unroff -ms
 
-regexp.ps: regexp.ms index.ms
-	(cat regexp.ms ../util/tmac.index index.ms; echo ".Tc")\
+regexp.ps: $(MANUAL) index.ms
+	(cat $(MANUAL) $(srcdir)/../util/tmac.index index.ms; echo ".Tc") \
 	    | $(TROFF) 2> /dev/null > regexp.ps
 
-regexp.html: regexp.ms
+regexp.html: $(MANUAL)
 	(cat $?; echo ".Tc") | $(UNROFF) document=regexp
 
-index.ms: regexp.ms index.raw
-	sort -f -t'#' +1 -3 +0n index.raw | $(AWK) -f ../util/fixindex.awk\
-	    | $(AWK) -f ../util/block.awk >index.ms
+index.ms: $(MANUAL) index.raw
+	sort -f -t'#' +1 -3 +0n index.raw \
+	    | $(AWK) -f $(srcdir)/../util/fixindex.awk \
+	    | $(AWK) -f $(srcdir)/../util/block.awk >index.ms
 
-index.raw: regexp.ms
-	$(TROFF) regexp.ms 2> index.raw >/dev/null
+index.raw: $(MANUAL)
+	$(TROFF) $(MANUAL) 2> index.raw >/dev/null
 
 check:
-	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] regexp.ms |\
-	    grep -v "Empty command"
+	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] $(MANUAL) \
+	    | grep -v "Empty command"
 

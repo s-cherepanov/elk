@@ -6,15 +6,16 @@ doc_DATA = usenix.ps
 docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
-TROFF= groff -ms
-UNROFF= unroff -ms
+MANUAL = $(srcdir)/usenix.ms
+TROFF = groff -ms
+UNROFF = unroff -ms
 
-usenix.ps: usenix.ms tmp.ref
-	sed -f tmp.ref usenix.ms | $(TROFF) 2> /dev/null > usenix.ps
+usenix.ps: $(MANUAL) tmp.ref
+	sed -f tmp.ref $(MANUAL) | $(TROFF) 2> /dev/null > usenix.ps
 
-usenix.html: usenix.ms tmp.ref
-	sed -f tmp.ref usenix.ms | $(UNROFF) document=usenix
+usenix.html: $(MANUAL) tmp.ref
+	sed -f tmp.ref $(MANUAL) | $(UNROFF) document=usenix
 
-tmp.ref: usenix.ms
-	$(TROFF) usenix.ms 2> tmp.ref >/dev/null
+tmp.ref: $(MANUAL)
+	$(TROFF) $(MANUAL) 2> tmp.ref >/dev/null
 
