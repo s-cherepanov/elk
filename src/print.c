@@ -91,7 +91,7 @@ void Print_String (Object port, register char *buf, register int len) {
     p->ptr += len;
 }
 
-#ifndef VPRINTF
+#ifndef HAVE_VPRINTF
 void vfprintf (register FILE *f, register char *fmt, va_list ap) {
     _doprnt (fmt, ap, f);
 }

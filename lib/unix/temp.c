@@ -1,29 +1,29 @@
 #include "unix.h"
 
-#ifdef TEMPNAM    /* Make sure only one of these is defined (if any) */
-#  undef TMPNAM   /* Order of preference: tempnam, mktemp, tmpnam */
-#  undef MKTEMP
+#ifdef HAVE_TEMPNAM    /* Make sure only one of these is defined (if any) */
+#  undef HAVE_TMPNAM   /* Order of preference: tempnam, mktemp, tmpnam */
+#  undef HAVE_MKTEMP
 #endif
-#ifdef MKTEMP
-#  undef TMPNAM
-#  undef TEMPNAM
+#ifdef HAVE_MKTEMP
+#  undef HAVE_TMPNAM
+#  undef HAVE_TEMPNAM
 #endif
-#ifdef TMPNAM
-#  undef TEMPNAM
-#  undef MKTEMP
+#ifdef HAVE_TMPNAM
+#  undef HAVE_TEMPNAM
+#  undef HAVE_MKTEMP
 #endif
 
 static Object P_Tempname(argc, argv) int argc; Object *argv; {
     char *name, *dir = 0, *pref = 0;
     Object ret;
-#ifdef TMPNAM
+#ifdef HAVE_TMPNAM
     extern char *tmpnam();
 #else
-#ifdef TEMPNAM
+#ifdef HAVE_TEMPNAM
     extern char *tempnam();
 #else
     char buf[1024];
-#ifdef MKTEMP
+#ifdef HAVE_MKTEMP
     extern char *mktemp();
 #else
     char *p, *q;
@@ -36,10 +36,10 @@ static Object P_Tempname(argc, argv) int argc; Object *argv; {
 	dir = Get_Strsym(argv[0]);
     if (argc > 1)
 	pref = Get_Strsym(argv[1]);
-#ifdef TMPNAM
+#ifdef HAVE_TMPNAM
     name = tmpnam((char *)0);
 #else
-#ifdef TEMPNAM
+#ifdef HAVE_TEMPNAM
     Disable_Interrupts;        /* Make sure result gets freed */
     name = tempnam(dir, pref);
 #else
@@ -47,7 +47,7 @@ static Object P_Tempname(argc, argv) int argc; Object *argv; {
     if (!pref) pref = "elk";
     if (strlen(dir) + strlen(pref) > 1000)
 	Primitive_Error("directory/prefix argument too long");
-#ifdef MKTEMP
+#ifdef HAVE_MKTEMP
     sprintf(buf, "%s/%sXXXXXX", dir, pref);
     name = mktemp(buf);
 #else
@@ -80,7 +80,7 @@ fail: ;
 	Raise_Error("cannot create temp file name");
     }
     ret = Make_String(name, strlen(name));
-#ifdef TEMPNAM
+#ifdef HAVE_TEMPNAM
     free(name);
     Enable_Interrupts;
 #endif

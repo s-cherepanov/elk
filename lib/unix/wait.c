@@ -4,15 +4,15 @@
 
 #include "unix.h"
 
-#if defined(WAITPID) || defined(WAIT4)
+#if defined(HAVE_WAITPID) || defined(HAVE_WAIT4)
 #  define WAIT_PROCESS
 #endif
 
-#if defined(WAITPID) || defined(WAIT3) || defined(WAIT4)
+#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3) || defined(HAVE_WAIT4)
 #  define WAIT_OPTIONS
 #endif
 
-#if defined(WAIT3) || defined(WAIT4)
+#if defined(HAVE_WAIT3) || defined(HAVE_WAIT4)
 #  define WAIT_RUSAGE
 #  include <sys/time.h>
 #  include <sys/resource.h>
@@ -58,15 +58,15 @@ static Object General_Wait(ret, ruret, haspid, pid, options)
     Check_Result_Vector(ret, 5);
     Check_Result_Vector(ruret, 2);
     if (haspid) {
-#ifdef WAIT4
+#ifdef HAVE_WAIT4
 	retpid = wait4(pid, &st, options, &ru);
 #else
-#ifdef WAITPID
+#ifdef HAVE_WAITPID
 	retpid = waitpid(pid, &st, options);
 #endif
 #endif
     } else {
-#ifdef WAIT3
+#ifdef HAVE_WAIT3
 	retpid = wait3(&st, options, &ru);
 #else
 	retpid = wait(&st);

@@ -1,10 +1,10 @@
 #include "unix.h"
 
-#if !defined(GETTIMEOFDAY) && defined(FTIME)
+#if !defined(HAVE_GETTIMEOFDAY) && defined(HAVE_FTIME)
 #  include <sys/timeb.h>
 #endif
 
-#ifdef GETTIMEOFDAY
+#ifdef HAVE_GETTIMEOFDAY
 #  include <sys/time.h>
 #endif
 
@@ -34,11 +34,11 @@ static Object P_Decode_Time(t, ret, utc) Object t, ret, utc; {
 
 static Object P_Nanotime(ret) Object ret; {
     Object x, y;
-#ifdef GETTIMEOFDAY
+#ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
     struct timezone tz;
 #else
-#ifdef FTIME
+#ifdef HAVE_FTIME
     struct timeb tb;
 #else
     time_t now;
@@ -50,7 +50,7 @@ static Object P_Nanotime(ret) Object ret; {
     x = Null;
     Check_Result_Vector(ret, 3);
     GC_Link2(ret, x);
-#ifdef GETTIMEOFDAY
+#ifdef HAVE_GETTIMEOFDAY
     (void)gettimeofday(&tv, &tz);
     x = Cons(Null, Make_Unsigned_Long((unsigned long)tv.tv_usec * 1000));
     y = Make_Unsigned_Long((unsigned long)tv.tv_sec);
@@ -59,7 +59,7 @@ static Object P_Nanotime(ret) Object ret; {
     VECTOR(ret)->data[1] = Make_Integer(tz.tz_minuteswest);
     VECTOR(ret)->data[2] = Make_Integer(tz.tz_dsttime);
 #else
-#ifdef FTIME
+#ifdef HAVE_FTIME
     (void)ftime(&tb);
     x = Cons(Null, Make_Unsigned_Long((unsigned long)tb.millitm * 1000000));
     y = Make_Unsigned_Long((unsigned long)tb.time);

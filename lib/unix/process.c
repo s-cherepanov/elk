@@ -245,7 +245,7 @@ static Object P_System(cmd) Object cmd; {
     int n, pid, status;
     char *s = Get_String(cmd);
 
-#ifdef VFORK
+#ifdef HAVE_VFORK
     switch (pid = vfork()) {
 #else
     switch (pid = fork()) {
@@ -280,7 +280,7 @@ static Object P_Working_Directory() {
     char *buf;
     int max = Path_Max()+2;   /* getcwd() needs two extra bytes */
     Object ret;
-#if !defined(GETCWD) && !defined(GETWD)
+#if !defined(HAVE_GETCWD) && !defined(HAVE_GETWD)
     FILE *fp;
     char *p;
 #endif
@@ -288,7 +288,7 @@ static Object P_Working_Directory() {
 
     Alloca(buf, char*, max);
     Disable_Interrupts;
-#ifdef GETCWD
+#ifdef HAVE_GETCWD
     if (getcwd(buf, max) == 0) {
 	Saved_Errno = errno;
 	Alloca_End;
@@ -296,7 +296,7 @@ static Object P_Working_Directory() {
 	Raise_System_Error("~E");
     }
 #else
-#ifdef GETWD
+#ifdef HAVE_GETWD
     if (getwd(buf) == 0) {
 	Alloca_End;
 	Enable_Interrupts;

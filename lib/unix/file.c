@@ -1,6 +1,6 @@
 #include "unix.h"
 
-#ifdef UTIME_H
+#ifdef HAVE_UTIME_H
 #  include <utime.h>
 #else
 struct utimbuf {
@@ -8,7 +8,7 @@ struct utimbuf {
 };
 #endif
 
-#ifdef DIRENT
+#ifdef HAVE_DIRENT
 #  include <dirent.h>
 #else
 #  include <sys/dir.h>
@@ -65,7 +65,7 @@ static Object P_Mkdir(fn, mode) Object fn, mode; {
 
 static Object P_Read_Directory(fn) Object fn; {
     DIR *d;
-#ifdef DIRENT
+#ifdef HAVE_DIRENT
     struct dirent *dp;
 #else
     struct direct *dp;
@@ -96,7 +96,7 @@ static Object P_Read_Directory(fn) Object fn; {
 }
 
 static Object P_Rename(fromfn, tofn) Object fromfn, tofn; {
-#ifdef RENAME
+#ifdef HAVE_RENAME
     if (rename(Get_Strsym(fromfn), Get_Strsym(tofn)) == -1)
 	Raise_System_Error2("(~s ~s): ~E", fromfn, tofn);
 #else

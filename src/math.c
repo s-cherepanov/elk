@@ -16,7 +16,7 @@ extern int Bignum_To_Integer (Object);
 Object Generic_Multiply(), Generic_Divide();
 
 void Init_Math () {
-#ifdef RANDOM
+#ifdef HAVE_RANDOM
     srandom (getpid ());
 #else
     srand (getpid ());
@@ -1104,7 +1104,7 @@ Object P_Max (int argc, Object *argv) {
 }
 
 Object P_Random () {
-#ifdef RANDOM
+#ifdef HAVE_RANDOM
     extern long int random();
     return Make_Long (random ());
 #else
@@ -1113,7 +1113,7 @@ Object P_Random () {
 }
 
 Object P_Srandom (Object x) {
-#ifdef RANDOM
+#ifdef HAVE_RANDOM
     srandom (Get_Unsigned (x));
 #else
     srand (Get_Unsigned (x));

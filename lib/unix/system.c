@@ -1,6 +1,6 @@
 #include "unix.h"
 
-#if defined(UNAME) && !defined(GETHOSTNAME)
+#if defined(HAVE_UNAME) && !defined(HAVE_GETHOSTNAME)
 #  include <sys/utsname.h>
 #endif
 
@@ -134,11 +134,11 @@ static Object P_Job_Controlp() {
 }
 
 static Object P_System_Info(ret) Object ret; {
-#ifdef GETHOSTNAME
+#ifdef HAVE_GETHOSTNAME
     char hostname[MAXHOSTNAMELEN];
     char *p = hostname;
 #else
-#ifdef UNAME
+#ifdef HAVE_UNAME
     struct utsname uts;
     char *p = uts.nodename;
 #else
@@ -150,10 +150,10 @@ static Object P_System_Info(ret) Object ret; {
     GC_Node;
 
     Check_Result_Vector(ret, 3);
-#ifdef GETHOSTNAME
+#ifdef HAVE_GETHOSTNAME
     (void)gethostname(hostname, sizeof(hostname));
 #else
-#ifdef UNAME
+#ifdef HAVE_UNAME
     (void)uname(&uts);
 #endif
 #endif

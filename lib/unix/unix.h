@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#ifdef INCLUDE_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
 

@@ -11,7 +11,7 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 
-#ifdef PATHCONF_PATH_MAX
+#ifdef PC_PATH_MAX_IN_UNISTD_H
 #  include <unistd.h>
 #endif
 
@@ -87,13 +87,11 @@ Object P_Output_Portp (Object x) {
 }
 
 int Path_Max () {
-#ifdef PATH_MAX          /* POSIX */
+#if defined(PATH_MAX) /* POSIX */
     return PATH_MAX;
-#else
-#ifdef MAXPATHLEN        /* 4.3 BSD */
+#elif defined(MAXPATHLEN) /* 4.3 BSD */
     return MAXPATHLEN;
-#else
-#ifdef PATHCONF_PATH_MAX
+#elif defined(PC_PATH_MAX_IN_UNISTD_H)
     static int r;
     if (r == 0) {
 	if ((r = pathconf ("/", _PC_PATH_MAX)) == -1)
@@ -103,8 +101,6 @@ int Path_Max () {
     return r;
 #else
     return 1024;
-#endif
-#endif
 #endif
 }
 

@@ -148,27 +148,21 @@ static Object P_Lseek(fd, off, whence) Object fd, off, whence; {
 
 int Num_Filedescriptors() {
     int ret;
-#ifdef OPEN_MAX
+#if defined(OPEN_MAX)
     ret = OPEN_MAX;
-#else
-#ifdef GETDTABLESIZE
+#elif defined(HAVE_GETDTABLESIZE)
     ret = getdtablesize();
-#else
-#ifdef SYSCONF_OPEN_MAX
+#elif defined(SC_OPEN_MAX_IN_UNISTD_H)
     static r;
     if (r == 0) {
 	if ((r = sysconf(_SC_OPEN_MAX)) == -1)
 	    r = 256;
     }
     ret = r;
-#else
-#ifdef NOFILE
+#elif defined(NOFILE)
     ret = NOFILE;
 #else
     ret = 256;
-#endif
-#endif
-#endif
 #endif
     return ret;
 }

@@ -7,7 +7,7 @@
 
 #include "scheme.h"
 
-#ifdef REGCOMP
+#ifdef HAVE_REGCOMP
 
 #include <sys/types.h>
 #include <regex.h>
@@ -199,10 +199,10 @@ static Object P_Match_End(m, n) Object m, n; {
 
 #define Def_Prim Define_Primitive
 
-#endif /* REGCOMP */
+#endif /* HAVE_REGCOMP */
 
 elk_init_lib_regexp() {
-#ifdef REGCOMP
+#ifdef HAVE_REGCOMP
     T_Regexp = Define_Type(0, "regexp", 0, sizeof(struct S_Regexp),
 	Regexp_Eqv, Regexp_Equal, Regexp_Print, Regexp_Visit);
     T_Match = Define_Type(0, "regexp-match", Match_Size, 0,

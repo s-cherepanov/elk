@@ -1,6 +1,6 @@
 #ifdef USE_ALLOCA
 
-#ifdef INCLUDE_ALLOCA_H
+#ifdef HAVE_ALLOCA_H
 #  include <alloca.h>
 #endif
 

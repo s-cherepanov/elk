@@ -94,7 +94,7 @@ extern char *Brk_On_Dump;
 extern int Verb_Load, Verb_Init, Case_Insensitive;
 extern SYMTAB *The_Symbols;
 extern void Exit_Handler P_((void));
-#ifndef ATEXIT
+#ifndef HAVE_ATEXIT
 extern void exit P_((int));
 #endif
 

@@ -12,13 +12,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
 #  include <sys/mman.h>
 #endif
-#ifdef GETPAGESIZE
-#  define SYSCONF_PAGESIZE
+#ifdef HAVE_GETPAGESIZE
+#  define SC_PAGESIZE_IN_UNISTD_H
 #endif
-#ifdef SYSCONF_PAGESIZE
+#ifdef SC_PAGESIZE_IN_UNISTD_H
 #  define link FOO
 #  include <unistd.h>
 #  undef link
@@ -191,7 +191,7 @@ static void TerminateGC ();
 #define SET_PROTECT(addr)    { PMAP (addr) = 1; protected_pages++; }
 #define SET_UNPROTECT(addr)  { PMAP (addr) = 0; protected_pages--; }
 
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
 #  ifndef PROT_RW
 #    define PROT_RW   (PROT_READ | PROT_WRITE)
 #  endif
@@ -463,7 +463,7 @@ void Make_Heap (int size) {
     Object heap_obj;
     pageno_t i;
 
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
     InstallHandler ();
 #endif
 
@@ -472,14 +472,14 @@ void Make_Heap (int size) {
      * then calculate the resulting number of heap pages.
      */
 
-#ifdef SYSCONF_PAGESIZE
+#ifdef SC_PAGESIZE_IN_UNISTD_H
     if ((bytes_per_pp = sysconf (_SC_PAGESIZE)) == -1)
 	Fatal_Error ("sysconf(_SC_PAGESIZE) failed; can't get pagesize");
 #else
-#ifdef GETPAGESIZE
+#ifdef HAVE_GETPAGESIZE
     bytes_per_pp = getpagesize ();
 #else
-#   ifdef HAS_MPROTECT
+#   ifdef HAVE_MPROTECT
 #       include "mprotect requires getpagesize or sysconf_pagesize"
 #   else
         bytes_per_pp = 4096;
@@ -1290,7 +1290,7 @@ static int Scanner (pageno_t npages) {
     return (scanned);
 }
 
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
 /* the following function handles a page fault. If the fault was caused
  * by the mutator and incremental collection is enabled, this will result
  * in scanning the physical page the fault occured on.
@@ -1328,7 +1328,7 @@ static void PagefaultHandler (int sig, int code, struct sigcontext *scp,
 static void PagefaultHandler (int sig, int code, struct sigcontext *scp) {
 
 #else
-#  include "HAS_MPROTECT defined, but missing SIGSEGV_xxx"
+#  include "HAVE_MPROTECT defined, but missing SIGSEGV_xxx"
 #endif
 #endif
 #endif
@@ -1633,7 +1633,7 @@ void Generational_GC_Finalize () {
 }
 
 void Generational_GC_Reinitialize () {
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
     InstallHandler ();
 #endif
 }
@@ -1641,7 +1641,7 @@ void Generational_GC_Reinitialize () {
 
 Object Internal_GC_Status (int strat, int flags) {
     Object list;
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
     Object cell;
 #endif
     GC_Node;
@@ -1650,7 +1650,7 @@ Object Internal_GC_Status (int strat, int flags) {
     GC_Link (list);
     switch (strat) {
     default:            /* query or stop-and-copy */
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
 	if (inc_collection) {
 	    cell = Cons (Sym_Incremental_GC, Null);
 	    (void)P_Set_Cdr (list, cell);
@@ -1659,7 +1659,7 @@ Object Internal_GC_Status (int strat, int flags) {
 	break;
     case GC_STRAT_GEN:
 	if (flags == GC_FLAGS_INCR) {
-#ifdef HAS_MPROTECT
+#ifdef HAVE_MPROTECT
 	    inc_collection = 1;
 	    cell = Cons (Sym_Incremental_GC, Null);
 	    (void)P_Set_Cdr (list, cell);

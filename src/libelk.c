@@ -14,7 +14,7 @@
 #endif
 
 #ifdef FIND_AOUT
-#  ifdef INCLUDE_UNISTD_H
+#  ifdef HAVE_UNISTD_H
 #    include <unistd.h>
 #  else
 #    include <sys/file.h>
@@ -87,7 +87,7 @@ void Exit_Handler () {
     Free_Heap ();
 }
 
-#ifndef ATEXIT
+#ifndef HAVE_ATEXIT
 /* Hack: __GNUC_MINOR__ was introduced together with __attribute__ */
 #ifdef __GNUC_MINOR__
 extern void _exit() __attribute__ ((noreturn));
@@ -242,7 +242,7 @@ int main (int ac, char **av) {
     ALIGN(stkbase);
     Make_Heap (heap);
     Init_Everything ();
-#ifdef ATEXIT
+#ifdef HAVE_ATEXIT
     if (atexit (Exit_Handler) != 0)
 	Fatal_Error ("atexit returned non-zero value");
 #endif
