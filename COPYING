@@ -1,3 +1,5 @@
+$Id$
+
 Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
 (except for the contents of the directory `doc/usenix').
 Copyright 2002, 2003 Sam Hocevar <sam@zoy.org>, Paris
@@ -24,6 +26,3 @@ for any defects of this software.
 
 THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
 
-Berlin, June 20, 1995
-
-Oliver Laumann  <net@informatik.uni-bremen.de>

@@ -8,10 +8,6 @@ Sun-3 and Sun-4, SunOS 4.1
    o  For compiling Elk with gcc and the generational garbage collector,
       see the remark in the file BUGS.
 
-   o  Dumped executables created on a Sun-4m (SPARCstation 10 or
-      SPARCstation 600) do not run on other Sun-4 architectures and
-      vice versa.
-
 
 Sun-4, SunOS 5.2 (Solaris 2.2)
 
@@ -29,43 +25,6 @@ Sun-4, SunOS 5.2 (Solaris 2.2)
       unless -ansi is given.  A possible fix is to add add -D__STDC__=0
       to the cflags in the config file.
 
-   o  "dump" works, but it doesn't know anything about shared objects
-      (the dl library doesn't support a way to get hold of the text and
-      data segments of dlopen()ed shared objects).  Thus it's a bad idea
-      to invoke "dump" if any object files have been loaded into the
-      interpreter.
-
-   o  Dynamic loading is based on the dlopen() function of the "dl"
-      library.  Here is a short overview of the implementation of
-      dlopen-based dynamic loading:
-   
-         To load an object file, the linker is called by the interpreter
-         to produce a shared object from the .o file.  This shared object
-	 is then loaded by means of dlopen().
-
-         To allow object files to reference symbols defined by object
-         files loaded earlier (the standard dynamic loading semantics
-         of Elk), the interpreter keeps tmp the output files (shared
-         objects) of all previous linker invocations in /tmp and uses
-	 these as input to a each linker invocation.  As a result, one
-	 new temp file is created each time an object file is loaded.
-
-         As the linker combines dynamically loadable object files and
-         (optional) libraries into shared objects, all dynamically loadable
-         files must have been compiled with -fpic or -K PIC (to create
-	 position independent code).  Also, all involved libraries must
-	 either be shared libraries or must contain position independent
-	 code as well.  For example, if you want to use the Motif extension,
-	 your Xm library must have been compiled with -fpic.
-
-         A bug in Solaris 2.1 causes dlopen() to fail if more than
-         8 shared objects are loaded (which in turn causes the "load"
-         primitive of Elk to signal an error).  This restriction doesn't
-         exist in newer versions of Solaris 2.
-
-         You can use the -v option of Elk to see the actual linker options
-         when an object file is loaded.
-
 
 DECstation 5100, Ultrix 4.2
 
@@ -82,12 +41,9 @@ DECstation 5100, Ultrix 4.2
 DEC/Alpha, OSF/1
 
    o  This platform uses ELF and the dlopen()-style linker interface.
-      See the section on Solaris 2 above for remarks on dynamic loading.
 
 
 SGI IRIS Indy, Irix 5.3
-
-   o  See SunOS 5.x above for information about dynamic loading and dump.
 
    o  examples/unix/calc.scm doesn't work, because /usr/bin/dc uses
       buffered output if stdout is not a terminal.
@@ -107,11 +63,6 @@ HP 9000/700, HP-UX 9.0 and HP-UX 10.0
    o  wait3 has been set to `no' in the system file, because this function
       has a non-standard third argument in HP-UX 9.0.
 
-   o  The "dump" implementation for HP-UX which used to work well under
-      HP-UX 8.x doesn't really work any longer, because HP in their
-      infinite wisdom have removed the MAP_REPLACE flag for mmap() in
-      HP-UX 9.x.
-
    o  HP-UX 10 does have a stack-extending alloca() (in contrast to
       HP-UX 9.0), but it has a serious bug and therefore is not used
       by Elk (the function overwrites its argument if it is a register
@@ -119,38 +70,21 @@ HP 9000/700, HP-UX 9.0 and HP-UX 10.0
 
    o  The incremental garbage collector doesn't work (see the file BUGS).
 
-   o  The Athena widgets are not included with HP-UX 9.0; delete "lib/xaw"
-      from the Makefile.
-
-   o  You may want to use the HP-UX site file from config/sites.
+   o  The Athena widgets are not included with HP-UX 9.0.
 
 
 IBM RS/6000, AIX 3.2
 
-   o  Neither "dump" nor dynamic loading work.  It is not clear whether
-      the dynamic loading semantics of Elk can be implemented with the
-      dynamic linker interface of AIX at all.
-
-   o  To support linking the interpreter with extensions statically,
-      you *have* to use the $install_dir/lib/linkscheme shell script;
-      it contains special code to build an `export list' to prevent
-      the AIX linker from `garbage collecting' the extensions.
-
-   o  -O has been omitted from the CFLAGS, as the optimizer seems to
-      have bugs.
+   o  Dynamic loading does not work.  It is not clear whether the dynamic
+      loading semantics of Elk can be implemented with the dynamic linker
+      interface of AIX at all.
 
 
 PowerPC, AIX 4.1 (xlc and gcc)
 
-   o  No dynamic loading, no dump (see AIX 3.2 above).
+   o  No dynamic loading.
 
    o  The incremental garbage collector doesn't work (see the file BUGS).
-
-   o  If you are using gcc, and if your gcc uses the AIX linker, the
-      linker prints tons of bogus messages about duplicate symbols; they
-      can be ignored safely.  You may also have to change the `*-aix4*-cc'
-      in the shell script `linkscheme' into `*-aix4*-gcc' to enable the
-      hack involving the linker export list.
 
 
 NeXT workstation, MACH/NeXT-OS 3.3
@@ -176,17 +110,6 @@ NeXT workstation, MACH/NeXT-OS 3.3
 
 386/486-PC, Linux 1.2.8
 
-   o  Dynamic loading does not work any longer, because the linker has
-      changed.  It doesn't seem to support incremental loading any more
-      at all.  dlopen() seems to exist now, but how does one create
-      a shared object from an ordinary .o file?  Someone who knows
-      Linux well may want to look into this...
-
-   o  `dump' doesn't work either.  It did work in earlier Linux versions.
-
-   o  Because of a bug in `make', all Makefiles had to be changed to
-      explicitly run the shell for invoking the `build' shell scripts.
-
    o  examples/unix/calc.scm doesn't work, because /usr/bin/dc uses
       buffered output if stdout is not a terminal.
 
@@ -209,15 +132,6 @@ NeXT workstation, MACH/NeXT-OS 3.3
        The zip file basically contains the interpreter sources, the Scheme
        files needed at runtime, the extensions in lib/misc, and the
        localized Makefiles and include files.
-
-    o  There are a few trouble spots you should watch out for.  Some versions
-       of `make' under DOS (Ndmake?) can't handle the macro $(MAKE) that
-       is defined at the beginning of all Makefiles.  If this is the case
-       on your system, forget the Makefiles and run "make -f Makefile.local"
-       in each directory.  You may have to replace $(O) in src/Makefile.local
-       by *.o to avoid command lines that are too long for the DOS shell.
-       You have to delete the line beginning with "../../scripts/makedl"
-       in misc/Makefile.local.
 
 
 X Window System
@@ -245,3 +159,4 @@ Motif Widgets
 
       Make sure that X11 has been compiled with the symbol MotifBC set
       to YES in site.def.
+
