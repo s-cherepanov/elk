@@ -18,6 +18,6 @@ elk.1.html: elk.1
 	$(UNROFF) $?
 
 install-data-hook:
-	rm -f "$(DESTDIR)$(mandir)/scheme-elk.1"
-	ln -s elk.1 "$(DESTDIR)$(mandir)/scheme-elk.1"
+	rm -f "$(DESTDIR)$(mandir)/man1/scheme-elk.1"
+	ln -s elk.1 "$(DESTDIR)$(mandir)/man1/scheme-elk.1"
 
