@@ -1,27 +1,15 @@
-This is Debian GNU/Linux's prepackaged version of the Extension Language Kit,
-an Scheme implementation.
-Elk was written by Oliver Laumann <net@informatik.uni-bremen.de>.
+This is Debian GNU/Linux's prepackaged version of Elk, the Extension Language
+Kit, a Scheme implementation.
 
-This package was put together by me, Enrique Zanardi
-<ezanardi@molec1.dfis.ull.es>, from sources obtained from:
-ftp://ftp.uni-bremen.de/pub/programming/languages/scheme/elk/elk-3.0.tar.gz
+This package was put together by Sam Hocevar from sources obtained from
+http://sam.zoy.org/projects/elk/ .
 
-Changes:
-  * added Debian GNU/Linux package maintenance system files
-  * added config/system file with Linux-ELF specific information for
-    the Makefiles.
-  * modified config/site to look for the X libs and includes at the right 
-    place.
-  * modified */.../build* and config/site scripts to obtain FSSTND 
-    compliant installation. The new locations of the files are listed in 
-    addendum.txt 
-  * modified src/dump-elf.c as suggested in Elk-News web page to avoid
-    a "syms.h include file not found" compile-time error. (Just deleted
-    the "#include <syms.h>" line).
-
+Upstream Authors: Oliver Laumann <net@informatik.uni-bremen.de>
+                  Sam Hocevar <sam@zoy.org>
 
 Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
 (except for the contents of the directory `doc/usenix').
+Copyright 2002, 2003 Sam Hocevar <sam@zoy.org>, Paris
 
 This software was derived from Elk 1.2, which was Copyright 1987, 1988,
 1989, Nixdorf Computer AG and TELES GmbH, Berlin (Elk 1.2 has been written
