@@ -1,9 +1,10 @@
 NULL = 
 
-SUBDIRS = include src lib scm
-DIST_SUBDIRS = $(SUBDIRS) autotools debian doc examples util
+SUBDIRS = include src lib scm doc examples
+DIST_SUBDIRS = $(SUBDIRS) autotools debian util
 
 EXTRA_DIST = \
+	BUGS \
 	MACHINES \
 	MIGRATE \
 	ROADMAP \
