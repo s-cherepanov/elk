@@ -2,7 +2,11 @@ NULL =
 
 EXTRA_DIST = $(SOURCES_D)
 
-pkglib_LTLIBRARIES = xaw-widgets.la
+pkglib_LTLIBRARIES = $(xaw_widgets_la)
+
+if HAVE_MOTIF
+xaw_widgets_la = xaw-widgets.la
+endif
 
 nodist_xaw_widgets_la_SOURCES = $(SOURCES_C)
 xaw_widgets_la_SOURCES = init.c

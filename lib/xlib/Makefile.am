@@ -4,7 +4,11 @@ include Include.am
 
 EXTRA_DIST = MISSING
 
-pkglib_LTLIBRARIES = xlib.la
+pkglib_LTLIBRARIES = $(xlib_la)
+
+if HAVE_X11
+xlib_la = xlib.la
+endif
 
 xlib_la_SOURCES = $(SOURCES_XLIB)
 xlib_la_CFLAGS = @X_CFLAGS@

@@ -12,7 +12,6 @@ AM_CONFIG_HEADER(config.h)
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CXX
-AM_CONDITIONAL(HAVE_CXX, test -n "$CXX")
 AC_PROG_LIBTOOL
 AC_STDC_HEADERS
 
@@ -21,6 +20,16 @@ AC_C_INLINE
 AC_TYPE_SIZE_T
 
 AC_CHECK_HEADERS(stdint.h inttypes.h sys/_inttypes.h)
+if test "${ac_cv_header_stdint_h}" = "yes"; then
+  STDINT_HEADER="stdint.h"
+elif test "${ac_cv_header_inttypes_h}" = "yes"; then
+  STDINT_HEADER="inttypes.h"
+elif test "${ac_cv_header_sys__inttypes_h}" = "yes"; then
+  STDINT_HEADER="sys/_inttypes.h"
+else
+  AC_MSG_ERROR([cannot find C99 integer headers])
+fi
+AC_SUBST(STDINT_HEADER)
 
 # $system should contain the name of this file.  It may be used by some
 # of the build scripts to do things that are specific to one single
@@ -346,18 +355,19 @@ AC_DEFINE(OBJ_DIR, "/usr/lib/elk", [FIXME HARD])
 AC_DEFINE(FIND_AOUT, 1, [FIXME HARD])
 
 dnl
-dnl  Check for available libraries
-dnl
-ac_cv_have_gdbm=no
-AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_have_gdbm=yes)
-AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_have_gdbm}" = "yes")
-
-dnl
 dnl  Check for available compiler features
 dnl
 CFLAGS_save="${CFLAGS}"
+LDFLAGS_save="${LDFLAGS}"
 
-AC_CACHE_CHECK([__attribute__ ((noreturn)) support with function pointers],
+if test -n "${CXX}"; then
+  ac_cv_my_have_cxx=yes
+else
+  ac_cv_my_have_cxx=no
+fi
+AM_CONDITIONAL(HAVE_CXX, test "${ac_cv_my_have_cxx}" = "yes")
+
+AC_CACHE_CHECK([__attribute__ ((noreturn)) support],
   [ac_cv_c_attribute_noreturn],
   [ac_cv_c_attribute_noreturn=no
     CFLAGS="${CFLAGS_save} -Werror"
@@ -385,27 +395,51 @@ if test "x${ac_cv_c_Wsign_compare}" != "xno"; then
   CFLAGS_save="-Wsign-compare ${CFLAGS_save}"
 fi
 
+dnl
+dnl  Check for available headers and libraries
+dnl
 CFLAGS="${CFLAGS_save}"
-INCLUDES="${INCLUDES} -I\$(top_srcdir)/include"
+LDFLAGS="${LDFLAGS_save}"
 
-X_CFLAGS="-I/usr/X11R6/include"
-X_LIBS="-L/usr/X11R6/lib -lX11"
+ac_cv_my_have_gdbm=no
+AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_my_have_gdbm=yes)
+AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_my_have_gdbm}" = "yes")
 
-XAW_CFLAGS="-I/usr/X11R6/include"
-XAW_LIBS="-L/usr/X11R6/lib -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11"
+AC_PATH_X
 
-XM_CFLAGS="-I/usr/X11R6/include -I/usr/include/Xm"
-XM_LIBS="-L/usr/X11R6/lib -lXm -lXmu -lXt -lSM -lICE -lXext -lX11"
-
-
-dnl  Export variables
-AC_SUBST(INCLUDES)
+AC_CHECK_LIB(X11, XOpenDisplay, [
+  ac_cv_my_have_x11=yes
+  X_CFLAGS="-I${x_includes}"
+  X_LIBS="-lX11 -L${x_libraries}"
+], [ac_cv_my_have_x11=no],
+   [[-lXt -L${x_libraries}]])
+AM_CONDITIONAL(HAVE_X11, test "${ac_cv_my_have_x11}" = "yes")
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_LIBS)
+
+AC_CHECK_LIB(Xaw, XawTextSearch, [
+  ac_cv_my_have_xaw=yes
+  XAW_CFLAGS="-I${x_includes}"
+  XAW_LIBS="-L${x_libraries} -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11"
+], [ac_cv_my_have_xaw=no],
+   [[-lXmu -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+AM_CONDITIONAL(HAVE_XAW, test "${ac_cv_my_have_xaw}" = "yes")
 AC_SUBST(XAW_CFLAGS)
 AC_SUBST(XAW_LIBS)
-AC_SUBST(XM_CFLAGS)
-AC_SUBST(XM_LIBS)
+
+AC_CHECK_LIB(Xm, XmStringConcat, [
+  ac_cv_my_have_motif=yes
+  MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
+  MOTIF_LIBS="-L${x_libraries} -lXm -lXmu -lXt -lSM -lICE -lXext -lX11"
+], [ac_cv_my_have_motif=no],
+   [[-lXmu -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+AM_CONDITIONAL(HAVE_MOTIF, test "${ac_cv_my_have_motif}" = "yes")
+AC_SUBST(MOTIF_CFLAGS)
+AC_SUBST(MOTIF_LIBS)
+
+dnl  Export variables
+INCLUDES="${INCLUDES} -I\$(top_srcdir)/include"
+AC_SUBST(INCLUDES)
 
 AC_OUTPUT([
   Makefile
@@ -434,7 +468,20 @@ AC_OUTPUT([
   lib/xwidgets/xaw/Makefile
   lib/xwidgets/motif/Makefile
   scm/Makefile
-  scm/slib.scm
   src/Makefile
+
+  scm/slib.scm
+  include/site.h
 ])
+
+cat << EOF
+
+Configuration summary
+---------------------
+C++ support: ${ac_cv_my_have_cxx}
+libgdbm support: ${ac_cv_my_have_xaw}
+X11 support: ${ac_cv_my_have_x11}
+Xaw support: ${ac_cv_my_have_xaw}
+Motif support: ${ac_cv_my_have_motif}
+EOF
 
