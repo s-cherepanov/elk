@@ -50,7 +50,7 @@ static void Load_Them (Object names) {
     Alloca_End;
 }
 
-Load_Object (Object names) {
+void Load_Object (Object names) {
     Object port, tail, fullnames, str;
     char *p, *libs = "";
     GC_Node3;

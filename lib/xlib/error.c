@@ -3,7 +3,7 @@
 static Object V_X_Error_Handler, V_X_Fatal_Error_Handler;
 
 /* Default error handlers of the Xlib */
-extern int _XDefaultIOError();   
+extern int _XDefaultIOError();
 extern int _XDefaultError();
 
 static X_Fatal_Error (d) Display *d; {
@@ -81,7 +81,7 @@ static Object P_After_Function (d) Object d; {
     Check_Type (d, T_Display);
     return DISPLAY(d)->after;
 }
-    
+
 elk_init_xlib_error () {
     Define_Variable (&V_X_Fatal_Error_Handler, "x-fatal-error-handler", Null);
     Define_Variable (&V_X_Error_Handler, "x-error-handler", Null);

@@ -8,7 +8,7 @@ static struct event_desc {
     char *name;
     int argc;
 } Event_Table[] = {
-    { "event-0", 	     1 },
+    { "event-0",	     1 },
     { "event-1",             1 },
     { "key-press",          12 },
     { "key-release",        12 },

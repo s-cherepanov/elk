@@ -1,6 +1,6 @@
 #include "xlib.h"
 
-static Object Set_Attr_Slots; 
+static Object Set_Attr_Slots;
 static Object Conf_Slots;
 static Object GC_Slots;
 static Object Geometry_Slots;
@@ -263,7 +263,7 @@ RECORD Size_Hints_Rec[] = {
     { (char *)&SZH.max_aspect.y,   "max-aspect-y",    T_INT,  0, PAspect },
     { (char *)&SZH.base_width,     "base-width",      T_INT,  0, PBaseSize },
     { (char *)&SZH.base_height,    "base-height",     T_INT,  0, PBaseSize },
-    { (char *)&SZH.win_gravity,    "gravity",         T_SYM,  Grav_Syms, 
+    { (char *)&SZH.win_gravity,    "gravity",         T_SYM,  Grav_Syms,
 								 PWinGravity },
     {0, 0, T_NONE, 0, 0 }
 };

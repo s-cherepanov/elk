@@ -16,7 +16,7 @@ static Object Sym_Stop_And_Copy_GC, Sym_Generational_GC, Sym_Incremental_GC;
 
 void Init_Heap () {
     Define_Variable (&V_Garbage_Collect_Notifyp, "garbage-collect-notify?",
-	True);
+	False);
 
     Define_Symbol (&Sym_Stop_And_Copy_GC, "stop-and-copy");
     Define_Symbol (&Sym_Generational_GC, "generational");

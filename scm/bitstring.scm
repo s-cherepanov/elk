@@ -2,7 +2,7 @@
 ;;;
 ;;; The Scheme layer of the bitstring extension.
 
-(require 'bitstring.o)
+(require 'bitstring.so)
 
 (define (bitstring-copy b)
   (let ((new (make-bitstring (bitstring-length b) #f)))

@@ -36,7 +36,7 @@ static Object P_Black_Pixel (d) Object d; {
 
 static Object P_White_Pixel (d) Object d; {
     Check_Type (d, T_Display);
-    return Make_Pixel (WhitePixel (DISPLAY(d)->dpy, 
+    return Make_Pixel (WhitePixel (DISPLAY(d)->dpy,
 	DefaultScreen (DISPLAY(d)->dpy)));
 }
 

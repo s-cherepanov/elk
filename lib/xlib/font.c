@@ -248,7 +248,7 @@ static Object P_Font_Path (d) Object d; {
     GC_Link (v);
     for (i = 0; i < n; i++) {
 	Object x;
-	
+
 	x = Make_String (ret[i], strlen (ret[i]));
 	VECTOR(v)->data[i] = x;
     }

@@ -44,7 +44,7 @@ static Object P_Alloc_Color (cmap, color) Object cmap, color; {
     XColor c;
     Colormap cm = Get_Colormap (cmap);
     int r;
-    
+
     c = *Get_Color (color);
     Disable_Interrupts;
     r = XAllocColor (COLORMAP(cmap)->dpy, cm, &c);

@@ -34,5 +34,6 @@ void Check_Result_Vector(x, len) Object x; {
 }
 
 elk_init_unix_unix() {
+    P_Provide(Intern("unix.so"));
     P_Provide(Intern("unix.o"));
 }

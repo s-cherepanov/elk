@@ -18,7 +18,7 @@ static Object P_Install_Accelerators (dst, src) Object dst, src; {
     XtInstallAccelerators (WIDGET(dst)->widget, WIDGET(src)->widget);
     return Void;
 }
-    
+
 static Object P_Install_All_Accelerators (dst, src) Object dst, src; {
     Check_Widget (dst);
     Check_Widget (src);

@@ -3,7 +3,7 @@
 ;;; The Scheme layer of the regexp extension is (almost) empty for now.
 ;;; It mainly exists to enable use of "(require 'regexp)".
 
-(require 'regexp.o)
+(require 'regexp.so)
 
 (define (describe-regexp r)
   (format #t "a regular expression.~%")

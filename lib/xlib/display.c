@@ -108,7 +108,7 @@ static Object P_Display_Cells (d, scr) Object d, scr; {
 
 static Object P_Display_Planes (d, scr) Object d, scr; {
     Check_Type (d, T_Display);
-    return Make_Integer (DisplayPlanes (DISPLAY(d)->dpy, 
+    return Make_Integer (DisplayPlanes (DISPLAY(d)->dpy,
 	Get_Screen_Number (DISPLAY(d)->dpy, scr)));
 }
 
@@ -246,7 +246,7 @@ static Object P_List_Pixmap_Formats (d) Object d; {
     GC_Link (ret);
     for (i = 0; i < num; i++) {
 	Object t;
-	
+
 	t = P_Make_List (Make_Integer (3), Null);
 	VECTOR(ret)->data[i] = t;
 	Car (t) = Make_Integer (p[i].depth); t = Cdr (t);

@@ -64,7 +64,7 @@ static Object P_List_Properties (w) Object w; {
     GC_Link (v);
     for (i = 0; i < n; i++) {
 	Object x;
-	
+
 	x = Make_Atom (ap[i]);
 	VECTOR(v)->data[i] = x;
     }
@@ -125,7 +125,7 @@ static Object P_Get_Property (w, prop, type, start, len, deletep)
 	    GC_Unlink;
 	}
     }
-    t = Cdr (t); 
+    t = Cdr (t);
     x = Make_Unsigned_Long (bytes_left);
     Car (t) = x;
     GC_Unlink;
@@ -188,7 +188,7 @@ static Object P_Rotate_Properties (w, v, delta) Object w, v, delta; {
     Alloca (p, Atom*, n * sizeof (Atom));
     for (i = 0; i < n; i++) {
 	Object a;
-	
+
 	a = VECTOR(v)->data[i];
 	Check_Type (a, T_Atom);
 	p[i] = ATOM(a)->atom;

@@ -1,3 +1,21 @@
+elk (3.0-10) unstable; urgency=low
+
+  * Updated debhelper build dependency to >>3.0.0.
+  * Shared library handling:
+    + Extended load.c:General_Load() to open shared libraries.
+    + Makefiles now build shared libraries.
+    + Stopped distributing .o files and replaced them with the .so shared
+      libraries; built the Unix, X11, Xaw and Motif extensions.
+    + The interpreter is no longer linked with -lgdbm, gdbm.so is instead.
+  * Replaced standalone.o and module.o with their .a equivalents.
+  * Made the 'debian/arch-config' sourcing errors non-fatal so that make
+    distclean works in the src/ directory.
+  * Changed SCM_DIR again, from /usr/share/elk/scm to /usr/share/elk, and
+    ditto with OBJ_DIR, from /usr/lib/elk/obj to /usr/lib/elk.
+  * Defaulted "garbage-collect-notify?" and "autoload-notify?" to #f.
+
+ -- Samuel Hocevar <sam@zoy.org>  Tue,  1 Apr 2003 23:34:26 +0200
+
 elk (3.0-9) unstable; urgency=low
 
   * New maintainer.

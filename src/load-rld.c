@@ -3,7 +3,7 @@
 extern void Free_Symbols (SYMTAB *);
 extern void Call_Initializers (SYMTAB *, char *, int);
 
-Load_Object (Object names) {
+void Load_Object (Object names) {
     long retval;
     struct mach_header *hdr;
     char **filenames, *libs;

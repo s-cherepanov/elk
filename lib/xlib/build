@@ -75,7 +75,7 @@ O=	client.o\\
 	window.o\\
 	wm.o
 
-all: \$(O) xlib.pre
+all: \$(O) xlib.so
 
 .c.o:
 	\$(CC) \$(CFLAGS) -I\$(INC) $x11_incl -c \$<
@@ -107,7 +107,10 @@ wm.o:		\$(H) wm.c
 xlib.pre: \$(O)
 	../../scripts/makedl \$@ \$(O)
 
-install: xlib.pre
+xlib.so: \$(O)
+	ld -shared -o \$@ \$(O) $libxlib -lc
+
+install: xlib.so
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
@@ -116,11 +119,7 @@ install: xlib.pre
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj; \\
-	    mkdir $install_dir/lib/elk/obj; \\
-	fi
-	cp xlib.pre $install_dir/lib/elk/obj/xlib.o
+	cp xlib.so $install_dir/lib/elk
 	-@if [ ! -d $install_dir/include ]; then \\
 	    echo mkdir $install_dir/include; \\
 	    mkdir $install_dir/include; \\
@@ -139,8 +138,8 @@ lint:
 	lint \$(LINTFLAGS) -I\$(INC) $x11_incl \$(C)
 
 clean:
-	rm -f *.o xlib.pre core
+	rm -f *.so *.o xlib.pre core
 
 distclean:
-	rm -f *.o xlib.pre core lint.out Makefile.local
+	rm -f *.so *.o xlib.pre core lint.out Makefile.local
 EOT

@@ -81,7 +81,7 @@ static Object P_Create_Widget (argc, argv) Object *argv; {
     char *name = 0;
     Object x, class, parent, ret;
     Alloca_Begin;
- 
+
     x = argv[0];
     if (TYPE(x) != T_Class) {
 	name = Get_Strsym (x);
@@ -158,7 +158,7 @@ static Object Manage_Unmanage (children, f) Object children; void (*f)(); {
     Alloca (buf, Widget*, n * sizeof (Widget));
     for (i = 0, tail = children; i < n; i++, tail = Cdr (tail)) {
 	Object w;
-	
+
 	w = Car (tail);
 	Check_Widget (w);
 	buf[i] = WIDGET(w)->widget;

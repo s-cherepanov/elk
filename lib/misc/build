@@ -4,7 +4,7 @@
 if [ _$gdbm = _yes ]; then
     gdbm_c="gdbm.c"
     gdbm_o="gdbm.o"
-    gdbm_rule="gdbm.o:		\$(H) gdbm.c"
+    gdbm_so="gdbm.so"
 else
     gdbm_incl=
 fi
@@ -54,11 +54,21 @@ O=	bitstring.o\\
 	regexp.o\\
 	struct.o $gdbm_o
 
+SO=	bitstring.so\\
+	debug.so\\
+	elk-eval.so\\
+	hack.so\\
+	monitor.so\\
+	newhandler.so\\
+	record.so\\
+	regexp.so\\
+	struct.so $gdbm_so
+
 .c.o:
 	\$(CC) \$(CFLAGS) -I\$(INC) $gdbm_incl -c \$<
 	../../scripts/makedl \$@ \$@
 
-all: \$(O)
+all: \$(SO)
 
 bitstring.o:	\$(H) bitstring.c
 debug.o:	\$(H) debug.c
@@ -69,9 +79,39 @@ newhandler.o:	\$(H) newhandler.c
 record.o:	\$(H) record.c
 regexp.o:	\$(H) regexp.c
 struct.o:	\$(H) struct.c
-$gdbm_rule
+gdbm.o:		\$(H) gdbm.c
 
-install: \$(O)
+bitstring.so:	bitstring.o
+	ld -shared -o \$@ \$< -lc
+
+debug.so:	debug.o
+	ld -shared -o \$@ \$< -lc
+
+elk-eval.so:	elk-eval.o
+	ld -shared -o \$@ \$< -lc
+
+hack.so:	hack.o
+	ld -shared -o \$@ \$< -lc
+
+monitor.so:	monitor.o
+	ld -shared -o \$@ \$< -lc
+
+newhandler.so:	newhandler.o
+	ld -shared -o \$@ \$< -lc
+
+record.so:	record.o
+	ld -shared -o \$@ \$< -lc
+
+regexp.so:	regexp.o
+	ld -shared -o \$@ \$< -lc
+
+struct.so:	struct.o
+	ld -shared -o \$@ \$< -lc
+
+gdbm.so:	gdbm.o
+	ld -shared -o \$@ \$< -lgdbm -lc
+
+install: \$(SO)
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
@@ -80,22 +120,18 @@ install: \$(O)
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj; \\
-	    mkdir $install_dir/lib/elk/obj; \\
-	fi
-	@for i in \$(O) ;\\
+	@for i in \$(SO) ;\\
 	do \\
-	    echo cp \$\$i $install_dir/lib/elk/obj; \\
-	    cp \$\$i $install_dir/lib/elk/obj; \\
+	    echo cp \$\$i $install_dir/lib/elk; \\
+	    cp \$\$i $install_dir/lib/elk; \\
 	done
 
 lint:
 	lint \$(LINTFLAGS) -I\$(INC) $gdbm_incl \$(C)
 
 clean:
-	rm -f *.o core
+	rm -f *.so *.o core
 
 distclean:
-	rm -f *.o core lint.out Makefile.local
+	rm -f *.so *.o core lint.out Makefile.local
 EOT

@@ -64,15 +64,16 @@ void Init_Loadpath (char *s) {     /* No GC possible here */
     Var_Set (V_Load_Path, P_Reverse (path));
 }
 
-int Is_O_File (Object name) {
+int Has_Suffix (Object name, char const *suffix) {
     register char *p;
+    register int len = strlen(suffix);
     register struct S_String *str;
 
     if (TYPE(name) == T_Symbol)
 	name = SYMBOL(name)->name;
     str = STRING(name);
-    p = str->data + str->size;
-    return str->size >= 2 && *--p == 'o' && *--p == '.';
+    p = str->data + str->size - len;
+    return len <= str->size && !strncasecmp(p, suffix, len);
 }
 
 void Check_Loadarg (Object x) {
@@ -89,7 +90,7 @@ void Check_Loadarg (Object x) {
 	f = Car (tail);
 	if (TYPE(f) != T_Symbol && TYPE(f) != T_String)
 	    Wrong_Type_Combination (f, "string or symbol");
-	if (!Is_O_File (f))
+	if (!Has_Suffix (f, ".o") && !Has_Suffix (f, ".so"))
 	    Primitive_Error ("~s: not an object file", f);
     }
 }
@@ -103,14 +104,26 @@ Object General_Load (Object what, Object env) {
     GC_Link (oldenv);
     Switch_Environment (env);
     Check_Loadarg (what);
-    if (TYPE(what) == T_Pair)
+    if (TYPE(what) == T_Pair) {
+	if (Has_Suffix (Car (what), ".o"))
 #ifdef CAN_LOAD_OBJ
-	Load_Object (what)
+	    Load_Object (what)
 #endif
-	;
-    else if (Is_O_File (what))
+	    ;
+	else if (Has_Suffix (Car (what), ".so"))
+#ifdef CAN_LOAD_LIB
+	    Load_Library (what)
+#endif
+	    ;
+    }
+    else if (Has_Suffix (what, ".o"))
 #ifdef CAN_LOAD_OBJ
 	Load_Object (Cons (what, Null))
+#endif
+	;
+    else if (Has_Suffix (what, ".so"))
+#ifdef CAN_LOAD_LIB
+	Load_Library (Cons (what, Null))
 #endif
 	;
     else

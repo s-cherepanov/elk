@@ -123,7 +123,7 @@ static Object P_Rebind_Keysym (d, k, mods, str) Object d, k, mods, str; {
     Alloca (p, KeySym*, n * sizeof (KeySym));
     for (i = 0; i < n; i++)
 	p[i] = (KeySym)Get_Long (VECTOR(mods)->data[i]);
-    XRebindKeysym (DISPLAY(d)->dpy, (KeySym)Get_Long (k), p, n, 
+    XRebindKeysym (DISPLAY(d)->dpy, (KeySym)Get_Long (k), p, n,
 	(unsigned char *)STRING(str)->data, STRING(str)->size);
     Alloca_End;
     return Void;

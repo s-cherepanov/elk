@@ -3,7 +3,7 @@
 Object V_Autoload_Notifyp;
 
 void Init_Auto (void) {
-    Define_Variable (&V_Autoload_Notifyp, "autoload-notify?", True);
+    Define_Variable (&V_Autoload_Notifyp, "autoload-notify?", False);
 }
 
 Object P_Autoload (Object sym, Object files) {

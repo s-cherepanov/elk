@@ -15,7 +15,7 @@ static Object P_List_Extensions (d) Object d; {
     GC_Link (ret);
     for (i = 0; i < n; i++) {
 	Object e;
-	
+
 	e = Make_String (p[i], strlen (p[i]));
 	VECTOR(ret)->data[i] = e;
     }

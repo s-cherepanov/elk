@@ -57,6 +57,32 @@ O=	arrow-button.o\\
 	text.o\\
 	toggle-btn.o
 
+SO=	arrow-button.so\\
+	bulletin-brd.so\\
+	cascade-btn.so\\
+	command.so\\
+	drawing-area.so\\
+	drawn-button.so\\
+	file-selectn.so\\
+	form.so\\
+	frame.so\\
+	label.so\\
+	list.so\\
+	main-window.so\\
+	message-box.so\\
+	paned-window.so\\
+	push-button.so\\
+	row-column.so\\
+	scale.so\\
+	scroll-bar.so\\
+	scrolled-win.so\\
+	selectn-box.so\\
+	separator.so\\
+	shell.so\\
+	support.so\\
+	text.so\\
+	toggle-btn.so
+
 WIDGET_SET= xm
 
 .SUFFIXES: .d .c .o
@@ -73,7 +99,7 @@ WIDGET_SET= xm
 	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $sys_incl -c \$*.c
 	../../scripts/makedl \$@ \$@
 
-all: \$(O)
+all: \$(SO)
 
 arrow-button.o:		\$(H) arrow-button.d
 bulletin-brd.o:		\$(H) bulletin-brd.d
@@ -101,7 +127,83 @@ support.o:		\$(H) support.d
 text.o:			\$(H) text.d
 toggle-btn.o:		\$(H) toggle-btn.d
 
-install: \$(O)
+arrow-button.so:	arrow-button.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+bulletin-brd.so:	bulletin-brd.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+cascade-btn.so:		cascade-btn.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+command.so:		command.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+drawing-area.so:	drawing-area.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+drawn-button.so:	drawn-button.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+file-selectn.so:	file-selectn.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+form.so:		form.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+frame.so:		frame.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+label.so:		label.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+list.so:		list.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+main-window.so:		main-window.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+message-box.so:		message-box.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+paned-window.so:	paned-window.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+push-button.so:		push-button.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+row-column.so:		row-column.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+scale.so:		scale.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+scroll-bar.so:		scroll-bar.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+scrolled-win.so:	scrolled-win.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+selectn-box.so:		selectn-box.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+separator.so:		separator.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+shell.so:		shell.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+support.so:		support.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+text.so:		text.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+toggle-btn.so:		toggle-btn.o
+	ld -shared -o \$@ \$< $libxmotif -lc
+
+
+install: \$(SO)
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
@@ -110,26 +212,22 @@ install: \$(O)
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj; \\
-	    mkdir $install_dir/lib/elk/obj; \\
+	-@if [ ! -d $install_dir/lib/elk/xm ]; then \\
+	    echo mkdir $install_dir/lib/elk/xm; \\
+	    mkdir $install_dir/lib/elk/xm; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj/xm ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj/xm; \\
-	    mkdir $install_dir/lib/elk/obj/xm; \\
-	fi
-	@for i in \$(O) ALIASES ;\\
+	@for i in \$(SO) ALIASES ;\\
 	do \\
-	    echo cp \$\$i $install_dir/lib/elk/obj/xm; \\
-	    cp \$\$i $install_dir/lib/elk/obj/xm; \\
+	    echo cp \$\$i $install_dir/lib/elk/xm; \\
+	    cp \$\$i $install_dir/lib/elk/xm; \\
 	done
 
 lint:
 	lint \$(LINTFLAGS) -I\$(INC) -I../xlib $sys_incl *.c
 
 clean:
-	rm -f *.o *.c core
+	rm -f *.so *.o *.c core
 
 distclean:
-	rm -f *.o *.c core lint.out Makefile.local
+	rm -f *.so *.o *.c core lint.out Makefile.local
 EOT

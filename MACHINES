@@ -59,7 +59,7 @@ Sun-4, SunOS 5.2 (Solaris 2.2)
          A bug in Solaris 2.1 causes dlopen() to fail if more than
          8 shared objects are loaded (which in turn causes the "load"
          primitive of Elk to signal an error).  This restriction doesn't
-         exit in newer versions of Solaris 2.
+         exist in newer versions of Solaris 2.
 
          You can use the -v option of Elk to see the actual linker options
          when an object file is loaded.

@@ -26,7 +26,7 @@ struct S_Match {
     size_t num;
     regmatch_t matches[1];
 };
-    
+
 int T_Regexp, T_Match;
 
 static SYMDESCR Compile_Syms[] = {
@@ -218,5 +218,6 @@ elk_init_lib_regexp() {
     Def_Prim(P_Match_End,     "regexp-match-end",         2, 2, EVAL);
     P_Provide(Intern(":regular-expressions"));
 #endif
+    P_Provide(Intern ("regexp.so"));
     P_Provide(Intern ("regexp.o"));
 }

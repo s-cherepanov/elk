@@ -15,7 +15,7 @@ static void Callback_Proc (w, client_data, call_data) Widget w;
     register CLIENT_DATA *cd = (CLIENT_DATA *)client_data;
     Object args;
     GC_Node;
- 
+
     args = Null;
     GC_Link (args);
     if (cd->converter)

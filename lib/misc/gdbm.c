@@ -220,7 +220,7 @@ Object P_Gdbm_Firstkey (fh) Object fh; {
     Disable_Interrupts;
     k = gdbm_firstkey (GDBM_FH(fh)->fptr);
     Enable_Interrupts;
-    if (k.dptr == 0) 
+    if (k.dptr == 0)
 	return False;
     res = Make_String (k.dptr, k.dsize);
     free (k.dptr);
@@ -258,5 +258,6 @@ elk_init_lib_gdbm () {
     T_Gdbm_fh = Define_Type (0, "gdbm-file", NOFUNC,
 	sizeof (struct S_gdbm_fh), Gdbm_fh_Equal, Gdbm_fh_Equal,
 	Gdbm_fh_Print, NOFUNC);
+    P_Provide (Intern ("gdbm.so"));
     P_Provide (Intern ("gdbm.o"));
 }

@@ -17,7 +17,7 @@ static Object P_Augment_Translations (w, t) Object w, t; {
     XtAugmentTranslations (WIDGET(w)->widget, Get_Translations (t));
     return Void;
 }
-    
+
 static Object P_Override_Translations (w, t) Object w, t; {
     Check_Widget (w);
     XtOverrideTranslations (WIDGET(w)->widget, Get_Translations (t));
@@ -47,7 +47,7 @@ static Object P_Set_Multi_Click_Time (d, t) Object d, t; {
 elk_init_xt_translation () {
     Define_Primitive (P_Augment_Translations,
 			"augment-translations",                  2, 2, EVAL);
-    Define_Primitive (P_Override_Translations, 
+    Define_Primitive (P_Override_Translations,
 			"override-translations",                 2, 2, EVAL);
     Define_Primitive (P_Uninstall_Translations,
 			"uninstall-translations",                1, 1, EVAL);

@@ -195,7 +195,7 @@ elk_init_xt_class () {
     Generic_Define (Class, "class", "class?");
     Define_Primitive (P_Find_Class,        "find-class",        1, 1, EVAL);
     Define_Primitive (P_Class_Resources,   "class-resources",   1, 1, EVAL);
-    Define_Primitive (P_Class_Constraint_Resources, 
+    Define_Primitive (P_Class_Constraint_Resources,
                                "class-constraint-resources",    1, 1, EVAL);
     Define_Primitive (P_Class_Sub_Resources,
 			       "class-sub-resources",           1, 1, EVAL);

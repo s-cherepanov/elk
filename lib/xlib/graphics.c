@@ -67,7 +67,7 @@ static Object Internal_Draw_Points (d, gc, v, relative, func, shape)
     Alloca (p, XPoint*, n * sizeof (XPoint));
     for (i = 0; i < n; i++) {
 	Object point;
-	
+
 	point = VECTOR(v)->data[i];
 	Check_Type (point, T_Pair);
 	p[i].x = Get_Integer (Car (point));
@@ -112,7 +112,7 @@ static Object P_Draw_Segments (d, gc, v) Object d, gc, v; {
     Alloca (p, XSegment*, n * sizeof (XSegment));
     for (i = 0; i < n; i++) {
 	Object seg;
-	
+
 	seg = VECTOR(v)->data[i];
 	Check_Type (seg, T_Pair);
 	if (Fast_Length (seg) != 4)
@@ -159,7 +159,7 @@ static Object Internal_Draw_Rectangles (d, gc, v, func)
     Alloca (p, XRectangle*, n * sizeof (XRectangle));
     for (i = 0; i < n; i++) {
 	Object rect;
-	
+
 	rect = VECTOR(v)->data[i];
 	Check_Type (rect, T_Pair);
 	if (Fast_Length (rect) != 4)
@@ -216,7 +216,7 @@ static Object Internal_Draw_Arcs (d, gc, v, func) Object d, gc, v;
     Alloca (p, XArc*, n * sizeof (XArc));
     for (i = 0; i < n; i++) {
 	Object arc;
-	
+
 	arc = VECTOR(v)->data[i];
 	Check_Type (arc, T_Pair);
 	if (Fast_Length (arc) != 6)

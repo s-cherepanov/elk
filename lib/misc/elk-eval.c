@@ -1,12 +1,12 @@
 /* The function
- * 
+ *
  *     char *Elk_Eval(char *expr);
- * 
+ *
  * is similar to Tcl_Eval() in Tcl.  It is called with a Scheme expression
  * encoded as a C string and returns the result of evaluating the expression
  * (as another C string), or a null pointer if an error has occured
  * during evaluation.
- * 
+ *
  * Elk_Eval() stores its result in a static buffer of fixed size; this
  * can be improved easily by passing a buffer and a length as additional
  * arguments.

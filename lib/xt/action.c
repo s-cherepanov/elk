@@ -30,7 +30,7 @@ void Action_Hook (w, client_data, name, ep, argv, argc)
 	params = P_Make_List (Make_Integer (*argc), Null);
 	for (i = 0, tail = params; i < *argc; tail = Cdr (tail), i++) {
 	    Object tmp;
-	    
+
 	    tmp = Make_String (argv[i], strlen (argv[i]));
 	    Car (tail) = tmp;
 	}

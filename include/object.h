@@ -3,7 +3,7 @@
  */
 
 typedef struct {
-    unsigned long data;
+    unsigned long int data;
     int tag;
 } Object;
 
@@ -22,8 +22,8 @@ typedef struct {
 #define CHAR(x)         ((int)(x).data)
 
 #define POINTER(x)      ((x).data)
-#define SETPOINTER(x,p) ((x).data = (unsigned long)(p))
-#define SET(x,t,p)      ((x).tag = (int)t << 1, (x).data = (unsigned long)(p))
+#define SETPOINTER(x,p) ((x).data = (unsigned long int)(p))
+#define SET(x,t,p)      ((x).tag = (int)t << 1, (x).data = (unsigned long int)(p))
 
 #define ISCONST(x)      ((x).tag & CONSTBIT)
 #define SETCONST(x)     ((x).tag |= CONSTBIT)
@@ -37,10 +37,10 @@ typedef struct {
 
 #ifdef GENERATIONAL_GC
 
-   typedef int  gcspace_t;            /* type used for space and type arrays */
-   typedef unsigned long gcptr_t;     /* type used for pointers */
-   typedef unsigned long pageno_t;    /* type used for page numbers */
-   typedef unsigned long addrarith_t; /* type used for address arithmetic */
+   typedef int gcspace_t;                 /* type for space and type arrays */
+   typedef unsigned long int gcptr_t;     /* type for pointers */
+   typedef unsigned long int pageno_t;    /* type for page numbers */
+   typedef unsigned long int addrarith_t; /* type for address arithmetic */
 
    extern gcspace_t *space;
    extern gcspace_t current_space;
@@ -118,8 +118,8 @@ typedef unsigned short gran_t;	/* Granularity of bignums */
 
 struct S_Bignum {
     Object minusp;
-    unsigned size;		/* Number of ushorts allocated */
-    unsigned usize;		/* Number of ushorts actually used */
+    unsigned int size;		/* Number of ushorts allocated */
+    unsigned int usize;		/* Number of ushorts actually used */
     gran_t data[1];		/* Data, lsw first */
 };
 
@@ -189,8 +189,8 @@ typedef struct gcnode {
 
 typedef struct mem_node {
     struct mem_node *next;
-    unsigned len;
-    unsigned long refcnt;
+    unsigned int len;
+    unsigned long int refcnt;
 } MEM_NODE;
 
 #if defined(vax) || defined(__vax__)
@@ -207,13 +207,13 @@ struct S_Control {
     Object gcsave;              /* vector */
     WIND *firstwind, *lastwind;
     int tailcall;
-    unsigned delta;
+    unsigned int delta;
 #ifdef GENERATIONAL_GC
     int reloc;
 #endif
     jmp_buf j;
     int size;
-    unsigned long intrlevel;
+    unsigned long int intrlevel;
     char stack[1];    /* must be word aligned */
 };
 
@@ -229,7 +229,7 @@ struct S_Port {
     char unread;
     int ptr;
     FILE *file;
-    unsigned lno;
+    unsigned int lno;
     int (*closefun) P_((FILE*));
 };
 #define P_OPEN    1 /* flags */
@@ -285,7 +285,7 @@ typedef struct {
 typedef struct sym {
     struct sym *next;
     char *name;
-    unsigned long value;
+    unsigned long int value;
 } SYM;
 
 typedef struct {
@@ -322,7 +322,7 @@ typedef struct weak_node {
 
 typedef struct {
     char *name;
-    unsigned long val;
+    unsigned long int val;
 } SYMDESCR;
 
 

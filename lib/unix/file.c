@@ -83,7 +83,7 @@ static Object P_Read_Directory(fn) Object fn; {
     }
     while ((dp = readdir(d)) != NULL) {
 	Object x;
-	
+
 	x = Make_String(dp->d_name, strlen(dp->d_name));
 	ret = Cons(x, ret);
     }

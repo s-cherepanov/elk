@@ -53,6 +53,30 @@ O=	ascii.o\\
 	tree.o\\
 	viewport.o
 
+SO=	ascii.so\\
+	box.so\\
+	command.so\\
+	dialog.so\\
+	form.so\\
+	grip.so\\
+	label.so\\
+	list.so\\
+	menubutton.so\\
+	paned.so\\
+	panner.so\\
+	porthole.so\\
+	repeater.so\\
+	scrollbar.so\\
+	shell.so\\
+	simplemenu.so\\
+	sme.so\\
+	smebsb.so\\
+	smeline.so\\
+	stripchart.so\\
+	toggle.so\\
+	tree.so\\
+	viewport.so
+
 WIDGET_SET= xaw
 
 .SUFFIXES: .d .c .o
@@ -69,7 +93,7 @@ WIDGET_SET= xaw
 	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $x11_incl -c \$*.c
 	../../scripts/makedl \$@ \$@
 
-all: \$(O)
+all: \$(SO)
 
 ascii.o:	\$(H) ascii.d
 box.o:		\$(H) box.d
@@ -95,7 +119,77 @@ toggle.o:	\$(H) toggle.d
 tree.o:		\$(H) tree.d
 viewport.o:	\$(H) viewport.d
 
-install: \$(O)
+ascii.so:	ascii.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+box.so:		box.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+command.so:	command.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+dialog.so:	dialog.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+form.so:	form.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+grip.so:	grip.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+label.so:	label.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+list.so:	list.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+menubutton.so:	menubutton.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+paned.so:	paned.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+panner.so:	panner.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+porthole.so:	porthole.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+repeater.so:	repeater.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+scrollbar.so:	scrollbar.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+shell.so:	shell.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+simplemenu.so:	simplemenu.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+sme.so:		sme.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+smebsb.so:	smebsb.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+smeline.so:	smeline.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+stripchart.so:	stripchart.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+toggle.so:	toggle.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+tree.so:	tree.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+viewport.so:	viewport.o
+	ld -shared -o \$@ \$< $libxaw -lc
+
+
+install: \$(SO)
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
@@ -104,26 +198,22 @@ install: \$(O)
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj; \\
-	    mkdir $install_dir/lib/elk/obj; \\
+	-@if [ ! -d $install_dir/lib/elk/xaw ]; then \\
+	    echo mkdir $install_dir/lib/elk/xaw; \\
+	    mkdir $install_dir/lib/elk/xaw; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj/xaw ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj/xaw; \\
-	    mkdir $install_dir/lib/elk/obj/xaw; \\
-	fi
-	@for i in \$(O) ALIASES ;\\
+	@for i in \$(SO) ALIASES ;\\
 	do \\
-	    echo cp \$\$i $install_dir/lib/elk/obj/xaw; \\
-	    cp \$\$i $install_dir/lib/elk/obj/xaw; \\
+	    echo cp \$\$i $install_dir/lib/elk/xaw; \\
+	    cp \$\$i $install_dir/lib/elk/xaw; \\
 	done
 
 lint:
 	lint \$(LINTFLAGS) -I\$(INC) -I../xlib $x11_incl *.c
 
 clean:
-	rm -f *.o *.c core
+	rm -f *.so *.o *.c core
 
 distclean:
-	rm -f *.o *.c core lint.out Makefile.local
+	rm -f *.so *.o *.c core lint.out Makefile.local
 EOT

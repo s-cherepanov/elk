@@ -125,7 +125,7 @@ static Object P_End_Group() {
     Enable_Interrupts;
     return Void;
 }
-    
+
 elk_init_unix_passwd() {
     Def_Prim(P_Get_Passwd,    "unix-get-passwd-vector-fill!",   1, 2, VARARGS);
     Def_Prim(P_Rewind_Passwd, "unix-rewind-passwd",             0, 0, EVAL);

@@ -18,11 +18,11 @@ $install_dir/bin/scheme			/usr/bin/scheme
 
 $install_dir/include/			/usr/include/elk/
 
-$install_dir/runtime/scm/		/usr/share/elk/scm/
+$install_dir/runtime/scm/		/usr/share/elk/
 
-$install_dir/runtime/obj/		/usr/lib/elk/obj/
+$install_dir/runtime/obj/		/usr/lib/elk/
 
-$install_dir/lib/*.o			/usr/lib/elk/*.o
+$install_dir/lib/*.o			/usr/lib/elk/*.{o,so}
 
 $install_dir/lib/{linkscheme,makedl}	/usr/bin/{linkscheme,makedl}
 

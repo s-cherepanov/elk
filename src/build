@@ -1,6 +1,6 @@
 . ../config/system
 . ../config/site
-. ../debian/arch-config
+. ../debian/arch-config || true
 
 case _$aout_format in
 _coff)   dump=dump-vanilla.c; stab=stab-coff.c;;
@@ -116,14 +116,20 @@ O1= \$(OCOMMON) main.o stab.o
 O2= \$(OCOMMON) main2.o stab2.o
 O3= \$(OCOMMON) main3.o stab2.o
 
-all: scheme standalone.o module.o
+all: scheme standalone.a module.a
 
 scheme:	\$(O1)
 	\$(CC) -o \$@ \$(CFLAGS) \$(O1) \$(LDFLAGS)
 
+standalone.a: \$(O2)
+	ar cru \$@ \$<
+
 standalone.o: \$(O2)
 	ld -r -o \$@ \$(O2)
 	chmod 644 \$@
+
+module.a: \$(O3)
+	ar cru \$@ \$<
 
 module.o: \$(O3)
 	ld -r -o \$@ \$(O3)
@@ -181,7 +187,7 @@ main3.o:	\$(H) main.c
 	\$(CC) -DINIT_OBJECTS -DNOMAIN \$(CFLAGS) -I\$(INC) -c main3.c
 	rm main3.c
 
-install: scheme standalone.o module.o
+install: scheme standalone.a module.a
 	-@if [ ! -d $install_dir/bin ]; then \\
 	    echo mkdir $install_dir/bin; \\
 	    mkdir $install_dir/bin; \\
@@ -195,15 +201,15 @@ install: scheme standalone.o module.o
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	cp standalone.o $install_dir/lib/elk
-	cp module.o $install_dir/lib/elk
+	cp standalone.a $install_dir/lib/elk
+	cp module.a $install_dir/lib/elk
 
 lint:
 	lint \$(LINTFLAGS) -I\$(INC) \$(C)
 
 clean:
-	rm -f *.o core main2.c stab2.c main3.c
+	rm -f *.o *.a core main2.c stab2.c main3.c
 
 distclean:
-	rm -f *.o core main2.c stab2.c main3.c lint.out scheme Makefile.local
+	rm -f *.o *.a core main2.c stab2.c main3.c lint.out scheme Makefile.local
 EOT

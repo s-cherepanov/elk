@@ -8,10 +8,10 @@
     (fluid-let ((load-libraries
 		  (string-append site-force-load-xm " " site-lib-xmotif " "
 			         load-libraries)))
-      (require 'xt.o 'xt-motif.o))
+      (require 'xt.so 'xt-motif.so))
     (fluid-let ((load-libraries
 		  (string-append site-lib-xt " " load-libraries)))
-      (require 'xt.o)))
+      (require 'xt.so)))
 
 (load 'xlib.scm)
 

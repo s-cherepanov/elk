@@ -1,6 +1,10 @@
 . ../../../config/system
 . ../../../config/site
 
+if [ _$load_obj = _ld -o _$load_obj = _dl ]; then
+    force_load_xm="-u ${syms_begin_with}XmIsMotifWMRunning"
+fi
+
 # In HP-UX, the Motif libraries must be linked with xt-motif.o instead
 # of placing them into the load-libraries (I don't know why):
 
@@ -45,10 +49,13 @@ O=	\$(XTDIR)/accelerator.o\\
 	@echo === Must make files in \$(XTDIR) first\! ===
 	@echo ""
 
+xt-motif.so: \$(O) ../../xlib/xlib.so
+	ld -shared -o \$@ \$(O) ../../xlib/*.o $force_load_xm $libxmotif -lc
+
 xt-motif.pre: \$(O) ../../xlib/xlib.pre
 	../../../scripts/makedl \$@ \$(O) ../../xlib/*.o $motif_link_libs
 
-install: xt-motif.pre
+install: xt-motif.so
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
@@ -57,17 +64,13 @@ install: xt-motif.pre
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj; \\
-	    mkdir $install_dir/lib/elk/obj; \\
-	fi
-	cp xt-motif.pre $install_dir/lib/elk/obj/xt-motif.o
+	cp xt-motif.so $install_dir/lib/elk
 
 lint:
 
 clean:
-	rm -f *.o xt-motif.pre core
+	rm -f *.so *.o xt-motif.pre core
 
 distclean:
-	rm -f *.o xt-motif.pre core Makefile.local
+	rm -f *.so *.o xt-motif.pre core Makefile.local
 EOT

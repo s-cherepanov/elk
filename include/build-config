@@ -55,6 +55,7 @@ def_cachectl_h=undef
 def_syms_begin_with=undef
 def_ansi_cpp=undef
 def_can_load_obj=undef
+def_can_load_lib=undef
 def_sigsegv_siginfo=undef
 def_sigsegv_sigcontext=undef
 def_sigsegv_arg4=undef
@@ -168,7 +169,8 @@ case _$load_obj in
 _ld)     def_use_ld=define;      def_can_load_obj=define;;
 _rld)    def_use_rld=define;     def_can_load_obj=define;;
 _shl)    def_use_shl=define;     def_can_load_obj=define;;
-_dl)     def_use_dlopen=define;  def_can_load_obj=define;;
+_dl)     def_use_dlopen=define;  def_can_load_obj=define
+				 def_can_load_lib=define;;
 _)       ;;
 *)       echo Error in config file:
 	 echo Invalid value for symbol load_obj: $load_obj; exit 1;;
@@ -283,6 +285,7 @@ cat <<EOT >config.h
 #$def_hp_shared_libs   HPSHLIB
 #$def_debug_dump       DEBUG_DUMP
 #$def_can_load_obj     CAN_LOAD_OBJ
+#$def_can_load_lib     CAN_LOAD_LIB
 #$def_use_ld           USE_LD
 #$def_use_rld          USE_RLD
 #$def_use_shl          USE_SHL
@@ -321,8 +324,8 @@ $def_bcopy
 $def_bzero
 $def_bcmp
 #define                AOUT_H            $aout_h
-#define                SCM_DIR           "$final_dir/share/elk/scm"
-#define                OBJ_DIR           "$final_dir/lib/elk/obj"
+#define                SCM_DIR           "$final_dir/share/elk"
+#define                OBJ_DIR           "$final_dir/lib/elk"
 #define                HEAP_SIZE         $default_heap_size
 #define                FIND_AOUT         defined(USE_LD) || defined(CAN_DUMP)\\
 				      || defined(INIT_OBJECTS)

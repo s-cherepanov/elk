@@ -237,7 +237,7 @@ void Convert_Args (ac, av, to, widget, class) Object *av; ArgList to;
 	    } else if (dt == T_Window) {
 		XtSetArg (to[i], res, WINDOW(val)->win);
 	    } else Panic ("bad conversion type");
-	} 
+	}
 done: ;
     }
     Alloca_End;
@@ -413,7 +413,7 @@ Object Get_Resources (c, fun, freeit) WidgetClass c; void (*fun)(); {
     int nr;
     Object ret, tail, tail2, x;
     GC_Node3;
-    
+
     fun (c, &r, &nr);
     /* Note:
      * `r' is not freed in case of error.

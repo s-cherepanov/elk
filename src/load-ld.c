@@ -28,7 +28,7 @@ extern char *getenv();
 static char *Loader_Output;
 static char *tmpdir;
 
-Load_Object (Object names) {
+void Load_Object (Object names) {
 #ifdef ECOFF
     struct headers hdr;
 #else
@@ -51,7 +51,7 @@ Load_Object (Object names) {
 	Loader_Output = Safe_Malloc (strlen (tmpdir) + 20);
     }
     sprintf (Loader_Output, "%s/ldXXXXXX", tmpdir);
-    (void)mkstemp (Loader_Output);
+    (void)mktemp (Loader_Output);
 
     port = tail = fullnames = Null;
     GC_Link3 (port, tail, fullnames);
@@ -162,7 +162,7 @@ void Fork_Load () {
 	Disable_Interrupts;
 	newlink = Safe_Malloc (strlen (tmpdir) + 20);
 	sprintf (newlink, "%s/ldXXXXXX", tmpdir);
-	(void)mkstemp (newlink);
+	(void)mktemp (newlink);
 	(void)link (Loader_Input, newlink);
 	free (Loader_Input);
 	Loader_Input = newlink;

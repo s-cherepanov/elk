@@ -11,7 +11,7 @@
 (define widget-aliases #f)
 
 (define (widget-loaded? w)
-  (feature? (string->symbol (format #f "~a:~a.o" widget-subdirectory w))))
+  (feature? (string->symbol (format #f "~a:~a.so" widget-subdirectory w))))
 
 (define-macro (load-widgets . w)
   (let ((wl '()) (l '()))
@@ -33,15 +33,16 @@
 	(begin
 	  (if (not widget-aliases)
 	      (load (format #f "~a/ALIASES" widget-subdirectory)))
-	  (format #t "[Loading ")
+	  (if autoload-notify? (format #t "[Loading "))
 	  (do ((f l (cdr f))) ((null? f))
 	    (let* ((file (car f))
 		   (alias (assq (car f) widget-aliases)))
 	      (if alias (set! file (cdr alias)))
-	      (format #t "~a~a" file (if (null? (cdr f)) "" " "))
-	      (set! wl (cons (format #f "~a/~a.o" widget-subdirectory file)
+	      (if autoload-notify?
+		  (format #t "~a~a" file (if (null? (cdr f)) "" " ")))
+	      (set! wl (cons (format #f "~a/~a.so" widget-subdirectory file)
 			     wl))))
-	  (format #t "]~%")
+	  (if autoload-notify? (format #t "]~%"))
 	  `(fluid-let ((load-libraries
 			 (if (feature? 'motif)
 			     (string-append site-lib-xmotif " " load-libraries)

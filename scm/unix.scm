@@ -4,7 +4,7 @@
 
 (require 'record)
 (require 'recordutil)
-(require 'unix.o)
+(require 'unix.so)
 
 (define-record-type stat (type mode ino dev nlink uid gid size
 			  atime mtime ctime))

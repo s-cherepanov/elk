@@ -55,7 +55,7 @@ static Object P_Create_Window (parent, x, y, width, height, border_width, attr)
 	Object parent, x, y, width, height, border_width, attr; {
     unsigned long mask;
     Window win;
-    
+
     Check_Type (parent, T_Window);
     mask = Vector_To_Record (attr, Set_Attr_Size, Sym_Set_Attr, Set_Attr_Rec);
     if ((win = XCreateWindow (WINDOW(parent)->dpy, WINDOW(parent)->win,
@@ -171,7 +171,7 @@ static Object P_Query_Tree (w) Object w; {
     v = Make_Vector (n, Null);
     for (i = 0; i < n; i++) {
 	Object x;
-	
+
 	x = Make_Window (0, dpy, children[i]);
 	VECTOR(v)->data[i] = x;
     }

@@ -103,7 +103,7 @@ static Object P_Ungrab_Key (win, key, mods) Object win, key, mods; {
 
 static Object P_Allow_Events (d, mode, time) Object d, mode, time; {
     Check_Type (d, T_Display);
-    XAllowEvents (DISPLAY(d)->dpy, Symbols_To_Bits (mode, 0, 
+    XAllowEvents (DISPLAY(d)->dpy, Symbols_To_Bits (mode, 0,
 	Allow_Events_Syms), Get_Time (time));
     return Void;
 }

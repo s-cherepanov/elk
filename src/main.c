@@ -63,7 +63,7 @@ unsigned int Max_Stack;
 int Interpreter_Initialized;
 int GC_Debug = 0;
 int Case_Insensitive;
-int Verb_Load, Verb_Init;
+int Verb_Load = 0, Verb_Init = 0;
 
 char **Argv;
 int Argc, First_Arg;

@@ -12,7 +12,7 @@ void Dlopen_File (char *fn) {
 
     if (Verb_Load)
 	printf ("[dlopen %s]\n", fn);
-    if ((handle = dlopen (fn, RTLD_NOW)) == 0) {
+    if ((handle = dlopen (fn, RTLD_NOW|RTLD_GLOBAL)) == 0) {
 	char *errstr = dlerror ();
 	Primitive_Error ("dlopen failed:~%~s",
 	    Make_String (errstr, strlen (errstr)));
@@ -124,6 +124,30 @@ void Load_Object (Object names) {
     Dlopen_File (outfile);
     Enable_Interrupts;
     Alloca_End;
+}
+
+void Load_Lib (Object libs) {
+    Object port, name;
+
+    if (Nullp (libs))
+	return;
+
+    Load_Lib (Cdr (libs));
+
+    GC_Node2;
+    port = name = Null;
+    GC_Link2 (port, name);
+    port = General_Open_File (Car (libs), P_INPUT, Var_Get (V_Load_Path));
+    name = PORT(port)->name;
+    Dlopen_File (STRING(name)->data);
+    (void)P_Close_Input_Port (port);
+    GC_Unlink;
+}
+
+void Load_Library (Object libs) {
+    Disable_Interrupts;
+    Load_Lib (libs);
+    Enable_Interrupts;
 }
 
 void Finit_Load () {

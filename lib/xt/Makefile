@@ -3,7 +3,7 @@ MAKE=make
 
 all: default
 
-Makefile.local: ../../config/system ../../config/site
+Makefile.local: build ../../config/system ../../config/site
 	$(SHELL) ./build
 
 default: Makefile.local

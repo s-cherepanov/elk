@@ -118,7 +118,7 @@ static Object P_Getenv(e) Object e; {
 static Object P_Getlogin() {
     extern char *getlogin();
     char *s;
-    
+
     Disable_Interrupts;
     s = getlogin();
     Enable_Interrupts;

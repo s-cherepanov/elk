@@ -91,7 +91,7 @@ static Object P_Query_Colors (cmap, v) Object cmap, v; {
     GC_Link (ret);
     for (i = 0; i < n; i++, p++) {
 	Object x;
-	
+
 	x = Make_Color (p->red, p->green, p->blue);
 	VECTOR(ret)->data[i] = x;
     }

@@ -318,7 +318,7 @@ obj_ldflags=
 
 # The linker flags used to link the interpreter.
 
-ldflags='-rdynamic -lm -ldl -lelf -lgdbm'
+ldflags='-rdynamic -lm -ldl -lelf'
 
 
 # The lint flags.

@@ -115,7 +115,7 @@ static Object P_Set_Context_Fallback_Resources (argc, argv) Object *argv; {
     register i;
     struct S_String *sp;
     Object con;
-    
+
     con = argv[0];
     Check_Context (con);
     if (argc > 1) {
@@ -158,7 +158,7 @@ static Object P_Context_Process_Event (argc, argv) Object *argv; {
 
 static Boolean Work_Proc (client_data) XtPointer client_data; {
     Object ret;
-    
+
     ret = Funcall (Get_Function ((int)client_data), Null, 0);
     if (Truep (ret))
 	Deregister_Function ((int)client_data);

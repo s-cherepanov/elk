@@ -91,7 +91,7 @@ static Object P_Set_Gcontext_Clip_Rectangles (gc, x, y, v, ord)
     Alloca (p, XRectangle*, n * sizeof (XRectangle));
     for (i = 0; i < n; i++) {
 	Object rect;
-	
+
 	rect = VECTOR(v)->data[i];
 	Check_Type (rect, T_Pair);
 	if (Fast_Length (rect) != 4)

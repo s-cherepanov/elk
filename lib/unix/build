@@ -55,7 +55,7 @@ O=	error.o\\
 	unix.o\\
 	wait.o
 
-all: \$(O) unix.pre
+all: \$(O) unix.so
 
 .c.o:
 	\$(CC) \$(CFLAGS) -I\$(INC) -c \$<
@@ -77,7 +77,10 @@ wait.o:		\$(H) wait.c
 unix.pre: \$(O)
 	../../scripts/makedl \$@ \$(O)
 
-install: unix.pre
+unix.so: \$(O)
+	ld -shared -o \$@ \$(O) -lc
+
+install: unix.so
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
@@ -86,11 +89,7 @@ install: unix.pre
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj; \\
-	    mkdir $install_dir/lib/elk/obj; \\
-	fi
-	cp unix.pre $install_dir/lib/elk/obj/unix.o
+	cp unix.so $install_dir/lib/elk
 	-@if [ ! -d $install_dir/include ]; then \\
 	    echo mkdir $install_dir/include; \\
 	    mkdir $install_dir/include; \\
@@ -109,8 +108,8 @@ lint:
 	lint \$(LINTFLAGS) -I\$(INC) \$(C)
 
 clean:
-	rm -f *.o unix.pre core
+	rm -f *.so *.o unix.pre core
 
 distclean:
-	rm -f *.o unix.pre core lint.out Makefile.local
+	rm -f *.so *.o unix.pre core lint.out Makefile.local
 EOT

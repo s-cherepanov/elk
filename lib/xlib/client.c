@@ -130,7 +130,7 @@ static Object P_Wm_Protocols (w) Object w; {
     GC_Link (ret);
     for (i = 0; i < n; i++) {
 	Object a;
-	
+
 	a = Make_Atom (p[i]);
 	VECTOR(ret)->data[i] = a;
     }
@@ -291,7 +291,7 @@ static Object P_Icon_Sizes (w) Object w; {
     int i, n;
     Object v;
     GC_Node;
-    
+
     Check_Type (w, T_Window);
     Disable_Interrupts;
     if (!XGetIconSizes (WINDOW(w)->dpy, WINDOW(w)->win, &p, &n))
@@ -368,7 +368,7 @@ elk_init_xlib_client () {
     Define_Symbol (&Sym_Size_Hints, "size-hints");
     Define_Primitive (P_Iconify_Window,   "iconify-window",    2, 2, EVAL);
     Define_Primitive (P_Withdraw_Window,  "withdraw-window",   2, 2, EVAL);
-    Define_Primitive (P_Reconfigure_Wm_Window, 
+    Define_Primitive (P_Reconfigure_Wm_Window,
 			"xlib-reconfigure-wm-window",          3, 3, EVAL);
     Define_Primitive (P_Wm_Command,       "wm-command",        1, 1, EVAL);
     Define_Primitive (P_Get_Text_Property,"get-text-property", 2, 2, EVAL);
@@ -381,7 +381,7 @@ elk_init_xlib_client () {
     Define_Primitive (P_Wm_Hints,         "xlib-wm-hints",     1, 1, EVAL);
     Define_Primitive (P_Set_Wm_Hints,     "xlib-set-wm-hints!",2, 2, EVAL);
     Define_Primitive (P_Size_Hints,       "xlib-wm-size-hints",2, 2, EVAL);
-    Define_Primitive (P_Set_Size_Hints,   
+    Define_Primitive (P_Set_Size_Hints,
 			"xlib-set-wm-size-hints!",             3, 3, EVAL);
     Define_Primitive (P_Icon_Sizes,       "icon-sizes",        1, 1, EVAL);
     Define_Primitive (P_Set_Icon_Sizes,   "set-icon-sizes!",   2, 2, EVAL);

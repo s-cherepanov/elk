@@ -62,7 +62,7 @@ O=	accelerator.o\\
 	translation.o\\
 	widget.o
 
-all: \$(O) xt.pre
+all: \$(O) xt.so
 
 .c.o:
 	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $x11_incl -c \$<
@@ -87,7 +87,10 @@ widget.o:	\$(H) widget.c
 xt.pre: \$(O) ../xlib/xlib.pre
 	../../scripts/makedl \$@ \$(O) ../xlib/*.o
 
-install: xt.pre
+xt.so: \$(O) ../xlib/xlib.so
+	ld -shared -o \$@ \$(O) ../xlib/*.o $libxt -lc
+
+install: xt.so
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
@@ -96,11 +99,7 @@ install: xt.pre
 	    echo mkdir $install_dir/lib/elk; \\
 	    mkdir $install_dir/lib/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/obj ]; then \\
-	    echo mkdir $install_dir/lib/elk/obj; \\
-	    mkdir $install_dir/lib/elk/obj; \\
-	fi
-	cp xt.pre $install_dir/lib/elk/obj/xt.o
+	cp xt.so $install_dir/lib/elk
 	-@if [ ! -d $install_dir/include ]; then \\
 	    echo mkdir $install_dir/include; \\
 	    mkdir $install_dir/include; \\
@@ -119,8 +118,8 @@ lint:
 	lint \$(LINTFLAGS) -I\$(INC) -I../xlib $x11_incl \$(C)
 
 clean:
-	rm -f *.o xt.pre core
+	rm -f *.so *.o xt.pre core
 
 distclean:
-	rm -f *.o xt.pre core lint.out Makefile.local
+	rm -f *.so *.o xt.pre core lint.out Makefile.local
 EOT

@@ -4,7 +4,7 @@
 ;;; Contributed by Martin Stut.
 
 
-(require 'gdbm.o)
+(require 'gdbm.so)
 
 (let ((gf (gdbm-open 'test.gdbm 1024 'create)) (last "nothing"))
      (if (not gf)

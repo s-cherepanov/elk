@@ -2,7 +2,7 @@
 ;;;
 ;;; A simple `OOPS' package
 
-(require 'hack.o)
+(require 'hack.so)
 
 (provide 'oops)
 

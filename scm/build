@@ -51,14 +51,10 @@ install: \$(TARGETS)
 	    echo mkdir $install_dir/share/elk; \\
 	    mkdir $install_dir/share/elk; \\
 	fi
-	-@if [ ! -d $install_dir/share/elk/scm ]; then \\
-	    echo mkdir $install_dir/share/elk/scm; \\
-	    mkdir $install_dir/share/elk/scm; \\
-	fi
 	@for i in \$(FILES) ;\\
 	do \\
-	    echo cp \$\$i $install_dir/share/elk/scm; \\
-	    cp \$\$i $install_dir/share/elk/scm; \\
+	    echo cp \$\$i $install_dir/share/elk; \\
+	    cp \$\$i $install_dir/share/elk; \\
 	done
 
 lint:

@@ -131,5 +131,6 @@ elk_init_lib_record () {
     Def_Prim (P_Record_Type,      "record-type-descriptor",   1, 1, EVAL);
     Def_Prim (P_Record_Values,    "record-values",            1, 1, EVAL);
     Def_Prim (P_Make_Record,      "make-record",              2, 2, EVAL);
+    P_Provide (Intern ("record.so"));
     P_Provide (Intern ("record.o"));
 }

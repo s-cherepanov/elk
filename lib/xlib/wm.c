@@ -34,7 +34,7 @@ static Object P_List_Installed_Colormaps (w) Object w; {
     GC_Link (v);
     for (i = 0; i < n; i++) {
 	Object c;
-	
+
 	c = Make_Colormap (0, WINDOW(w)->dpy, ret[i]);
 	VECTOR(v)->data[i] = c;
     }
