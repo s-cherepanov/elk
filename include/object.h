@@ -122,12 +122,13 @@ typedef struct {
 #define T_Promise        16      /* Result of (delay expression) */
 #define T_Port           17
 #define T_End_Of_File    18
-#define T_Autoload       19
-#define T_Macro          20
-#define T_Broken_Heart   21      /* only used internally */
+#define T_Unspecified    19      /* only used internally */
+#define T_Autoload       20
+#define T_Macro          21
+#define T_Broken_Heart   22      /* only used internally */
 #ifdef GENERATIONAL_GC
-#  define T_Align_8Byte  22      /* only used internally */
-#  define T_Freespace    23      /* only used internally */
+#  define T_Align_8Byte  23      /* only used internally */
+#  define T_Freespace    24      /* only used internally */
 #endif
 
 #define BIGNUM(x)   ((struct S_Bignum *)POINTER(x))

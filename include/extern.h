@@ -448,6 +448,7 @@ extern_c Object elk_import False;
 extern_c Object elk_import Void;
 extern_c Object elk_import Newline;
 extern_c Object elk_import Eof;
+extern_c Object elk_import Unspecified;
 extern Object Intern P_((const char*));
 extern Object CI_Intern P_((const char*));
 extern Object P_Oblist P_((void));

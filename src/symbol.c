@@ -48,6 +48,7 @@ Object Null,
        Void,
        Newline,
        Eof,
+       Unspecified,
        Zero,
        One;
 
@@ -59,6 +60,7 @@ void Init_Symbol () {
     SET(Unbound, T_Unbound, 0);
     SET(Special, T_Special, 0);
     SET(Eof, T_End_Of_File, 0);
+    SET(Unspecified, T_Unspecified, 0);
     Newline = Make_Char ('\n');
     Zero = Make_Integer (0);
     One = Make_Integer (1);
