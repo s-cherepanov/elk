@@ -286,10 +286,13 @@ void Print_Object (Object x, Object port, register int raw, register int depth,
         Printf (port, "#%c", FIXNUM(x) ? 't' : 'f');
         break;
     case T_Unbound:
-        Printf (port, "#[unbound]");
+        Printf (port, "#<unbound>");
+        break;
+    case T_Unspecified:
+        Printf (port, "#<unspecified>");
         break;
     case T_Special:
-        Printf (port, "#[special]");
+        Printf (port, "#<special>");
         break;
     case T_Character: {
         int c = CHAR(x);
@@ -306,7 +309,7 @@ void Print_Object (Object x, Object port, register int raw, register int depth,
         Pr_List (port, x, raw, depth, length);
         break;
     case T_Environment:
-        Printf (port, "#[environment %lu]", POINTER(x));
+        Printf (port, "#<environment %lu>", POINTER(x));
         break;
     case T_String:
         Pr_String (port, x, raw);
@@ -315,22 +318,22 @@ void Print_Object (Object x, Object port, register int raw, register int depth,
         Pr_Vector (port, x, raw, depth, length);
         break;
     case T_Primitive:
-        Printf (port, "#[primitive %s]", PRIM(x)->name);
+        Printf (port, "#<primitive %s>", PRIM(x)->name);
         break;
     case T_Compound:
         if (Nullp (COMPOUND(x)->name)) {
-            Printf (port, "#[compound %lu]", POINTER(x));
+            Printf (port, "#<compound %lu>", POINTER(x));
         } else {
-            Printf (port, "#[compound ");
+            Printf (port, "#<compound ");
             Print_Object (COMPOUND(x)->name, port, raw, depth, length);
-            Print_Char (port, ']');
+            Print_Char (port, '>');
         }
         break;
     case T_Control_Point:
-        Printf (port, "#[control-point %lu]", POINTER(x));
+        Printf (port, "#<control-point %lu>", POINTER(x));
         break;
     case T_Promise:
-        Printf (port, "#[promise %lu]", POINTER(x));
+        Printf (port, "#<promise %lu>", POINTER(x));
         break;
     case T_Port: {
         int str = PORT(x)->flags & P_STRING;
@@ -340,29 +343,29 @@ void Print_Object (Object x, Object port, register int raw, register int depth,
         case P_INPUT: p = "input";        break;
         default:      p = "input-output"; break;
         }
-        Printf (port, "#[%s-%s-port ", str ? "string" : "file", p);
+        Printf (port, "#<%s-%s-port ", str ? "string" : "file", p);
         if (str)
             Printf (port, "%lu", POINTER(x));
         else
             Pr_String (port, PORT(x)->name, 0);
-        Print_Char (port, ']');
+        Print_Char (port, '>');
         break;
     }
     case T_End_Of_File:
-        Printf (port, "#[end-of-file]");
+        Printf (port, "#<end-of-file>");
         break;
     case T_Autoload:
-        Printf (port, "#[autoload ");
+        Printf (port, "#<autoload ");
         Print_Object (AUTOLOAD(x)->files, port, raw, depth, length);
-        Print_Char (port, ']');
+        Print_Char (port, '>');
         break;
     case T_Macro:
         if (Nullp (MACRO(x)->name)) {
-            Printf (port, "#[macro %lu]", POINTER(x));
+            Printf (port, "#<macro %lu>", POINTER(x));
         } else {
-            Printf (port, "#[macro ");
+            Printf (port, "#<macro ");
             Print_Object (MACRO(x)->name, port, raw, depth, length);
-            Print_Char (port, ']');
+            Print_Char (port, '>');
         }
         break;
     case T_Broken_Heart:
