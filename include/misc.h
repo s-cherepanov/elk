@@ -28,28 +28,6 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#ifndef __GNUC__
-#  define __asm__ asm
-#endif
-
-#ifndef HUGE
-#  define HUGE HUGE_VAL
-#endif
-
-
-/* Arithmetic shift right for compilers that don't sign extend:
- */
-#if (-1 >> 1) < 0
-#  define ASR(n,s)    ((n) >>= (s))
-#else
-#  define NBITS(v)    ((sizeof v) * 8)
-#  define HIBIT(v,n)  (NBITS(v) - (n))
-#  define ASR(n,s)    ((n) >>= (s),\
-                         ((n) & (1 << (HIBIT((n),(s)) - 1)) ?\
-                            ((n) |= ~(((unsigned)1 << HIBIT((n),(s))) - 1)) :\
-                            (n)))
-#endif
-
 extern Object False2;
 
 #define Nullp(x)    (TYPE(x) == T_Null)

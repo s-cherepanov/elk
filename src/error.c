@@ -36,13 +36,8 @@
 
 #include "kernel.h"
 
-#ifdef HAVE_ATTRIBUTE_NORETURN
-void Reset () __attribute__ ((__noreturn__));
-void Err_Handler () __attribute__ ((__noreturn__));
-#else
-void Reset ();
-void Err_Handler ();
-#endif
+void Reset () elk_attribute(__noreturn__);
+void Err_Handler () elk_attribute(__noreturn__);
 
 Object Arg_True;
 

@@ -57,12 +57,8 @@
 extern void Switch_Environment (Object);
 extern unsigned int Stack_Size ();
 extern void Uncatchable_Error (char *);
-#ifdef HAVE_ATTRIBUTE_NORETURN
 extern void Funcall_Control_Point (Object, Object, int)
-        __attribute__ ((__noreturn__));
-#else
-extern void Funcall_Control_Point (Object, Object, int);
-#endif
+        elk_attribute(__noreturn__);
 extern void Pop_Frame ();
 extern void Push_Frame (Object);
 

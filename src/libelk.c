@@ -122,11 +122,7 @@ void Exit_Handler () {
 #ifndef HAVE_ATEXIT
 /* Hack: __GNUC_MINOR__ was introduced together with __attribute__ */
 #ifdef __GNUC_MINOR__
-#ifdef HAVE_ATTRIBUTE_NORETURN
-extern void _exit() __attribute__ ((noreturn));
-#else
-extern void _exit();
-#endif
+extern void _exit() elk_attribute(__noreturn__);
 #endif
 #ifndef PROFILING
 void exit (n) {

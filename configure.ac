@@ -6,7 +6,7 @@ AC_PREREQ(2.50)
 AC_CONFIG_AUX_DIR(autotools)
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(elk, 3.99.0)
+AM_INIT_AUTOMAKE(elk, 3.99.1)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -187,7 +187,7 @@ AC_DEFINE(USE_DLOPEN, 1, [FIXME HARD])
 # with a special character (such as underline)?  If so, syms_begin_with
 # should hold this character, otherwise leave it empty.
 if false; then
-  AC_DEFINE(SYMS_BEGIN_WITH, 1, [FIXME HARD])
+  AC_DEFINE(SYMS_BEGIN_WITH, ['_'], [FIXME HARD])
 fi
 
 # The symbol prefixes of extension initialization and finalization
@@ -367,18 +367,6 @@ else
 fi
 AM_CONDITIONAL(HAVE_CXX, test "${ac_cv_my_have_cxx}" = "yes")
 
-AC_CACHE_CHECK([__attribute__ ((noreturn)) support],
-  [ac_cv_c_attribute_noreturn],
-  [ac_cv_c_attribute_noreturn=no
-    CFLAGS="${CFLAGS_save} -Werror"
-    AC_TRY_COMPILE([],
-    [extern void foobar() __attribute__ ((noreturn));],
-    [ac_cv_c_attribute_noreturn=yes])
-    CFLAGS="${CFLAGS_save}"])
-if test "${ac_cv_c_attribute_noreturn}" != "no"; then
-  AC_DEFINE(HAVE_ATTRIBUTE_NORETURN, 1, Support for __attribute__((noreturn)))
-fi
-
 AC_CACHE_CHECK([if \$CC accepts -Wall],
   [ac_cv_c_Wall],
   [CFLAGS="-Wall ${CFLAGS_save}"
@@ -478,7 +466,7 @@ cat << EOF
 
 Configuration summary
 ---------------------
-C++ support: ${ac_cv_my_have_cxx}
+build C++ plugins: ${ac_cv_my_have_cxx}
 libgdbm support: ${ac_cv_my_have_xaw}
 X11 support: ${ac_cv_my_have_x11}
 Xaw support: ${ac_cv_my_have_xaw}

@@ -54,11 +54,7 @@ extern char *index();
 extern double atof();
 
 int Skip_Comment (Object);
-#ifdef HAVE_ATTRIBUTE_NORETURN
-void Reader_Error (Object, char *) __attribute__ ((__noreturn__));
-#else
-void Reader_Error (Object, char *);
-#endif
+void Reader_Error (Object, char *) elk_attribute(__noreturn__);
 
 Object Sym_Quote,
        Sym_Quasiquote,

@@ -34,11 +34,7 @@
 
 #include "kernel.h"
 
-#ifdef HAVE_ATTRIBUTE_NORETURN
-extern void Reset () __attribute__ ((__noreturn__));
-#else
-extern void Reset ();
-#endif
+extern void Reset () elk_attribute(__noreturn__);
 
 int Intr_Was_Ignored;
 unsigned long int Intr_Level;
