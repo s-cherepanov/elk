@@ -33,17 +33,27 @@
 static Object Sym_Exit, Sym_Default, Sym_Ignore;
 
 static SYMDESCR Signal_Syms[] = {
+#ifdef SIGALRM
     { "sigalrm", SIGALRM },
+#endif
 #ifdef SIGBUS
     { "sigbus", SIGBUS },
 #endif
     { "sigfpe", SIGFPE },
+#ifdef SIGHUP
     { "sighup", SIGHUP },
+#endif
     { "sigill", SIGILL },
     { "sigint", SIGINT },
+#ifdef SIGKILL
     { "sigkill", SIGKILL },
+#endif
+#ifdef SIGPIPE
     { "sigpipe", SIGPIPE },
+#endif
+#ifdef SIGQUIT
     { "sigquit", SIGQUIT },
+#endif
     { "sigsegv", SIGSEGV },
     { "sigterm", SIGTERM },
 #ifdef SIGABRT
@@ -179,6 +189,7 @@ static SYMDESCR Signal_Syms[] = {
 };
 
 static Object P_Kill(Object pid, Object sig) {
+#ifndef WIN32
     int t, s;
 
     if ((t = TYPE(sig)) == T_Fixnum || t == T_Bignum)
@@ -189,6 +200,7 @@ static Object P_Kill(Object pid, Object sig) {
         Wrong_Type_Combination(sig, "symbol or integer");
     if (kill(Get_Integer(pid), s) == -1)
         Raise_System_Error("~E");
+#endif
     return Void;
 }
 
@@ -197,8 +209,11 @@ static Object P_List_Signals() {
 }
 
 static Object P_Pause() {
+#ifndef WIN32
     pause();
     Fatal_Error("pause() returned unexpectedly");
+#endif
+    return Void;
 }
 
 #if defined(HAVE_SIGPROCMASK) || defined(HAVE_SIGBLOCK)

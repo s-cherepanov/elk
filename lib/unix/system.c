@@ -192,7 +192,7 @@ static Object P_System_Info(Object ret) {
     GC_Link(ret);
     x = Make_String(p, strlen(p)); VECTOR(ret)->data[0] = x;
     strcpy(systype, SYSTEMTYPE);
-    if ((p = index(systype, '-')) && (q = index(p+1, '-'))) {
+    if ((p = strchr(systype, '-')) && (q = strchr(p+1, '-'))) {
         *p++ = 0; *q = 0;
     } else p = "?";
     x = Make_String(systype, strlen(systype)); VECTOR(ret)->data[1] = x;

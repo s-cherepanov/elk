@@ -19,7 +19,7 @@ unix_la_SOURCES = \
 	unix.c \
 	wait.c \
 	$(NULL)
-unix_la_LDFLAGS = -module -avoid-version
+unix_la_LDFLAGS = -module -avoid-version -no-undefined
 unix_la_LIBADD = $(top_builddir)/src/libelk.la
 
 extensions_HEADERS = unix.h

@@ -32,8 +32,11 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <sys/times.h>
+#ifdef HAVE_SYS_TIMES_H
+#   include <sys/times.h>
+#endif
 
+#ifndef WIN32
 /* "extern" in front of the next declaration causes the Ultrix 4.2 linker
  * to fail when dynamically loading unix.o (but omitting it does no longer
  * work with modern C compilers):
@@ -50,7 +53,7 @@ static Object P_Environ() {
     GC_Link2(ret, cell);
     for (ep = environ; *ep; ep++) {
         cell = Cons(Null, Null);
-        p = index(*ep, '=');
+        p = strchr(*ep, '=');
         if (p)
             *p++ = 0;
         else p = c+1;
@@ -343,7 +346,7 @@ err:
     }
     if (fgets(buf, max, fp) == 0)
         goto err;
-    if (p = index(buf, '\n')) *p = '\0';
+    if (p = strchr(buf, '\n')) *p = '\0';
     (void)pclose(fp);
 #endif
 #endif
@@ -374,3 +377,4 @@ void elk_init_unix_process() {
     Def_Prim(P_Umask,               "unix-umask",                1, 1, EVAL);
     Def_Prim(P_Working_Directory,   "unix-working-directory",    0, 0, EVAL);
 }
+#endif

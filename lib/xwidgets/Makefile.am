@@ -18,12 +18,12 @@ endif
 
 xaw_xt_la_SOURCES = $(SOURCES_XT)
 xaw_xt_la_CFLAGS = -I$(srcdir)/../xlib @XAW_CFLAGS@
-xaw_xt_la_LDFLAGS = -module -avoid-version
+xaw_xt_la_LDFLAGS = -module -avoid-version -no-undefined
 xaw_xt_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
 
 motif_xt_la_SOURCES = $(SOURCES_XT)
 motif_xt_la_CFLAGS = -I$(srcdir)/../xlib @MOTIF_CFLAGS@
-motif_xt_la_LDFLAGS = -module -avoid-version
+motif_xt_la_LDFLAGS = -module -avoid-version -no-undefined
 motif_xt_la_LIBADD = $(top_builddir)/src/libelk.la @MOTIF_LIBS@
 
 extensions_HEADERS = xt.h

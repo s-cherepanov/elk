@@ -34,7 +34,9 @@
 #include <sys/stat.h>
 #include <sys/param.h>
 #include <time.h>
-#include <sys/wait.h>
+#ifdef HAVE_SYS_WAIT_H
+#  include <sys/wait.h>
+#endif
 #include <fcntl.h>
 #include <errno.h>
 

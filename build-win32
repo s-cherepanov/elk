@@ -13,10 +13,11 @@ rm -Rf "${DIRNAME}"
 rm -f "${DIRNAME}.zip"
 mkdir "${DIRNAME}"
 
-# To build for win32, I use ./configure --host=i586-mingw32msvc
-(cd src && make && cp elk.exe "${DESTDIR}")
-(cd scm && make install DESTDIR="${DESTDIR}" datadir="/")
-mv "${DESTDIR}/elk" "${DESTDIR}/scm"
+# To build for win32, I use:
+#   ./configure --host=i586-mingw32msvc --prefix=/ --bindir=/ --libdir=/
+#   make pkglibdir=/lib pkgdatadir=/scm
+make install DESTDIR="${DESTDIR}" pkglibdir=/lib pkgdatadir=/scm
+cp "src/.libs/libelk-0.dll" "${DESTDIR}"
 
 # Pack the directory
 zip "${DIRNAME}.zip" `find "${DIRNAME}"`

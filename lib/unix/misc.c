@@ -32,6 +32,7 @@
 
 #include <string.h>
 
+#ifndef WIN32
 static Object P_Getpass(Object prompt) {
     char *ret;
     extern char *getpass();
@@ -47,3 +48,4 @@ static Object P_Getpass(Object prompt) {
 void elk_init_unix_misc() {
     Def_Prim(P_Getpass,          "unix-getpass",                1, 1, EVAL);
 }
+#endif

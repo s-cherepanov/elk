@@ -31,10 +31,15 @@
 #include "unix.h"
 
 #include <string.h>
-#include <pwd.h>
-#include <grp.h>
+#ifdef HAVE_PWD_H
+#   include <pwd.h>
+#endif
+#ifdef HAVE_GRP_H
+#   include <grp.h>
+#endif
 
 static Object P_Get_Passwd(int argc, Object *argv) {
+#ifndef WIN32
     struct passwd *p;
     Object arg, x;
 
@@ -77,24 +82,30 @@ static Object P_Get_Passwd(int argc, Object *argv) {
     VECTOR(argv[0])->data[5] = x;
     x = Make_String(p->pw_shell, strlen(p->pw_shell));
     VECTOR(argv[0])->data[6] = x;
+#endif
     return Void;
 }
 
 static Object P_Rewind_Passwd() {
+#ifndef WIN32
     Disable_Interrupts;
     setpwent();
     Enable_Interrupts;
+#endif
     return Void;
 }
 
 static Object P_End_Passwd() {
+#ifndef WIN32
     Disable_Interrupts;
     endpwent();
     Enable_Interrupts;
+#endif
     return Void;
 }
 
 static Object P_Get_Group(int argc, Object *argv) {
+#ifndef WIN32
     char **pp;
     struct group *p;
     Object arg, member, x;
@@ -140,20 +151,25 @@ static Object P_Get_Group(int argc, Object *argv) {
     x = P_Reverse(x);
     GC_Unlink;
     VECTOR(argv[0])->data[3] = x;
+#endif
     return Void;
 }
 
 static Object P_Rewind_Group() {
+#ifndef WIN32
     Disable_Interrupts;
     setgrent();
     Enable_Interrupts;
+#endif
     return Void;
 }
 
 static Object P_End_Group() {
+#ifndef WIN32
     Disable_Interrupts;
     endgrent();
     Enable_Interrupts;
+#endif
     return Void;
 }
 

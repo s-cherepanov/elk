@@ -12,7 +12,7 @@ endif
 nodist_motif_widgets_la_SOURCES = $(SOURCES_C)
 motif_widgets_la_SOURCES = init.c
 motif_widgets_la_CFLAGS = -I$(srcdir)/../../xlib @MOTIF_CFLAGS@
-motif_widgets_la_LDFLAGS = -module -avoid-version -u XmIsMotifWMRunning
+motif_widgets_la_LDFLAGS = -module -avoid-version -no-undefined -u XmIsMotifWMRunning
 motif_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @MOTIF_LIBS@
 
 .d.c:

@@ -62,7 +62,9 @@ static SYMDESCR Fcntl_Flags[] = {
 #ifdef O_SYNCIO
     { "syncio",     O_SYNCIO },
 #endif
+#ifdef O_NDELAY
     { "ndelay",     O_NDELAY },
+#endif
 #ifdef O_NONBLOCK
     { "nonblock",   O_NONBLOCK },
 #endif
@@ -91,15 +93,19 @@ static Object P_Close(Object fd) {
 }
 
 static Object P_Close_On_Exec(int argc, Object *argv) {
-    int flags, fd;
+    int flags = 0, fd;
 
     fd = Get_Integer(argv[0]);
+#ifndef WIN32
     if ((flags = fcntl(fd, F_GETFD, 0)) == -1)
         Raise_System_Error("fcntl(F_GETFD): ~E");
+#endif
     if (argc == 2) {
         Check_Type(argv[1], T_Boolean);
+#ifndef WIN32
         if (fcntl(fd, F_SETFD, Truep(argv[1])) == -1)
             Raise_System_Error("fcntl(F_SETFD): ~E");
+#endif
     }
     return flags & 1 ? True : False;
 }
@@ -113,14 +119,18 @@ static Object P_Dup(int argc, Object *argv) {
 }
 
 static Object P_Filedescriptor_Flags(int argc, Object *argv) {
-    int flags, fd;
+    int flags = 0, fd;
 
     fd = Get_Integer(argv[0]);
+#ifndef WIN32
     if ((flags = fcntl(fd, F_GETFL, 0)) == -1)
         Raise_System_Error("fcntl(F_GETFL): ~E");
+#endif
     if (argc == 2) {
+#ifndef WIN32
         if (fcntl(fd, F_SETFL, Symbols_To_Bits(argv[1], 1, Fcntl_Flags)) == -1)
             Raise_System_Error("fcntl(F_SETFL): ~E");
+#endif
     }
     return Bits_To_Symbols((unsigned long)flags, 1, Fcntl_Flags);
 }
@@ -223,7 +233,11 @@ static Object P_Open(int argc, Object *argv) {
 static Object P_Pipe() {
     int fd[2];
 
+#ifdef WIN32
+    if (_pipe(fd, 256, O_BINARY) == -1)
+#else
     if (pipe(fd) == -1)
+#endif
         Raise_System_Error("~E");
     return Integer_Pair(fd[0], fd[1]);
 }
@@ -267,12 +281,14 @@ static Object P_Writex(int argc, Object *argv) {
 }
 
 static Object P_Ttyname(Object fd) {
-    char *ret;
+    char *ret = NULL;
+#ifndef WIN32
     extern char *ttyname();
 
     Disable_Interrupts;
     ret = ttyname(Get_Integer(fd));
     Enable_Interrupts;
+#endif
     return ret ? Make_String(ret, strlen(ret)) : False;
 }
 

@@ -34,13 +34,15 @@
 
 #ifdef HAVE_UTIME_H
 #  include <utime.h>
+#elif HAVE_SYS_UTIME_H
+#  include <sys/utime.h>
 #else
 struct utimbuf {
     time_t actime, modtime;
 };
 #endif
 
-#ifdef HAVE_DIRENT
+#ifdef HAVE_DIRENT_H
 #  include <dirent.h>
 #else
 #  include <sys/dir.h>
@@ -78,26 +80,32 @@ static Object P_Chmod(Object fn, Object mode) {
 }
 
 static Object P_Chown(Object fn, Object uid, Object gid) {
+#ifndef WIN32
     if (chown(Get_Strsym(fn), Get_Integer(uid), Get_Integer(gid)) == -1)
         Raise_System_Error1("~s: ~E", fn);
+#endif
     return Void;
 }
 
 static Object P_Link(Object fn1, Object fn2) {
+#ifndef WIN32
     if (link(Get_Strsym(fn1), Get_Strsym(fn2)) == -1)
         Raise_System_Error2("(~s ~s): ~E", fn1, fn2);
+#endif
     return Void;
 }
 
 static Object P_Mkdir(Object fn, Object mode) {
+#ifndef WIN32
     if (mkdir(Get_Strsym(fn), Get_Integer(mode)) == -1)
         Raise_System_Error1("~s: ~E", fn);
+#endif
     return Void;
 }
 
 static Object P_Read_Directory(Object fn) {
     DIR *d;
-#ifdef HAVE_DIRENT
+#ifdef HAVE_DIRENT_H
     struct dirent *dp;
 #else
     struct direct *dp;
@@ -155,7 +163,7 @@ static Object General_Stat(Object obj, Object ret, int l) {
     Object x;
     struct stat st;
     char *s, *fn = NULL;
-    int fd = -1, result;
+    int fd = -1, result = 0;
     GC_Node;
 
     Check_Result_Vector(ret, 11);
@@ -268,9 +276,11 @@ static Object P_Utime(int argc, Object *argv) {
         ut.actime = (time_t)Get_Unsigned_Long(argv[1]);
         ut.modtime = (time_t)Get_Unsigned_Long(argv[2]);
     }
+#ifndef WIN32
     if (utime(Get_Strsym(argv[0]), argc == 1 ? (struct utimbuf *)0 : &ut)
             == -1)
         Raise_System_Error1("~s: ~E", argv[0]);
+#endif
     return Void;
 }
 

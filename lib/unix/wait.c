@@ -77,6 +77,7 @@ static SYMDESCR Wait_Flags[] = {
 
 static Object General_Wait(Object ret, Object ruret,
                            int haspid, int pid, int options) {
+#ifndef WIN32
     int retpid, st, code;
     char *status;
 #ifdef WAIT_RUSAGE
@@ -137,6 +138,7 @@ static Object General_Wait(Object ret, Object ruret,
     VECTOR(ruret)->data[1] = x;
 #endif
     GC_Unlink;
+#endif
     return Void;
 }
 

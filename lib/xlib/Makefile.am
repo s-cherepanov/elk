@@ -34,7 +34,7 @@ xlib_la_SOURCES = \
 	xobjects.c \
 	$(NULL)
 xlib_la_CFLAGS = @X_CFLAGS@
-xlib_la_LDFLAGS = -module -avoid-version
+xlib_la_LDFLAGS = -module -avoid-version -no-undefined
 xlib_la_LIBADD = $(top_builddir)/src/libelk.la @X_LIBS@
 
 extensions_HEADERS = xlib.h
