@@ -413,6 +413,5 @@ AC_OUTPUT([
   scm/Makefile
   scm/slib.scm
   src/Makefile
-  util/Makefile
 ])
 
