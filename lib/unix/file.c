@@ -154,8 +154,8 @@ static Object P_Rename(Object fromfn, Object tofn) {
 static Object General_Stat(Object obj, Object ret, int l) {
     Object x;
     struct stat st;
-    char *s, *fn = 0;
-    int fd, result;
+    char *s, *fn = NULL;
+    int fd = -1, result;
     GC_Node;
 
     Check_Result_Vector(ret, 11);

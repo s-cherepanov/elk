@@ -43,6 +43,8 @@
 
 #define STRING_BLOCK 8192
 
+extern void Free_Symbols (SYMTAB *);
+
 SYMTAB *Snarf_Symbols (FILE *f, struct exec *ep) {
     SYMTAB       *tab;
     register SYM *sp;

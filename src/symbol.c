@@ -35,7 +35,7 @@
 
 #include "kernel.h"
 
-int Hash (char const *, int);
+int Hash (char const *, unsigned int);
 
 Object Obarray;
 
@@ -91,7 +91,7 @@ Object P_Symbol_To_String (Object x) {
     return SYMBOL(x)->name;
 }
 
-Object Obarray_Lookup (register char const *str, register int len) {
+Object Obarray_Lookup (register char const *str, register unsigned int len) {
     register int h;
     register struct S_String *s;
     register struct S_Symbol *sym;
@@ -109,7 +109,7 @@ Object Obarray_Lookup (register char const *str, register int len) {
 
 Object CI_Intern (char const *str) {
     Object s, *p, sym, ostr;
-    register int len;
+    register unsigned int len;
     register char const *src;
     char *dst;
     char buf[128];
@@ -140,7 +140,7 @@ Object CI_Intern (char const *str) {
 
 Object Intern (char const *str) {
     Object s, *p, sym, ostr;
-    register int len;
+    register unsigned int len;
 
     if (Case_Insensitive)
         return CI_Intern (str);
@@ -245,7 +245,7 @@ Object P_Symbol_Plist (Object sym) {
     return Copy_List (SYMBOL(sym)->plist);
 }
 
-int Hash (char const *str, int len) {
+int Hash (char const *str, unsigned int len) {
     register int h;
     register char const *p, *ep;
 
@@ -325,7 +325,7 @@ Object Bits_To_Symbols (unsigned long int x, int mflag, SYMDESCR *stab) {
     if (mflag) {
         GC_Link2 (list, tail);
         for (list = tail = Null, syms = stab; syms->name; syms++)
-            if ((x & syms->val) && syms->val != ~0) {
+            if ((x & syms->val) && syms->val != ~0U) {
                 Object z;
 
                 z = Intern (syms->name);

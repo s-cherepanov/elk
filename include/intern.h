@@ -59,7 +59,6 @@ extern unsigned Bignum_To_Unsigned P_((Object));
 extern unsigned long Bignum_To_Unsigned_Long P_((Object));
 extern long Bignum_To_Long P_((Object));
 extern Object Bignum_To_String P_((Object, int));
-extern double Bignum_To_Double P_((Object));
 extern int Bignum_Equal P_((Object, Object));
 extern int Bignum_Greater P_((Object, Object));
 extern int Bignum_Less P_((Object, Object));
@@ -120,7 +119,6 @@ extern int Interpreter_Initialized, Was_Dumped;
 extern char *Brk_On_Dump;
 extern int Verb_Load, Verb_Init, Case_Insensitive;
 extern SYMTAB *The_Symbols;
-extern void Exit_Handler P_((void));
 extern char *Scm_Dir;
 extern char *Lib_Dir;
 #ifndef HAVE_ATEXIT
@@ -158,7 +156,7 @@ extern Object Save_GC_Nodes P_((void));
 /* string.c
  */
 extern char Char_Map[];
-extern Object General_Make_String P_((const char*, int, int));
+extern Object General_Make_String P_((const char*, unsigned int, int));
 
 /* symbol.c
  */

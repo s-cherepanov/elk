@@ -71,7 +71,7 @@ Object P_Provide (Object sym) {
 
 static Object Feature_Filename (Object str) {
     struct S_String *sp = STRING(str);
-    int len = sp->size;
+    unsigned int len = sp->size;
     char *p;
     Object s;
     GC_Node;

@@ -43,7 +43,7 @@
 #include "kernel.h"
 
 static char *heapstr[NUMSTRBUFS];
-static int heaplen[NUMSTRBUFS];
+static unsigned int heaplen[NUMSTRBUFS];
 static int nextstr;
 
 void Init_Cstring() {  /* Preallocate memory to avoid fragmentation */
@@ -55,10 +55,11 @@ void Init_Cstring() {  /* Preallocate memory to avoid fragmentation */
 
 char *Get_String (Object str) {
     char **pp = &heapstr[nextstr];
-    int len;
+    unsigned int len;
 
     Check_Type (str, T_String);
-    if ((len = STRING(str)->size+1) > heaplen[nextstr]) {
+    len = STRING(str)->size + 1;
+    if (len > heaplen[nextstr]) {
         Disable_Interrupts;
         *pp = Safe_Realloc (*pp, len);
         heaplen[nextstr] = len;

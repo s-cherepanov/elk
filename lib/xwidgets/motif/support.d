@@ -150,19 +150,19 @@
 "   Check_Type (x, T_Character); return (XtArgVal)CHAR(x);")
 
 (define position->scheme
-"   return Make_Integer (*(Position *)&x);")
+"   return Make_Integer (*(Position *)(void *)&x);")
 
 (define scheme->position
 "   return (XtArgVal)Get_Integer (x);")
 
 (define dimension->scheme
-"   return Make_Integer (*(Dimension *)&x);")
+"   return Make_Integer (*(Dimension *)(void *)&x);")
 
 (define scheme->dimension
 "   return (XtArgVal)Get_Unsigned (x);")
 
 (define int->scheme
-"   return Make_Integer (*(int *)&x);")
+"   return Make_Integer (*(int *)(void *)&x);")
 
 (define scheme->int
 "   return (XtArgVal)Get_Integer (x);")

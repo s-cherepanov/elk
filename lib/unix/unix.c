@@ -57,7 +57,7 @@ Object Syms_To_List(SYMDESCR *p) {
     return P_Reverse(ret);
 }
 
-void Check_Result_Vector(Object x, int len) {
+void Check_Result_Vector(Object x, unsigned int len) {
     Check_Type(x, T_Vector);
     if (VECTOR(x)->size != len)
         Primitive_Error("argument vector has the wrong length");

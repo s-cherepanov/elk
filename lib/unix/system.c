@@ -52,7 +52,7 @@ static SYMDESCR Limit_Syms[] = {
 };
 
 static Object P_File_Limit(Object lim, Object f) {
-    int op, fd;
+    int op = 0, fd = -1;
     long ret;
     char *fn = 0;
 

@@ -146,7 +146,7 @@ void Jump_Cont (struct S_Control *cp, Object val) {
     p = cp;
     Cont_Value = val;
     if (Stack_Grows_Down) {
-        if (stkbase - &foo < p->size) Grow_Stack (cp, val);
+        if (stkbase < &foo + p->size) Grow_Stack (cp, val);
         to = stkbase - p->size;
     } else {
         if (stkbase + p->size > &foo) Grow_Stack (cp, val);

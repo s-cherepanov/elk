@@ -168,7 +168,8 @@ static Object P_Regexp_Exec(int argc, Object *argv) {
     char *str, msg[256];
     Object r, m;
     size_t num;
-    int from, flags, ret;
+    unsigned int from;
+    int flags, ret;
     GC_Node;
 
     r = argv[0];

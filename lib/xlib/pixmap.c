@@ -89,7 +89,7 @@ static Object P_Create_Pixmap (Object d, Object w, Object h, Object depth) {
 
 static Object P_Create_Bitmap_From_Data (Object win, Object data, Object pw,
                                          Object ph) {
-    register int w, h;
+    register unsigned int w, h;
 
     Check_Type (win, T_Window);
     Check_Type (data, T_String);
@@ -106,7 +106,7 @@ static Object P_Create_Pixmap_From_Bitmap_Data (Object win, Object data,
                                                 Object pw, Object ph,
                                                 Object fg, Object bg,
                                                 Object depth) {
-    register int w, h;
+    register unsigned int w, h;
 
     Check_Type (win, T_Window);
     Check_Type (data, T_String);

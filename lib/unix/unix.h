@@ -53,6 +53,9 @@ extern SYMDESCR Lseek_Syms[];
 Object Integer_Pair P_((int, int));
 Object Syms_To_List P_((SYMDESCR*));
 
+extern void Check_Result_Vector P_((Object, unsigned int));
+extern int Num_Filedescriptors P_(());
+
 #define Get_Filename_Or_Filedescr(obj,fd,fn) \
     switch (TYPE(obj)) {\
     case T_String: case T_Symbol:\

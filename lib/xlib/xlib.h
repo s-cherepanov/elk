@@ -196,7 +196,8 @@ extern Object P_Free_Pixmap P_((Object));
 extern Object P_Window_Unique_Id P_((Object));
 extern Object Record_To_Vector
     P_((RECORD*, int, Object, Display*, unsigned long int));
-extern unsigned long int Vector_To_Record P_((Object, int, Object, RECORD*));
+extern unsigned long int Vector_To_Record
+    P_((Object, unsigned int, Object, RECORD*));
 
 C_LINKAGE_END
 

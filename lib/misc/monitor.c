@@ -53,6 +53,7 @@
 #include "config.h"
 
 #include <sys/types.h>
+#include <sys/gmon.h>
 
 #include "scheme.h"
 

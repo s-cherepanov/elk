@@ -84,7 +84,8 @@ int Eqv (Object x1, Object x2) {
 }
 
 int Equal (Object x1, Object x2) {
-    register int t1, t2, i;
+    register int t1, t2;
+    register unsigned int i;
 
 again:
     if (EQ(x1, x2))

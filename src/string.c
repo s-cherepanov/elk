@@ -48,7 +48,7 @@ void Init_String () {
         Char_Map[i] = tolower (i);
 }
 
-Object General_Make_String (char const *s, int len, int konst) {
+Object General_Make_String (char const *s, unsigned int len, int konst) {
     Object str;
 
     str = Alloc_Object (len + sizeof (struct S_String) - 1, T_String, konst);
@@ -59,11 +59,11 @@ Object General_Make_String (char const *s, int len, int konst) {
     return str;
 }
 
-Object Make_String (char const *s, int len) {
+Object Make_String (char const *s, unsigned int len) {
     return General_Make_String (s, len, 0);
 }
 
-Object Make_Const_String (char const *s, int len) {
+Object Make_Const_String (char const *s, unsigned int len) {
     return General_Make_String (s, len, 1);
 }
 
@@ -72,7 +72,7 @@ Object P_Stringp (Object s) {
 }
 
 Object P_Make_String (int argc, Object *argv) {
-    register int len, c = ' ';
+    register unsigned int len, c = ' ';
     Object str;
     register char *p;
 
@@ -150,9 +150,11 @@ Object P_Substring (Object s, Object a, Object b) {
     register int i, j;
 
     Check_Type (s, T_String);
-    if ((i = Get_Exact_Integer (a)) < 0 || i > STRING(s)->size)
+    i = Get_Exact_Integer (a);
+    if (i < 0 || i > (int)STRING(s)->size)
         Range_Error (a);
-    if ((j = Get_Exact_Integer (b)) < 0 || j > STRING(s)->size)
+    j = Get_Exact_Integer (b);
+    if (j < 0 || j > (int)STRING(s)->size)
         Range_Error (b);
     if (i > j)
         Primitive_Error ("`end' less than `start'");
@@ -198,7 +200,7 @@ Object P_List_To_String (Object list) {
 }
 
 Object P_String_To_List (Object s) {
-    register int i;
+    register unsigned int i;
     Object list, tail, cell;
     GC_Node3;
 
@@ -223,7 +225,8 @@ Object P_Substring_Fill (Object s, Object a, Object b, Object c) {
     Check_Mutable (s);
     Check_Type (c, T_Character);
     i = Get_Index (a, s);
-    if ((j = Get_Exact_Integer (b)) < 0 || j > STRING(s)->size)
+    j = Get_Exact_Integer (b);
+    if (j < 0 || j > (int)STRING(s)->size)
         Range_Error (b);
     if (i > j)
         Primitive_Error ("`end' less than `start'");

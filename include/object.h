@@ -171,13 +171,13 @@ struct S_Pair {
 
 struct S_String {
     Object tag;
-    int size;
+    unsigned int size;
     char data[1];
 };
 
 struct S_Vector {
     Object tag;
-    int size;
+    unsigned int size;
     Object data[1];
 };
 
@@ -242,7 +242,7 @@ struct S_Control {
     int reloc;
 #endif
     jmp_buf j;
-    int size;
+    unsigned int size;
     unsigned long int intrlevel;
     char stack[1];    /* must be word aligned */
 };
@@ -257,7 +257,7 @@ struct S_Port {
     Object name;    /* string */
     short flags;
     char unread;
-    int ptr;
+    unsigned int ptr;
     FILE *file;
     unsigned int lno;
     int (*closefun) P_((FILE*));

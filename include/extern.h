@@ -39,6 +39,7 @@ extern Object P_Autoload P_((Object, Object));
  */
 extern Object Make_Uninitialized_Bignum P_((int));
 extern void Bignum_Normalize_In_Place P_((struct S_Bignum *));
+extern double Bignum_To_Double P_((Object));
 
 /* Boolean operators
  */
@@ -119,6 +120,7 @@ extern const char *Error_Tag;    /* will be removed in the near future */
 extern const char *Get_Error_Tag P_((void));
 extern void Set_Error_Tag P_((const char *));
 extern void Set_App_Name P_((char *));
+extern void Reader_Error P_((Object, char *)) elk_attribute(__noreturn__);
 
 /* Interrupts
  */
@@ -172,7 +174,7 @@ extern Object P_Close_Output_Port P_((Object));
 extern Object P_Port_Line_Number P_((Object));
 extern Object Terminate_File P_((Object));
 extern Object Make_Port P_((int, FILE*, Object));
-extern int Path_Max P_((void));
+extern unsigned int Path_Max P_((void));
 
 /* Loading of files
  */
@@ -236,7 +238,7 @@ extern Object P_Memv P_((Object, Object));
 extern Object P_Member P_((Object, Object));
 extern Object P_Make_List P_((Object, Object));
 extern Object Copy_List P_((Object));
-extern int Fast_Length P_((Object));
+extern unsigned int Fast_Length P_((Object));
 extern Object Const_Cons P_((Object, Object));
 
 /* Startup and termination
@@ -244,6 +246,7 @@ extern Object Const_Cons P_((Object, Object));
 extern Object P_Command_Line_Args P_((void));
 extern Object P_Exit P_((int, Object*));
 extern void Elk_Init P_((int, char **av, int, char *));
+extern void Exit_Handler P_((void));
 
 /* malloc() and realloc()
  */
@@ -341,9 +344,9 @@ extern Object P_Get_Output_String P_((Object));
 extern void Check_Output_Port P_((Object));
 extern void Discard_Output P_((Object));
 extern void Printf P_((Object, const char *, ...));
-extern void Print_Object P_((Object, Object, int, int, int));
+extern void Print_Object P_((Object, Object, int, int, unsigned int));
 extern void General_Print_Object P_((Object, Object, int));
-extern void Format P_((Object, const char*, int, int, Object*));
+extern void Format P_((Object, const char*, unsigned int, int, Object*));
 extern int Saved_Errno;
 
 /* Evaluator, procedures, macros
@@ -406,8 +409,8 @@ extern Object P_Begin1 P_((Object));
 
 /* Strings
  */
-extern Object Make_String P_((const char*, int));
-extern Object Make_Const_String P_((const char*, int));
+extern Object Make_String P_((const char*, unsigned int));
+extern Object Make_Const_String P_((const char*, unsigned int));
 extern Object P_Make_String P_((int, Object*));
 extern Object P_Stringp P_((Object));
 extern Object P_String P_((int, Object*));
@@ -434,6 +437,8 @@ extern Object P_Substring_Fill P_((Object, Object, Object, Object));
 extern Object P_String_Fill P_((Object, Object));
 extern Object P_Substringp P_((Object, Object));
 extern Object P_CI_Substringp P_((Object, Object));
+extern int String_Getc P_((Object));
+extern void String_Ungetc P_((Object, register int));
 
 /* Symbols, variables, frequently used Scheme objects
  */
@@ -478,8 +483,8 @@ extern int Define_Type P_((int, const char*, int (*)(Object), int,
 
 /* Vectors
  */
-extern Object Make_Vector P_((int, Object));
-extern Object Make_Const_Vector P_((int, Object));
+extern Object Make_Vector P_((unsigned int, Object));
+extern Object Make_Const_Vector P_((unsigned int, Object));
 extern Object P_Make_Vector P_((int, Object*));
 extern Object P_Vectorp P_((Object));
 extern Object P_Vector P_((int, Object*));

@@ -117,7 +117,7 @@ Object P_Output_Portp (Object x) {
     return TYPE(x) == T_Port && IS_OUTPUT(x) ? True : False;
 }
 
-int Path_Max () {
+unsigned int Path_Max () {
 #if defined(PATH_MAX) /* POSIX */
     return PATH_MAX;
 #elif defined(MAXPATHLEN) /* 4.3 BSD */
@@ -136,13 +136,14 @@ int Path_Max () {
 }
 
 Object Get_File_Name (Object name) {
-    register int len;
+    register unsigned int len;
 
     if (TYPE(name) == T_Symbol)
         name = SYMBOL(name)->name;
     else if (TYPE(name) != T_String)
         Wrong_Type_Combination (name, "string or symbol");
-    if ((len = STRING(name)->size) > Path_Max () || len == 0)
+    len = STRING(name)->size;
+    if (len > Path_Max () || len == 0)
         Primitive_Error ("invalid file name");
     return name;
 }
@@ -273,7 +274,7 @@ Object General_Open_File (Object name, int flags, Object path) {
     Object port, pref;
     char *buf = 0;
     register char *fn;
-    register int plen, len, blen = 0, gotpath = 0;
+    register unsigned int plen, len, blen = 0, gotpath = 0;
     Alloca_Begin;
 
     name = Get_File_Name (name);
@@ -291,7 +292,8 @@ Object General_Open_File (Object name, int flags, Object path) {
             if (TYPE(pref) != T_String)
                 continue;
             gotpath = 1;
-            if ((plen = STRING(pref)->size) > Path_Max () || plen == 0)
+            plen = STRING(pref)->size;
+            if (plen > Path_Max () || plen == 0)
                 continue;
             if (len + plen + 2 > blen) {
                 blen = len + plen + 2;

@@ -89,7 +89,7 @@ static Object Internal_Draw_Points (Object d, Object gc, Object v,
     Drawable dr = Get_Drawable (d, &dpy);
     register XPoint *p;
     register int i, n;
-    int rel, sh;
+    int rel, sh = 0;
     Alloca_Begin;
 
     Check_Type (gc, T_Gc);

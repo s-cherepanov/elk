@@ -48,7 +48,7 @@
 
 #define copy(from,to,size) {\
     char buf[4096];\
-    int len = (size), n;\
+    unsigned int len = (size), n;\
     \
     while (len > 0) {\
         if ((n = read (from, buf, 4096)) == -1) {\

@@ -243,7 +243,8 @@ static Object Read_Write(int argc, Object *argv, int readflg) {
     Check_Type(argv[1], T_String);
     sp = STRING(argv[1]);
     if (argc == 3) {
-        if ((len = Get_Integer(argv[2])) < 0 || len > sp->size)
+        len = Get_Integer(argv[2]);
+        if (len < 0 || (unsigned int)len > sp->size)
             Range_Error(argv[2]);
     } else len = sp->size;
     if (readflg)

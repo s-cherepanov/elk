@@ -52,12 +52,12 @@ extern void Print_Bignum (Object, Object);
 extern int errno;
 
 void Flush_Output (Object);
-void Print_String (Object, register char *, register int);
+void Print_String (Object, register char *, register unsigned int);
 void Pr_Char (Object, register int);
 void Pr_Symbol (Object, Object, int);
-void Pr_List (Object, Object, register int, register int, register int);
+void Pr_List (Object, Object, register int, register int, register unsigned int);
 void Pr_String (Object, Object, int);
-void Pr_Vector (Object, Object, register int, register int, register int);
+void Pr_Vector (Object, Object, register int, register int, register unsigned int);
 void Print_Special (Object, register int);
 
 int Saved_Errno;
@@ -99,7 +99,7 @@ void Print_Char (Object port, register int c) {
     }
 }
 
-void Print_String (Object port, register char *buf, register int len) {
+void Print_String (Object port, register char *buf, register unsigned int len) {
     register int n;
     register struct S_Port *p;
     Object new;
@@ -107,7 +107,7 @@ void Print_String (Object port, register char *buf, register int len) {
 
     p = PORT(port);
     n = STRING(p->name)->size - p->ptr;
-    if (n < len) {
+    if (n < (int)len) {
         GC_Link (port);
         n = len - n;
         if (n < STRING_GROW_SIZE)
@@ -263,7 +263,7 @@ void General_Print_Object (Object x, Object port, int raw) {
 }
 
 void Print_Object (Object x, Object port, register int raw, register int depth,
-        register int length) {
+        register unsigned int length) {
     register int t;
     GC_Node2;
 
@@ -408,9 +408,9 @@ void Pr_Char (Object port, register int c) {
 }
 
 void Pr_List (Object port, Object list, register int raw, register int depth,
-        register int length) {
+        register unsigned int length) {
     Object tail;
-    register int len;
+    register unsigned int len;
     register char *s = 0;
     GC_Node2;
 
@@ -463,8 +463,8 @@ void Pr_List (Object port, Object list, register int raw, register int depth,
 }
 
 void Pr_Vector (Object port, Object vec, register int raw, register int depth,
-        register int length) {
-    register int i, j;
+        register unsigned int length) {
+    register unsigned int i, j;
     GC_Node2;
 
     if (depth == 0) {
@@ -488,7 +488,7 @@ void Pr_Vector (Object port, Object vec, register int raw, register int depth,
 
 void Pr_Symbol (Object port, Object sym, int raw) {
     Object str;
-    register int c, i;
+    register unsigned int c, i;
     GC_Node2;
 
     str = SYMBOL(sym)->name;
@@ -518,7 +518,7 @@ void Pr_Symbol (Object port, Object sym, int raw) {
 
 void Pr_String (Object port, Object str, int raw) {
     register char *p = STRING(str)->data;
-    register int c, i;
+    register unsigned int c, i;
     register size_t len = STRING(str)->size;
     GC_Node2;
 
@@ -586,7 +586,8 @@ Object P_Format (int argc, Object *argv) {
     return stringret ? P_Get_Output_String (port) : Void;
 }
 
-void Format (Object port, char const *fmt, int len, int argc, Object *argv) {
+void Format (Object port, char const *fmt, unsigned int len, int argc,
+             Object *argv) {
     register char const *s, *ep;
     char *p;
     register int c;

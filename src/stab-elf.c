@@ -39,6 +39,8 @@
 
 #include "kernel.h"
 
+extern void Free_Symbols (SYMTAB *);
+
 SYMTAB *
 Snarf_Symbols (lf)
      int        lf;
@@ -98,10 +100,10 @@ Snarf_Symbols (lf)
      * of the interesting symbols.
      */
     while ((elf_data_ptr = elf_getdata (symtab_scn_ptr, elf_data_ptr))) {
-        char    *name = NULL;
-        int     symbol_count;
-        Elf32_Sym       *symbol_ptr = elf_data_ptr->d_buf;
-        Elf32_Sym       *current_symbol;
+        char *name = NULL;
+        unsigned int symbol_count;
+        Elf32_Sym *symbol_ptr = elf_data_ptr->d_buf;
+        Elf32_Sym *current_symbol;
 
         tab = (SYMTAB *)Safe_Malloc (sizeof (SYMTAB));
         tab->first = 0;

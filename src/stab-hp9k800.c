@@ -31,6 +31,8 @@
 #include AOUT_H
 #include <sys/types.h>
 
+extern void Free_Symbols (SYMTAB *);
+
 SYMTAB *Snarf_Symbols (FILE *f, struct header *hp) {
     SYMTAB *tab;
     register SYM *sp, **nextp;

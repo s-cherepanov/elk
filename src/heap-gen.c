@@ -348,7 +348,7 @@ static void DetermineCluster (gcptr_t *addr, int *len) {
  * is 0, DetermineCluster is called to set length accordingly.
  */
 
-static void ProtectCluster (gcptr_t addr, int len) {
+static void ProtectCluster (gcptr_t addr, unsigned int len) {
     if (!len) DetermineCluster (&addr, &len);
     if (len > 1) {
         while (len) {
@@ -372,7 +372,7 @@ static void ProtectCluster (gcptr_t addr, int len) {
 }
 
 
-static void UnprotectCluster (gcptr_t addr, int len) {
+static void UnprotectCluster (gcptr_t addr, unsigned int len) {
     if (!len) DetermineCluster (&addr, &len);
     MPROTECT (addr, len << pp_shift, PROT_RW);
     while (len--) {

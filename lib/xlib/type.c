@@ -299,7 +299,7 @@ RECORD Size_Hints_Rec[] = {
 };
 int Size_Hints_Size = sizeof Size_Hints_Rec / sizeof (RECORD);
 
-unsigned long Vector_To_Record (Object v, int len, Object sym,
+unsigned long Vector_To_Record (Object v, unsigned int len, Object sym,
                                 register RECORD *rp) {
     register Object *p;
     unsigned long mask = 0;

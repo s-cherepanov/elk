@@ -83,7 +83,7 @@ Object P_Cdr (Object x) {
     return Cdr (x);
 }
 
-Object Cxr (Object x, register char *pat, register int len) {
+Object Cxr (Object x, register char *pat, register unsigned int len) {
     Object ret;
 
     for (ret = x, pat += len; len > 0; len--)
@@ -232,7 +232,7 @@ Object P_Assoc (Object key, Object alist) {
     return General_Assoc (key, alist, 2);
 }
 
-int Fast_Length (Object list) {
+unsigned int Fast_Length (Object list) {
     Object tail;
     register int i;
 
@@ -251,7 +251,7 @@ Object P_Length (Object list) {
 }
 
 Object P_Make_List (Object n, Object init) {
-    register int len;
+    register unsigned int len;
     Object list;
     GC_Node;
 

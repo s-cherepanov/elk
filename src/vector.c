@@ -36,7 +36,7 @@
 
 extern int Get_Index (Object, Object);
 
-Object General_Make_Vector (int len, Object fill, int konst) {
+Object General_Make_Vector (unsigned int len, Object fill, int konst) {
     Object vec;
     register Object *op;
     GC_Node;
@@ -52,16 +52,16 @@ Object General_Make_Vector (int len, Object fill, int konst) {
     return vec;
 }
 
-Object Make_Vector (int len, Object fill) {
+Object Make_Vector (unsigned int len, Object fill) {
     return General_Make_Vector (len, fill, 0);
 }
 
-Object Make_Const_Vector (int len, Object fill) {
+Object Make_Const_Vector (unsigned int len, Object fill) {
     return General_Make_Vector (len, fill, 1);
 }
 
 Object P_Make_Vector (int argc, Object *argv) {
-    register int len;
+    register unsigned int len;
 
     if ((len = Get_Exact_Integer (argv[0])) < 0)
         Range_Error (argv[0]);
@@ -94,7 +94,7 @@ Object P_Vector_Ref (Object vec, Object n) {
 
 Object P_Vector_Set (Object vec, Object n, Object new) {
     Object old;
-    register int i;
+    register unsigned int i;
 
     Check_Type (vec, T_Vector);
     Check_Mutable (vec);
@@ -107,7 +107,7 @@ Object P_Vector_Set (Object vec, Object n, Object new) {
  * because the latter can change during GC.
  */
 Object P_Vector_To_List (Object vec) {
-    register int i;
+    register unsigned int i;
     Object list, tail, cell;
     GC_Node3;
 
@@ -147,7 +147,7 @@ Object P_List_To_Vector (Object list) {
 }
 
 Object P_Vector_Fill (Object vec, Object fill) {
-    register int i;
+    register unsigned int i;
 
     Check_Type (vec, T_Vector);
     Check_Mutable (vec);

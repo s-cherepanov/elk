@@ -37,6 +37,8 @@
 
 #include AOUT_H
 
+extern void Free_Symbols (SYMTAB *);
+
 SYMTAB *Snarf_Symbols (FILE *fp) {
     long fdi;                   /* a counter for the file desc table */
     FDR *file_desc;             /* pointer to the filedesc table */

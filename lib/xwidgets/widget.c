@@ -320,7 +320,9 @@ static Object P_Widget_Translate_Coordinates (Object w, Object x, Object y) {
 #include <X11/IntrinsicP.h>
 #include <X11/CoreP.h>
 #include <X11/CompositeP.h>
+
 #undef XtIsComposite
+Boolean XtIsComposite (Widget object);
 
 static int Widget_Visit (Object *root, int (*func)()) {
     Object obj;

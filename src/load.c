@@ -73,7 +73,7 @@ void Init_Loadpath (char *s) {     /* No GC possible here */
 
 int Has_Suffix (Object name, char const *suffix) {
     register char *p;
-    register int len = strlen(suffix);
+    register unsigned int len = strlen(suffix);
     register struct S_String *str;
 
     if (TYPE(name) == T_Symbol)

@@ -33,6 +33,8 @@
 #include <errno.h>
 #include <sys/types.h>
 
+extern void Free_Symbols (SYMTAB *);
+
 extern int errno;
 
 #ifndef O_BINARY
