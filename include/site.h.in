@@ -48,6 +48,27 @@
 #  define elk_attribute(att) /* */
 #endif
 
+/* Properly export Win32 symbols */
+#if (defined(_WIN32) || defined(__CYGWIN__)) && \
+    !(defined(ELK_BUILD_DLL) || defined(ELK_STATIC))
+#  define elk_import __declspec(dllimport)
+#else
+#  define elk_import /* */
+#endif
+#if defined(__cplusplus)
+#  define extern_c extern "C"
+#else
+#  define extern_c /* */
+#endif
+
+/* Directory separator */
+#ifdef WIN32
+#   define SEPARATOR_CHAR '\\'
+#   define SEPARATOR_STRING "\\"
+#else
+#   define SEPARATOR_CHAR '/'
+#   define SEPARATOR_STRING "/"
+#endif
 
 /* Arithmetic shift right for compilers that don't sign extend:
  */

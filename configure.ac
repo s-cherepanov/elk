@@ -37,11 +37,18 @@ AC_SUBST(STDINT_HEADER)
 # type of system.
 AC_DEFINE_UNQUOTED(SYSTEMTYPE, ["${target_os}"], [Our operating system])
 
+MATH_LIBS="-lm"
 case "${target_os}" in
   *hpux*)
     AC_DEFINE(ARRAY_BROKEN, 1, [Define if a-=1000; a[1000] doesn't work])
     ;;
+  *mingw32*)
+    ELK_CFLAGS="${ELK_CFLAGS} -DELK_BUILD_DLL"
+    ELK_LDFLAGS="${ELK_LDFLAGS} -no-undefined"
+    MATH_LIBS=""
+    ;;
 esac
+ELK_LIBS="${ELK_LIBS} ${MATH_LIBS}"
 
 # Does the system support the vprintf library function?  If not,
 # availability of the (non-portable) _doprnt function is assumed.
@@ -187,6 +194,13 @@ if test "${ac_cv_my_can_load_lib}" = "no"; then
   AC_CHECK_LIB(dld, dld_link,
    [ELK_LIBS="${ELK_LIBS} -ldld"
     AC_DEFINE(HAVE_DL_DLD_LINK, 1, [Define if you have the GNU dld library])
+    ac_cv_my_can_load_lib=yes])
+fi
+
+# Win32 style
+if test "${ac_cv_my_can_load_lib}" = "no"; then
+  AC_CHECK_LIB(kernel32, main,
+   [ELK_LIBS="${ELK_LIBS} -lkernel32"
     ac_cv_my_can_load_lib=yes])
 fi
 
@@ -369,7 +383,7 @@ AC_DEFINE(ANSI_CPP, 1, [FIXME HARD])
 
 # The UNIX extension likes to know which of the following system calls,
 # library functions, and include files are supported by the system.
-AC_CHECK_HEADERS(utime.h)
+AC_CHECK_HEADERS(utime.h sys/wait.h)
 AC_CHECK_FUNCS(waitpid wait3 wait4 vfork uname gethostname gettimeofday ftime)
 AC_CHECK_FUNCS(mktemp tmpnam tempnam getcwd getwd rename regcomp)
 
@@ -450,12 +464,17 @@ AM_CONDITIONAL(HAVE_X11, test "${ac_cv_my_have_x11}" = "yes")
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_LIBS)
 
+AC_CHECK_LIB(Xmu, XmuDrawLogo,
+  [xmu_libraries="-lXmu"],
+  [xmu_libraries=""],
+  [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+
 AC_CHECK_LIB(Xaw, XawTextSearch, [
   ac_cv_my_have_xaw=yes
   XAW_CFLAGS="-I${x_includes}"
-  XAW_LIBS="-L${x_libraries} -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11"
+  XAW_LIBS="-L${x_libraries} -lXaw ${xmu_libraries} -lXt -lSM -lICE -lXext -lX11"
 ], [ac_cv_my_have_xaw=no],
-   [[-lXmu -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+   [[${xmu_libraries} -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
 AM_CONDITIONAL(HAVE_XAW, test "${ac_cv_my_have_xaw}" = "yes")
 AC_SUBST(XAW_CFLAGS)
 AC_SUBST(XAW_LIBS)
@@ -463,17 +482,19 @@ AC_SUBST(XAW_LIBS)
 AC_CHECK_LIB(Xm, XmStringConcat, [
   ac_cv_my_have_motif=yes
   MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
-  MOTIF_LIBS="-L${x_libraries} -lXm -lXmu -lXt -lSM -lICE -lXext -lX11"
+  MOTIF_LIBS="-L${x_libraries} -lXm ${xmu_libraries} -lXt -lSM -lICE -lXext -lX11"
 ], [ac_cv_my_have_motif=no],
-   [[-lXmu -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
+   [[${xmu_libraries} -lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
 AM_CONDITIONAL(HAVE_MOTIF, test "${ac_cv_my_have_motif}" = "yes")
 AC_SUBST(MOTIF_CFLAGS)
 AC_SUBST(MOTIF_LIBS)
 
-dnl  Export variables
 INCLUDES="${INCLUDES} -I\$(top_srcdir)/include -I\$(top_builddir)/include"
-ELK_LIBS="${ELK_LIBS} -lm"
 AC_SUBST(INCLUDES)
+
+dnl  Export variables
+AC_SUBST(ELK_CFLAGS)
+AC_SUBST(ELK_LDFLAGS)
 AC_SUBST(ELK_LIBS)
 
 dnl

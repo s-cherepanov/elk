@@ -442,7 +442,12 @@ extern void String_Ungetc P_((Object, register int));
 
 /* Symbols, variables, frequently used Scheme objects
  */
-extern Object Null, True, False, Void, Newline, Eof;
+extern_c Object elk_import Null;
+extern_c Object elk_import True;
+extern_c Object elk_import False;
+extern_c Object elk_import Void;
+extern_c Object elk_import Newline;
+extern_c Object elk_import Eof;
 extern Object Intern P_((const char*));
 extern Object CI_Intern P_((const char*));
 extern Object P_Oblist P_((void));

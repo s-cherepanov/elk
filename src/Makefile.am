@@ -1,8 +1,8 @@
 NULL = 
 
 lib_LTLIBRARIES = libelk.la
-libelk_la_CFLAGS = -I/usr/include/libelf
-libelk_la_LDFLAGS = 
+libelk_la_CFLAGS = @ELK_CFLAGS@ -I/usr/include/libelf
+libelk_la_LDFLAGS = @ELK_LDFLAGS@
 libelk_la_LIBADD = @ELK_LIBS@
 libelk_la_SOURCES = \
 	autoload.c \

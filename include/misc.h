@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-extern Object False2;
+extern_c Object elk_import False2;
 
 #define Nullp(x)    (TYPE(x) == T_Null)
 #define Truep(x)    (!EQ(x,False) && !EQ(x,False2))
