@@ -346,6 +346,13 @@ AC_DEFINE(OBJ_DIR, "/usr/lib/elk", [FIXME HARD])
 AC_DEFINE(FIND_AOUT, 1, [FIXME HARD])
 
 dnl
+dnl  Check for available libraries
+dnl
+ac_cv_have_gdbm=no
+AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_have_gdbm=yes)
+AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_have_gdbm}" = "yes")
+
+dnl
 dnl  Check for available warning flags
 dnl
 CFLAGS_save="${CFLAGS}"

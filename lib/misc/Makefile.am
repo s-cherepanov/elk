@@ -6,7 +6,7 @@ pkglib_LTLIBRARIES = \
 	hack.la \
 	regexp.la \
 	debug.la \
-	gdbm.la \
+	$(gdbm_la) \
 	monitor.la \
 	record.la \
 	struct.la \
@@ -33,6 +33,9 @@ debug_la_SOURCES = debug.c
 debug_la_LDFLAGS = -module -avoid-version
 debug_la_LIBADD = $(top_builddir)/src/libelk.la
 
+if HAVE_GDBM
+gdbm_la = gdbm.la
+endif
 gdbm_la_SOURCES = gdbm.c
 gdbm_la_LDFLAGS = -module -avoid-version
 gdbm_la_LIBADD = $(top_builddir)/src/libelk.la -lgdbm
@@ -51,8 +54,8 @@ struct_la_LIBADD = $(top_builddir)/src/libelk.la
 
 if HAVE_CXX
 newhandler_la = newhandler.la
+endif
 newhandler_la_SOURCES = newhandler.cpp
 newhandler_la_LDFLAGS = -module -avoid-version
 newhandler_la_LIBADD = $(top_builddir)/src/libelk.la
-endif
 

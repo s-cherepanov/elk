@@ -10,7 +10,7 @@ SCM_FILES = \
 	cscheme.scm \
 	debug.scm \
 	describe.scm \
-	gdbmtest.scm \
+	$(gdbmtest_scm) \
 	initscheme.scm \
 	motif.scm \
 	oops.scm \
@@ -31,3 +31,6 @@ SCM_FILES = \
 	xwidgets.scm \
 	$(NULL)
 
+if HAVE_GDBM
+gdbmtest_scm = gdbmtest.scm
+endif
