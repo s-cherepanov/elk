@@ -31,10 +31,19 @@
 #include "config.h"
 
 #ifdef WIN32
+#   include <stdlib.h>
 #   include <windows.h>
 #endif
 
 #include <scheme.h>
+
+#ifdef WIN32
+static void exit_handler () {
+    fprintf (stdout, "\nElk has terminated. Press return to continue.\n");
+    fflush (stdin);
+    getchar ();
+}
+#endif
 
 int main (int ac, char **av) {
 #ifdef WIN32
@@ -42,8 +51,11 @@ int main (int ac, char **av) {
     freopen ("CONIN$", "r", stdin);
     freopen ("CONOUT$", "w", stdout);
     freopen ("CONOUT$", "w", stderr);
+    atexit (exit_handler);
 #endif
+
     Elk_Init (ac, av, 1, "");
+
     return 0;
 }
 
