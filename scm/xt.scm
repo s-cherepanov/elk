@@ -4,6 +4,8 @@
 
 ;; kludge
 (define site-lib-xt "")
+(define site-force-load-xm "")
+(define site-lib-xmotif "")
 
 (if (feature? 'motif)
     (fluid-let ((load-libraries

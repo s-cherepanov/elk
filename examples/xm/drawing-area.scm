@@ -3,6 +3,7 @@
 ;;; Drawing area demo
 
 (require 'motif)
+(print "loading widgets\n")
 (load-widgets shell drawing-area)
 
 (define top (application-initialize 'drawing-area))

@@ -4,6 +4,7 @@
 
 ; kludge
 (define site-lib-xaw "")
+(define site-lib-xmotif "")
 
 (require 'xt)
 
@@ -44,7 +45,7 @@
 	      (if autoload-notify?
 		  (format #t "~a~a" file (if (null? (cdr f)) "" " ")))
 	      ;;(set! wl (cons (format #f "~a/~a.so" widget-subdirectory file)
-	      (set! wl (cons (format #f "~a/~a.so" widget-subdirectory "xaw")
+	      (set! wl (cons (format #f "~a/~a.so" widget-subdirectory widget-subdirectory)
 			     wl))))
 	  (if autoload-notify? (format #t "]~%"))
 	  `(fluid-let ((load-libraries

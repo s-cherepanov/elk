@@ -1,0 +1,25 @@
+SOURCES_XLIB = \
+	../xlib/client.c \
+	../xlib/color.c \
+	../xlib/colormap.c \
+	../xlib/cursor.c \
+	../xlib/display.c \
+	../xlib/error.c \
+	../xlib/event.c \
+	../xlib/extension.c \
+	../xlib/font.c \
+	../xlib/gcontext.c \
+	../xlib/grab.c \
+	../xlib/graphics.c \
+	../xlib/init.c \
+	../xlib/key.c \
+	../xlib/objects.c \
+	../xlib/pixel.c \
+	../xlib/pixmap.c \
+	../xlib/property.c \
+	../xlib/text.c \
+	../xlib/type.c \
+	../xlib/util.c \
+	../xlib/window.c \
+	../xlib/wm.c \
+	$(NULL)

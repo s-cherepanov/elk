@@ -8,6 +8,7 @@ AM_INIT_AUTOMAKE(elk, 3.99.0)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
+AM_PROG_CC_C_O
 AC_PROG_LIBTOOL
 AC_STDC_HEADERS
 
@@ -377,6 +378,8 @@ AC_OUTPUT([
   lib/unix/Makefile
   lib/xaw/Makefile
   lib/xlib/Makefile
+  lib/xm/Makefile
+  lib/xt/Makefile
   scm/Makefile
   scm/slib.scm
   src/Makefile
