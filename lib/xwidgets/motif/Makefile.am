@@ -16,7 +16,7 @@ motif_widgets_la_LDFLAGS = -module -avoid-version -no-undefined -u XmIsMotifWMRu
 motif_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @MOTIF_LIBS@
 
 .d.c:
-	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ motif
+	$(top_builddir)/src/elk -g -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ motif
 
 SOURCES_C = \
 	arrow-button.c \

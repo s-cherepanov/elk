@@ -16,7 +16,7 @@ xaw_widgets_la_LDFLAGS = -module -avoid-version -no-undefined
 xaw_widgets_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
 
 .d.c:
-	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ xaw
+	$(top_builddir)/src/elk -g -p .:$(top_srcdir)/scm:$(srcdir)/.. -l mkwidget.scm $< $@ xaw
 
 SOURCES_C = \
 	ascii.c \
