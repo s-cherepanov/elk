@@ -5,6 +5,7 @@ DIST_SUBDIRS = $(SUBDIRS) autotools debian
 
 EXTRA_DIST = \
 	bootstrap \
+	build-win32 \
 	BUGS \
 	ChangeLog \
 	MACHINES \

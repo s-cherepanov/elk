@@ -1,0 +1,23 @@
+#! /bin/sh
+
+##  Win32 cross-compilation for Elk -- Sam Hocevar <sam@zoy.org>
+##  $Id$
+
+set -x
+set -e
+
+# To build for win32, I use ./configure --host=i586-mingw32msvc
+
+DIRNAME="elk-`sed -ne '/^VERSION/s/[^0-9]*//p' Makefile`"
+DESTDIR="`pwd`/${DIRNAME}"
+rm -Rf "${DIRNAME}"
+rm -f "${DIRNAME}.zip"
+mkdir "${DIRNAME}"
+(cd src && make && cp elk.exe "${DESTDIR}")
+(cd scm && make install DESTDIR="${DESTDIR}" datadir="/")
+mv "${DESTDIR}/elk" "${DESTDIR}/scm"
+
+zip "${DIRNAME}.zip" `find "${DIRNAME}"`
+
+rm -Rf "${DIRNAME}"
+
