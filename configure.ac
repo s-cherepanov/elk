@@ -36,6 +36,12 @@ AC_SUBST(STDINT_HEADER)
 # type of system.
 AC_DEFINE_UNQUOTED(SYSTEMTYPE, ["${target_os}"], [Our operating system])
 
+case "${target_os}" in
+  *hpux*)
+    AC_DEFINE(ARRAY_BROKEN, 1, [Define if a-=1000; a[1000] doesn't work])
+    ;;
+esac
+
 # Does the system support the vprintf library function?  If not,
 # availability of the (non-portable) _doprnt function is assumed.
 AC_CHECK_FUNCS(vprintf)
