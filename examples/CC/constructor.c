@@ -3,24 +3,13 @@
 This simple C++ program demonstrates that static constructors (destructors)
 are invoked by Elk when loading a compiled C++ file (when exiting).
 
-o  Compile the program with CC -c -I/usr/elk/include constructor.c, where
-   /usr/elk is the toplevel directory of your Elk installation.  Under
-   Solaris 2.x (and SysVR4) you also have to specify -pic (-fpic for g++).
+o  Compile the shared object, for instance:
 
-o  Invoke Elk and set the load-libraries to point to the C++ and the
-   C library, e.g. type something like:
+     CC -pic -shared -I/usr/elk/include constructor.c -o constructor.so
 
-	(set! load-libraries "-L/usr/lang/SC2.0.1 -lC -lc")
-   or
-	(set! load-libraries "-R/usr/lang/lib -L/usr/lang/lib -lC -lc")
-   or just
-	(set! load-libraries "-lC -lc")
-   
-   depending on the platform and the place where the C++ library has
-   been installed on your system.  If you are using g++, you may have
-   to mention both the g++ library and the gcc library.
+     g++ -fPIC -shared -I/usr/include/elk constructor.c -o constructor.so
 
-o  Now "(load 'constructor.o)", observe the "invoking constructor" message,
+o  Now "(load 'constructor.so)", observe the "invoking constructor" message,
    and evaluate "(test)", which should return 3.  Terminate the interpreter
    and observe the "invoking destructor" message.
 
@@ -47,16 +36,16 @@ o  If static constructors don't get called when loading compiled C++ files,
 
 #include "scheme.h"
 
-#include <iostream.h>
+#include <iostream>
 
 class C {
 public:
     int i;
     C() {
-       cerr << "[invoking constructor]" << endl;
+       std::cerr << "[invoking constructor]" << std::endl;
        i = 3;
     }
-    ~C() { cerr << "[invoking destructor]" << endl; }
+    ~C() { std::cerr << "[invoking destructor]" << std::endl; }
 };
 
 C c;
@@ -65,10 +54,10 @@ Object P_Test() {
     return Make_Integer(c.i);
 }
 
-void elk_init_constructor() {
+extern "C" void elk_init_constructor() {
     Define_Primitive((Object (*)(...))P_Test, "test", 0, 0, EVAL);
 }
 
-void elk_finit_constructor() {
-    cerr << "Goodbye." << endl;
+extern "C" void elk_finit_constructor() {
+    std::cerr << "Goodbye." << std::endl;
 }

@@ -6,13 +6,13 @@ Scheme primitives.
 
 See constructor.c in this directory for compilation instructions.
 
-Here is a transcript showing a test run under Solaris 2.4 using the
+Here is a transcript showing a test run under Linux using the
 GNU g++ compiler:
 
-    % g++ -fpic -I/usr/elk/include -c class.c
+    % g++ -shared -fPIC -I/usr/elk/include -c class.c -o class.so
     %
     % scheme
-    > (load 'class.o)
+    > (load 'class.so)
 
     > (define x (make-foo))
     x
@@ -23,7 +23,7 @@ GNU g++ compiler:
     > (read-val x)
     11
     > (exit)
-    % 
+    %
 
 -----------------------------------------------------------------------------*/
 
@@ -72,18 +72,20 @@ Object P_Write_Val(Object x, Object y) {
     return Void;
 }
 
-Foo_Print(Object h, Object port, int raw, int depth, int length) {
+int Foo_Print(Object h, Object port, int raw, int depth, int length) {
     Printf(port, "#[foo %d]", FOO(h)->foo.read_val());
+    return 0;
 }
 
 int Foo_Equal(Object x, Object y) {
     return FOO(x)->foo.read_val() == FOO(y)->foo.read_val();
 }
 
-void elk_init_foo() {
+extern "C" void elk_init_foo() {
     T_Foo = Define_Type(0, "foo", NOFUNC, sizeof(struct S_Foo),
 	Foo_Equal, Foo_Equal, Foo_Print, NOFUNC);
     Define_Primitive((Object(*)(...))P_Make_Foo,  "make-foo",     0, 0, EVAL);
     Define_Primitive((Object(*)(...))P_Read_Val,  "read-val",     1, 1, EVAL);
     Define_Primitive((Object(*)(...))P_Write_Val, "write-val!",   2, 2, EVAL);
 }
+
