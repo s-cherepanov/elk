@@ -30,6 +30,8 @@
 
 #include "unix.h"
 
+#include <string.h>
+
 #ifdef HAVE_UTIME_H
 #  include <utime.h>
 #else
@@ -55,7 +57,7 @@ static SYMDESCR Access_Syms[] = {
     { 0, 0 }
 };
 
-static Object P_Accessp(fn, mode) Object fn, mode; {
+static Object P_Accessp(Object fn, Object mode) {
     if (access(Get_Strsym(fn), (int)Symbols_To_Bits(mode, 1, Access_Syms))
             == 0)
         return True;
@@ -63,37 +65,37 @@ static Object P_Accessp(fn, mode) Object fn, mode; {
     return False;
 }
 
-static Object P_Chdir(fn) Object fn; {
+static Object P_Chdir(Object fn) {
     if (chdir(Get_Strsym(fn)) == -1)
         Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
-static Object P_Chmod(fn, mode) Object fn, mode; {
+static Object P_Chmod(Object fn, Object mode) {
     if (chmod(Get_Strsym(fn), Get_Integer(mode)) == -1)
         Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
-static Object P_Chown(fn, uid, gid) Object fn, uid, gid; {
+static Object P_Chown(Object fn, Object uid, Object gid) {
     if (chown(Get_Strsym(fn), Get_Integer(uid), Get_Integer(gid)) == -1)
         Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
-static Object P_Link(fn1, fn2) Object fn1, fn2; {
+static Object P_Link(Object fn1, Object fn2) {
     if (link(Get_Strsym(fn1), Get_Strsym(fn2)) == -1)
         Raise_System_Error2("(~s ~s): ~E", fn1, fn2);
     return Void;
 }
 
-static Object P_Mkdir(fn, mode) Object fn, mode; {
+static Object P_Mkdir(Object fn, Object mode) {
     if (mkdir(Get_Strsym(fn), Get_Integer(mode)) == -1)
         Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
-static Object P_Read_Directory(fn) Object fn; {
+static Object P_Read_Directory(Object fn) {
     DIR *d;
 #ifdef HAVE_DIRENT
     struct dirent *dp;
@@ -125,7 +127,7 @@ static Object P_Read_Directory(fn) Object fn; {
     return ret;
 }
 
-static Object P_Rename(fromfn, tofn) Object fromfn, tofn; {
+static Object P_Rename(Object fromfn, Object tofn) {
 #ifdef HAVE_RENAME
     if (rename(Get_Strsym(fromfn), Get_Strsym(tofn)) == -1)
         Raise_System_Error2("(~s ~s): ~E", fromfn, tofn);
@@ -149,7 +151,7 @@ static Object P_Rename(fromfn, tofn) Object fromfn, tofn; {
     return Void;
 }
 
-static Object General_Stat(obj, ret, l) Object obj, ret; int l; {
+static Object General_Stat(Object obj, Object ret, int l) {
     Object x;
     struct stat st;
     char *s, *fn = 0;
@@ -212,16 +214,16 @@ static Object General_Stat(obj, ret, l) Object obj, ret; int l; {
     return Void;
 }
 
-static Object P_Stat(obj, ret) Object obj, ret; {
+static Object P_Stat(Object obj, Object ret) {
     return General_Stat(obj, ret, 0);
 }
 
 #ifdef SYMLINKS
-static Object P_Lstat(obj, ret) Object obj, ret; {
+static Object P_Lstat(Object obj, Object ret) {
     return General_Stat(obj, ret, 1);
 }
 
-static Object P_Readlink(fn) Object fn; {
+static Object P_Readlink(Object fn) {
     char *buf;
     int len;
     Object ret;
@@ -238,26 +240,26 @@ static Object P_Readlink(fn) Object fn; {
     return ret;
 }
 
-static Object P_Rmdir(fn) Object fn; {
+static Object P_Rmdir(Object fn) {
     if (rmdir(Get_Strsym(fn)) == -1)
         Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
-static Object P_Symlink(fn1, fn2) Object fn1, fn2; {
+static Object P_Symlink(Object fn1, Object fn2) {
     if (symlink(Get_Strsym(fn1), Get_Strsym(fn2)) == -1)
         Raise_System_Error2("(~s ~s): ~E", fn1, fn2);
     return Void;
 }
 #endif
 
-static Object P_Unlink(fn) Object fn; {
+static Object P_Unlink(Object fn) {
     if (unlink(Get_Strsym(fn)) == -1)
         Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
-static Object P_Utime(argc, argv) int argc; Object *argv; {
+static Object P_Utime(int argc, Object *argv) {
     struct utimbuf ut;
 
     if (argc == 2)
@@ -272,7 +274,7 @@ static Object P_Utime(argc, argv) int argc; Object *argv; {
     return Void;
 }
 
-elk_init_unix_file() {
+void elk_init_unix_file() {
     Def_Prim(P_Accessp,            "unix-access?",              2, 2, EVAL);
     Def_Prim(P_Chdir,              "unix-chdir",                1, 1, EVAL);
     Def_Prim(P_Chmod,              "unix-chmod",                2, 2, EVAL);

@@ -30,10 +30,11 @@
 
 #include "unix.h"
 
+#include <string.h>
 #include <pwd.h>
 #include <grp.h>
 
-static Object P_Get_Passwd(argc, argv) int argc; Object *argv; {
+static Object P_Get_Passwd(int argc, Object *argv) {
     struct passwd *p;
     Object arg, x;
 
@@ -93,7 +94,7 @@ static Object P_End_Passwd() {
     return Void;
 }
 
-static Object P_Get_Group(argc, argv) int argc; Object *argv; {
+static Object P_Get_Group(int argc, Object *argv) {
     char **pp;
     struct group *p;
     Object arg, member, x;
@@ -156,7 +157,7 @@ static Object P_End_Group() {
     return Void;
 }
 
-elk_init_unix_passwd() {
+void elk_init_unix_passwd() {
     Def_Prim(P_Get_Passwd,    "unix-get-passwd-vector-fill!",   1, 2, VARARGS);
     Def_Prim(P_Rewind_Passwd, "unix-rewind-passwd",             0, 0, EVAL);
     Def_Prim(P_End_Passwd,    "unix-end-passwd",                0, 0, EVAL);

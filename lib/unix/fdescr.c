@@ -30,6 +30,8 @@
 
 #include "unix.h"
 
+#include <string.h>
+
 static SYMDESCR Open_Syms[] = {
     { "read",       1 },
     { "write",      2 },
@@ -82,13 +84,13 @@ SYMDESCR Lseek_Syms[] = {
 
 /* Dangerous: may be used to close the filedescriptor of a port.
  */
-static Object P_Close(fd) Object fd; {
+static Object P_Close(Object fd) {
     if (close(Get_Integer(fd)) == -1)
         Raise_System_Error("~E");
     return Void;
 }
 
-static Object P_Close_On_Exec(argc, argv) int argc; Object *argv; {
+static Object P_Close_On_Exec(int argc, Object *argv) {
     int flags, fd;
 
     fd = Get_Integer(argv[0]);
@@ -102,7 +104,7 @@ static Object P_Close_On_Exec(argc, argv) int argc; Object *argv; {
     return flags & 1 ? True : False;
 }
 
-static Object P_Dup(argc, argv) int argc; Object *argv; {
+static Object P_Dup(int argc, Object *argv) {
     int fd = Get_Integer(argv[0]), ret;
 
     if ((ret = (argc == 1 ? dup(fd) : dup2(fd, Get_Integer(argv[1])))) == -1)
@@ -110,7 +112,7 @@ static Object P_Dup(argc, argv) int argc; Object *argv; {
     return Make_Integer(ret);
 }
 
-static Object P_Filedescriptor_Flags(argc, argv) int argc; Object *argv; {
+static Object P_Filedescriptor_Flags(int argc, Object *argv) {
     int flags, fd;
 
     fd = Get_Integer(argv[0]);
@@ -123,7 +125,7 @@ static Object P_Filedescriptor_Flags(argc, argv) int argc; Object *argv; {
     return Bits_To_Symbols((unsigned long)flags, 1, Fcntl_Flags);
 }
 
-static Object P_Fildescriptor_Port(fd, mode) Object fd, mode; {
+static Object P_Fildescriptor_Port(Object fd, Object mode) {
     int n, flags;
     FILE *fp;
     Object ret;
@@ -153,7 +155,7 @@ static Object P_Fildescriptor_Port(fd, mode) Object fd, mode; {
     return ret;
 }
 
-static Object P_Isatty(fd) Object fd; {
+static Object P_Isatty(Object fd) {
     return isatty(Get_Integer(fd)) ? True : False;
 }
 
@@ -167,7 +169,7 @@ static Object P_List_Open_Modes() {
 
 /* Bad assumption: off_t fits into an unsigned int.
  */
-static Object P_Lseek(fd, off, whence) Object fd, off, whence; {
+static Object P_Lseek(Object fd, Object off, Object whence) {
     off_t ret;
 
     if ((ret = lseek(Get_Integer(fd), (off_t)Get_Long(off),
@@ -201,7 +203,7 @@ static Object P_Num_Filedescriptors() {
     return Make_Integer(Num_Filedescriptors());
 }
 
-static Object P_Open(argc, argv) int argc; Object *argv; {
+static Object P_Open(int argc, Object *argv) {
     Object fn;
     int mode, n;
 
@@ -226,14 +228,14 @@ static Object P_Pipe() {
     return Integer_Pair(fd[0], fd[1]);
 }
 
-static Object P_Port_Filedescriptor(port) Object port; {
+static Object P_Port_Filedescriptor(Object port) {
     Check_Type(port, T_Port);
     if ((PORT(port)->flags & (P_STRING|P_OPEN)) != P_OPEN)
         Primitive_Error("~s: invalid port", port);
     return Make_Integer(fileno(PORT(port)->file));
 }
 
-static Object Read_Write(argc, argv, readflg) int argc; Object *argv; {
+static Object Read_Write(int argc, Object *argv, int readflg) {
     struct S_String *sp;
     int len, fd;
 
@@ -255,15 +257,15 @@ static Object Read_Write(argc, argv, readflg) int argc; Object *argv; {
 
 /* Avoid name clash with P_Read/P_Write of interpreter kernel
  */
-static Object P_Readx(argc, argv) int argc; Object *argv; {
+static Object P_Readx(int argc, Object *argv) {
     return Read_Write(argc, argv, 1);
 }
 
-static Object P_Writex(argc, argv) int argc; Object *argv; {
+static Object P_Writex(int argc, Object *argv) {
     return Read_Write(argc, argv, 0);
 }
 
-static Object P_Ttyname(fd) Object fd; {
+static Object P_Ttyname(Object fd) {
     char *ret;
     extern char *ttyname();
 

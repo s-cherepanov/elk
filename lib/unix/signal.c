@@ -178,7 +178,7 @@ static SYMDESCR Signal_Syms[] = {
     { 0, 0 }
 };
 
-static Object P_Kill(pid, sig) Object pid, sig; {
+static Object P_Kill(Object pid, Object sig) {
     int t, s;
 
     if ((t = TYPE(sig)) == T_Fixnum || t == T_Bignum)
@@ -209,12 +209,12 @@ static Object P_Pause() {
 
 static Object Handlers;
 
-static Object P_Alarm(s) Object s; {
+static Object P_Alarm(Object s) {
     return Make_Unsigned(alarm(Get_Unsigned(s)));
 }
 
 /*ARGSUSED*/
-void General_Handler(sig) int sig; {
+void General_Handler(int sig) {
     Object fun, args;
 
 #ifndef BSD_SIGNALS
@@ -233,7 +233,7 @@ void General_Handler(sig) int sig; {
     /*NOTREACHED*/
 }
 
-static Object Action_To_Sym(act) void (*act)(); {
+static Object Action_To_Sym(void (*act)()) {
     char *sym;
 
     if (act == Signal_Exit)
@@ -247,7 +247,7 @@ static Object Action_To_Sym(act) void (*act)(); {
     return Intern(sym);
 }
 
-void Add_To_Mask(sig) int sig; {
+void Add_To_Mask(int sig) {
 #ifdef POSIX_SIGNALS
     sigaddset(&Sigset_Block, sig);
 #else
@@ -257,7 +257,7 @@ void Add_To_Mask(sig) int sig; {
         Force_Disable_Interrupts;
 }
 
-void Remove_From_Mask(sig) int sig; {
+void Remove_From_Mask(int sig) {
 #ifdef POSIX_SIGNALS
     sigdelset(&Sigset_Block, sig);
 #else
@@ -265,7 +265,7 @@ void Remove_From_Mask(sig) int sig; {
 #endif
 }
 
-static Object P_Signal(argc, argv) int argc; Object *argv; {
+static Object P_Signal(int argc, Object *argv) {
     int sig;
     Object handler, old;
     void (*disp)();
@@ -321,7 +321,7 @@ static Object P_Signal(argc, argv) int argc; Object *argv; {
 }
 #endif /* RELIABLE_SIGNALS */
 
-elk_init_unix_signal() {
+void elk_init_unix_signal() {
     Define_Symbol(&Sym_Exit, "exit");
     Define_Symbol(&Sym_Default, "default");
     Define_Symbol(&Sym_Ignore, "ignore");

@@ -94,7 +94,7 @@ static SYMDESCR Errno_Syms[] = {
 
 Object Unix_Errobj, V_Call_Errhandler;
 
-static Object P_Errorp(x) Object x; {
+static Object P_Errorp(Object x) {
     return EQ(x, Unix_Errobj) ? True : False;
 }
 
@@ -105,7 +105,7 @@ static Object P_Errno() {
     return Nullp(sym) ? Make_Integer(Saved_Errno) : sym;
 }
 
-elk_init_unix_error() {
+void elk_init_unix_error() {
     Unix_Errobj = Intern("*unix-error-object*");
     Unix_Errobj = Const_Cons(Unix_Errobj, Null);
     Global_GC_Link(Unix_Errobj);

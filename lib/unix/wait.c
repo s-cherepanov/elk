@@ -34,6 +34,8 @@
 
 #include "unix.h"
 
+#include <string.h>
+
 #if defined(HAVE_WAITPID) || defined(HAVE_WAIT4)
 #  define WAIT_PROCESS
 #endif
@@ -110,7 +112,7 @@ static Object General_Wait(ret, ruret, haspid, pid, options)
          status = "none";
          st = code = 0;
 #ifdef WAIT_RUSAGE
-         bzero((char *)&ru, sizeof(ru));
+         memset((char *)&ru, 0, sizeof(ru));
 #endif
     } else if (WIFSTOPPED(st)) {
         status = "stopped";  code = WSTOPSIG(st);
@@ -138,7 +140,7 @@ static Object General_Wait(ret, ruret, haspid, pid, options)
     return Void;
 }
 
-static Object P_Wait(argc, argv) int argc; Object *argv; {
+static Object P_Wait(int argc, Object *argv) {
     int flags = 0;
 
     if (argc == 3)
@@ -154,13 +156,13 @@ static Object P_Wait(argc, argv) int argc; Object *argv; {
 /* If WAIT_PROCESS is supported, then WAIT_OPTIONS is supported as well,
  * because both waitpid() and wait4() accept options.
  */
-static Object P_Wait_Process(argc, argv) int argc; Object *argv; {
+static Object P_Wait_Process(int argc, Object *argv) {
     return General_Wait(argv[0], argv[1], 1, Get_Integer(argv[2]),
         argc == 4 ? (int)Symbols_To_Bits(argv[3], 1, Wait_Flags) : 0);
 }
 #endif
 
-elk_init_unix_wait() {
+void elk_init_unix_wait() {
     Def_Prim(P_Wait,         "unix-wait-vector-fill!",         2, 3, VARARGS);
 #ifdef WAIT_PROCESS
     Def_Prim(P_Wait_Process, "unix-wait-process-vector-fill!", 3, 4, VARARGS);

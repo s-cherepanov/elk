@@ -30,6 +30,8 @@
 
 #include "unix.h"
 
+#include <string.h>
+#include <stdio.h>
 #include <sys/times.h>
 
 /* "extern" in front of the next declaration causes the Ultrix 4.2 linker
@@ -48,7 +50,8 @@ static Object P_Environ() {
     GC_Link2(ret, cell);
     for (ep = environ; *ep; ep++) {
         cell = Cons(Null, Null);
-        if (p = index(*ep, '='))
+        p = index(*ep, '=');
+        if (p)
             *p++ = 0;
         else p = c+1;
         str = Make_String(p, strlen(p));
@@ -116,11 +119,11 @@ static Object General_Exec(argc, argv, path) int argc; Object *argv;
     Raise_System_Error1("~s: ~E", fn);
 }
 
-static Object P_Exec(argc, argv) int argc; Object *argv; {
+static Object P_Exec(int argc, Object *argv) {
     return General_Exec(argc, argv, 0);
 }
 
-static Object P_Exec_Path(argc, argv) int argc; Object *argv; {
+static Object P_Exec_Path(int argc, Object *argv) {
     if (argc == 3)   /* There is no execvpe (yet?). */
         Primitive_Error("environment argument not supported");
     return General_Exec(argc, argv, 1);
@@ -138,7 +141,7 @@ static Object P_Fork() {
     return Make_Integer(pid);
 }
 
-static Object P_Getenv(e) Object e; {
+static Object P_Getenv(Object e) {
     extern char *getenv();
     char *s;
 
@@ -195,7 +198,7 @@ static Object P_Getgroups() {
     return ret;
 }
 
-static Object P_Nice(incr) Object incr; {
+static Object P_Nice(Object incr) {
     int ret;
 
     errno = 0;
@@ -204,10 +207,9 @@ static Object P_Nice(incr) Object incr; {
     return Make_Integer(ret);
 }
 
-static Object Open_Pipe(cmd, flags) Object cmd; int flags; {
+static Object Open_Pipe(Object cmd, int flags) {
     FILE *fp;
     Object ret;
-    extern pclose();
 
     Disable_Interrupts;
     if ((fp = popen(Get_String(cmd), flags == P_INPUT ? "r" : "w")) == 0) {
@@ -221,16 +223,16 @@ static Object Open_Pipe(cmd, flags) Object cmd; int flags; {
     return ret;
 }
 
-static Object P_Open_Input_Pipe(cmd) Object cmd; {
+static Object P_Open_Input_Pipe(Object cmd) {
     return Open_Pipe(cmd, P_INPUT);
 }
 
-static Object P_Open_Output_Pipe(cmd) Object cmd; {
+static Object P_Open_Output_Pipe(Object cmd) {
     return Open_Pipe(cmd, 0);
 }
 
-static Object P_Process_Resources(ret1, ret2) Object ret1, ret2; {
-    static hzval;
+static Object P_Process_Resources(Object ret1, Object ret2) {
+    static int hzval;
     struct tms tms;
     Object x;
     GC_Node2;
@@ -266,12 +268,12 @@ static Object P_Process_Resources(ret1, ret2) Object ret1, ret2; {
     return Make_Integer(hzval);
 }
 
-static Object P_Sleep(s) Object s; {
+static Object P_Sleep(Object s) {
     (void)sleep(Get_Unsigned(s));
     return Void;
 }
 
-static Object P_System(cmd) Object cmd; {
+static Object P_System(Object cmd) {
     int n, pid, status;
     char *s = Get_String(cmd);
 
@@ -297,12 +299,13 @@ static Object P_System(cmd) Object cmd; {
     if (n == -1)
         return False;
     */
-    if (n = (status & 0377))
+    n = status & 0377;
+    if (n)
         return Cons(Make_Integer(n), Null);
     return Make_Integer((status >> 8) & 0377);
 }
 
-static Object P_Umask(mask) Object mask; {
+static Object P_Umask(Object mask) {
     return Make_Integer(umask(Get_Integer(mask)));
 }
 
@@ -351,7 +354,7 @@ err:
     return ret;
 }
 
-elk_init_unix_process() {
+void elk_init_unix_process() {
     Def_Prim(P_Environ,             "unix-environ",              0, 0, EVAL);
     Def_Prim(P_Exec,                "unix-exec",                 2, 3, VARARGS);
     Def_Prim(P_Exec_Path,           "unix-exec-path",            2, 3, VARARGS);

@@ -30,6 +30,8 @@
 
 #include "unix.h"
 
+#include <string.h>
+
 #if defined(HAVE_UNAME) && !defined(HAVE_GETHOSTNAME)
 #  include <sys/utsname.h>
 #endif
@@ -49,7 +51,7 @@ static SYMDESCR Limit_Syms[] = {
     { 0, 0 }
 };
 
-static Object P_File_Limit(lim, f) Object lim, f; {
+static Object P_File_Limit(Object lim, Object f) {
     int op, fd;
     long ret;
     char *fn = 0;
@@ -163,7 +165,7 @@ static Object P_Job_Controlp() {
 #endif
 }
 
-static Object P_System_Info(ret) Object ret; {
+static Object P_System_Info(Object ret) {
 #ifdef HAVE_GETHOSTNAME
     char hostname[MAXHOSTNAMELEN];
     char *p = hostname;
@@ -198,7 +200,7 @@ static Object P_System_Info(ret) Object ret; {
     return Void;
 }
 
-elk_init_unix_system() {
+void elk_init_unix_system() {
     Def_Prim(P_File_Limit,       "unix-file-limit",               2, 2, EVAL);
     Def_Prim(P_List_File_Limits, "unix-list-file-limits",         0, 0, EVAL);
     Def_Prim(P_Job_Controlp,     "unix-job-control?",             0, 0, EVAL);

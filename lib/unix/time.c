@@ -30,6 +30,8 @@
 
 #include "unix.h"
 
+#include <string.h>
+
 #if !defined(HAVE_GETTIMEOFDAY) && defined(HAVE_FTIME)
 #  include <sys/timeb.h>
 #endif
@@ -40,7 +42,7 @@
 
 extern time_t time();
 
-static Object P_Decode_Time(t, ret, utc) Object t, ret, utc; {
+static Object P_Decode_Time(Object t, Object ret, Object utc) {
     time_t tt;
     struct tm *tp;
     Object *op;
@@ -62,7 +64,7 @@ static Object P_Decode_Time(t, ret, utc) Object t, ret, utc; {
     return Void;
 }
 
-static Object P_Nanotime(ret) Object ret; {
+static Object P_Nanotime(Object ret) {
     Object x, y;
 #ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
@@ -114,7 +116,7 @@ static Object P_Time() {
     return Make_Unsigned_Long((unsigned long)t);
 }
 
-static struct tm *Get_Tm(v) Object v; {
+static struct tm *Get_Tm(Object v) {
     static struct tm tm;
     int i, n;
     Object *op;
@@ -146,7 +148,7 @@ static struct tm *Get_Tm(v) Object v; {
     return &tm;
 }
 
-static Object P_Time_To_String(t) Object t; {
+static Object P_Time_To_String(Object t) {
     time_t tt;
     char *ret;
 
@@ -165,7 +167,7 @@ static Object P_Time_To_String(t) Object t; {
     return Make_String(ret, strlen(ret));
 }
 
-elk_init_unix_time() {
+void elk_init_unix_time() {
     Def_Prim(P_Time,            "unix-time",                     0, 0, EVAL);
     Def_Prim(P_Decode_Time,     "unix-decode-time-vector-fill!", 3, 3, EVAL);
     Def_Prim(P_Time_To_String,  "unix-time->string-internal",    1, 1, EVAL);

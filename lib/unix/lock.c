@@ -43,8 +43,8 @@
 
 #ifdef LOCKS
 
-static Object P_Internal_Lock_Operation(fd, lck, block, what, ret)
-        Object fd, lck, block, what, ret; {
+static Object P_Internal_Lock_Operation(Object fd, Object lck, Object block,
+                                        Object what, Object ret) {
 #ifdef RECORD_LOCKS
     struct flock fl;
 #else
@@ -108,7 +108,7 @@ static Object P_Internal_Lock_Operation(fd, lck, block, what, ret)
 
 #endif
 
-elk_init_unix_lock() {
+void elk_init_unix_lock() {
 #ifdef LOCKS
     Def_Prim(P_Internal_Lock_Operation, "unix-internal-lock-operation",
         5, 5, EVAL);

@@ -30,7 +30,7 @@
 
 #include "unix.h"
 
-Object Integer_Pair(a, b) int a, b; {
+Object Integer_Pair(int a, int b) {
     Object x, y;
     GC_Node2;
 
@@ -43,7 +43,7 @@ Object Integer_Pair(a, b) int a, b; {
     return x;
 }
 
-Object Syms_To_List(p) SYMDESCR *p; {
+Object Syms_To_List(SYMDESCR *p) {
     Object ret, mode;
     GC_Node;
 
@@ -57,12 +57,12 @@ Object Syms_To_List(p) SYMDESCR *p; {
     return P_Reverse(ret);
 }
 
-void Check_Result_Vector(x, len) Object x; {
+void Check_Result_Vector(Object x, int len) {
     Check_Type(x, T_Vector);
     if (VECTOR(x)->size != len)
         Primitive_Error("argument vector has the wrong length");
 }
 
-elk_init_unix_unix() {
+void elk_init_unix_unix() {
     P_Provide(Intern("unix.so"));
 }

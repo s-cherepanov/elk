@@ -30,6 +30,8 @@
 
 #include "unix.h"
 
+#include <string.h>
+
 #ifdef HAVE_TEMPNAM    /* Make sure only one of these is defined (if any) */
 #  undef HAVE_TMPNAM   /* Order of preference: tempnam, mktemp, tmpnam */
 #  undef HAVE_MKTEMP
@@ -43,7 +45,7 @@
 #  undef HAVE_MKTEMP
 #endif
 
-static Object P_Tempname(argc, argv) int argc; Object *argv; {
+static Object P_Tempname(int argc, Object *argv) {
     char *name, *dir = 0, *pref = 0;
     Object ret;
 #ifdef HAVE_TMPNAM
@@ -117,6 +119,6 @@ fail: ;
     return ret;
 }
 
-elk_init_unix_temp() {
+void elk_init_unix_temp() {
     Def_Prim(P_Tempname,           "unix-tempname",             0, 2, VARARGS);
 }

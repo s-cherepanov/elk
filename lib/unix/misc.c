@@ -30,7 +30,9 @@
 
 #include "unix.h"
 
-static Object P_Getpass(prompt) Object prompt; {
+#include <string.h>
+
+static Object P_Getpass(Object prompt) {
     char *ret;
     extern char *getpass();
 
@@ -42,6 +44,6 @@ static Object P_Getpass(prompt) Object prompt; {
     return Make_String(ret, strlen(ret));
 }
 
-elk_init_unix_misc() {
+void elk_init_unix_misc() {
     Def_Prim(P_Getpass,          "unix-getpass",                1, 1, EVAL);
 }
