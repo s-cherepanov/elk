@@ -5,7 +5,7 @@ Changes between 3.0 and 4.0:
 
   * Not released yet.
 
-  * New in 3.99.4 prerelease (rev 170):
+  * New in 3.99.4 prerelease (rev 171):
     + Proper plugin support under Win32 and HP-UX.
     + Compilation fixes.
     + Minor bugs fixed.
