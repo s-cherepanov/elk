@@ -1,4 +1,59 @@
 ------------------------------------------------------------------------
+rev 150:  sam | 2003-09-13 08:31:24 +0200 (Sat, 13 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /src/loadlib.c
+
+  * Plugin support for Win32.
+
+------------------------------------------------------------------------
+rev 149:  sam | 2003-09-13 02:35:20 +0200 (Sat, 13 Sep 2003) | 2 lines
+Changed paths:
+   M /Makefile.am
+   A /build-win32
+
+  * Quick and dirty .zip generator for the Win32 version.
+
+------------------------------------------------------------------------
+rev 148:  sam | 2003-09-13 02:34:58 +0200 (Sat, 13 Sep 2003) | 5 lines
+Changed paths:
+   M /include/intern.h
+   M /src/Makefile.am
+   M /src/io.c
+   M /src/libelk.c
+   M /src/load.c
+
+  * Removed references to NOMAIN.
+  * Replaced / with \ under Win32.
+  * The Win32 version looks for .scm files in the scm subdirectory of the
+    executable's current directory.
+
+------------------------------------------------------------------------
+rev 147:  sam | 2003-09-11 22:46:50 +0200 (Thu, 11 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/bitstring
+   M /doc/cprog
+   M /doc/kernel
+   M /doc/man
+   M /doc/oops
+   M /doc/record
+   M /doc/regexp
+   M /doc/unix
+   M /doc/usenix
+   M /doc/xlib
+   M /doc/xt
+
+  * Made SVN ignore temporary files.
+
+------------------------------------------------------------------------
+rev 146:  sam | 2003-09-11 22:44:17 +0200 (Thu, 11 Sep 2003) | 2 lines
+Changed paths:
+   M /ChangeLog
+   M /debian/changelog
+
+  * Preparing new release.
+
+------------------------------------------------------------------------
 rev 145:  sam | 2003-09-11 12:09:27 +0200 (Thu, 11 Sep 2003) | 2 lines
 Changed paths:
    M /src/main.c

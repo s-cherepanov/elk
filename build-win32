@@ -6,18 +6,19 @@
 set -x
 set -e
 
-# To build for win32, I use ./configure --host=i586-mingw32msvc
-
+# Clean up our working directory
 DIRNAME="elk-`sed -ne '/^VERSION/s/[^0-9]*//p' Makefile`"
 DESTDIR="`pwd`/${DIRNAME}"
 rm -Rf "${DIRNAME}"
 rm -f "${DIRNAME}.zip"
 mkdir "${DIRNAME}"
+
+# To build for win32, I use ./configure --host=i586-mingw32msvc
 (cd src && make && cp elk.exe "${DESTDIR}")
 (cd scm && make install DESTDIR="${DESTDIR}" datadir="/")
 mv "${DESTDIR}/elk" "${DESTDIR}/scm"
 
+# Pack the directory
 zip "${DIRNAME}.zip" `find "${DIRNAME}"`
-
 rm -Rf "${DIRNAME}"
 
