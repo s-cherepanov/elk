@@ -82,8 +82,8 @@ extern Object The_Environment, Global_Environment;
 
 /* Error handling
  */
-extern void Primitive_Error P_((ELLIPSIS)) __attribute__ ((__noreturn__));
-extern void Fatal_Error P_((ELLIPSIS)) __attribute__ ((__noreturn__));
+extern void Primitive_Error P_((const char*, ...)) __attribute__ ((__noreturn__));
+extern void Fatal_Error P_((const char*, ...)) __attribute__ ((__noreturn__));
 extern void Range_Error P_((Object));
 extern void Panic P_((const char*));
 extern Object P_Error P_((int, Object*));
@@ -313,7 +313,7 @@ extern Object P_Print P_((int, Object*));
 extern Object P_Get_Output_String P_((Object));
 extern void Check_Output_Port P_((Object));
 extern void Discard_Output P_((Object));
-extern void Printf P_((ELLIPSIS));
+extern void Printf P_((Object, const char *, ...));
 extern void Print_Object P_((Object, Object, int, int, int));
 extern void General_Print_Object P_((Object, Object, int));
 extern void Format P_((Object, const char*, int, int, Object*));
@@ -433,7 +433,7 @@ extern Object Bits_To_Symbols P_((unsigned long int, int, SYMDESCR*));
  */
 extern void Register_Object P_((Object, GENERIC, PFO, int));
 extern void Deregister_Object P_((Object));
-extern Object Find_Object P_((ELLIPSIS));
+extern Object Find_Object P_((int, GENERIC, MATCHFUN, ...));
 extern void Terminate_Group P_((GENERIC));
 extern void Terminate_Type P_((int));
 

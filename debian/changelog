@@ -1,3 +1,10 @@
+elk (3.0-13) unstable; urgency=low
+
+  * Fixed gcc-3.3 compilation errors due to deprecated usage of <varargs.h>.
+  * Set policy to 3.5.10.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 30 May 2003 17:04:56 +0200
+
 elk (3.0-12) unstable; urgency=low
 
   * Fixed generation of /usr/lib/elk/module.a (needed to build sced).

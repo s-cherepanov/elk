@@ -6,7 +6,7 @@
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
-#include <varargs.h>
+#include <stdarg.h>
 
 #ifdef FLUSH_TIOCFLUSH
 #  include <sys/ioctl.h>
@@ -107,15 +107,11 @@ void vsprintf (register char *s, register char *fmt, va_list ap) {
 #endif
 
 /*VARARGS0*/
-void Printf (va_alist) va_dcl {
+void Printf (Object port, const char *fmt, ...) {
     va_list args;
-    Object port;
-    char *fmt;
     char buf[1024];
 
-    va_start (args);
-    port = va_arg (args, Object);
-    fmt = va_arg (args, char *);
+    va_start (args, fmt);
     if (PORT(port)->flags & P_STRING) {
 	vsprintf (buf, fmt, args);
 	Print_String (port, buf, strlen (buf));

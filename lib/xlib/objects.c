@@ -1,4 +1,4 @@
-#include <varargs.h>
+#include <stdarg.h>
 
 #include "xlib.h"
 

@@ -30,4 +30,4 @@ $install_dir/lib/ldflags		/usr/bin/ldflags-elk
 
 
  -- Enrique Zanardi <ezanard@debian.org>  Mon, 26 Mar 2001 20:19:04 +0100
- -- Samuel Hocevar <sam@zoy.org>  Mon, 31 Mar 2003 15:00:23 +0200
+ -- Sam Hocevar <sam@zoy.org>  Mon, 31 Mar 2003 15:00:23 +0200

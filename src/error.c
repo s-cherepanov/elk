@@ -1,5 +1,5 @@
 #include <ctype.h>
-#include <varargs.h>
+#include <stdarg.h>
 #include <stdlib.h>
 
 #include "kernel.h"
@@ -42,15 +42,13 @@ void Set_App_Name (char *name) {
 
 #ifdef lint
 /*VARARGS1*/
-void Fatal_Error (char *foo) { foo = foo; }
+void Fatal_Error (const char *foo) { foo = foo; }
 #else
-void Fatal_Error (va_alist) va_dcl {
+void Fatal_Error (const char *fmt, ...) {
     va_list args;
-    char *fmt;
 
     Disable_Interrupts;
-    va_start (args);
-    fmt = va_arg (args, char *);
+    va_start (args, fmt);
     (void)fflush (stdout);
     if (appname)
 	fprintf (stderr, "\n%s: fatal error: ", appname);
@@ -91,17 +89,16 @@ void Uncatchable_Error (char *errmsg) {
 
 #ifdef lint
 /*VARARGS1*/
-void Primitive_Error (char *foo) { foo = foo; }
+void Primitive_Error (const char *foo) { foo = foo; }
 #else
-void Primitive_Error (va_alist) va_dcl {
+void Primitive_Error (const char *fmt, ...) {
     va_list args;
-    register char *p, *fmt;
+    register const char *p;
     register int i, n;
     Object msg, sym, argv[10];
     GC_Node; GCNODE gcv;
 
-    va_start (args);
-    fmt = va_arg (args, char *);
+    va_start (args, fmt);
     for (n = 0, p = fmt; *p; p++)
 	if (*p == '~' && p[1] != '~' && p[1] != '%'
 		&& p[1] != 'E' && p[1] != 'e')
