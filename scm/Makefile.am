@@ -1,8 +1,8 @@
 NULL = 
 
-EXTRA_DIST = $(SCM_FILES) slib.scm.in
+EXTRA_DIST = $(SCM_FILES) $(SCM_DIST) slib.scm.in
 
-pkgdata_DATA = $(SCM_FILES) slib.scm
+pkgdata_DATA = $(SCM_FILES) $(SCM_MAYBE) slib.scm
 
 SCM_FILES = \
 	apropos.scm \
@@ -10,9 +10,7 @@ SCM_FILES = \
 	cscheme.scm \
 	debug.scm \
 	describe.scm \
-	$(gdbmtest_scm) \
 	initscheme.scm \
-	$(motif_scm) \
 	oops.scm \
 	parse.scm \
 	pp.scm \
@@ -26,9 +24,22 @@ SCM_FILES = \
 	toplevel.scm \
 	trace.scm \
 	unix.scm \
+	$(NULL)
+
+SCM_MAYBE = \
+	$(gdbmtest_scm) \
+	$(motif_scm) \
 	$(xlib_scm) \
 	$(xaw_scm) \
 	$(xwidgets_scm) \
+	$(NULL)
+
+SCM_DIST = \
+	gdbmtest.scm \
+	motif.scm \
+	xlib.scm \
+	xaw.scm \
+	xwidgets.scm \
 	$(NULL)
 
 if HAVE_GDBM
