@@ -886,10 +886,12 @@ Object Exact_Modulo (Object x, Object y) {
 
     GC_Link2 (x, y);
     rem = General_Integer_Divide (x, y, 1);
-    xneg = P_Negativep (x);
-    yneg = P_Negativep (y);
-    if (!EQ(xneg,yneg))
-	rem = Generic_Plus (rem, y);
+    if (!EQ(rem,Zero)) {
+	xneg = P_Negativep (x);
+	yneg = P_Negativep (y);
+	if (!EQ(xneg,yneg))
+	    rem = Generic_Plus (rem, y);
+    }
     GC_Unlink;
     return rem;
 }

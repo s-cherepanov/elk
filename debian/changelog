@@ -1,3 +1,11 @@
+elk (3.0-15) unstable; urgency=low
+
+  * In math.c:Exact_Modulo(), follow R5RS's definition of Modulo: if x/y is an
+    integer, return Zero (Closes: #197831).
+  * Made /usr/bin/elk a symlink to /usr/bin/scheme-elk.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed, 18 Jun 2003 01:42:54 +0200
+
 elk (3.0-14) unstable; urgency=low
 
   * Rebuilt package against libgdbm's new version.

@@ -105,7 +105,7 @@ binary-arch: build install
 #	dh_undocumented
 	dh_installchangelogs CHANGES
 	dh_strip
-#	dh_link
+	dh_link usr/bin/scheme-elk usr/bin/elk
 	dh_compress
 	dh_fixperms
 	dh_installdeb
