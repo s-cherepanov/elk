@@ -128,79 +128,79 @@ text.o:			\$(H) text.d
 toggle-btn.o:		\$(H) toggle-btn.d
 
 arrow-button.so:	arrow-button.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 bulletin-brd.so:	bulletin-brd.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 cascade-btn.so:		cascade-btn.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 command.so:		command.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 drawing-area.so:	drawing-area.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 drawn-button.so:	drawn-button.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 file-selectn.so:	file-selectn.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 form.so:		form.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 frame.so:		frame.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 label.so:		label.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 list.so:		list.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 main-window.so:		main-window.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 message-box.so:		message-box.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 paned-window.so:	paned-window.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 push-button.so:		push-button.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 row-column.so:		row-column.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 scale.so:		scale.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 scroll-bar.so:		scroll-bar.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 scrolled-win.so:	scrolled-win.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 selectn-box.so:		selectn-box.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 separator.so:		separator.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 shell.so:		shell.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 support.so:		support.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 text.so:		text.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 toggle-btn.so:		toggle-btn.o
-	ld -shared -o \$@ \$< $libxmotif -lc
+	gcc -shared -o \$@ \$< $libxmotif -lc
 
 
 install: \$(SO)

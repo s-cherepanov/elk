@@ -120,73 +120,73 @@ tree.o:		\$(H) tree.d
 viewport.o:	\$(H) viewport.d
 
 ascii.so:	ascii.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 box.so:		box.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 command.so:	command.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 dialog.so:	dialog.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 form.so:	form.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 grip.so:	grip.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 label.so:	label.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 list.so:	list.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 menubutton.so:	menubutton.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 paned.so:	paned.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 panner.so:	panner.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 porthole.so:	porthole.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 repeater.so:	repeater.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 scrollbar.so:	scrollbar.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 shell.so:	shell.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 simplemenu.so:	simplemenu.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 sme.so:		sme.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 smebsb.so:	smebsb.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 smeline.so:	smeline.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 stripchart.so:	stripchart.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 toggle.so:	toggle.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 tree.so:	tree.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 viewport.so:	viewport.o
-	ld -shared -o \$@ \$< $libxaw -lc
+	gcc -shared -o \$@ \$< $libxaw -lc
 
 
 install: \$(SO)

@@ -78,7 +78,7 @@ unix.pre: \$(O)
 	../../scripts/makedl \$@ \$(O)
 
 unix.so: \$(O)
-	ld -shared -o \$@ \$(O) -lc
+	gcc -shared -o \$@ \$(O) -lc
 
 install: unix.so
 	-@if [ ! -d $install_dir/lib ]; then \\

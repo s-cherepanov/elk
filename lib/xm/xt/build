@@ -50,7 +50,7 @@ O=	\$(XTDIR)/accelerator.o\\
 	@echo ""
 
 xt-motif.so: \$(O) ../../xlib/xlib.so
-	ld -shared -o \$@ \$(O) ../../xlib/*.o $force_load_xm $libxmotif -lc
+	gcc -shared -o \$@ \$(O) ../../xlib/*.o $force_load_xm $libxmotif -lc
 
 xt-motif.pre: \$(O) ../../xlib/xlib.pre
 	../../../scripts/makedl \$@ \$(O) ../../xlib/*.o $motif_link_libs

@@ -108,7 +108,7 @@ xlib.pre: \$(O)
 	../../scripts/makedl \$@ \$(O)
 
 xlib.so: \$(O)
-	ld -shared -o \$@ \$(O) $libxlib -lc
+	gcc -shared -o \$@ \$(O) $libxlib -lc
 
 install: xlib.so
 	-@if [ ! -d $install_dir/lib ]; then \\

@@ -82,34 +82,34 @@ struct.o:	\$(H) struct.c
 gdbm.o:		\$(H) gdbm.c
 
 bitstring.so:	bitstring.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 debug.so:	debug.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 elk-eval.so:	elk-eval.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 hack.so:	hack.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 monitor.so:	monitor.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 newhandler.so:	newhandler.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 record.so:	record.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 regexp.so:	regexp.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 struct.so:	struct.o
-	ld -shared -o \$@ \$< -lc
+	gcc -shared -o \$@ \$< -lc
 
 gdbm.so:	gdbm.o
-	ld -shared -o \$@ \$< -lgdbm -lc
+	gcc -shared -o \$@ \$< -lgdbm -lc
 
 install: \$(SO)
 	-@if [ ! -d $install_dir/lib ]; then \\
