@@ -2,7 +2,7 @@ EXTRA_DIST = record.ms
 
 if HAVE_GROFF
 doc_DATA = record.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL= record

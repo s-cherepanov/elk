@@ -4,7 +4,7 @@ man_MANS = elk.1
 
 if HAVE_GROFF
 doc_DATA = elk.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 TROFF= groff -man -t

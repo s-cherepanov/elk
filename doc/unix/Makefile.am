@@ -2,7 +2,7 @@ EXTRA_DIST = unix.ms
 
 if HAVE_GROFF
 doc_DATA = unix.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL= unix

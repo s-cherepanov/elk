@@ -2,7 +2,7 @@ EXTRA_DIST = oops.ms
 
 if HAVE_GROFF
 doc_DATA = oops.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL= oops

@@ -2,7 +2,7 @@ EXTRA_DIST = cprog.ms
 
 if HAVE_GROFF
 doc_DATA = cprog.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 TROFF= groff -ms -t

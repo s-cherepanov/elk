@@ -2,7 +2,7 @@ EXTRA_DIST = usenix.ms
 
 if HAVE_GROFF
 doc_DATA = usenix.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 TROFF= groff -ms

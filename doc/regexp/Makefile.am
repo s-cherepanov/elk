@@ -2,7 +2,7 @@ EXTRA_DIST = regexp.ms
 
 if HAVE_GROFF
 doc_DATA = regexp.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL= regexp

@@ -56,7 +56,7 @@ install: build
 	   $(CURDIR)/debian/elk/usr/lib/*.a \
 	   $(CURDIR)/debian/libelk0-dev/usr/lib/
 
-	mv $(CURDIR)/debian/elk/usr/share/doc/elk/*.ps \
+	mv $(CURDIR)/debian/elk/usr/share/doc/elk/ps \
 	   $(CURDIR)/debian/elkdoc/usr/share/doc/elkdoc/
 	mv $(CURDIR)/debian/elk/usr/share/doc/elk/examples \
 	   $(CURDIR)/debian/elkdoc/usr/share/doc/elkdoc/

@@ -2,7 +2,7 @@ EXTRA_DIST = xlib.ms
 
 if HAVE_GROFF
 doc_DATA = xlib.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL= xlib

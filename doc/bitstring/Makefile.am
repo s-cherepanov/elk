@@ -2,7 +2,7 @@ EXTRA_DIST = bitstring.ms
 
 if HAVE_GROFF
 doc_DATA = bitstring.ps
-docdir = $(datadir)/doc/@PACKAGE@
+docdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL= bitstring
