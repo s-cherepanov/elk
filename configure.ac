@@ -166,13 +166,9 @@ if test "${ac_cv_my_have_elf}" = "yes"; then
   AC_DEFINE(HAVE_LIBELF, 1, Define if you have libelf.)
   ELK_LIBS="${ELK_LIBS} -lelf"
   ac_cv_my_can_dump=yes
-  ac_cv_my_can_load_obj=yes
   ac_cv_my_can_load_lib=yes
-  CAN_DUMP=1
-  CAN_LOAD_OBJ=1
 else
   ac_cv_my_can_dump=no
-  ac_cv_my_can_load_obj=no
   ac_cv_my_can_load_lib=no
   dnl AC_MSG_ERROR([could not handle the native object format, if you are running Linux please install the libelf development headers])
 fi
@@ -186,9 +182,6 @@ fi
 #    dl        SysVR4/SunOS5 dlopen()
 #
 # Leave load_obj empty if dynamic loading is not supported.
-if test "${ac_cv_my_can_load_obj}" = "yes"; then
-  AC_DEFINE(CAN_LOAD_OBJ, 1, [FIXME HARD])
-fi
 if test "${ac_cv_my_can_load_lib}" = "yes"; then
   AC_DEFINE(CAN_LOAD_LIB, 1, [FIXME HARD])
 fi

@@ -34,20 +34,10 @@
 
 Object V_Load_Path, V_Load_Noisilyp, V_Load_Libraries;
 
-#ifdef CAN_LOAD_OBJ
-#  define Default_Load_Libraries LOAD_LIBRARIES
-#else
-#  define Default_Load_Libraries ""
-#endif
-
 char *Loader_Input;  /* tmp file name used by load.xx.c */
 
 extern void Switch_Environment (Object);
 void Load_Source (Object);
-
-#ifdef CAN_LOAD_OBJ
-  void Fork_Load();
-#endif
 
 #if defined(USE_LD)
 #  include "load-ld.c"
@@ -65,11 +55,7 @@ void Init_Load () {
         Cons (Make_String (SCM_DIR, sizeof (SCM_DIR) - 1),
         Cons (Make_String (OBJ_DIR, sizeof (OBJ_DIR) - 1), Null))));
     Define_Variable (&V_Load_Noisilyp, "load-noisily?", False);
-    Define_Variable (&V_Load_Libraries, "load-libraries",
-        Make_String (Default_Load_Libraries, sizeof Default_Load_Libraries-1));
-#ifdef CAN_LOAD_OBJ
-    Register_Onfork (Fork_Load);
-#endif
+    Define_Variable (&V_Load_Libraries, "load-libraries", Make_String ("", 0));
 }
 
 void Init_Loadpath (char *s) {     /* No GC possible here */
@@ -131,22 +117,12 @@ Object General_Load (Object what, Object env) {
     Switch_Environment (env);
     Check_Loadarg (what);
     if (TYPE(what) == T_Pair) {
-        if (Has_Suffix (Car (what), ".o"))
-#ifdef CAN_LOAD_OBJ
-            Load_Object (what)
-#endif
-            ;
-        else if (Has_Suffix (Car (what), ".so"))
+        if (Has_Suffix (Car (what), ".so"))
 #ifdef CAN_LOAD_LIB
             Load_Library (what)
 #endif
             ;
     }
-    else if (Has_Suffix (what, ".o"))
-#ifdef CAN_LOAD_OBJ
-        Load_Object (Cons (what, Null))
-#endif
-        ;
     else if (Has_Suffix (what, ".so"))
 #ifdef CAN_LOAD_LIB
         Load_Library (Cons (what, Null))
