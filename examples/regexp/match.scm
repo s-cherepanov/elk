@@ -17,8 +17,6 @@
 		   (+ from (regexp-match-end m 0)))
 	     (reverse result)))))
 
-(require 'siteinfo)
-
 (cond
   ((feature? ':regular-expressions)
     (print (matches "Hello, world!" "[a-zA-z]+"))
