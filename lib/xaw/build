@@ -86,10 +86,10 @@ WIDGET_SET= xaw
 	../../scripts/makedl \$@ \$@
 
 .d.c:
-	../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$@ \$(WIDGET_SET)
+	LD_LIBRARY_PATH=../../src ../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$@ \$(WIDGET_SET)
 
 .d.o:
-	../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$*.c \$(WIDGET_SET)
+	LD_LIBRARY_PATH=../../src ../../src/scheme \$(SCMFLAGS) -l mkwidget.scm \$< \$*.c \$(WIDGET_SET)
 	\$(CC) \$(CFLAGS) -I\$(INC) -I../xlib $x11_incl -c \$*.c
 	../../scripts/makedl \$@ \$@
 

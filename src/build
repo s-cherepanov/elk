@@ -112,17 +112,22 @@ OCOMMON=\\
 	type.o\\
 	vector.o
 
-O1= \$(OCOMMON) libelk.o stab.o
+O1= main.o
 O2= \$(OCOMMON) libelk2.o stab2.o
 O3= \$(OCOMMON) libelk3.o stab2.o
 
-all: scheme libelk.so standalone.a module.a
+all: libelk.so.0.0.0 libelk.a scheme
 
-scheme:	\$(O1)
-	\$(CC) -o \$@ \$(CFLAGS) \$(O1) \$(LDFLAGS)
+scheme:	libelk.so.0.0.0 \$(O1)
+	\$(CC) -o \$@ \$(CFLAGS) \$(O1) -L. -lelk \$(LDFLAGS)
 
-libelk.so: \$(O3)
-	gcc -shared -o \$@ \$(O3) \$(LDFLAGS)
+libelk.so.0.0.0: \$(O3)
+	\$(CC) -shared -fPIC -Wl,-soname,libelk.so.0 -o \$@ \$(O3) \$(LDFLAGS)
+	rm -f libelk.so.0 && ln -s libelk.so.0.0.0 libelk.so.0
+	rm -f libelk.so && ln -s libelk.so.0 libelk.so
+
+libelk.a: \$(O3)
+	ar cru \$@ \$(O3)
 
 standalone.a: \$(O2)
 	ar cru \$@ \$(O2)
@@ -195,24 +200,21 @@ install: scheme standalone.a module.a
 	    echo mkdir $install_dir/bin; \\
 	    mkdir $install_dir/bin; \\
 	fi
-	cp scheme $install_dir/bin
+	cp -d scheme $install_dir/bin
 	-@if [ ! -d $install_dir/lib ]; then \\
 	    echo mkdir $install_dir/lib; \\
 	    mkdir $install_dir/lib; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk ]; then \\
-	    echo mkdir $install_dir/lib/elk; \\
-	    mkdir $install_dir/lib/elk; \\
-	fi
-	cp standalone.a $install_dir/lib/elk
-	cp module.a $install_dir/lib/elk
+	cp -d libelk.a libelk.so libelk.so.* $install_dir/lib
 
 lint:
 	lint \$(LINTFLAGS) -I\$(INC) \$(C)
 
 clean:
 	rm -f *.o *.a core libelk2.c stab2.c libelk3.c
+	rm -f libelk.so.0.0.0 libelk.so.0 libelk.so libelk.a
 
 distclean:
 	rm -f *.o *.a core libelk2.c stab2.c libelk3.c lint.out scheme Makefile.local
+	rm -f libelk.so.0.0.0 libelk.so.0 libelk.so libelk.a
 EOT

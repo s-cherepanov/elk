@@ -2,26 +2,49 @@ Source: elk
 Section: devel
 Priority: optional
 Maintainer: Sam Hocevar (Debian packages) <sam+deb@zoy.org>
-Build-Depends: debhelper (>= 3.0), libelfg0-dev, xlibs-dev, lesstif-dev, libgdbm-dev, libxaw7-dev
+Build-Depends: debhelper (>= 3.0), groff-base, libelfg0-dev, xlibs-dev, lesstif-dev, libgdbm-dev, libxaw7-dev
 Standards-Version: 3.6.0
 
 Package: elk
 Architecture: any
-Section: devel
+Section: interpreters
 Priority: optional
 Depends: ${shlibs:Depends}
 Conflicts: pact (<= 980714-1)
+Description: the Elk Scheme interpreted
+ Elk is an implementation of the Scheme programming language,
+ designed specifically as an embeddable, reusable extension 
+ language subsystem for applications written in C or C++.
+ .
+ This package contains the Elk Scheme interpreter.
+
+Package: libelk0
+Architecture: any
+Section: libs
+Priority: optional
+Depends: ${shlibs:Depends}
 Description: implementation of Scheme (the Extension Language Kit)
  Elk is an implementation of the Scheme programming language,
  designed specifically as an embeddable, reusable extension 
  language subsystem for applications written in C or C++.
  .
- Elk is also useful as a stand-alone Scheme implementation.
+ This package contains the libelk0 runtime library, as well as several plugins
+ shipped with Elk. They provide hooks for Unix system calls, the X Window
+ System, as well as the X Athena Widgets and the Motif toolkits. Example
+ scripts on how to use these plugins are provided in the elkdoc package.
+
+Package: libelk0-dev
+Architecture: any
+Section: libdevel
+Priority: optional
+Depends: ${shlibs:Depends}
+Description: development files for libelk0
+ Elk is an implementation of the Scheme programming language,
+ designed specifically as an embeddable, reusable extension 
+ language subsystem for applications written in C or C++.
  .
- This package also contains several plugins shipped with Elk. They provide
- hooks for Unix system calls, the X Window System, as well as the X Athena
- Widgets and the Motif toolkits. Example scripts on how to use these plugins
- are provided in the elkdoc package.
+ This package contains the header files and static library needed to
+ compile applications that use libelk0.
 
 Package: elkdoc
 Architecture: all

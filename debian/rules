@@ -50,7 +50,14 @@ install: build
 	install -m 755 debian/scheme-warning-elk $(CURDIR)/debian/elk/usr/bin/
 	install -m 644 debian/elk.ini $(CURDIR)/debian/elk/usr/share/elk
 
-#	dh_movefiles
+	mv $(CURDIR)/debian/elk/usr/lib/*.so.* \
+	   $(CURDIR)/debian/libelk0/usr/lib/
+
+	mv $(CURDIR)/debian/elk/usr/include/elk/* \
+	   $(CURDIR)/debian/libelk0-dev/usr/include/elk/
+	mv $(CURDIR)/debian/elk/usr/lib/*.so \
+	   $(CURDIR)/debian/elk/usr/lib/*.a \
+	   $(CURDIR)/debian/libelk0-dev/usr/lib/
 
 # Build architecture-independent files here.
 # Pass -i to all debhelper commands in this target to reduce clutter.
@@ -61,6 +68,7 @@ binary-indep: build install
 #	dh_installdebconf
 	dh_installdocs
 	dh_installexamples examples/*
+	rm -Rf `find $(CURDIR)/debian/elkdoc/ -type d -name .svn`
 #	dh_installmenu
 #	dh_installemacsen
 #	dh_installpam
@@ -103,9 +111,9 @@ binary-arch: build install
 	dh_compress
 	dh_fixperms
 	dh_installdeb
-#	dh_makeshlibs
+	dh_makeshlibs
 #	dh_perl
-	dh_shlibdeps
+	dh_shlibdeps -L libelk0 -l debian/libelk0/usr/lib
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
