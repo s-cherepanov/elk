@@ -1,10 +1,24 @@
 NULL = 
 
+EXTRA_DIST = $(DATA) $(D_FILES)
+
 pkglib_xaw_DATA = ALIASES
 pkglib_xaw_LTLIBRARIES = xaw.la
 pkglib_xawdir = $(pkglibdir)/xaw
 
-xaw_la_SOURCES = \
+nodist_xaw_la_SOURCES = $(C_FILES)
+xaw_la_CFLAGS = -I$(srcdir)/../xlib @XAW_CFLAGS@
+xaw_la_LDFLAGS = -module -avoid-version
+xaw_la_LIBADD = $(top_builddir)/src/libelk.la @XAW_LIBS@
+
+.d.c:
+	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/../xt -l mkwidget.scm $< $@ xaw
+
+clean: clean-local
+clean-local:
+	-rm -f $(C_FILES)
+
+C_FILES = \
 	ascii.c \
 	box.c \
 	command.c \
@@ -29,14 +43,30 @@ xaw_la_SOURCES = \
 	tree.c \
 	viewport.c \
 	$(NULL)
-xaw_la_CFLAGS = -I/usr/X11R6/include -I$(srcdir)/../xlib
-xaw_la_LDFLAGS = -module -avoid-version
-xaw_la_LIBADD = $(top_builddir)/src/libelk.la -L/usr/X11R6/lib -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11
 
-.d.c:
-	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/../xt -l mkwidget.scm $< $@ xaw
-
-clean: clean-local
-clean-local:
-	-rm -f *.c
+D_FILES = \
+	ascii.d \
+	box.d \
+	command.d \
+	dialog.d \
+	form.d \
+	grip.d \
+	label.d \
+	list.d \
+	menubutton.d \
+	paned.d \
+	panner.d \
+	porthole.d \
+	repeater.d \
+	scrollbar.d \
+	shell.d \
+	simplemenu.d \
+	sme.d \
+	smebsb.d \
+	smeline.d \
+	stripchart.d \
+	toggle.d \
+	tree.d \
+	viewport.d \
+	$(NULL)
 

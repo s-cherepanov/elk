@@ -1,13 +1,24 @@
 NULL = 
 
-include ../xlib/Include.am
-include ../xt/Include.am
+EXTRA_DIST = $(DATA) $(D_FILES)
 
 pkglib_xm_DATA = ALIASES
 pkglib_xm_LTLIBRARIES = xm.la
 pkglib_xmdir = $(pkglibdir)/xm
 
-xm_la_SOURCES = \
+nodist_xm_la_SOURCES = $(C_FILES)
+xm_la_CFLAGS = -I$(srcdir)/../xlib @XM_LIBS@
+xm_la_LDFLAGS = -module -avoid-version -u XmIsMotifWMRunning
+xm_la_LIBADD = $(top_builddir)/src/libelk.la @XM_LIBS@
+
+.d.c:
+	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/../xt -l mkwidget.scm $< $@ xm
+
+clean: clean-local
+clean-local:
+	-rm -f $(C_FILES)
+
+C_FILES = \
 	arrow-button.c \
 	bulletin-brd.c \
 	cascade-btn.c \
@@ -34,21 +45,32 @@ xm_la_SOURCES = \
 	text.c \
 	toggle-btn.c \
 	$(NULL)
-xm_la_CFLAGS = -I/usr/X11R6/include -I/usr/include/Xm -I$(srcdir)/../xlib
-xm_la_LDFLAGS = -module -avoid-version -u XmIsMotifWMRunning
-xm_la_LIBADD = $(top_builddir)/src/libelk.la -L/usr/X11R6/lib -lXm -lXmu -lXt -lSM -lICE -lXext -lX11
 
-pkglib_LTLIBRARIES = xt-motif.la
-
-xt_motif_la_SOURCES = $(SOURCES_XT) $(SOURCES_XLIB)
-xt_motif_la_CFLAGS = -I/usr/include/Xm -I/usr/X11R6/include -I$(srcdir)/../xlib
-xt_motif_la_LDFLAGS = -module -avoid-version
-xt_motif_la_LIBADD = $(top_builddir)/src/libelk.la -L/usr/X11R6/lib -lXm -lXmu -lXt -lSM -lICE -lXext -lX11
-
-.d.c:
-	$(top_builddir)/src/elk -p .:$(top_srcdir)/scm:$(srcdir)/../xt -l mkwidget.scm $< $@ xm
-
-clean: clean-local
-clean-local:
-	-rm -f *.c
+D_FILES = \
+	arrow-button.d \
+	bulletin-brd.d \
+	cascade-btn.d \
+	command.d \
+	drawing-area.d \
+	drawn-button.d \
+	file-selectn.d \
+	form.d \
+	frame.d \
+	label.d \
+	list.d \
+	main-window.d \
+	message-box.d \
+	paned-window.d \
+	push-button.d \
+	row-column.d \
+	scale.d \
+	scroll-bar.d \
+	scrolled-win.d \
+	selectn-box.d \
+	separator.d \
+	shell.d \
+	support.d \
+	text.d \
+	toggle-btn.d \
+	$(NULL)
 
