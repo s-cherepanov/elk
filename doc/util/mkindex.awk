@@ -29,79 +29,79 @@
 
 {
     need_nl = 0;
-    do_line($0);
+    line = $0;
+
+    while(line != "") {
+
+        nxt = index(line, "@[")
+
+        if(nxt == 0) {
+            printf "%s", line;
+            break;
+        }
+
+        if(nxt > 1) {
+            if(substr(line, nxt - 1, 1) == "(") {
+                need_c = 1;
+            }
+            need_nl = 1;
+            printf "%s", substr(line, 1, nxt - 1);
+            line = substr(line, nxt);
+            continue;
+        }
+
+        tmp = substr(line, 1, 3);
+        if(tmp == "@[.") {
+            macro = "Ix";
+        } else
+        if(tmp == "@[.") {
+            macro = "Id";
+        } else {
+            printf "error: invalid index %s\n", tmp > "/dev/stderr";
+            exit 1;
+        }
+
+        end = match(line, "[^\\\\]]");
+
+        if(end == 0) {
+            printf "error: unfinished @[\n" > "/dev/stderr";
+            exit 1;
+        }
+
+        inx = substr(line, 4, end - 3);
+        gsub("\\\\]", "]", inx);
+        arg = inx;
+        gsub("(\\\\f.|''|``|\\\\%)", "", arg);
+
+        if(arg == "") {
+            printf "error: empty index\n" > "/dev/stderr";
+            exit 1;
+        }
+
+        if(need_c) { printf "\\c"; }
+        if(need_nl) { printf "\n"; }
+
+        printf ".%s ", macro;
+
+        line = substr(line, end + 2);
+
+        if(sub("^=", "", arg)) {
+            printf "\"%s\"", arg;
+            if(line != "") {
+                printf "\n";
+                need_nl = 0;
+                sub("^ ", "", line);
+            }
+        } else if (arg ~ /[|]/) {
+            q = arg; sub("[^|]*[|]", "", q); sub("[|].*", "", arg);
+            printf "\"%s, %s\"\n%s %s", q, arg, arg, q;
+            need_nl = 1;
+        } else {
+            printf "\"%s\"\n%s", arg, inx;
+            need_nl = 1;
+        }
+    }
+
     printf "\n";
-}
-
-function do_line(line) {
-    nxt = index(line, "@[")
-
-    if(nxt == 0) {
-        printf "%s", line;
-        return;
-    }
-
-    if(nxt > 1) {
-        if(substr(line, nxt - 1, 1) == "(") {
-            need_c = 1;
-        }
-        need_nl = 1;
-        printf "%s", substr(line, 1, nxt - 1);
-        do_line(substr(line, nxt));
-        return;
-    }
-
-    tmp = substr(line, 1, 3);
-    if(tmp == "@[.") {
-        macro = "Ix";
-    } else
-    if(tmp == "@[.") {
-        macro = "Id";
-    } else {
-        printf "error: invalid index %s\n", tmp > "/dev/stderr";
-        exit 1;
-    }
-
-    end = match(line, "[^\\\\]]");
-
-    if(end == 0) {
-        printf "error: unfinished @[\n" > "/dev/stderr";
-        exit 1;
-    }
-
-    inx = substr(line, 4, end - 3);
-    gsub("\\\\]", "]", inx);
-    arg = inx;
-    gsub("(\\\\f.|''|``|\\\\%)", "", arg);
-
-    if(arg == "") {
-        printf "error: empty index\n" > "/dev/stderr";
-        exit 1;
-    }
-
-    if(need_c) { printf "\\c"; }
-    if(need_nl) { printf "\n"; }
-
-    printf ".%s ", macro;
-
-    line = substr(line, end + 2);
-
-    if(sub("^=", "", arg)) {
-        printf "\"%s\"", arg;
-        if(line != "") {
-            printf "\n";
-            need_nl = 0;
-            sub("^ ", "", line);
-        }
-    } else if (arg ~ /[|]/) {
-        q = arg; sub("[^|]*[|]", "", q); sub("[|].*", "", arg);
-        printf "\"%s, %s\"\n%s %s", q, arg, arg, q;
-        need_nl = 1;
-    } else {
-        printf "\"%s\"\n%s", arg, inx;
-        need_nl = 1;
-    }
-
-    do_line(line);
 }
 
