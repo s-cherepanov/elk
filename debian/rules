@@ -16,6 +16,13 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 
+	# Touch stuff
+	touch configure.ac \
+	&& touch aclocal.m4 \
+	&& touch configure \
+	&& touch config.h.in \
+	&& touch `find . -name Makefile.in`
+
 	./configure --prefix=/usr --mandir=/usr/share/man
 
 	touch configure-stamp

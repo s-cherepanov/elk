@@ -1,3 +1,13 @@
+elk (3.99.6-2) unstable; urgency=low
+
+  * debian/control:
+    + Switched back to libelfg0-dev because libelf1-dev was removed from
+      unstable (Closes: #225656).
+  * debian/rules:
+    + Added touch calls to avoid build failures due to clock skews.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed, 31 Dec 2003 18:24:21 +0100
+
 elk (3.99.6-1) unstable; urgency=low
 
   * New upstream release.
