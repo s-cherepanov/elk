@@ -185,6 +185,14 @@ if test "${ac_cv_my_can_load_lib}" = "no"; then
     ac_cv_my_can_load_lib=yes])
 fi
 
+# BeOS style
+if test "${ac_cv_my_can_load_lib}" = "no"; then
+  AC_CHECK_HEADERS(image.h)
+  AC_CHECK_FUNCS(load_add_on,
+   [AC_DEFINE(HAVE_DL_BEOS, 1, [Define if you have the BeOS dl])
+    ac_cv_my_can_load_lib=yes])
+fi
+
 # Win32 style
 if test "${ac_cv_my_can_load_lib}" = "no"; then
   AC_CHECK_LIB(kernel32, main,

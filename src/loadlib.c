@@ -41,6 +41,8 @@
 #   include <mach-o/dyld.h>
 #elif defined (WIN32)
 #   include <windows.h>
+#elif defined (HAVE_IMAGE_H)
+#   include <image.h>
 #elif defined (HAVE_DL_DLOPEN)
 #   if defined (HAVE_DLFCN_H)
 #       include <dlfcn.h>
@@ -107,6 +109,19 @@ void Dlopen_File (char *obj) {
                          Make_String (obj, strlen (obj)));
     }
 
+#elif defined (HAVE_DL_BEOS)
+    int handle;
+
+    if (Verb_Load)
+        printf ("[load_add_on %s]\n", obj);
+
+    handle = load_add_on (obj);
+
+    if (handle < 0) {
+        Primitive_Error ("load_add_on failed on ~%~s",
+                         Make_String (obj, strlen (obj)));
+    }
+
 #elif defined (HAVE_DL_DLOPEN)
     void *handle;
 
@@ -157,6 +172,13 @@ void Dlopen_File (char *obj) {
 
 #elif defined (WIN32)
         sp->value = (unsigned long int)(intptr_t)GetProcAddress (handle, sp->name);
+
+#elif defined (HAVE_DL_BEOS)
+        void *sym;
+        if (get_image_symbol (handle, sp->name, B_SYMBOL_TYPE_TEXT, &sym)
+             == B_OK) {
+            sp->value = (unsigned long int)(intptr_t)sym;
+        }
 
 #elif defined (HAVE_DL_DLOPEN)
         /* dlsym() may fail for symbols not exported by object file;
