@@ -15,7 +15,8 @@
 (define widget-aliases #f)
 
 (define (widget-loaded? w)
-  (feature? (string->symbol (format #f "~a:~a.so" widget-subdirectory w))))
+  ;;(feature? (string->symbol (format #f "~a:~a.so" widget-subdirectory w))))
+  (feature? (string->symbol (format #f "~a:~a.so" widget-subdirectory widget-subdirectory))))
 
 (define-macro (load-widgets . w)
   (let ((wl '()) (l '()))
@@ -44,9 +45,10 @@
 	      (if alias (set! file (cdr alias)))
 	      (if autoload-notify?
 		  (format #t "~a~a" file (if (null? (cdr f)) "" " ")))
+              ;; XXX: don't load all widgets, they're all in the same lib
 	      ;;(set! wl (cons (format #f "~a/~a.so" widget-subdirectory file)
-	      (set! wl (cons (format #f "~a/~a.so" widget-subdirectory widget-subdirectory)
-			     wl))))
+		;;	     wl))))
+	      (set! wl (list (format #f "~a/~a.so" widget-subdirectory widget-subdirectory)))))
 	  (if autoload-notify? (format #t "]~%"))
 	  `(fluid-let ((load-libraries
 			 (if (feature? 'motif)
