@@ -6,6 +6,7 @@ DIST_SUBDIRS = $(SUBDIRS) autotools debian
 EXTRA_DIST = \
 	bootstrap \
 	BUGS \
+	ChangeLog \
 	MACHINES \
 	MIGRATE \
 	$(NULL)
