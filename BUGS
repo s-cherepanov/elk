@@ -36,7 +36,4 @@ Generational/Incremental Garbage Collector
 
    o  The percentage displayed at the end of a GC run is sometimes wrong.
 
-   o  The scope of the name of a named let is wrong, as explained in
-      http://groups.google.com/groups?selm=871zemtmd4.fsf%40app.dial.idiom.com
-
    o Almost no Unix commands work under Win32, and they are badly disabled.

@@ -456,6 +456,7 @@ Object Named_Let (Object argl) {
             (void)P_Set_Cdr (vtail, cell);
         vtail = cell;
     }
+    /* Create a new environment to protect our named let variable */
     Push_Frame (Add_Binding (Null, Car (argl), Null));
     tail = Cons (vlist, Cdr (Cdr (argl)));
     if (Nullp (Cdr (tail)))
@@ -466,8 +467,12 @@ Object Named_Let (Object argl) {
     Cdr (b) = tail;
     SYMBOL(Car (argl))->value = tail;
     TC_Enable;
-    tail = Funcall (tail, flist, 1);
+    /* Restore environment before calling the function */
     Pop_Frame ();
+    /* vlist: list of variables
+     * flist: list of initial values
+     * tail: our new lambda function */
+    tail = Funcall (tail, flist, 1);
     GC_Unlink;
     return tail;
 }
