@@ -3,7 +3,6 @@ NULL =
 include ../xlib/Include.am
 include ../xt/Include.am
 
-AUTOMAKE_OPTIONS = subdir-objects
 EXTRA_DIST = MISSING
 
 pkglib_LTLIBRARIES = xt.la

@@ -1,7 +1,5 @@
 NULL = 
 
-AUTOMAKE_OPTIONS = subdir-objects
-
 include ../xlib/Include.am
 include ../xt/Include.am
 
