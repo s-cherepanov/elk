@@ -40,7 +40,7 @@ extern_c Object elk_import False2;
 #define Print(x)    General_Print_Object (x, Curr_Output_Port, 0)
 #define Numeric(t)  (t == T_Fixnum || t == T_Flonum || t == T_Bignum)
 
-#define Whitespace(c) (c == ' ' || c == '\t' || c == '\014' || c == '\n')
+#define Whitespace(c) (c == ' ' || c == '\t' || c == '\014' || c == '\n' || c == '\r')
 #define Delimiter(c) (c == ';' || c == ')' || c == '(' || c == '"')
 
 
