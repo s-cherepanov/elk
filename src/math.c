@@ -105,10 +105,10 @@ Object Fixnum_To_String (Object x, int radix) {
 }
 
 char *Flonum_To_String (Object x) {
-    static char buf[32];
+    static char buf[64];
     char *p;
 
-    sprintf (buf, "%.15g", FLONUM(x)->val);
+    sprintf (buf, "%.31g", FLONUM(x)->val);
     for (p = buf; *p; p++)
         if (*p == '.' || *p == 'e' || *p == 'N' || *p == 'i')
             return buf;
