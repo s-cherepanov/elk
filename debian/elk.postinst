@@ -1,8 +1,0 @@
-#!/bin/sh -
-
-if [ "$1" = "configure" ]; then
-  update-alternatives --install /usr/bin/scheme scheme \
-    /usr/bin/scheme-warning-elk 20 > /dev/null
-fi
-
-#DEBHELPER#

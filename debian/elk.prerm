@@ -1,6 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = "remove" ]; then
+  # Remove this useless alternative.
   update-alternatives --remove scheme /usr/bin/scheme-warning-elk > /dev/null
 fi
 

@@ -47,7 +47,6 @@ install: build
 
 	mv $(CURDIR)/debian/elk/usr/bin/scheme \
 	   $(CURDIR)/debian/elk/usr/bin/scheme-elk
-	install -m 755 debian/scheme-warning-elk $(CURDIR)/debian/elk/usr/bin/
 	install -m 644 debian/elk.ini $(CURDIR)/debian/elk/usr/share/elk
 
 	mv $(CURDIR)/debian/elk/usr/lib/*.so.* \

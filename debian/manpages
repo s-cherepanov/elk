@@ -3,4 +3,3 @@ debian/ldflags-elk.1
 debian/linkscheme.1
 debian/makedl.1
 debian/scheme-elk.1
-debian/scheme-warning-elk.1
