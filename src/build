@@ -122,14 +122,14 @@ scheme:	\$(O1)
 	\$(CC) -o \$@ \$(CFLAGS) \$(O1) \$(LDFLAGS)
 
 standalone.a: \$(O2)
-	ar cru \$@ \$<
+	ar cru \$@ \$(O2)
 
 standalone.o: \$(O2)
 	ld -r -o \$@ \$(O2)
 	chmod 644 \$@
 
 module.a: \$(O3)
-	ar cru \$@ \$<
+	ar cru \$@ \$(O3)
 
 module.o: \$(O3)
 	ld -r -o \$@ \$(O3)

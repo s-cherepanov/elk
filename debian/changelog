@@ -1,3 +1,9 @@
+elk (3.0-12) unstable; urgency=low
+
+  * Fixed generation of /usr/lib/elk/module.a (needed to build sced).
+
+ -- Samuel Hocevar <sam@zoy.org>  Sat,  5 Apr 2003 01:45:26 +0200
+
 elk (3.0-11) unstable; urgency=low
 
   * Fixed a compilation issue in src/load-dl.c:Load_Lib().
