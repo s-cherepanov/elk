@@ -45,6 +45,10 @@
 #   endif
 #endif
 
+#ifdef WIN32
+#   include <windows.h>
+#endif
+
 #ifdef FIND_AOUT
 #   ifdef HAVE_UNISTD_H
 #       include <unistd.h>
@@ -101,6 +105,8 @@ int Verb_Load = 0, Verb_Init = 0;
 char **Argv;
 int Argc, First_Arg;
 
+char *Scm_Dir;
+char *Lib_Dir;
 #ifdef FIND_AOUT
 char *A_Out_Name;
 char *Find_Executable();
@@ -145,21 +151,11 @@ char *Brk_On_Dump;
  * an incompatible way.
  */
 void Check_If_Dump_Works () {
-#ifdef NOMAIN
     Primitive_Error ("not yet supported for standalone applications");
-#endif
 }
 
 
-#ifdef NOMAIN
-
 void Elk_Init (int ac, char **av, int init_objects, char *toplevel) {
-
-#else
-
-int main (int ac, char **av) {
-
-#endif
 
 /* To avoid that the stack copying code overwrites argv if a dumped
  * copy of the interpreter is invoked with more arguments than the
@@ -175,7 +171,7 @@ int main (int ac, char **av) {
     Object file;
     struct stat st;
     extern int errno;
-#if defined(CAN_DUMP) && defined(NOMAIN)
+#if defined(CAN_DUMP)
 #   define foo (av[0][0])
 #else
     char foo;
@@ -189,9 +185,29 @@ int main (int ac, char **av) {
     }
     Get_Stack_Limit ();
 
-#ifdef FIND_AOUT
+    Lib_Dir = NULL;
+    Scm_Dir = NULL;
+
+#ifdef WIN32
+    if (av[0]) {
+        char path[MAX_PATH], *exe;
+        GetFullPathName (av[0], MAX_PATH, path, &exe);
+        if (exe > path && exe[-1] == '\\') {
+            char newpath[MAX_PATH+5];
+            exe[-1] = '\0';
+            sprintf (newpath, "%s\\lib", path);
+            Lib_Dir = strdup (newpath);
+            sprintf (newpath, "%s\\scm", path);
+            Scm_Dir = strdup (newpath);
+        }
+    }
+#elif defined(FIND_AOUT)
     A_Out_Name = Find_Executable (av[0]);
 #endif
+    if (Scm_Dir == NULL)
+        Scm_Dir = strdup (SCM_DIR);
+    if (Lib_Dir == NULL)
+        Lib_Dir = strdup (LIB_DIR);
 
     Argc = ac; Argv = av;
     First_Arg = 1;
@@ -275,18 +291,11 @@ int main (int ac, char **av) {
         Fatal_Error ("atexit returned non-zero value");
 #endif
 #ifdef INIT_OBJECTS
-#ifdef NOMAIN
     if (init_objects) {
         Set_Error_Tag ("init-objects");
         The_Symbols = Open_File_And_Snarf_Symbols (A_Out_Name);
         Call_Initializers (The_Symbols, (char *)0, PR_EXTENSION);
     }
-#else
-    Set_Error_Tag ("init-objects");
-    The_Symbols = Open_File_And_Snarf_Symbols (A_Out_Name);
-    Call_Initializers (The_Symbols, (char *)0, PR_CONSTRUCTOR);
-    Call_Initializers (The_Symbols, (char *)0, PR_EXTENSION);
-#endif
 #endif
     if (loadpath || (loadpath = getenv (LOADPATH_ENV)))
         Init_Loadpath (loadpath);
@@ -299,8 +308,12 @@ int main (int ac, char **av) {
      * the load-path, so that -p can be used.
      */
     Set_Error_Tag ("scheme-init");
-    initfile = Safe_Malloc (strlen (SCM_DIR) + 1 + sizeof (INITFILE) + 1);
-    sprintf (initfile, "%s/%s", SCM_DIR, INITFILE);
+    initfile = Safe_Malloc (strlen (Scm_Dir) + 1 + sizeof (INITFILE) + 1);
+#ifdef WIN32
+    sprintf (initfile, "%s\\%s", Scm_Dir, INITFILE);
+#else
+    sprintf (initfile, "%s/%s", Scm_Dir, INITFILE);
+#endif
     if (stat (initfile, &st) == -1 && errno == ENOENT)
         file = Make_String (INITFILE, sizeof(INITFILE)-1);
     else
@@ -311,7 +324,6 @@ int main (int ac, char **av) {
     Install_Intr_Handler ();
 
     Set_Error_Tag ("top-level");
-#ifdef NOMAIN
     if (toplevel == 0) {
         Interpreter_Initialized = 1;
         GC_Debug = debug;
@@ -320,7 +332,6 @@ int main (int ac, char **av) {
     /* Special case: if toplevel is "", act as if run from main() */
     if (loadfile == 0 && toplevel[0] != '\0')
         loadfile = toplevel;
-#endif
     if (loadfile == 0)
         loadfile = "toplevel.scm";
     file = Make_String (loadfile, strlen (loadfile));
@@ -330,9 +341,6 @@ int main (int ac, char **av) {
         Load_Source_Port (Standard_Input_Port);
     else
         (void)General_Load (file, The_Environment);
-#ifndef NOMAIN
-    return 0;
-#endif
 }
 
 static char *Usage_Msg[] = {

@@ -189,7 +189,11 @@ Object General_File_Operation (Object s, register int op) {
             return s;
         }
         Alloca (r, char*, strlen (dir) + 1 + strlen (p) + 1);
+#ifdef WIN32
+        sprintf (r, "%s\\%s", dir, p);
+#else
         sprintf (r, "%s/%s", dir, p);
+#endif
         ret = Make_String (r, strlen (r));
         Alloca_End;
         return ret;
@@ -236,7 +240,11 @@ Object Open_File (char *name, int flags, int err) {
     p = Internal_Tilde_Expand (name, &dir);
     if (p) {
         Alloca (name, char*, strlen (dir) + 1 + strlen (p) + 1);
+#ifdef WIN32
+        sprintf (name, "%s\\%s", dir, p);
+#else
         sprintf (name, "%s/%s", dir, p);
+#endif
     }
     if (!err && stat (name, &st) == -1 &&
             (errno == ENOENT || errno == ENOTDIR)) {
@@ -271,7 +279,11 @@ Object General_Open_File (Object name, int flags, Object path) {
     name = Get_File_Name (name);
     len = STRING(name)->size;
     fn = STRING(name)->data;
+#ifdef WIN32
+    if (fn[0] < 'A' || fn[0] > 'Z' || fn[1] != ':' ) {
+#else
     if (fn[0] != '/' && fn[0] != '~') {
+#endif
         for ( ; TYPE(path) == T_Pair; path = Cdr (path)) {
             pref = Car (path);
             if (TYPE(pref) == T_Symbol)
@@ -286,8 +298,13 @@ Object General_Open_File (Object name, int flags, Object path) {
                 Alloca (buf, char*, blen);
             }
             memcpy (buf, STRING(pref)->data, plen);
+#ifdef WIN32
+            if (buf[plen-1] != '\\')
+                buf[plen++] = '\\';
+#else
             if (buf[plen-1] != '/')
                 buf[plen++] = '/';
+#endif
             memcpy (buf+plen, fn, len);
             buf[len+plen] = '\0';
             port = Open_File (buf, flags, 0);

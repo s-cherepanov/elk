@@ -111,7 +111,7 @@ extern Object General_Load P_((Object, Object));
  */
 extern Object General_Assoc P_((Object, Object, int));
 
-/* main.c
+/* libelk.c
  */
 extern char *stkbase, *A_Out_Name;
 extern int Stack_Grows_Down;
@@ -121,6 +121,8 @@ extern char *Brk_On_Dump;
 extern int Verb_Load, Verb_Init, Case_Insensitive;
 extern SYMTAB *The_Symbols;
 extern void Exit_Handler P_((void));
+extern char *Scm_Dir;
+extern char *Lib_Dir;
 #ifndef HAVE_ATEXIT
 extern void exit P_((int));
 #endif
