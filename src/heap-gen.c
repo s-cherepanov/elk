@@ -43,9 +43,7 @@
 #  include <sys/mman.h>
 #endif
 #if defined(HAVE_GETPAGESIZE) || defined(SC_PAGESIZE_IN_UNISTD_H)
-#  define link FOO
 #  include <unistd.h>
-#  undef link
 #  if defined(_SC_PAGE_SIZE) && !defined(_SC_PAGESIZE)   /* Wrong in HP-UX */
 #    define _SC_PAGESIZE _SC_PAGE_SIZE
 #  endif
@@ -102,7 +100,7 @@ static pageno_t firstpage, lastpage;
 static char *saved_heap_ptr;
 gcspace_t *space;
 static gcspace_t *type, *pmap;
-static pageno_t *link;
+static pageno_t *linked;
 
 static pageno_t current_pages, forwarded_pages;
 static pageno_t protected_pages, allocated_pages;
@@ -390,10 +388,10 @@ static void UnprotectCluster (gcptr_t addr, int len) {
 static void AddQueue (pageno_t page) {
 
     if (stable_queue != (pageno_t)-1)
-        link[stable_tail] = page;
+        linked[stable_tail] = page;
     else
         stable_queue = page;
-    link[page] = (pageno_t)-1;
+    linked[page] = (pageno_t)-1;
     stable_tail = page;
 }
 
@@ -419,7 +417,7 @@ static void PromoteStableQueue () {
         start = stable_queue;
         while (pcount--)
             space[start++] = current_space;
-        stable_queue = link[stable_queue];
+        stable_queue = linked[stable_queue];
     }
     current_pages = allocated_pages;
     forwarded_pages = 0;
@@ -539,23 +537,23 @@ void Make_Heap (int size) {
     space = (gcspace_t *)malloc (logical_pages*sizeof (gcspace_t));
     type = (gcspace_t *)malloc ((logical_pages + 1)*sizeof (gcspace_t));
     pmap = (gcspace_t *)malloc (physical_pages*sizeof (gcspace_t));
-    link = (pageno_t *)malloc (logical_pages*sizeof (pageno_t));
-    if (!space || !type || !pmap || !link) {
+    linked = (pageno_t *)malloc (logical_pages*sizeof (pageno_t));
+    if (!space || !type || !pmap || !linked) {
         free (heap_ptr);
         if (space) free ((char*)space);
         if (type) free ((char*)type);
         if (pmap) free ((char*)pmap);
-        if (link) free ((char*)link);
+        if (linked) free ((char*)linked);
         Fatal_Error ("cannot allocate heap maps");
     }
 
     memset (type, 0, (logical_pages + 1)*sizeof (gcspace_t));
     memset (pmap, 0, physical_pages*sizeof (gcspace_t));
-    memset (link, 0, logical_pages*sizeof (unsigned int));
+    memset (linked, 0, logical_pages*sizeof (unsigned int));
     space -= firstpage; /* to index the arrays with the heap page number */
     type -= firstpage;
     type[lastpage+1] = OBJECTPAGE;
-    link -= firstpage;
+    linked -= firstpage;
 #ifndef ARRAY_BROKEN
     pmap -= (PAGE_TO_ADDR (firstpage) >> pp_shift);
 #endif
@@ -690,7 +688,7 @@ static int ExpandHeap (char *reason) {
 
     /* FIXME: memmove! */
     for (i = firstpage; i <= lastpage; i++) {
-        new_link[i + offset] = link[i] + offset;
+        new_link[i + offset] = linked[i] + offset;
         new_type[i + offset] = type[i];
     }
     for (addr = PAGE_TO_ADDR (firstpage); addr <= PAGE_TO_ADDR (lastpage);
@@ -718,7 +716,7 @@ static int ExpandHeap (char *reason) {
     forward_freepage += offset;
     last_forward_freepage += offset;
 
-    free ((char*)(link+firstpage));
+    free ((char*)(linked+firstpage));
     free ((char*)(type+firstpage));
     free ((char*)(space+firstpage));
 
@@ -728,7 +726,7 @@ static int ExpandHeap (char *reason) {
     free ((char*)pmap);
 #endif
 
-    link = new_link;
+    linked = new_link;
     type = new_type;
     space = new_space;
     pmap = new_pmap;
@@ -757,7 +755,7 @@ static int ExpandHeap (char *reason) {
 void Free_Heap () {
     free (saved_heap_ptr);
 
-    free ((char*)(link+firstpage));
+    free ((char*)(linked+firstpage));
     free ((char*)(type+firstpage));
     free ((char*)(space+firstpage));
 
@@ -1583,7 +1581,7 @@ static void General_Collect (int initiate) {
     page = stable_queue;
     while (page != (pageno_t)-1) {
         ProtectCluster (PHYSPAGE (page), 0);
-        page = link[page];
+        page = linked[page];
     }
 
     if (!initiate) {
