@@ -165,7 +165,7 @@ void Dlopen_File (char *obj) {
 
 #elif defined (HAVE_DL_SHL_LOAD)
         void *sym;
-        shl_findsym (&handle, "share", TYPE_UNDEFINED, &sym);
+        shl_findsym (&handle, sp->name, TYPE_UNDEFINED, &sym);
         sp->value = (unsigned long int)(intptr_t)sym;
 #endif
     }
