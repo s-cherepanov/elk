@@ -61,7 +61,7 @@ C=	autoload.c\\
 	io.c\\
 	list.c\\
 	load.c\\
-	main.c\\
+	libelk.c\\
 	malloc.c\\
 	math.c\\
 	onfork.c\\
@@ -112,14 +112,17 @@ OCOMMON=\\
 	type.o\\
 	vector.o
 
-O1= \$(OCOMMON) main.o stab.o
-O2= \$(OCOMMON) main2.o stab2.o
-O3= \$(OCOMMON) main3.o stab2.o
+O1= \$(OCOMMON) libelk.o stab.o
+O2= \$(OCOMMON) libelk2.o stab2.o
+O3= \$(OCOMMON) libelk3.o stab2.o
 
-all: scheme standalone.a module.a
+all: scheme libelk.so standalone.a module.a
 
 scheme:	\$(O1)
 	\$(CC) -o \$@ \$(CFLAGS) \$(O1) \$(LDFLAGS)
+
+libelk.so: \$(O3)
+	gcc -shared -o \$@ \$(O3) \$(LDFLAGS)
 
 standalone.a: \$(O2)
 	ar cru \$@ \$(O2)
@@ -154,7 +157,7 @@ heap.o:		\$(H) heap.c heap-sc.c heap-gen.c
 io.o:		\$(H) io.c
 list.o:		\$(H) list.c
 load.o:		\$(H) load.c $load
-main.o:		\$(H) main.c
+libelk.o:	\$(H) libelk.c
 malloc.o:	\$(H) malloc.c
 math.o:		\$(H) math.c
 onfork.o:	\$(H) onfork.c
@@ -172,20 +175,20 @@ terminate.o:	\$(H) terminate.c
 type.o:		\$(H) type.c
 vector.o:	\$(H) vector.c
 
-main2.o:	\$(H) main.c
-	rm -f main2.c; ln main.c main2.c
-	\$(CC) -DINIT_OBJECTS \$(CFLAGS) -I\$(INC) -c main2.c
-	rm main2.c
+libelk2.o:	\$(H) libelk.c
+	rm -f libelk2.c; ln libelk.c libelk2.c
+	\$(CC) -DINIT_OBJECTS \$(CFLAGS) -I\$(INC) -c libelk2.c
+	rm libelk2.c
 
 stab2.o:	\$(H) stab.c $stab
 	rm -f stab2.c; ln stab.c stab2.c
 	\$(CC) -DINIT_OBJECTS \$(CFLAGS) -I\$(INC) -c stab2.c
 	rm stab2.c
 
-main3.o:	\$(H) main.c
-	rm -f main3.c; ln main.c main3.c
-	\$(CC) -DINIT_OBJECTS -DNOMAIN \$(CFLAGS) -I\$(INC) -c main3.c
-	rm main3.c
+libelk3.o:	\$(H) libelk.c
+	rm -f libelk3.c; ln libelk.c libelk3.c
+	\$(CC) -DINIT_OBJECTS -DNOMAIN \$(CFLAGS) -I\$(INC) -c libelk3.c
+	rm libelk3.c
 
 install: scheme standalone.a module.a
 	-@if [ ! -d $install_dir/bin ]; then \\
@@ -208,8 +211,8 @@ lint:
 	lint \$(LINTFLAGS) -I\$(INC) \$(C)
 
 clean:
-	rm -f *.o *.a core main2.c stab2.c main3.c
+	rm -f *.o *.a core libelk2.c stab2.c libelk3.c
 
 distclean:
-	rm -f *.o *.a core main2.c stab2.c main3.c lint.out scheme Makefile.local
+	rm -f *.o *.a core libelk2.c stab2.c libelk3.c lint.out scheme Makefile.local
 EOT
