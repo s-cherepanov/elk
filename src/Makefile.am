@@ -34,7 +34,7 @@ libelk_la_SOURCES = \
 	special.c \
 	stab.c \
 	$(stab_elf_c) \
-	$(stab_unix_c) \
+	$(stab_vanilla_c) \
 	stkmem.c \
 	string.c \
 	symbol.c \
@@ -46,7 +46,7 @@ libelk_la_SOURCES = \
 if HAVE_LIBELF
 stab_elf_c = stab-elf.c
 else
-stab_unix_c = stab-unix.c
+stab_vanilla_c = stab-vanilla.c
 endif
 
 EXTRA_DIST = \

@@ -61,7 +61,7 @@ void Dlopen_File (char *fn) {
      * this can be safely ignored.
      */
     for (sp = The_Symbols->first; sp; sp = sp->next)
-        sp->value = (unsigned long int)dlsym (handle, sp->name);
+        sp->value = (unsigned long int)(intptr_t)dlsym (handle, sp->name);
     Call_Initializers (The_Symbols, 0, PR_CONSTRUCTOR);
     Call_Initializers (The_Symbols, 0, PR_EXTENSION);
 }
