@@ -1,4 +1,219 @@
 ------------------------------------------------------------------------
+rev 145:  sam | 2003-09-11 12:09:27 +0200 (Thu, 11 Sep 2003) | 2 lines
+Changed paths:
+   M /src/main.c
+
+  * Allocate a console under Win32, and wait for user input before closing it.
+
+------------------------------------------------------------------------
+rev 144:  sam | 2003-09-11 10:47:10 +0200 (Thu, 11 Sep 2003) | 2 lines
+Changed paths:
+   M /debian/rules
+   M /doc/bitstring/Makefile.am
+   M /doc/cprog/Makefile.am
+   M /doc/kernel/Makefile.am
+   M /doc/man/Makefile.am
+   M /doc/oops/Makefile.am
+   M /doc/record/Makefile.am
+   M /doc/regexp/Makefile.am
+   M /doc/unix/Makefile.am
+   M /doc/usenix/Makefile.am
+   M /doc/xlib/Makefile.am
+   M /doc/xt/Makefile.am
+
+  * Install PostScript documentation into /usr/share/doc/elk/ps/.
+
+------------------------------------------------------------------------
+rev 143:  sam | 2003-09-11 10:21:49 +0200 (Thu, 11 Sep 2003) | 9 lines
+Changed paths:
+   M /configure.ac
+   M /debian/control
+   M /debian/elkdoc.docs
+   M /debian/rules
+   M /doc/bitstring/Makefile.am
+   D /doc/bitstring/bitstring.ps
+   M /doc/cprog/Makefile.am
+   D /doc/cprog/cprog.ps
+   M /doc/kernel/Makefile.am
+   D /doc/kernel/kernel.ps
+   M /doc/man/Makefile.am
+   D /doc/man/elk.ps
+   M /doc/oops/Makefile.am
+   D /doc/oops/oops.ps
+   M /doc/record/Makefile.am
+   D /doc/record/record.ps
+   M /doc/regexp/Makefile.am
+   D /doc/regexp/regexp.ps
+   M /doc/unix/Makefile.am
+   D /doc/unix/unix.ps
+   M /doc/usenix/Makefile.am
+   D /doc/usenix/usenix.ps
+   M /doc/xlib/Makefile.am
+   D /doc/xlib/xlib.ps
+   M /doc/xt/Makefile.am
+   D /doc/xt/xt.ps
+
+  * configure.ac:
+    + Check for awk and groff.
+    + Only build documentation if groff was found.
+  * debian/rules:
+    + Move .ps documentation to the elkdoc package.
+  * doc/*:
+    + Removed *.ps files from CVS.
+    + Added proper build rules for *.ps files.
+
+------------------------------------------------------------------------
+rev 142:  sam | 2003-09-11 08:57:26 +0200 (Thu, 11 Sep 2003) | 4 lines
+Changed paths:
+   M /configure.ac
+   M /src/load.c
+
+  * Renamed OBJ_DIR into LIB_DIR.
+  * Fixed SCM_DIR and LIB_DIR so that they take ${prefix} into account.
+  * Added -I $(top_builddir)/include to INCLUDES.
+
+------------------------------------------------------------------------
+rev 141:  sam | 2003-09-11 01:26:02 +0200 (Thu, 11 Sep 2003) | 2 lines
+Changed paths:
+   M /src/main.c
+
+  * Allocate a DOS command window under Win32.
+
+------------------------------------------------------------------------
+rev 140:  sam | 2003-09-11 00:40:44 +0200 (Thu, 11 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Fix HP-UX crashes by defining ARRAY_BROKEN on this platform.
+
+------------------------------------------------------------------------
+rev 139:  sam | 2003-09-10 17:10:11 +0200 (Wed, 10 Sep 2003) | 6 lines
+Changed paths:
+   M /configure.ac
+   M /include/object.h
+   M /include/site.h.in
+
+  * configure.ac:
+    + Prefer the C99 inttypes.h rather than stdint.h.
+    + Use AC_FUNC_ALLOCA instead of AC_CHECK_FUNCS(alloca).
+  * include/object.h:
+    + Removed a legacy #include <stdint.h>.
+
+------------------------------------------------------------------------
+rev 138:  sam | 2003-09-10 17:08:00 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
+   M /BUGS
+   M /src/heap-gen.c
+
+  * Fixed a bug in the garbage collector.
+
+------------------------------------------------------------------------
+rev 137:  sam | 2003-09-10 01:13:50 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/misc/bitstring.c
+   M /lib/xlib/property.c
+   M /lib/xwidgets/context.c
+   M /lib/xwidgets/function.c
+   M /lib/xwidgets/resource.c
+   M /src/bool.c
+   M /src/symbol.c
+
+  * Replaced bcopy/bzero/bcmp with memcpu/memeset/memcmp.
+
+------------------------------------------------------------------------
+rev 136:  sam | 2003-09-09 22:58:45 +0200 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/Makefile.am
+
+  * Do not recurse into util/ since we no longer need to build mkindex.
+
+------------------------------------------------------------------------
+rev 135:  sam | 2003-09-09 22:57:43 +0200 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/util/Makefile.am
+   A /doc/util/mkindex.awk
+   D /doc/util/mkindex.c
+
+  * Rewrote mkindex.c in awk.
+
+------------------------------------------------------------------------
+rev 134:  sam | 2003-09-09 21:22:37 +0200 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/util/mkindex.c
+
+  * Added comments to mkindex.c, to make its conversion easier.
+
+------------------------------------------------------------------------
+rev 133:  sam | 2003-09-09 20:40:42 +0200 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /src
+
+  * Hide elk.exe from SVN, now that the cygwin and mingw32 ports work.
+
+------------------------------------------------------------------------
+rev 132:  sam | 2003-09-09 20:35:16 +0200 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /src/math.c
+
+  * Do not declare random(), in case the prototype changes.
+
+------------------------------------------------------------------------
+rev 131:  sam | 2003-09-09 18:52:37 +0200 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /src/libelk.c
+
+  * Fixed a typo preventing the inclusion of sys/resource.h.
+
+------------------------------------------------------------------------
+rev 130:  sam | 2003-09-09 17:18:55 +0200 (Tue, 09 Sep 2003) | 3 lines
+Changed paths:
+   M /configure.ac
+   M /include/exception.h
+   M /include/intern.h
+   M /include/object.h
+   M /include/scheme.h
+   M /include/stkmem.h
+   M /lib/unix/signal.c
+   M /src/cont.c
+   M /src/exception.c
+   M /src/heap-gen.c
+   M /src/heap-sc.c
+   M /src/io.c
+   M /src/libelk.c
+   M /src/proc.c
+   M /src/read.c
+   M /src/stkmem.c
+
+  * Added more system checks.
+  * Now builds on Win32.
+
+------------------------------------------------------------------------
+rev 129:  sam | 2003-09-09 15:30:23 +0200 (Tue, 09 Sep 2003) | 4 lines
+Changed paths:
+   M /configure.ac
+   M /src/loadlib.c
+
+  * Enhanced the dlopen() checks, especially for platforms that do not
+    need -ldl.
+  * Ported the plugin loading code to the HP-UX shl_load() system.
+
+------------------------------------------------------------------------
+rev 128:  sam | 2003-09-09 14:07:48 +0200 (Tue, 09 Sep 2003) | 3 lines
+Changed paths:
+   M /bootstrap
+
+  * Code clean-up.
+  * Made bootstrap work on OS X, by calling glibtoolize instead of libtoolize.
+
+------------------------------------------------------------------------
+rev 127:  sam | 2003-09-08 00:33:32 +0200 (Mon, 08 Sep 2003) | 2 lines
+Changed paths:
+   M /ChangeLog
+   M /NEWS
+
+  * Updated ChangeLog and NEWS for the 3.99.1 release.
+
+------------------------------------------------------------------------
 rev 126:  sam | 2003-09-08 00:10:41 +0200 (Mon, 08 Sep 2003) | 2 lines
 Changed paths:
    M /ChangeLog
@@ -287,8 +502,8 @@ rev 101:  sam | 2003-09-06 13:20:46 +0200 (Sat, 06 Sep 2003) | 3 lines
 Changed paths:
    M /scm/Makefile.am
 
-   Do not distribute xlib.scm if X11 support wasn't found.
-   Ditto for motif.scm, xaw.scm and xwidgets.scm.
+  * Do not distribute xlib.scm if X11 support wasn't found.
+  * Ditto for motif.scm, xaw.scm and xwidgets.scm.
 
 ------------------------------------------------------------------------
 rev 100:  sam | 2003-09-06 13:15:57 +0200 (Sat, 06 Sep 2003) | 2 lines
@@ -299,7 +514,7 @@ Changed paths:
    M /lib/xwidgets/motif/Makefile.am
    M /lib/xwidgets/xaw/Makefile.am
 
-  Added autoconf checks for -lgdbm, X11, Xaw and Motif.
+  * Added autoconf checks for -lgdbm, X11, Xaw and Motif.
 
 ------------------------------------------------------------------------
 rev 99:  sam | 2003-09-06 04:33:10 +0200 (Sat, 06 Sep 2003) | 2 lines
@@ -312,7 +527,7 @@ Changed paths:
    M /src/proc.c
    M /src/read.c
 
-  Don't use __attribute__ if not using GNU C.
+  * Don't use __attribute__ if not using GNU C.
 
 ------------------------------------------------------------------------
 rev 98:  sam | 2003-09-06 04:17:09 +0200 (Sat, 06 Sep 2003) | 2 lines
@@ -321,7 +536,7 @@ Changed paths:
    M /lib/misc/Makefile.am
    M /scm/Makefile.am
 
-   Don't build gdbm.so if libgdbm isn't found.
+  * Don't build gdbm.so if libgdbm isn't found.
 
 ------------------------------------------------------------------------
 rev 97:  sam | 2003-09-06 03:57:13 +0200 (Sat, 06 Sep 2003) | 2 lines
@@ -329,7 +544,7 @@ Changed paths:
    M /configure.ac
    M /lib/misc/Makefile.am
 
-   Don't compile newhandler.cpp if no C++ compiler is present.
+  * Don't compile newhandler.cpp if no C++ compiler is present.
 
 ------------------------------------------------------------------------
 rev 96:  sam | 2003-09-04 17:46:19 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -337,21 +552,21 @@ Changed paths:
    M /debian/Makefile.am
    D /debian/README.Debian
 
-  Removed debian/README.Debian. File locations are no longer debian-related.
+  * Removed debian/README.Debian. File locations are no longer debian-related.
 
 ------------------------------------------------------------------------
 rev 95:  sam | 2003-09-04 17:42:28 +0200 (Thu, 04 Sep 2003) | 2 lines
 Changed paths:
    M /lib/xwidgets/mkwidget.scm
 
-  Removed ALIASES-related stuff. We're in the XXIst century, dudes.
+  * Removed ALIASES-related stuff. We're in the XXIst century, dudes.
 
 ------------------------------------------------------------------------
 rev 94:  sam | 2003-09-04 17:33:02 +0200 (Thu, 04 Sep 2003) | 2 lines
 Changed paths:
    M /doc/util/mkindex.c
 
-  Fixed some K&R stuff in mkindex.c.
+  * Fixed some K&R stuff in mkindex.c.
 
 ------------------------------------------------------------------------
 rev 93:  sam | 2003-09-04 17:30:04 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -384,7 +599,7 @@ Changed paths:
    M /lib/xwidgets/xtinit.c
    M /lib/xwidgets/xtobjects.c
 
-  Muahaha! No more friggin K&R stuff!
+  * Muahaha! No more friggin K&R stuff!
 
 ------------------------------------------------------------------------
 rev 92:  sam | 2003-09-04 16:33:43 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -392,7 +607,7 @@ Changed paths:
    M /src/io.c
    M /src/terminate.c
 
-  Some bloody K&R function definition were missing.
+  * Some bloody K&R function definition were missing.
 
 ------------------------------------------------------------------------
 rev 91:  sam | 2003-09-04 16:32:13 +0200 (Thu, 04 Sep 2003) | 3 lines
@@ -422,8 +637,8 @@ Changed paths:
    M /lib/xlib/xlib.h
    M /lib/xlib/xobjects.c
 
-  Fixed compilation warnings.
-  Removed fucking K&R syntax.
+  * Fixed compilation warnings.
+  * Removed fucking K&R syntax.
 
 ------------------------------------------------------------------------
 rev 90:  sam | 2003-09-04 16:30:21 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -432,7 +647,7 @@ Changed paths:
    M /lib/unix/process.c
    M /lib/unix/wait.c
 
-  Fixed remaining K&R shit.
+  * Fixed remaining K&R shit.
 
 ------------------------------------------------------------------------
 rev 89:  sam | 2003-09-04 15:29:16 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -451,7 +666,7 @@ Changed paths:
    M /lib/unix/unix.c
    M /lib/unix/wait.c
 
-  Fucking K&R syntax!
+  * Fucking K&R syntax!
 
 ------------------------------------------------------------------------
 rev 88:  sam | 2003-09-04 14:46:44 +0200 (Thu, 04 Sep 2003) | 3 lines
@@ -487,8 +702,8 @@ Changed paths:
    M /examples/xaw/viewport.scm
    D /examples/xm
 
-  Renamed examples/xm into examples/motif.
-  Fixed example files so that they fit with the new xaw.scm and motif.scm.
+  * Renamed examples/xm into examples/motif.
+  * Fixed example files so that they fit with the new xaw.scm and motif.scm.
 
 ------------------------------------------------------------------------
 rev 87:  sam | 2003-09-04 14:45:48 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -498,14 +713,14 @@ Changed paths:
    M /scm/xlib.scm
    M /scm/xwidgets.scm
 
-  Beautified xaw and motif Scheme files.
+  * Beautified xaw and motif Scheme files.
 
 ------------------------------------------------------------------------
 rev 86:  sam | 2003-09-04 14:45:17 +0200 (Thu, 04 Sep 2003) | 2 lines
 Changed paths:
    D /src/build
 
-  Removed unused obsolete build file.
+  * Removed unused obsolete build file.
 
 ------------------------------------------------------------------------
 rev 85:  sam | 2003-09-04 14:44:54 +0200 (Thu, 04 Sep 2003) | 3 lines
@@ -516,8 +731,8 @@ Changed paths:
    M /lib/xwidgets/xaw/Makefile.am
    A /lib/xwidgets/xaw/init.c
 
-  Renamed xaw-common.so to xaw-xt.so and motif-common.so to motif-xt.so.
-  Added init.c to xaw-xt.so and motif-xt.so for proper initialisation.
+  * Renamed xaw-common.so to xaw-xt.so and motif-common.so to motif-xt.so.
+  * Added init.c to xaw-xt.so and motif-xt.so for proper initialisation.
 
 ------------------------------------------------------------------------
 rev 84:  sam | 2003-09-04 13:26:55 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -532,7 +747,7 @@ Changed paths:
    M /lib/xlib/xinit.c
    M /lib/xwidgets/xtinit.c
 
-  Provide foo.so, not foo.o.
+  * Provide foo.so, not foo.o.
 
 ------------------------------------------------------------------------
 rev 83:  sam | 2003-09-04 13:26:39 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -542,7 +757,7 @@ Changed paths:
    M /lib/xwidgets/motif/Makefile.am
    M /lib/xwidgets/xaw/Makefile.am
 
-  Cosmetic fixes.
+  * Cosmetic fixes.
 
 ------------------------------------------------------------------------
 rev 82:  sam | 2003-09-04 12:40:16 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -551,7 +766,7 @@ Changed paths:
    D /scm/xt.scm
    A /scm/xwidgets.scm (from /scm/xt.scm:81)
 
-  Renamed xt.scm to xwidgets.scm.
+  * Renamed xt.scm to xwidgets.scm.
 
 ------------------------------------------------------------------------
 rev 81:  sam | 2003-09-04 12:39:47 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -561,14 +776,14 @@ Changed paths:
    M /scm/xt.scm
    D /scm/xwidgets.scm
 
-  Renamed xwidgets.scm to xaw.scm.
+  * Renamed xwidgets.scm to xaw.scm.
 
 ------------------------------------------------------------------------
 rev 80:  sam | 2003-09-04 11:28:57 +0200 (Thu, 04 Sep 2003) | 2 lines
 Changed paths:
    M /lib/xwidgets/motif/Makefile.am
 
-  Forgot a small xm/motif fix.
+  * Forgot a small xm/motif fix.
 
 ------------------------------------------------------------------------
 rev 79:  sam | 2003-09-04 11:23:22 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -581,7 +796,7 @@ Changed paths:
    A /lib/xwidgets/motif (from /lib/xwidgets/xm:78)
    D /lib/xwidgets/xm
 
-  Re-renamed xm to motif (SVN rules).
+  * Re-renamed xm to motif (SVN rules).
 
 ------------------------------------------------------------------------
 rev 78:  sam | 2003-09-04 00:59:20 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -593,7 +808,7 @@ Changed paths:
    A /lib/xwidgets/xm (from /lib/xwidgets/motif:77)
    M /lib/xwidgets/xm/Makefile.am
 
-  Changed motif back to xm.
+  * Changed motif back to xm.
 
 ------------------------------------------------------------------------
 rev 77:  sam | 2003-09-04 00:56:02 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -604,7 +819,7 @@ Changed paths:
    M /lib/xwidgets/motif/Makefile.am
    M /lib/xwidgets/xaw/Makefile.am
 
-   Rebuild everything properly.
+  * Rebuild everything properly.
 
 ------------------------------------------------------------------------
 rev 76:  sam | 2003-09-04 00:00:01 +0200 (Thu, 04 Sep 2003) | 2 lines
@@ -619,7 +834,7 @@ Changed paths:
    A /lib/xwidgets/motif (from /lib/xm:75)
    A /lib/xwidgets/xaw (from /lib/xaw:75)
 
-  Moved some directories.
+  * Moved some directories.
 
 ------------------------------------------------------------------------
 rev 75:  sam | 2003-09-03 02:51:27 +0200 (Wed, 03 Sep 2003) | 2 lines
@@ -628,14 +843,14 @@ Changed paths:
    M /debian/control
    M /debian/rules
 
-  Fixed packaging.
+  * Fixed packaging.
 
 ------------------------------------------------------------------------
 rev 74:  sam | 2003-09-03 02:05:48 +0200 (Wed, 03 Sep 2003) | 2 lines
 Changed paths:
    M /configure.ac
 
-  Removed useless line in configure.ac.
+  * Removed useless line in configure.ac.
 
 ------------------------------------------------------------------------
 rev 73:  sam | 2003-09-03 02:01:26 +0200 (Wed, 03 Sep 2003) | 2 lines
@@ -643,14 +858,14 @@ Changed paths:
    M /Makefile.am
    D /util
 
-  Scrapped util.
+  * Scrapped util.
 
 ------------------------------------------------------------------------
 rev 72:  sam | 2003-09-03 01:53:31 +0200 (Wed, 03 Sep 2003) | 2 lines
 Changed paths:
    D /lib/xaw/clock.d
 
-  Removed obsolete file.
+  * Removed obsolete file.
 
 ------------------------------------------------------------------------
 rev 71:  sam | 2003-09-03 01:53:22 +0200 (Wed, 03 Sep 2003) | 2 lines
@@ -670,14 +885,14 @@ Changed paths:
    M /doc/xt/Makefile.am
    M /src/Makefile.am
 
-  Fixed make dist.
+  * Fixed make dist.
 
 ------------------------------------------------------------------------
 rev 70:  sam | 2003-09-03 01:37:49 +0200 (Wed, 03 Sep 2003) | 2 lines
 Changed paths:
    M /scm/xwidgets.scm
 
-   Fixed xwidgets.scm to work with xm.so.
+  * Fixed xwidgets.scm to work with xm.so.
 
 ------------------------------------------------------------------------
 rev 69:  sam | 2003-09-03 01:23:17 +0200 (Wed, 03 Sep 2003) | 2 lines
@@ -685,14 +900,14 @@ Changed paths:
    M /examples/c++/class.cpp
    M /examples/c++/constructor.cpp
 
-  Updated examples (compilation flags, coding style)
+  * Updated examples (compilation flags, coding style)
 
 ------------------------------------------------------------------------
 rev 68:  sam | 2003-09-02 11:54:47 +0200 (Tue, 02 Sep 2003) | 2 lines
 Changed paths:
    M /util/alloca.c
 
-  Fuck K&R !
+  * Fuck K&R !
 
 ------------------------------------------------------------------------
 rev 67:  sam | 2003-09-02 11:51:35 +0200 (Tue, 02 Sep 2003) | 2 lines
@@ -802,7 +1017,7 @@ Changed paths:
    M /lib/xt/xtinit.c
    M /lib/xt/xtobjects.c
 
-  Added proper license information in all files and set the $Id property.
+  * Added proper license information in all files and set the $Id property.
 
 ------------------------------------------------------------------------
 rev 66:  sam | 2003-09-02 10:12:11 +0200 (Tue, 02 Sep 2003) | 2 lines
@@ -931,7 +1146,7 @@ Changed paths:
    M /src/type.c
    M /src/vector.c
 
-  No TABS !!
+  * No TABS !!
 
 ------------------------------------------------------------------------
 rev 65:  sam | 2003-09-01 19:06:43 +0200 (Mon, 01 Sep 2003) | 3 lines
@@ -946,8 +1161,8 @@ Changed paths:
    M /lib/misc/regexp.c
    M /lib/misc/struct.c
 
-  Added $Id and copyright information to all .c files in lib/misc/
-  Fixed old shitty K&R syntax.
+  * Added $Id and copyright information to all .c files in lib/misc/
+  * Fixed old shitty K&R syntax.
 
 ------------------------------------------------------------------------
 rev 64:  sam | 2003-08-30 18:47:54 +0200 (Sat, 30 Aug 2003) | 2 lines
@@ -1019,7 +1234,7 @@ Changed paths:
    M /src/type.c
    M /src/vector.c
 
-  Added $Id and copyright information to all .c and .h files in the kernel.
+  * Added $Id and copyright information to all .c and .h files in the kernel.
 
 ------------------------------------------------------------------------
 rev 63:  sam | 2003-08-30 18:16:52 +0200 (Sat, 30 Aug 2003) | 2 lines
@@ -1033,14 +1248,14 @@ Changed paths:
    M /TODO
    M /configure.ac
 
-  Fixed the $Id stuff.
+  * Fixed the $Id stuff.
 
 ------------------------------------------------------------------------
 rev 62:  sam | 2003-08-30 18:16:40 +0200 (Sat, 30 Aug 2003) | 2 lines
 Changed paths:
    M /NEWS
 
-  Redid the layout of the NEWS file.
+  * Redid the layout of the NEWS file.
 
 ------------------------------------------------------------------------
 rev 61:  sam | 2003-08-30 18:07:52 +0200 (Sat, 30 Aug 2003) | 4 lines
@@ -1067,7 +1282,7 @@ Changed paths:
    M /lib/xm/Makefile.am
    M /lib/xt/Makefile.am
 
-  Use XAW_LIBS etc. to build plugins.
+  * Use XAW_LIBS etc. to build plugins.
 
 ------------------------------------------------------------------------
 rev 59:  sam | 2003-08-28 11:39:36 +0200 (Thu, 28 Aug 2003) | 6 lines
@@ -1087,14 +1302,14 @@ rev 58:  sam | 2003-08-28 11:38:08 +0200 (Thu, 28 Aug 2003) | 2 lines
 Changed paths:
    D /lib/xaw/Makefile
 
-  Removed a legacy Makefile.
+  * Removed a legacy Makefile.
 
 ------------------------------------------------------------------------
 rev 57:  sam | 2003-08-27 10:27:15 +0200 (Wed, 27 Aug 2003) | 2 lines
 Changed paths:
    M /Makefile.am
 
-  Recurse into doc/ and examples/ during the build.
+  * Recurse into doc/ and examples/ during the build.
 
 ------------------------------------------------------------------------
 rev 56:  sam | 2003-08-27 03:17:40 +0200 (Wed, 27 Aug 2003) | 4 lines
@@ -1147,21 +1362,21 @@ Changed paths:
    D /doc/xt/Makefile
    A /doc/xt/Makefile.am
 
-   Beginning of the autoconfiscation of the documentation.
+  * Beginning of the autoconfiscation of the documentation.
 
 ------------------------------------------------------------------------
 rev 54:  sam | 2003-08-27 03:13:53 +0200 (Wed, 27 Aug 2003) | 2 lines
 Changed paths:
    M /scm/Makefile.am
 
-   Do not forget to distribute our .scm files with the tarball.
+  * Do not forget to distribute our .scm files with the tarball.
 
 ------------------------------------------------------------------------
 rev 53:  sam | 2003-08-27 03:13:02 +0200 (Wed, 27 Aug 2003) | 2 lines
 Changed paths:
    M /examples/Makefile.am
 
-  Added the example files to both the distribution and the installed doc.
+  * Added the example files to both the distribution and the installed doc.
 
 ------------------------------------------------------------------------
 rev 52:  sam | 2003-08-27 03:11:36 +0200 (Wed, 27 Aug 2003) | 2 lines
@@ -1169,7 +1384,7 @@ Changed paths:
    M /examples/c++/class.cpp
    M /examples/c++/constructor.cpp
 
-  Fixed build instructions for the C++ examples.
+  * Fixed build instructions for the C++ examples.
 
 ------------------------------------------------------------------------
 rev 51:  sam | 2003-08-27 01:45:30 +0200 (Wed, 27 Aug 2003) | 2 lines
@@ -1177,7 +1392,7 @@ Changed paths:
    M /lib/xm/Makefile.am
    M /lib/xt/Makefile.am
 
-   Removed subdirs-objects, it was causing `make distclean' to fail.
+  * Removed subdirs-objects, it was causing `make distclean' to fail.
 
 ------------------------------------------------------------------------
 rev 50:  sam | 2003-08-27 01:30:22 +0200 (Wed, 27 Aug 2003) | 2 lines
@@ -1190,7 +1405,7 @@ Changed paths:
    A /lib/xt/xtinit.c (from /lib/xt/init.c:48)
    A /lib/xt/xtobjects.c (from /lib/xt/objects.c:48)
 
-  Renamed files in xt/ that collided with files in xlib/.
+  * Renamed files in xt/ that collided with files in xlib/.
 
 ------------------------------------------------------------------------
 rev 49:  sam | 2003-08-27 01:29:14 +0200 (Wed, 27 Aug 2003) | 2 lines
@@ -1203,7 +1418,7 @@ Changed paths:
    A /lib/xlib/xinit.c (from /lib/xlib/init.c:48)
    A /lib/xlib/xobjects.c (from /lib/xlib/objects.c:48)
 
-  Renamed files in xlib/ that collided with files in xt/.
+  * Renamed files in xlib/ that collided with files in xt/.
 
 ------------------------------------------------------------------------
 rev 48:  sam | 2003-08-25 20:28:02 +0200 (Mon, 25 Aug 2003) | 2 lines
@@ -1232,7 +1447,7 @@ Changed paths:
    M /scm/xt.scm
    M /scm/xwidgets.scm
 
-  Fixed the build process for all extensions.
+  * Fixed the build process for all extensions.
 
 ------------------------------------------------------------------------
 rev 47:  sam | 2003-08-25 20:14:21 +0200 (Mon, 25 Aug 2003) | 3 lines
@@ -1254,7 +1469,7 @@ Changed paths:
    M /scm/Makefile.am
    A /scm/slib.scm.in
 
-  Moved debian/elk.ini to scm/slib.scm.in, generated by ./configure.
+  * Moved debian/elk.ini to scm/slib.scm.in, generated by ./configure.
 
 ------------------------------------------------------------------------
 rev 45:  sam | 2003-08-25 18:29:54 +0200 (Mon, 25 Aug 2003) | 2 lines
@@ -1267,7 +1482,7 @@ Changed paths:
    A /lib/xlib/Makefile.am
    D /lib/xlib/build
 
-  The Xlib plugin properly builds.
+  * The Xlib plugin properly builds.
 
 ------------------------------------------------------------------------
 rev 44:  sam | 2003-08-25 18:20:44 +0200 (Mon, 25 Aug 2003) | 7 lines
@@ -1330,14 +1545,14 @@ Changed paths:
    M /src/print.c
    M /src/stab.c
 
-  Fixed all compilation warnings in the base code.
+  * Fixed all compilation warnings in the base code.
 
 ------------------------------------------------------------------------
 rev 40:  sam | 2003-08-25 16:47:40 +0200 (Mon, 25 Aug 2003) | 2 lines
 Changed paths:
    M /include/object.h
 
-  Use ptrdiff_t for address arithmetics.
+  * Use ptrdiff_t for address arithmetics.
 
 ------------------------------------------------------------------------
 rev 39:  sam | 2003-08-25 16:35:56 +0200 (Mon, 25 Aug 2003) | 2 lines
@@ -1345,7 +1560,7 @@ Changed paths:
    M /util/README
    D /util/getversion
 
-  Removed the useless util/getversion script.
+  * Removed the useless util/getversion script.
 
 ------------------------------------------------------------------------
 rev 38:  sam | 2003-08-25 16:35:03 +0200 (Mon, 25 Aug 2003) | 2 lines
@@ -1355,7 +1570,7 @@ Changed paths:
    M /ROADMAP
    M /debian/elk.docs
 
-  Removed the useless PATCHLEVEL file.
+  * Removed the useless PATCHLEVEL file.
 
 ------------------------------------------------------------------------
 rev 37:  sam | 2003-08-25 16:29:40 +0200 (Mon, 25 Aug 2003) | 2 lines
@@ -1385,8 +1600,8 @@ Changed paths:
    M /src/math.c
    M /src/print.c
 
-  Added comments from the old config/ directory to configure.ac, and started
-changing all the AC_DEFINEs into proper autoconf checks.
+  * Added comments from the old config/ directory to configure.ac, and started
+    changing all the AC_DEFINEs into proper autoconf checks.
 
 ------------------------------------------------------------------------
 rev 35:  sam | 2003-08-25 15:03:52 +0200 (Mon, 25 Aug 2003) | 2 lines
@@ -1425,8 +1640,8 @@ Changed paths:
    D /debian/scheme-elk.1
    D /scripts
 
-  Removed all references to the utilities in script/ because we will be
-using libelk instead.
+  * Removed all references to the utilities in script/ because we will be
+    using libelk instead.
 
 ------------------------------------------------------------------------
 rev 31:  sam | 2003-08-25 14:50:11 +0200 (Mon, 25 Aug 2003) | 4 lines
@@ -1448,7 +1663,7 @@ Changed paths:
    M /Makefile.am
    D /config
 
-  Removed the config/ directory; autoconf ought to do everything for us.
+  * Removed the config/ directory; autoconf ought to do everything for us.
 
 ------------------------------------------------------------------------
 rev 29:  sam | 2003-08-25 14:38:36 +0200 (Mon, 25 Aug 2003) | 2 lines
@@ -1472,7 +1687,7 @@ Changed paths:
    M /lib/xaw/build
    M /lib/xm/build
 
-  Fixed the Debian package build. It now uses ./configure.
+  * Fixed the Debian package build. It now uses ./configure.
 
 ------------------------------------------------------------------------
 rev 27:  sam | 2003-08-25 13:54:18 +0200 (Mon, 25 Aug 2003) | 2 lines
