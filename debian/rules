@@ -16,11 +16,6 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),alpha)
-	echo 'cflags=`echo $${cflags} | sed s/-O./-O0/`' > debian/arch-config
-else
-	echo '# empty' > debian/arch-config
-endif
 	$(MAKE) SUBDIRS='include scripts src scm lib/misc lib/unix\
 	 lib/xlib lib/xt lib/xaw lib/xm lib/xm/xt'
 
@@ -32,7 +27,6 @@ clean:
 	rm -f build-stamp
 
 	-$(MAKE) -i distclean
-	rm -f debian/arch-config
 
 	dh_clean
 
