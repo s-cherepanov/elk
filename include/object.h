@@ -43,7 +43,7 @@ typedef struct {
    typedef int gcspace_t;                 /* type for space and type arrays */
    typedef unsigned long int gcptr_t;     /* type for pointers */
    typedef unsigned long int pageno_t;    /* type for page numbers */
-   typedef unsigned long int addrarith_t; /* type for address arithmetic */
+   typedef ptrdiff_t addrarith_t;         /* type for address arithmetic */
 
    extern gcspace_t *space;
    extern gcspace_t current_space;
