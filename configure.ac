@@ -51,7 +51,7 @@ case "${target_os}" in
     MATH_LIBS=""
     ;;
   *darwin*)
-    AC_DEFINE(SYS_DARWIN, 1, Define if the system is Darwin)],
+    AC_DEFINE(SYS_DARWIN, 1, Define if the system is Darwin)
     ;;
 esac
 ELK_LIBS="${ELK_LIBS} ${MATH_LIBS}"
