@@ -353,24 +353,36 @@ AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_have_gdbm=yes)
 AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_have_gdbm}" = "yes")
 
 dnl
-dnl  Check for available warning flags
+dnl  Check for available compiler features
 dnl
 CFLAGS_save="${CFLAGS}"
 
+AC_CACHE_CHECK([__attribute__ ((noreturn)) support with function pointers],
+  [ac_cv_c_attribute_noreturn],
+  [ac_cv_c_attribute_noreturn=no
+    CFLAGS="${CFLAGS_save} -Werror"
+    AC_TRY_COMPILE([],
+    [extern void foobar() __attribute__ ((noreturn));],
+    [ac_cv_c_attribute_noreturn=yes])
+    CFLAGS="${CFLAGS_save}"])
+if test "${ac_cv_c_attribute_noreturn}" != "no"; then
+  AC_DEFINE(HAVE_ATTRIBUTE_NORETURN, 1, Support for __attribute__((noreturn)))
+fi
+
 AC_CACHE_CHECK([if \$CC accepts -Wall],
-    [ac_cv_c_Wall],
-    [CFLAGS="-Wall ${CFLAGS_save}"
-     AC_TRY_COMPILE([],,ac_cv_c_Wall=yes, ac_cv_c_Wall=no)])
+  [ac_cv_c_Wall],
+  [CFLAGS="-Wall ${CFLAGS_save}"
+   AC_TRY_COMPILE([],,ac_cv_c_Wall=yes, ac_cv_c_Wall=no)])
 if test "x${ac_cv_c_Wall}" != "xno"; then
-    CFLAGS_save="-Wall ${CFLAGS_save}"
+  CFLAGS_save="-Wall ${CFLAGS_save}"
 fi
 
 AC_CACHE_CHECK([if \$CC accepts -Wsign-compare],
-    [ac_cv_c_Wsign_compare],
-    [CFLAGS="-Wsign-compare ${CFLAGS_save}"
-     AC_TRY_COMPILE([],,ac_cv_c_Wsign_compare=yes, ac_cv_c_Wsign_compare=no)])
+  [ac_cv_c_Wsign_compare],
+  [CFLAGS="-Wsign-compare ${CFLAGS_save}"
+   AC_TRY_COMPILE([],,ac_cv_c_Wsign_compare=yes, ac_cv_c_Wsign_compare=no)])
 if test "x${ac_cv_c_Wsign_compare}" != "xno"; then
-    CFLAGS_save="-Wsign-compare ${CFLAGS_save}"
+  CFLAGS_save="-Wsign-compare ${CFLAGS_save}"
 fi
 
 CFLAGS="${CFLAGS_save}"

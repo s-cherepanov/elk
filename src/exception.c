@@ -32,7 +32,11 @@
 
 #include <stdlib.h>
 
+#ifdef HAVE_ATTRIBUTE_NORETURN
 extern void Reset () __attribute__ ((__noreturn__));
+#else
+extern void Reset ();
+#endif
 
 int Intr_Was_Ignored;
 unsigned long int Intr_Level;

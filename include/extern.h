@@ -109,8 +109,13 @@ extern Object The_Environment, Global_Environment;
 
 /* Error handling
  */
+#ifdef HAVE_ATTRIBUTE_NORETURN
 extern void Primitive_Error P_((const char*, ...)) __attribute__ ((__noreturn__));
 extern void Fatal_Error P_((const char*, ...)) __attribute__ ((__noreturn__));
+#else
+extern void Primitive_Error P_((const char*, ...));
+extern void Fatal_Error P_((const char*, ...));
+#endif
 extern void Range_Error P_((Object));
 extern void Panic P_((const char*));
 extern Object P_Error P_((int, Object*));
@@ -468,9 +473,14 @@ extern void Terminate_Type P_((int));
  */
 extern TYPEDESCR *Types;
 extern Object P_Type P_((Object));
+#ifdef HAVE_ATTRIBUTE_NORETURN
 extern void Wrong_Type P_((Object, int)) __attribute__ ((__noreturn__));
 extern void Wrong_Type_Combination P_((Object, const char*))
     __attribute__ ((__noreturn__));
+#else
+extern void Wrong_Type P_((Object, int));
+extern void Wrong_Type_Combination P_((Object, const char*));
+#endif
 extern int Define_Type P_((int, const char*, int (*)(Object), int,
     int (*)(Object, Object), int (*)(Object, Object),
     int (*)(Object, Object, int, int, int),

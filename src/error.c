@@ -34,8 +34,13 @@
 
 #include "kernel.h"
 
+#ifdef HAVE_ATTRIBUTE_NORETURN
 void Reset () __attribute__ ((__noreturn__));
 void Err_Handler () __attribute__ ((__noreturn__));
+#else
+void Reset ();
+void Err_Handler ();
+#endif
 
 Object Arg_True;
 
