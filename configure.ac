@@ -473,6 +473,23 @@ ELK_LIBS="${ELK_LIBS} -lm"
 AC_SUBST(INCLUDES)
 AC_SUBST(ELK_LIBS)
 
+dnl
+dnl  Check for available programs
+dnl
+AC_PROG_AWK
+AC_MSG_CHECKING(for groff -ms)
+if echo foo | groff -ms >/dev/null 2>&1; then
+  ac_cv_my_have_groff=yes
+else
+  ac_cv_my_have_groff=no
+fi
+AC_MSG_RESULT([${ac_cv_my_have_groff}])
+AM_CONDITIONAL(HAVE_GROFF, test "${ac_cv_my_have_groff}" = "yes")
+
+
+dnl
+dnl  Finished!
+dnl
 AC_OUTPUT([
   Makefile
   autotools/Makefile
@@ -515,5 +532,6 @@ libgdbm support: ${ac_cv_my_have_gdbm}
 X11 support: ${ac_cv_my_have_x11}
 Xaw support: ${ac_cv_my_have_xaw}
 Motif support: ${ac_cv_my_have_motif}
+build documentation: ${ac_cv_my_have_groff}
 EOF
 

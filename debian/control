@@ -2,7 +2,7 @@ Source: elk
 Section: devel
 Priority: optional
 Maintainer: Sam Hocevar (Debian packages) <sam+deb@zoy.org>
-Build-Depends: debhelper (>= 3.0), groff-base, libelfg0-dev, xlibs-dev, lesstif-dev, libgdbm-dev, libxaw7-dev
+Build-Depends: debhelper (>= 3.0), groff, libelfg0-dev, xlibs-dev, lesstif-dev, libgdbm-dev, libxaw7-dev
 Standards-Version: 3.6.1.0
 
 Package: elk
