@@ -1100,6 +1100,8 @@ Object P_Sqrt (Object x) { return General_Function (x, Null, sqrt); }
 
 Object P_Exp (Object x) { return General_Function (x, Null, exp); }
 
+Object P_Pow (Object x, Object y) { return General_Function (x, y, pow); }
+
 Object P_Log (Object x) { return General_Function (x, Null, log); }
 
 Object P_Sin (Object x) { return General_Function (x, Null, sin); }

@@ -298,6 +298,7 @@ extern Object P_Truncate P_((Object));
 extern Object P_Round P_((Object));
 extern Object P_Sqrt P_((Object));
 extern Object P_Exp P_((Object));
+extern Object P_Pow P_((Object, Object));
 extern Object P_Log P_((Object));
 extern Object P_Sin P_((Object));
 extern Object P_Cos P_((Object));

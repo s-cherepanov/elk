@@ -269,6 +269,7 @@ struct Prim_Init {
     { P_Round,             "round",                          1, 1,    EVAL },
     { P_Sqrt,              "sqrt",                           1, 1,    EVAL },
     { P_Exp,               "exp",                            1, 1,    EVAL },
+    { P_Pow,               "pow",                            2, 2,    EVAL },
     { P_Log,               "log",                            1, 1,    EVAL },
     { P_Sin,               "sin",                            1, 1,    EVAL },
     { P_Cos,               "cos",                            1, 1,    EVAL },
