@@ -28,9 +28,9 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#ifdef CAN_LOAD_LIB
-
 #include "config.h"
+
+#ifdef CAN_LOAD_LIB
 
 #include <dlfcn.h>
 #include <stdlib.h>
