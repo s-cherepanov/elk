@@ -18,8 +18,8 @@ regexp.html: regexp.ms
 	(cat $?; echo ".Tc") | $(UNROFF) document=regexp
 
 index.ms: regexp.ms index.raw
-	sort -f -t'#' +1 -3 +0n index.raw | awk -f ../util/fixindex.awk\
-	    | awk -f ../util/block.awk >index.ms
+	sort -f -t'#' +1 -3 +0n index.raw | $(AWK) -f ../util/fixindex.awk\
+	    | $(AWK) -f ../util/block.awk >index.ms
 
 index.raw: regexp.ms
 	$(TROFF) regexp.ms 2> index.raw >/dev/null

@@ -18,8 +18,8 @@ xlib.html: xlib.ms
 	(cat $?; echo ".Tc") | $(UNROFF) document=xlib
 
 index.ms: xlib.ms index.raw
-	sort -f -t'#' +1 -3 +0n index.raw | awk -f ../util/fixindex.awk\
-	    | awk -f ../util/block.awk >index.ms
+	sort -f -t'#' +1 -3 +0n index.raw | $(AWK) -f ../util/fixindex.awk\
+	    | $(AWK) -f ../util/block.awk >index.ms
 
 index.raw: xlib.ms
 	$(TROFF) xlib.ms 2> index.raw >/dev/null

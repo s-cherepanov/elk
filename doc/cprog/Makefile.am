@@ -8,7 +8,7 @@ endif
 
 TROFF= groff -ms -t
 UNROFF= unroff -ms
-MKINDEX= awk -f ../util/mkindex.awk
+MKINDEX= $(AWK) -f ../util/mkindex.awk
 
 cprog.ps: cprog.ms side.ref side.inx
 	$(MKINDEX) cprog.ms | sed -f side.ref | $(TROFF) 2> /dev/null > $@
@@ -18,7 +18,7 @@ side.ref: side
 
 side.inx: side
 	egrep -v '^s' side | sort -f -t'#' +1 -3 +0n | \
-	    awk -f ../util/fixindex.awk | awk -f ../util/block.awk \
+	    $(AWK) -f ../util/fixindex.awk | $(AWK) -f ../util/block.awk \
 	    > side.inx
 
 side: cprog.ms

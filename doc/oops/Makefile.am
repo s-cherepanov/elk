@@ -18,8 +18,8 @@ oops.html: oops.ms
 	(cat $?; echo ".Tc") | $(UNROFF) document=oops
 
 index.ms: oops.ms index.raw
-	sort -f -t'#' +1 -3 +0n index.raw | awk -f ../util/fixindex.awk\
-	    | awk -f ../util/block.awk >index.ms
+	sort -f -t'#' +1 -3 +0n index.raw | $(AWK) -f ../util/fixindex.awk\
+	    | $(AWK) -f ../util/block.awk >index.ms
 
 index.raw: oops.ms
 	$(TROFF) oops.ms 2> index.raw >/dev/null

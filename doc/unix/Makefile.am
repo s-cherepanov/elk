@@ -18,8 +18,8 @@ unix.html: unix.ms
 	(cat $?; echo ".Tc") | $(UNROFF) document=unix
 
 index.ms: unix.ms index.raw
-	sort -f -t'#' +1 -3 +0n index.raw | awk -f ../util/fixindex.awk\
-	    | awk -f ../util/block.awk >index.ms
+	sort -f -t'#' +1 -3 +0n index.raw | $(AWK) -f ../util/fixindex.awk\
+	    | $(AWK) -f ../util/block.awk >index.ms
 
 index.raw: unix.ms
 	$(TROFF) unix.ms 2> index.raw >/dev/null
