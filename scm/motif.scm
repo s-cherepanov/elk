@@ -4,8 +4,5 @@
 ;;; are to be used.
 
 (provide 'motif)
-
 (require 'xwidgets)
 
-(set! widget-subdirectory 'xm)
-(set! load-always '(support))

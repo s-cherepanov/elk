@@ -2,11 +2,7 @@
 ;;;
 ;;; The Scheme part of the Xlib extension.
 
-; kludge
-(define site-lib-xlib "")
-
-(fluid-let ((load-libraries (string-append site-lib-xlib " " load-libraries)))
-  (require 'xlib.so))
+(require 'xlib.so)
 
 (define (create-window . args)
   (apply-with-keywords

@@ -2,24 +2,13 @@
 ;;;
 ;;; The Scheme part of the Xt extension.
 
-;; kludge
-(define site-lib-xt "")
-(define site-force-load-xm "")
-(define site-lib-xmotif "")
+(define widgets (if (feature? 'motif) 'motif 'xaw))
 
-(if (feature? 'motif)
-    (fluid-let ((load-libraries
-		  (string-append site-force-load-xm " " site-lib-xmotif " "
-			         load-libraries)))
-      (require 'xaw.so 'xt-motif.so))
-    (fluid-let ((load-libraries
-		  (string-append site-lib-xt " " load-libraries)))
-      (require 'xaw.so)))
+(require 'xlib)
+(require 'xt.so (string->symbol (format #f "~a-xt.so" widgets)))
+(require (string->symbol (format #f "~a-widgets.so" widgets)))
 
-(load 'xlib.scm)
-
-(provide 'xlib)
-(provide 'xt)
+(provide 'xwidgets)
 
 (define (manage-child w)
   (manage-children (list w)))
