@@ -15,9 +15,12 @@
 struct headers {
     struct filehdr fhdr;
     struct aouthdr aout;
-    struct scnhdr section[3];    
+    struct scnhdr section[3];
 };
 #endif
+
+extern void Free_Symbols (SYMTAB *);
+extern void Call_Initializers (SYMTAB *, char *, int);
 
 extern void *sbrk();
 extern char *getenv();
@@ -25,7 +28,7 @@ extern char *getenv();
 static char *Loader_Output;
 static char *tmpdir;
 
-Load_Object (names) Object names; {
+Load_Object (Object names) {
 #ifdef ECOFF
     struct headers hdr;
 #else
@@ -33,7 +36,7 @@ Load_Object (names) Object names; {
 #endif
     register char *brk, *obrk, *lp, *li;
     char *buf;
-    register n, f, len, liblen;
+    register int n, f, len, liblen;
     Object port, tail, fullnames, libs;
     FILE *fp;
     GC_Node3;
@@ -78,7 +81,7 @@ Load_Object (names) Object names; {
 #else
     sprintf (buf, "%s -N %s -A %s -T %x -o %s ",
 #endif
-	LD_NAME, INC_LDFLAGS, li, (unsigned)brk, Loader_Output);
+	LD_NAME, INC_LDFLAGS, li, (unsigned int)brk, Loader_Output);
 
     for (tail = fullnames; !Nullp (tail); tail = Cdr (tail)) {
 	register struct S_String *str = STRING(Car (tail));
@@ -117,7 +120,7 @@ err:
 	close (f);
 	Primitive_Error ("not enough memory to load object file");
     }
-    bzero (brk, n);
+    memset (brk, 0, n);
 #ifdef ECOFF
     n -= hdr.aout.bsize;
     (void)lseek (f, (off_t)hdr.section[0].s_scnptr, 0);

@@ -136,7 +136,7 @@ extern Pixmap Get_Pixmap P_((Object));
 extern Time Get_Time P_((Object));
 extern Window Get_Window P_((Object));
 extern XColor *Get_Color P_((Object));
-extern unsigned long Get_Pixel P_((Object));
+extern unsigned long int Get_Pixel P_((Object));
 extern void Destroy_Event_Args P_((Object));
 extern int Encode_Event P_((Object));
 extern int Match_X_Obj P_((ELLIPSIS));
@@ -150,7 +150,7 @@ extern Object Make_Display P_((int, Display*));
 extern Object Make_Font P_((Display*, Object, Font, XFontStruct*));
 extern Object Make_Font_Foreign P_((Display*, Object, Font, XFontStruct*));
 extern Object Make_Gc P_((int, Display*, GC));
-extern Object Make_Pixel P_((unsigned long));
+extern Object Make_Pixel P_((unsigned long int));
 extern Object Make_Pixmap P_((Display*, Pixmap));
 extern Object Make_Pixmap_Foreign P_((Display*, Pixmap));
 extern Object Make_Window P_((int, Display*, Window));
@@ -163,8 +163,8 @@ extern Object P_Free_Gc P_((Object));
 extern Object P_Free_Pixmap P_((Object));
 extern Object P_Window_Unique_Id P_((Object));
 extern Object Record_To_Vector
-    P_((RECORD*, int, Object, Display*, unsigned long));
-extern unsigned long Vector_To_Record P_((Object, int, Object, RECORD*));
+    P_((RECORD*, int, Object, Display*, unsigned long int));
+extern unsigned long int Vector_To_Record P_((Object, int, Object, RECORD*));
 
 C_LINKAGE_END
 
@@ -178,7 +178,7 @@ extern XCharStruct CI;
 extern XWMHints WMH;
 extern XSizeHints SZH;
 
-extern Set_Attr_Size, Conf_Size, GC_Size, Geometry_Size, Win_Attr_Size,
+extern int Set_Attr_Size, Conf_Size, GC_Size, Geometry_Size, Win_Attr_Size,
     Font_Info_Size, Char_Info_Size, Wm_Hints_Size, Size_Hints_Size;
 extern RECORD Set_Attr_Rec[], Conf_Rec[], GC_Rec[], Geometry_Rec[],
     Win_Attr_Rec[], Font_Info_Rec[], Char_Info_Rec[], Wm_Hints_Rec[],

@@ -88,7 +88,7 @@ extern GCNODE *GC_List;
 #define GC_Unlink (GC_List = gc1.next)
 
 C_LINKAGE_BEGIN
-extern Func_Global_GC_Link P_((Object*));
+extern void Func_Global_GC_Link P_((Object*));
 C_LINKAGE_END
 
 #define Global_GC_Link(x) Func_Global_GC_Link(&x)

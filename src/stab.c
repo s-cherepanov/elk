@@ -3,6 +3,11 @@
 
 #include "kernel.h"
 
+#include <string.h>
+#include <stdlib.h>
+
+void Free_Symbols (SYMTAB *);
+
 #if defined(CAN_LOAD_OBJ) || defined (INIT_OBJECTS)
 
 #ifdef MACH_O
@@ -37,33 +42,33 @@
 
 static SYMPREFIX Ignore_Prefixes[] =  {
     /* Currently none */
-    0, 0
+    { 0, 0 }
 };
 static SYMPREFIX Init_Prefixes[] =  {
-    INIT_PREFIX,    PR_EXTENSION,
-    "_GLOBAL_.I.",  PR_CONSTRUCTOR,    /* SVR4.2/g++ */
-    "__sti__",      PR_CONSTRUCTOR,
-    "_STI",         PR_CONSTRUCTOR,
-    "_GLOBAL_$I$",  PR_CONSTRUCTOR,
-    0, 0
+    { INIT_PREFIX,    PR_EXTENSION },
+    { "_GLOBAL_.I.",  PR_CONSTRUCTOR },    /* SVR4.2/g++ */
+    { "__sti__",      PR_CONSTRUCTOR },
+    { "_STI",         PR_CONSTRUCTOR },
+    { "_GLOBAL_$I$",  PR_CONSTRUCTOR },
+    { 0, 0 }
 };
 static SYMPREFIX Finit_Prefixes[] = {
-    FINIT_PREFIX,   PR_EXTENSION,
-    "_GLOBAL_.D.",  PR_CONSTRUCTOR,
-    "__std__",      PR_CONSTRUCTOR,
-    "_STD",         PR_CONSTRUCTOR,
-    "_GLOBAL_$D$",  PR_CONSTRUCTOR,
-    0, 0
+    { FINIT_PREFIX,   PR_EXTENSION },
+    { "_GLOBAL_.D.",  PR_CONSTRUCTOR },
+    { "__std__",      PR_CONSTRUCTOR },
+    { "_STD",         PR_CONSTRUCTOR },
+    { "_GLOBAL_$D$",  PR_CONSTRUCTOR },
+    { 0, 0 }
 };
 
 static FUNCT *Finalizers;
 
-static void Call (l) unsigned long l; {
+static void Call (unsigned long int l) {
 #ifdef XCOFF
-    unsigned long vec[3];
+    unsigned long int vec[3];
     extern main();
 
-    bcopy ((char *)main, (char *)vec, sizeof vec);
+    memcpy (vec, main, sizeof vec);
     vec[0] = (l & ~0xF0000000) + (vec[0] & 0xF0000000);
     ((void (*)())vec)();
 #else
@@ -71,7 +76,7 @@ static void Call (l) unsigned long l; {
 #endif
 }
 
-Call_Initializers (tab, addr, which) SYMTAB *tab; char *addr; {
+void Call_Initializers (SYMTAB *tab, char *addr, int which) {
     SYM *sp;
     char *p;
     SYMPREFIX *pp;
@@ -125,17 +130,17 @@ next: ;
 /* Call the finialization functions and C++ static destructors.  Make sure
  * that calling exit() from a function doesn't cause endless recursion.
  */
-Call_Finalizers () {
+void Call_Finalizers () {
     while (Finalizers) {
 	FUNCT *fp = Finalizers;
 	Finalizers = fp->next;
 	if (Verb_Init)
 	    printf ("[calling %s]\n", fp->name);
-	Call ((unsigned long)fp->func);
+	Call ((unsigned long int)fp->func);
     }
 }
 
-Free_Symbols (tab) SYMTAB *tab; {
+void Free_Symbols (SYMTAB *tab) {
     register SYM *sp, *nextp;
 
     for (sp = tab->first; sp; sp = nextp) {

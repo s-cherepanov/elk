@@ -3,6 +3,8 @@
 
 #include "kernel.h"
 
+#include <string.h>
+
 #define TYPE_GROW    10
 
 TYPEDESCR *Types;
@@ -20,12 +22,12 @@ char *builtin_types[] = {
     0
 };
 
-Wrong_Type (x, t) Object x; register t; {
+void Wrong_Type (Object x, register int t) {
     Wrong_Type_Combination (x, Types[t].name);
 }
 
-Wrong_Type_Combination (x, name) Object x; register const char *name; {
-    register t = TYPE(x);
+void Wrong_Type_Combination (Object x, register char const *name) {
+    register int t = TYPE(x);
     char buf[100];
 
     if (t < 0 || t >= Num_Types)
@@ -35,17 +37,17 @@ Wrong_Type_Combination (x, name) Object x; register const char *name; {
     Primitive_Error (buf);
 }
 
-Object P_Type (x) Object x; {
-    register t = TYPE(x);
+Object P_Type (Object x) {
+    register int t = TYPE(x);
 
     if (t < 0 || t >= Num_Types)
 	Panic ("bad type2");
     return Intern (Types[t].name);
 }
 
-Define_Type (t, name, size, const_size, eqv, equal, print, visit) register t;
-	const char *name;
-	int (*size)(), (*eqv)(), (*equal)(), (*print)(), (*visit)(); {
+int Define_Type (register int t, char const *name,
+	int (*size)(), int const_size, int (*eqv)(), int (*equal)(),
+	int (*print)(), int (*visit)()) {
     register TYPEDESCR *p;
 
     Set_Error_Tag ("define-type");
@@ -70,7 +72,7 @@ Define_Type (t, name, size, const_size, eqv, equal, print, visit) register t;
     return Num_Types-1;
 }
 
-Init_Type() {
+void Init_Type() {
     int i, bytes;
     char *p;
 
@@ -78,8 +80,8 @@ Init_Type() {
     Max_Type = Num_Types + TYPE_GROW;
     bytes = Max_Type * sizeof(TYPEDESCR);
     Types = (TYPEDESCR *)Safe_Malloc(bytes);
-    bzero((char *)Types, bytes);
-    for (i = 0; p = builtin_types[i]; i++) {
+    memset(Types, 0, bytes);
+    for (i = 0; (p = builtin_types[i]); i++) {
 	Types[i].haspointer = *p != '0';
 	Types[i].name = ++p;
     }

@@ -1,11 +1,14 @@
 #include <mach-o/rld.h>
 
-Load_Object (names) Object names; {
+extern void Free_Symbols (SYMTAB *);
+extern void Call_Initializers (SYMTAB *, char *, int);
+
+Load_Object (Object names) {
     long retval;
     struct mach_header *hdr;
     char **filenames, *libs;
     NXStream *err_stream;
-    register i, n;
+    register int i, n;
     Object port, tail, fullnames;
     extern char *strtok();
     GC_Node3;
@@ -28,7 +31,7 @@ Load_Object (names) Object names; {
     Alloca (filenames, char**, (n+1 + strlen (libs)/2) * sizeof (char *));
     for (i = 0; i < n; i++, fullnames = Cdr (fullnames)) {
 	Object s;
-	
+
 	s = Car (fullnames);
 	Get_Strsym_Stack (s, filenames[i]);
     }

@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <libelf.h>
+#include <unistd.h>
 
 SYMTAB *
 Snarf_Symbols (lf)
@@ -15,16 +16,16 @@ Snarf_Symbols (lf)
     Elf32_Ehdr	*elf_ehdr_ptr = NULL;
     Elf32_Shdr	*elf_shdr_ptr = NULL,
 		*symtab_ptr = NULL;
-    size_t	elf_str_index, shstrndx;
-    char	*symbol_name, *section_name;
+    size_t	elf_str_index = 0, shstrndx;
+    char	*section_name;
 
     if (elf_version (EV_CURRENT) == EV_NONE)
       Primitive_Error ("a.out file Elf version out of date");
     if ((elf_ptr = elf_begin (lf, ELF_C_READ, (Elf *)NULL)) == NULL)
       Primitive_Error ("can't elf_begin() a.out file");
 
-    /* 
-     * get the elf header, so we'll know where to look for the section 
+    /*
+     * get the elf header, so we'll know where to look for the section
      * names.
      */
     if ((elf_ehdr_ptr = elf32_getehdr (elf_ptr)) == NULL) {
@@ -32,12 +33,12 @@ Snarf_Symbols (lf)
     }
     shstrndx = elf_ehdr_ptr->e_shstrndx;
     /* look for the symbol and string tables */
-    while (elf_scn_ptr = elf_nextscn (elf_ptr, elf_scn_ptr)) {
+    while ((elf_scn_ptr = elf_nextscn (elf_ptr, elf_scn_ptr))) {
 	if ((elf_shdr_ptr = elf32_getshdr (elf_scn_ptr)) == NULL)
 	  Primitive_Error ("can't get section header in a.out file");
 	if (elf_shdr_ptr->sh_type == SHT_STRTAB) {
-	    /* 
-	     * save the index to the string table for later use by 
+	    /*
+	     * save the index to the string table for later use by
 	     * elf_strptr().
 	     */
 	    section_name = elf_strptr (elf_ptr, shstrndx,
@@ -57,11 +58,11 @@ Snarf_Symbols (lf)
       Primitive_Error ("no symbol table in a.out file");
     if (!elf_str_index)
       Primitive_Error ("no string table in a.out file");
-    /* 
-     * we've located the symbol table -- go through it and save the names 
+    /*
+     * we've located the symbol table -- go through it and save the names
      * of the interesting symbols.
      */
-    while (elf_data_ptr = elf_getdata (symtab_scn_ptr, elf_data_ptr)) {
+    while ((elf_data_ptr = elf_getdata (symtab_scn_ptr, elf_data_ptr))) {
 	char	*name = NULL;
 	int	symbol_count;
 	Elf32_Sym	*symbol_ptr = elf_data_ptr->d_buf;
@@ -99,7 +100,7 @@ Snarf_Symbols (lf)
     }
     return tab;
 }
-  
+
 SYMTAB *
 Open_File_And_Snarf_Symbols (name)
      char *name;

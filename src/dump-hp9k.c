@@ -36,10 +36,10 @@
     }\
 }
 
-Object P_Dump (ofile) Object ofile; {
+Object P_Dump (Object ofile) {
     struct header hdr;
     struct som_exec_auxhdr auxhdr;
-    unsigned data_size;
+    unsigned int data_size;
     int delta;
     struct stat stat;
     extern void *sbrk();
@@ -72,7 +72,7 @@ Object P_Dump (ofile) Object ofile; {
     copy (afd, ofd, auxhdr.exec_dfile);
 
 #ifdef HPSHLIB
-    /* Save data segments of shared libraries 
+    /* Save data segments of shared libraries
      */
     Save_Shared_Data ();
 #endif
@@ -178,7 +178,7 @@ Save_Shared_Data () {
 	sprintf (Z, "   copy data seg from %x to %x len %d\n",
 	    sp->oldaddr, sp->saved, sp->desc.dend - sp->desc.dstart); W;
 #endif
-	bcopy (sp->oldaddr, sp->saved, sp->desc.dend - sp->desc.dstart);
+	memcpy (sp->saved, sp->oldaddr, sp->desc.dend - sp->desc.dstart);
     }
 }
 
@@ -230,7 +230,7 @@ Restore_Shared_Data () {
 	sprintf (Z, "   copy data seg from %x to %x len %d\n", sp->saved,
 	    sp->oldaddr, sp->desc.dend-sp->desc.dstart); W;
 #endif
-	bcopy (sp->saved, sp->oldaddr, sp->desc.dend - sp->desc.dstart);
+	memcpy (sp->oldaddr, sp->saved, sp->desc.dend - sp->desc.dstart);
 	/*
 	 * Initial break must be set as soon as data segment of
 	 * C library is restored

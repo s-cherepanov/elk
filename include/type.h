@@ -10,14 +10,14 @@
 }
 
 #define Check_Number(x) {\
-    register t = TYPE(x);\
+    register int t = TYPE(x);\
     if (!Numeric (t)) Wrong_Type_Combination (x, "number");\
 }
 
 /* This should be renamed; it checks whether x is an *exact* integer.
  */
 #define Check_Integer(x) {\
-    register t = TYPE(x);\
+    register int t = TYPE(x);\
     if (t != T_Fixnum && t != T_Bignum) Wrong_Type (x, T_Fixnum);\
 }
 

@@ -6,7 +6,7 @@
     Check_Type(_from, T_String);\
     _len = STRING(_from)->size;\
     Alloca ((_to), char*, _len+1);\
-    bcopy (STRING(_from)->data, (_to), _len);\
+    memcpy ((_to), STRING(_from)->data, _len);\
     (_to)[_len] = '\0';\
 }
 
@@ -18,6 +18,6 @@
 	Wrong_Type_Combination ((_from), "string or symbol");\
     _len = STRING(_from)->size;\
     Alloca ((_to), char*, _len+1);\
-    bcopy (STRING(_from)->data, (_to), _len);\
+    memcpy ((_to), STRING(_from)->data, _len);\
     (_to)[_len] = '\0';\
 }

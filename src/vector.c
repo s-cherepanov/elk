@@ -1,10 +1,14 @@
 #include "kernel.h"
 
-Object General_Make_Vector (len, fill, konst) Object fill; {
+#include <string.h>
+
+extern int Get_Index (Object, Object);
+
+Object General_Make_Vector (int len, Object fill, int konst) {
     Object vec;
     register Object *op;
     GC_Node;
-    
+
     GC_Link (fill);
     vec = Alloc_Object ((len-1) * sizeof (Object) + sizeof (struct S_Vector),
 	T_Vector, konst);
@@ -16,25 +20,25 @@ Object General_Make_Vector (len, fill, konst) Object fill; {
     return vec;
 }
 
-Object Make_Vector (len, fill) Object fill; {
+Object Make_Vector (int len, Object fill) {
     return General_Make_Vector (len, fill, 0);
 }
 
-Object Make_Const_Vector (len, fill) Object fill; {
+Object Make_Const_Vector (int len, Object fill) {
     return General_Make_Vector (len, fill, 1);
 }
 
-Object P_Make_Vector (argc, argv) Object *argv; {
-    register len;
+Object P_Make_Vector (int argc, Object *argv) {
+    register int len;
 
     if ((len = Get_Exact_Integer (argv[0])) < 0)
 	Range_Error (argv[0]);
     return Make_Vector (len, argc == 1 ? Null : argv[1]);
 }
 
-Object P_Vector (argc, argv) Object *argv; {
+Object P_Vector (int argc, Object *argv) {
     Object vec;
-    register i;
+    register int i;
 
     vec = Make_Vector (argc, Null);
     for (i = 0; i < argc; i++)
@@ -42,23 +46,23 @@ Object P_Vector (argc, argv) Object *argv; {
     return vec;
 }
 
-Object P_Vectorp (x) Object x; {
+Object P_Vectorp (Object x) {
     return TYPE(x) == T_Vector ? True : False;
 }
 
-Object P_Vector_Length (x) Object x; {
+Object P_Vector_Length (Object x) {
     Check_Type (x, T_Vector);
     return Make_Integer (VECTOR(x)->size);
 }
 
-Object P_Vector_Ref (vec, n) Object vec, n; {
+Object P_Vector_Ref (Object vec, Object n) {
     Check_Type (vec, T_Vector);
     return VECTOR(vec)->data[Get_Index (n, vec)];
 }
 
-Object P_Vector_Set (vec, n, new) Object vec, n, new; {
+Object P_Vector_Set (Object vec, Object n, Object new) {
     Object old;
-    register i;
+    register int i;
 
     Check_Type (vec, T_Vector);
     Check_Mutable (vec);
@@ -70,8 +74,8 @@ Object P_Vector_Set (vec, n, new) Object vec, n, new; {
 /* We cannot simply call P_List with vec->size and vec->data here,
  * because the latter can change during GC.
  */
-Object P_Vector_To_List (vec) Object vec; {
-    register i;
+Object P_Vector_To_List (Object vec) {
+    register int i;
     Object list, tail, cell;
     GC_Node3;
 
@@ -89,9 +93,9 @@ Object P_Vector_To_List (vec) Object vec; {
     return list;
 }
 
-Object List_To_Vector (list, konst) Object list; {
+Object List_To_Vector (Object list, int konst) {
     Object vec, len;
-    register i;
+    register int i;
     GC_Node;
 
     GC_Link (list);
@@ -106,12 +110,12 @@ Object List_To_Vector (list, konst) Object list; {
     return vec;
 }
 
-Object P_List_To_Vector (list) Object list; {
+Object P_List_To_Vector (Object list) {
     return List_To_Vector (list, 0);
 }
 
-Object P_Vector_Fill (vec, fill) Object vec, fill; {
-    register i;
+Object P_Vector_Fill (Object vec, Object fill) {
+    register int i;
 
     Check_Type (vec, T_Vector);
     Check_Mutable (vec);
@@ -120,14 +124,14 @@ Object P_Vector_Fill (vec, fill) Object vec, fill; {
     return vec;
 }
 
-Object P_Vector_Copy (vec) Object vec; {
+Object P_Vector_Copy (Object vec) {
     Object new;
     GC_Node;
 
     Check_Type (vec, T_Vector);
     GC_Link (vec);
     new = Make_Vector (VECTOR(vec)->size, Null);
-    bcopy ((char *)POINTER(vec), (char *)POINTER(new),
+    memcpy (POINTER(new), POINTER(vec),
 	(VECTOR(vec)->size-1) * sizeof (Object) + sizeof (struct S_Vector));
     GC_Unlink;
     return new;

@@ -9,7 +9,7 @@ extern char *malloc();
 
 MEM_NODE *Mem_List;
 
-char *Mem_Alloc (size) unsigned size; {
+char *Mem_Alloc (unsigned int size) {
     char *ret;
 
     Disable_Interrupts;
@@ -19,7 +19,7 @@ char *Mem_Alloc (size) unsigned size; {
     return ret;
 }
 
-Free_Mem_Nodes (first) MEM_NODE *first; {
+Free_Mem_Nodes (MEM_NODE *first) {
     MEM_NODE *p;
 
     Disable_Interrupts;
@@ -31,8 +31,8 @@ Free_Mem_Nodes (first) MEM_NODE *first; {
     Enable_Interrupts;
 }
 
-Save_Mem_Nodes (cont) Object cont; {
-    unsigned sum = 0;
+Save_Mem_Nodes (Object cont) {
+    unsigned int sum = 0;
     char *s;
     MEM_NODE *p;
     Object str;
@@ -46,12 +46,12 @@ Save_Mem_Nodes (cont) Object cont; {
     CONTROL(cont)->memsave = str;
     GC_Unlink;
     for (p = Mem_List, s = STRING(str)->data; p; s += p->len, p = p->next) {
-	bcopy ((char *)(p+1), s, p->len);
+	memcpy (s, p+1, p->len);
 	p->refcnt++;
     }
 }
 
-Restore_Mem_Nodes (cont) Object cont; {
+Restore_Mem_Nodes (Object cont) {
     MEM_NODE *p;
     char *s;
     Object str;
@@ -61,13 +61,13 @@ Restore_Mem_Nodes (cont) Object cont; {
     str = CONTROL(cont)->memsave;
     for (p = Mem_List, s = STRING(str)->data; p; s += p->len, p = p->next) {
 	p->refcnt++;
-	bcopy (s, (char *)(p+1), p->len);
+	memcpy (p+1, s, p->len);
     }
 }
 
 Object Save_GC_Nodes () {
     Object vec;
-    register unsigned sum = 0, i = 0, n;
+    register unsigned int sum = 0, i = 0, n;
     register GCNODE *p;
 
     for (p = GC_List; p; p = p->next)
@@ -75,20 +75,18 @@ Object Save_GC_Nodes () {
     vec = Make_Vector (sum, Null);
     for (p = GC_List; p; p = p->next, i += n) {
 	n = p->gclen <= 0 ? 1 : p->gclen-1;
-	bcopy ((char *)p->gcobj, (char *)&(VECTOR(vec)->data[i]),
-	    n * sizeof (Object));
+	memcpy (&(VECTOR(vec)->data[i]), p->gcobj, n * sizeof (Object));
     }
     return vec;
 }
 
-Restore_GC_Nodes (vec) Object vec; {
-    register i = 0, n;
+Restore_GC_Nodes (Object vec) {
+    register int i = 0, n;
     register GCNODE *p;
 
     for (p = GC_List; p; p = p->next, i += n) {
 	n = p->gclen <= 0 ? 1 : p->gclen-1;
-	bcopy ((char *)&(VECTOR(vec)->data[i]), (char *)p->gcobj,
-	    n * sizeof (Object));
+	memcpy (p->gcobj, &(VECTOR(vec)->data[i]), n * sizeof (Object));
     }
 }
 

@@ -3,6 +3,13 @@
 
 #include "kernel.h"
 
+#include <string.h>
+
+extern void Switch_Environment (Object);
+
+void Jump_Cont (struct S_Control *, Object);
+void Do_Wind (Object);
+
 /* The C library versions of longjmp on the VAX and the Convex unwind
  * the stack.  As Jump_Cont below installs a new stack before calling
  * longjmp, the standard version cannot be used.  The following simplistic
@@ -45,7 +52,7 @@
 #endif
 
 #if defined(convex) || defined(__convex__)
-convex_longjmp (p, i) char *p; {
+convex_longjmp (char *p, int i) {
     __asm__("ld.w    4(ap),s0");
     __asm__("ld.w    0(ap),a1");
     __asm__("ld.w    12(a1),a7");
@@ -66,7 +73,7 @@ static Object Cont_Value;
 static Object Cont_GCsave;
 #endif
 
-Check_Stack_Grows_Down () {
+int Check_Stack_Grows_Down () {
     char foo;
 
     return &foo < stkbase;
@@ -82,22 +89,22 @@ unsigned int Stack_Size () {
     return Stack_Grows_Down ? stkbase-&foo : &foo-stkbase;
 }
 
-Grow_Stack (cp, val) struct S_Control *cp; Object val; {
+void Grow_Stack (struct S_Control *cp, Object val) {
     char buf[100];
 
     /* Prevent the optimizer from optimizing buf away:
      */
-    bzero (buf, 1);
+    memset (buf, 0, 1);
 
     Jump_Cont (cp, val);
 }
 
-Jump_Cont (cp, val) struct S_Control *cp; Object val; {
+void Jump_Cont (struct S_Control *cp, Object val) {
     static struct S_Control *p;
     static char *from, *to;      /* Must not be allocated on stack */
-    static i;                    /* Ditto */
+    static int i;                /* Ditto */
     char foo;
-    
+
     /* Reinstall the saved stack contents; take stack direction
      * into account.  cp must be put into a static variable, as
      * variables living on the stack cannot be referenced any
@@ -126,18 +133,18 @@ Jump_Cont (cp, val) struct S_Control *cp; Object val; {
 }
 
 #ifndef USE_ALLOCA
-Object Terminate_Cont (cont) Object cont; {
+Object Terminate_Cont (Object cont) {
     Free_Mem_Nodes (CONTROL(cont)->memlist);
     return Void;
 }
 #endif
 
-Object P_Control_Pointp (x) Object x; {
+Object P_Control_Pointp (Object x) {
     return TYPE(x) == T_Control_Point ? True : False;
 }
 
-Object P_Call_With_Current_Continuation (proc) Object proc; {
-    register t;
+Object P_Call_With_Current_Continuation (Object proc) {
+    register int t;
 
     t = TYPE(proc);
     if (t != T_Primitive && t != T_Compound && t != T_Control_Point)
@@ -145,11 +152,11 @@ Object P_Call_With_Current_Continuation (proc) Object proc; {
     return Internal_Call_CC (0, proc);
 }
 
-Object Internal_Call_CC (from_dump, proc) int from_dump; Object proc; {
+Object Internal_Call_CC (int from_dump, Object proc) {
     Object control, ret, gcsave;
     register struct S_Control *cp;
     register char *p, *to;
-    register size;
+    register int size;
     GC_Node3;
 
     control = gcsave = Null;
@@ -182,7 +189,7 @@ Object Internal_Call_CC (from_dump, proc) int from_dump; Object proc; {
      */
     p = Stack_Grows_Down ? stkbase - cp->size : stkbase;
     to = cp->stack;
-    bcopy (p, to, cp->size);
+    memcpy (to, p, cp->size);
     cp->delta = to - p;
 #ifndef USE_ALLOCA
     Register_Object (control, (GENERIC)0, Terminate_Cont, 0);
@@ -212,11 +219,11 @@ Object Internal_Call_CC (from_dump, proc) int from_dump; Object proc; {
     return ret;
 }
 
-Funcall_Control_Point (control, argl, eval) Object control, argl; {
+void Funcall_Control_Point (Object control, Object argl, int eval) {
     Object val, len;
     register struct S_Control *cp;
     register WIND *w, *wp, *cwp, *p;
-    register delta = 0;
+    register int delta = 0;
     GC_Node3;
 
     if (GC_In_Progress)
@@ -264,7 +271,7 @@ Funcall_Control_Point (control, argl, eval) Object control, argl; {
     /*NOTREACHED*/
 }
 
-Do_Wind (w) Object w; {
+void Do_Wind (Object w) {
     Object oldenv, b, tmp;
 
     if (TYPE(w) == T_Vector) {          /* fluid-let */
@@ -284,7 +291,7 @@ Do_Wind (w) Object w; {
     }
 }
 
-Add_Wind (w, in, out) register WIND *w; Object in, out; {
+void Add_Wind (register WIND *w, Object in, Object out) {
     Object inout;
     GC_Node2;
 
@@ -301,7 +308,7 @@ Add_Wind (w, in, out) register WIND *w; Object in, out; {
     GC_Unlink;
 }
 
-Object P_Dynamic_Wind (in, body, out) Object in, body, out; {
+Object P_Dynamic_Wind (Object in, Object body, Object out) {
     WIND w, *first = First_Wind;
     Object ret;
     GC_Node4;
@@ -315,14 +322,14 @@ Object P_Dynamic_Wind (in, body, out) Object in, body, out; {
     (void)Funcall (in, Null, 0);
     ret = Funcall (body, Null, 0);
     (void)Funcall (out, Null, 0);
-    if (Last_Wind = w.prev)
+    if ((Last_Wind = w.prev))
 	Last_Wind->next = 0;
     First_Wind = first;
     GC_Unlink;
     return ret;
 }
 
-Object P_Control_Point_Environment (c) Object c; {
+Object P_Control_Point_Environment (Object c) {
     Check_Type (c, T_Control_Point);
     return CONTROL(c)->env;
 }

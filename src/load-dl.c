@@ -1,10 +1,12 @@
 #include <dlfcn.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-extern char *strrchr();
-extern char *getenv();
+extern void Free_Symbols (SYMTAB *);
+extern void Call_Initializers (SYMTAB *, char *, int);
 
-Dlopen_File (fn) char *fn; {
+void Dlopen_File (char *fn) {
     void *handle;
     SYM *sp;
 
@@ -23,23 +25,23 @@ Dlopen_File (fn) char *fn; {
      * this can be safely ignored.
      */
     for (sp = The_Symbols->first; sp; sp = sp->next)
-	sp->value = (unsigned long)dlsym (handle, sp->name);
+	sp->value = (unsigned long int)dlsym (handle, sp->name);
     Call_Initializers (The_Symbols, 0, PR_CONSTRUCTOR);
     Call_Initializers (The_Symbols, 0, PR_EXTENSION);
 }
 
 static char *tempname;
 static char *tmpdir;
-static tmplen;
-static Seq_Num;
+static int tmplen;
+static int Seq_Num;
 
-char *Temp_Name (seq) int seq; {
+char *Temp_Name (int seq) {
     if (!tempname) {
 	if (!(tmpdir = getenv ("TMPDIR")))
 	    tmpdir = "/tmp";
 	tempname = Safe_Malloc (tmplen = strlen (tmpdir) + 20);
 	sprintf (tempname, "%s/ldXXXXXX", tmpdir);
-	(void)mkstemp (tempname);
+	(void)mktemp (tempname);
 	strcat (tempname, ".");
     }
     sprintf (strrchr (tempname, '.'), ".%d", seq);
@@ -55,7 +57,7 @@ void Fork_Load () {
     Disable_Interrupts;
     newtemp = Safe_Malloc (tmplen);
     sprintf (newtemp, "%s/ldXXXXXX", tmpdir);
-    (void)mkstemp (newtemp);
+    (void)mktemp (newtemp);
     strcat (newtemp, ".");
     for (i = 0; i < Seq_Num; i++) {
 	sprintf (strrchr (newtemp, '.'), ".%d", i);
@@ -66,7 +68,7 @@ void Fork_Load () {
     Enable_Interrupts;
 }
 
-Load_Object (names) Object names; {
+void Load_Object (Object names) {
     Object port, tail, fullnames, libs;
     char *lp, *buf, *outfile;
     int len, liblen, i;
@@ -87,8 +89,10 @@ Load_Object (names) Object names; {
     if (TYPE(libs) == T_String) {
 	liblen = STRING(libs)->size;
 	lp = STRING(libs)->data;
-    } else
+    } else {
 	liblen = 0;
+	lp = "";
+    }
 
     Disable_Interrupts;
 

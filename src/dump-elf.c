@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <malloc.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
@@ -11,7 +12,7 @@
  */
 #define FIND_SECTHDR(name,ndx) {\
     char err[100];\
-    unsigned _i;\
+    unsigned int _i;\
     for (_i = 0; _i < ohdr->e_shnum; _i++)\
 	if (strcmp (sectstr+osecthdr[_i].sh_name, (name)) == 0) break;\
     if (_i == ohdr->e_shnum) {\
@@ -43,7 +44,7 @@
 /* Bug: the mmapped regions are never munmapped again.
  */
 
-Object P_Dump (ofile) Object ofile; {
+Object P_Dump (Object ofile) {
     /*
      * ELF header, section header table, program header table of running
      * a.out and new a.out
@@ -54,7 +55,7 @@ Object P_Dump (ofile) Object ofile; {
     /*
      * .bss section index and section header pointer of running a.out
      */
-    unsigned obssndx;
+    unsigned int obssndx;
     Elf32_Shdr *obssp;
     /*
      * .mdebug section index
@@ -80,7 +81,7 @@ Object P_Dump (ofile) Object ofile; {
     char *oaddr, *naddr;
 
     struct stat st;
-    unsigned i;
+    unsigned int i;
     int sect_created = !Was_Dumped;
 
     Dump_Prolog;
@@ -120,7 +121,7 @@ Object P_Dump (ofile) Object ofile; {
 	Primitive_Error ("sbrk(0) failed: ~E");
     }
     ndata     = obssp->sh_addr;
-    ndatasize = (Elf32_Addr)Brk_On_Dump - ndata;
+    ndatasize = (Elf32_Addr)((ptrdiff_t)Brk_On_Dump - (ptrdiff_t)ndata);
     ndataoff  = obssp->sh_offset;
 
     /* mmap new a.out file, setup pointers to ELF header, section header
@@ -162,9 +163,9 @@ Object P_Dump (ofile) Object ofile; {
 #define max(a,b) ((a) > (b) ? (a) : (b))
     for (i = 0; i < nhdr->e_phnum; i++) {
 	Elf32_Phdr *pp = nproghdr+i;
-	unsigned mask = max(pp->p_align, obssp->sh_addralign) - 1;
-	Elf32_Addr ends_at = pp->p_vaddr + pp->p_filesz + mask & ~mask;
-	Elf32_Addr bssend = obssp->sh_addr + mask & ~mask;
+	unsigned int mask = max(pp->p_align, obssp->sh_addralign) - 1;
+	Elf32_Addr ends_at = (pp->p_vaddr + pp->p_filesz + mask) & ~mask;
+	Elf32_Addr bssend = (obssp->sh_addr + mask) & ~mask;
 #ifndef __sgi
 	if (pp->p_vaddr + pp->p_filesz > obssp->sh_addr) {
 	    Dump_Finalize;
@@ -241,14 +242,14 @@ Object P_Dump (ofile) Object ofile; {
 	    "memory" : "file"); (void)fflush (stdout);
 #endif
 	if ((sp->sh_flags & (SHF_ALLOC|SHF_WRITE)) == (SHF_ALLOC|SHF_WRITE))
-	    from = (void *)sp->sh_addr;
+	    from = (void *)(ptrdiff_t)sp->sh_addr;
 	else
 	    from = (void *)(oaddr + sp->sh_offset);
 	if (sp != ndatap && sp->sh_offset >= ndataoff)
 	    sp->sh_offset += ndatasize;
 	if (sp->sh_type != SHT_NULL && sp->sh_type != SHT_NOBITS) {
 #ifdef DEBUG_DUMP
-	    printf (" copy from %x to %x size %x", from, naddr+sp->sh_offset,
+	    printf (" copy from %p to %p size %x", from, naddr+sp->sh_offset,
 		sp->sh_size); (void)fflush (stdout);
 #endif
 	    memcpy ((void *)(naddr + sp->sh_offset), from, sp->sh_size);

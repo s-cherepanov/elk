@@ -50,7 +50,7 @@ extern Object False2;
 /* Used in special forms: */
 extern int Tail_Call;
 
-#define TC_Prolog   register _t = Tail_Call
+#define TC_Prolog   register int _t = Tail_Call
 #define TC_Disable  Tail_Call = 0
 #define TC_Enable   Tail_Call = _t
 

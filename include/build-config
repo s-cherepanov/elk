@@ -321,7 +321,7 @@ $def_bcopy
 $def_bzero
 $def_bcmp
 #define                AOUT_H            $aout_h
-#define                SCM_DIR           "$final_dir/lib/elk/scm"
+#define                SCM_DIR           "$final_dir/share/elk/scm"
 #define                OBJ_DIR           "$final_dir/lib/elk/obj"
 #define                HEAP_SIZE         $default_heap_size
 #define                FIND_AOUT         defined(USE_LD) || defined(CAN_DUMP)\\

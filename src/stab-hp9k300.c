@@ -3,22 +3,22 @@
 
 /* On the HP9000 an nlist entry contains a fixed length
  * part consisting of the symbol information, plus a variable
- * length part, the name without a '\0' terminator. 
- * We don't know how much space to allocate for the names 
+ * length part, the name without a '\0' terminator.
+ * We don't know how much space to allocate for the names
  * until we have read them all.
  * The solution here is to save all the names on the fly
  * in a table that is grown in units of STRING_BLOCK bytes,
  * using realloc to expand it on demand.
  */
- 
+
 #define STRING_BLOCK 8192
 
-SYMTAB *Snarf_Symbols (f, ep) FILE *f; struct exec *ep; {
+SYMTAB *Snarf_Symbols (FILE *f, struct exec *ep) {
     SYMTAB       *tab;
     register SYM *sp;
     register SYM **nextp;
     int          strsiz = 0; /* running total length of names read, */
-			     /*   each '\0' terminated */ 
+			     /*   each '\0' terminated */
     int          nread = 0;  /* running total of bytes read from symbol table */
     int          max = 0;    /* current maximum size of name table */
     char         *names = 0; /* the name table */
@@ -54,7 +54,7 @@ SYMTAB *Snarf_Symbols (f, ep) FILE *f; struct exec *ep; {
 	    Primitive_Error ("corrupt symbol table in object file");
 	}
         else {
-            nread += nl.n_length; 
+            nread += nl.n_length;
             names[ strsiz + nl.n_length ] = '\0';
         }
 	if ((nl.n_type & N_TYPE) != N_TEXT) {
@@ -71,15 +71,15 @@ SYMTAB *Snarf_Symbols (f, ep) FILE *f; struct exec *ep; {
     }
 
     tab->strings = names;
- 
+
     for (sp = tab->first; sp; sp = sp->next)
-	sp->name += (unsigned)names;
+	sp->name += (unsigned int)names;
 
     return tab;
 }
 
 #ifdef INIT_OBJECTS
-SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
+SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     struct exec hdr;
     FILE *f;
     SYMTAB *tab;

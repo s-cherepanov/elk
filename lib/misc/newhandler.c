@@ -10,7 +10,7 @@ static void New_Handler_Proc () {
     (void)Funcall (New_Handler, Null, 0);
 }
 
-static Object P_Set_New_Handler (p) Object p; {
+static Object P_Set_New_Handler (Object p) {
     Object old;
 
     Check_Procedure (p);

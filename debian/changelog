@@ -1,11 +1,26 @@
-elk (3.0-8.1) unstable; urgency=low
+elk (3.0-9) unstable; urgency=low
 
   * New maintainer.
-  * Fixed spelling in the package description (Closes: #161056).
-  * Updated standards version to 3.5.9.0.
-  * Replaced sys_errlist usage with strerror calls, and mktemp with mkstemp.
+  * Packaging updates:
+    + Fixed spelling in the package description (Closes: #161056).
+    + Updated standards version to 3.5.9.0.
+    + Changed SCM_DIR from /usr/lib/elk/scm to /usr/share/elk/scm because
+      scheme scripts are platform-independent.
+  * Massive code cleanups:
+    + Added -Wall to the build rules to make error spotting easier, and fixed
+      all compilation warnings in the main program.
+    + Replaced sys_errlist with strerror, bcopy with memcpy, bzero with memset.
+    + Fixed many uninitialized variables.
+  * Fixed some pointer/integer type confusions which caused elk to crash
+    on alpha (Closes: #59893) and probably ia64.
+  * Fixed a read overflow in heap-gen.c:AllocPage() that was corrupting the
+    internal heap (Closes: #57621).
+  * Fixed a missing memory area initialization in heap-gen.c:ExpandHeap() that
+    was causing garbage collector crashes.
+  * Fixed an integer sign issue in main.c:Max_Stack (Closes: #176190).
+  * Made `quit' an alias for `exit' in toplevel.scm.
 
- -- Samuel Hocevar <sam@zoy.org>  Fri, 28 Mar 2003 10:30:34 +0100
+ -- Samuel Hocevar <sam@zoy.org>  Tue,  1 Apr 2003 11:33:23 +0200
 
 elk (3.0-8.1) unstable; urgency=low
 
@@ -85,6 +100,3 @@ elk (3.0-1) unstable; urgency=low
 
  -- Enrique Zanardi <ezanardi@molec1.dfis.ull.es>  Wed, 30 Oct 1996 13:05:48 +0000
 
-Local variables:
-mode: debian-changelog
-End:

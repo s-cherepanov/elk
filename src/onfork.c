@@ -14,7 +14,7 @@
 
 static FUNCT *Onfork_Funcs;
 
-Register_Onfork (f) void (*f)(); {
+void Register_Onfork (void (*f)()) {
     FUNCT *p;
 
     p = (FUNCT *)Safe_Malloc (sizeof (*p));

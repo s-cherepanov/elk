@@ -25,12 +25,12 @@ extern char *sbrk();
 
 #define MAX_SECTS  20
 
-Object P_Dump (ofile) Object ofile; {
+Object P_Dump (Object ofile) {
     struct filehdr fhdr;
     struct aouthdr ahdr;
     struct scnhdr sect[MAX_SECTS];
     struct scnhdr *sp, *datap;
-    unsigned long data_start, data_end, delta;
+    unsigned long int data_start, data_end, delta;
     int mask, n;
     HDRR shdr;
     char buf[4096];
@@ -64,7 +64,7 @@ Object P_Dump (ofile) Object ofile; {
      */
     data_start = datap->s_vaddr;
     mask = getpagesize () - 1;
-    data_end = (unsigned long)sbrk (0) + mask & ~mask;
+    data_end = (unsigned long int)sbrk (0) + mask & ~mask;
     delta = data_end - data_start - datap->s_size;
 
     ahdr.dsize = data_end - ahdr.data_start;

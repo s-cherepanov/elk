@@ -1,14 +1,17 @@
 #include "kernel.h"
 
-Object Const_Cons (car, cdr) Object car, cdr; {
+extern unsigned int Stack_Size ();
+extern void Uncatchable_Error (char *);
+
+Object Const_Cons (Object car, Object cdr) {
     Object ret;
-    
+
     ret = P_Cons (car, cdr);
     SETCONST(ret);
     return ret;
 }
 
-Object P_Cons (car, cdr) Object car, cdr; {
+Object P_Cons (Object car, Object cdr) {
     Object cell;
     GC_Node2;
 
@@ -38,17 +41,17 @@ Object P_Cons (car, cdr) Object car, cdr; {
     return cell;
 }
 
-Object P_Car (x) Object x; {
+Object P_Car (Object x) {
     Check_Type (x, T_Pair);
     return Car (x);
 }
 
-Object P_Cdr (x) Object x; {
+Object P_Cdr (Object x) {
     Check_Type (x, T_Pair);
     return Cdr (x);
 }
 
-Object Cxr (x, pat, len) Object x; register char *pat; register len; {
+Object Cxr (Object x, register char *pat, register int len) {
     Object ret;
 
     for (ret = x, pat += len; len > 0; len--)
@@ -60,38 +63,38 @@ Object Cxr (x, pat, len) Object x; register char *pat; register len; {
     return ret;
 }
 
-Object P_Cddr   (x) Object x; { return Cxr (x,  "dd", 2); }
-Object P_Cdar   (x) Object x; { return Cxr (x,  "da", 2); }
-Object P_Cadr   (x) Object x; { return Cxr (x,  "ad", 2); }
-Object P_Caar   (x) Object x; { return Cxr (x,  "aa", 2); }
+Object P_Cddr   (Object x) { return Cxr (x,  "dd", 2); }
+Object P_Cdar   (Object x) { return Cxr (x,  "da", 2); }
+Object P_Cadr   (Object x) { return Cxr (x,  "ad", 2); }
+Object P_Caar   (Object x) { return Cxr (x,  "aa", 2); }
 
-Object P_Cdddr  (x) Object x; { return Cxr (x, "ddd", 3); }
-Object P_Cddar  (x) Object x; { return Cxr (x, "dda", 3); }
-Object P_Cdadr  (x) Object x; { return Cxr (x, "dad", 3); }
-Object P_Cdaar  (x) Object x; { return Cxr (x, "daa", 3); }
-Object P_Caddr  (x) Object x; { return Cxr (x, "add", 3); }
-Object P_Cadar  (x) Object x; { return Cxr (x, "ada", 3); }
-Object P_Caadr  (x) Object x; { return Cxr (x, "aad", 3); }
-Object P_Caaar  (x) Object x; { return Cxr (x, "aaa", 3); }
+Object P_Cdddr  (Object x) { return Cxr (x, "ddd", 3); }
+Object P_Cddar  (Object x) { return Cxr (x, "dda", 3); }
+Object P_Cdadr  (Object x) { return Cxr (x, "dad", 3); }
+Object P_Cdaar  (Object x) { return Cxr (x, "daa", 3); }
+Object P_Caddr  (Object x) { return Cxr (x, "add", 3); }
+Object P_Cadar  (Object x) { return Cxr (x, "ada", 3); }
+Object P_Caadr  (Object x) { return Cxr (x, "aad", 3); }
+Object P_Caaar  (Object x) { return Cxr (x, "aaa", 3); }
 
-Object P_Caaaar (x) Object x; { return Cxr (x, "aaaa", 4); }
-Object P_Caaadr (x) Object x; { return Cxr (x, "aaad", 4); }
-Object P_Caadar (x) Object x; { return Cxr (x, "aada", 4); }
-Object P_Caaddr (x) Object x; { return Cxr (x, "aadd", 4); }
-Object P_Cadaar (x) Object x; { return Cxr (x, "adaa", 4); }
-Object P_Cadadr (x) Object x; { return Cxr (x, "adad", 4); }
-Object P_Caddar (x) Object x; { return Cxr (x, "adda", 4); }
-Object P_Cadddr (x) Object x; { return Cxr (x, "addd", 4); }
-Object P_Cdaaar (x) Object x; { return Cxr (x, "daaa", 4); }
-Object P_Cdaadr (x) Object x; { return Cxr (x, "daad", 4); }
-Object P_Cdadar (x) Object x; { return Cxr (x, "dada", 4); }
-Object P_Cdaddr (x) Object x; { return Cxr (x, "dadd", 4); }
-Object P_Cddaar (x) Object x; { return Cxr (x, "ddaa", 4); }
-Object P_Cddadr (x) Object x; { return Cxr (x, "ddad", 4); }
-Object P_Cdddar (x) Object x; { return Cxr (x, "ddda", 4); }
-Object P_Cddddr (x) Object x; { return Cxr (x, "dddd", 4); }
+Object P_Caaaar (Object x) { return Cxr (x, "aaaa", 4); }
+Object P_Caaadr (Object x) { return Cxr (x, "aaad", 4); }
+Object P_Caadar (Object x) { return Cxr (x, "aada", 4); }
+Object P_Caaddr (Object x) { return Cxr (x, "aadd", 4); }
+Object P_Cadaar (Object x) { return Cxr (x, "adaa", 4); }
+Object P_Cadadr (Object x) { return Cxr (x, "adad", 4); }
+Object P_Caddar (Object x) { return Cxr (x, "adda", 4); }
+Object P_Cadddr (Object x) { return Cxr (x, "addd", 4); }
+Object P_Cdaaar (Object x) { return Cxr (x, "daaa", 4); }
+Object P_Cdaadr (Object x) { return Cxr (x, "daad", 4); }
+Object P_Cdadar (Object x) { return Cxr (x, "dada", 4); }
+Object P_Cdaddr (Object x) { return Cxr (x, "dadd", 4); }
+Object P_Cddaar (Object x) { return Cxr (x, "ddaa", 4); }
+Object P_Cddadr (Object x) { return Cxr (x, "ddad", 4); }
+Object P_Cdddar (Object x) { return Cxr (x, "ddda", 4); }
+Object P_Cddddr (Object x) { return Cxr (x, "dddd", 4); }
 
-Object P_Cxr (x, pat) Object x, pat; {
+Object P_Cxr (Object x, Object pat) {
     Check_List (x);
     if (TYPE(pat) == T_Symbol)
 	pat = SYMBOL(pat)->name;
@@ -100,17 +103,17 @@ Object P_Cxr (x, pat) Object x, pat; {
     return Cxr (x, STRING(pat)->data, STRING(pat)->size);
 }
 
-Object P_Nullp (x) Object x; {
+Object P_Nullp (Object x) {
     return Nullp (x) ? True : False;
 }
 
-Object P_Pairp (x) Object x; {
+Object P_Pairp (Object x) {
     return TYPE(x) == T_Pair ? True : False;
 }
 
-Object P_Listp (x) Object x; {
+Object P_Listp (Object x) {
     Object s;
-    register f;
+    register int f;
 
     for (s = x, f = 0; !Nullp (x); f ^= 1) {
 	if (TYPE(x) != T_Pair)
@@ -123,22 +126,22 @@ Object P_Listp (x) Object x; {
     return True;
 }
 
-Object P_Set_Car (x, new) Object x, new; {
+Object P_Set_Car (Object x, Object new) {
     Check_Type (x, T_Pair);
     Check_Mutable (x);
     Car (x) = new;
     return new;
 }
 
-Object P_Set_Cdr (x, new) Object x, new; {
+Object P_Set_Cdr (Object x, Object new) {
     Check_Type (x, T_Pair);
     Check_Mutable (x);
     Cdr (x) = new;
     return new;
 }
 
-Object General_Member (key, list, comp) Object key, list; register comp; {
-    register r;
+Object General_Member (Object key, Object list, register int comp) {
+    register int r;
 
     for ( ; !Nullp (list); list = Cdr (list)) {
 	Check_List (list);
@@ -153,21 +156,21 @@ Object General_Member (key, list, comp) Object key, list; register comp; {
     return False;
 }
 
-Object P_Memq (key, list) Object key, list; {
+Object P_Memq (Object key, Object list) {
     return General_Member (key, list, 0);
 }
 
-Object P_Memv (key, list) Object key, list; {
+Object P_Memv (Object key, Object list) {
     return General_Member (key, list, 1);
 }
 
-Object P_Member (key, list) Object key, list; {
+Object P_Member (Object key, Object list) {
     return General_Member (key, list, 2);
 }
 
-Object General_Assoc (key, alist, comp) Object key, alist; register comp; {
+Object General_Assoc (Object key, Object alist, register int comp) {
     Object elem;
-    register r;
+    register int r;
 
     for ( ; !Nullp (alist); alist = Cdr (alist)) {
 	Check_List (alist);
@@ -185,38 +188,38 @@ Object General_Assoc (key, alist, comp) Object key, alist; register comp; {
     return False;
 }
 
-Object P_Assq (key, alist) Object key, alist; {
+Object P_Assq (Object key, Object alist) {
     return General_Assoc (key, alist, 0);
 }
 
-Object P_Assv (key, alist) Object key, alist; {
+Object P_Assv (Object key, Object alist) {
     return General_Assoc (key, alist, 1);
 }
 
-Object P_Assoc (key, alist) Object key, alist; {
+Object P_Assoc (Object key, Object alist) {
     return General_Assoc (key, alist, 2);
 }
 
-Fast_Length (list) Object list; {
+int Fast_Length (Object list) {
     Object tail;
-    register i;
+    register int i;
 
     for (i = 0, tail = list; TYPE(tail) == T_Pair; tail = Cdr (tail), i++)
 	;
     return i;
 }
 
-Object P_Length (list) Object list; {
+Object P_Length (Object list) {
     Object tail;
-    register i;
+    register int i;
 
     for (i = 0, tail = list; !Nullp (tail); tail = Cdr (tail), i++)
 	Check_List (tail);
     return Make_Integer (i);
 }
 
-Object P_Make_List (n, init) Object n, init; {
-    register len;
+Object P_Make_List (Object n, Object init) {
+    register int len;
     Object list;
     GC_Node;
 
@@ -230,7 +233,7 @@ Object P_Make_List (n, init) Object n, init; {
     return list;
 }
 
-Object P_List (argc, argv) Object *argv; {
+Object P_List (int argc, Object *argv) {
     Object list, tail, cell;
     GC_Node2;
 
@@ -246,15 +249,15 @@ Object P_List (argc, argv) Object *argv; {
     return list;
 }
 
-Object P_Last_Pair (x) Object x; {
+Object P_Last_Pair (Object x) {
     Check_Type (x, T_Pair);
     for ( ; TYPE(Cdr (x)) == T_Pair; x = Cdr (x)) ;
     return x;
 }
 
-Object P_Append (argc, argv) Object *argv; {
+Object P_Append (int argc, Object *argv) {
     Object list, last, tail, cell;
-    register i;
+    register int i;
     GC_Node3;
 
     list = last = Null;
@@ -270,17 +273,18 @@ Object P_Append (argc, argv) Object *argv; {
 	    last = cell;
 	}
     }
-    if (argc)
+    if (argc) {
 	if (Nullp (list))
 	    list = argv[i];
 	else
 	    (void)P_Set_Cdr (last, argv[i]);
+    }
     GC_Unlink;
     return list;
 }
 
-Object P_Append_Set (argc, argv) Object *argv; {
-    register i, j;
+Object P_Append_Set (int argc, Object *argv) {
+    register int i, j;
 
     for (i = j = 0; i < argc; i++)
 	if (!Nullp (argv[i]))
@@ -292,7 +296,7 @@ Object P_Append_Set (argc, argv) Object *argv; {
     return *argv;
 }
 
-Object P_Reverse (x) Object x; {
+Object P_Reverse (Object x) {
     Object ret;
     GC_Node;
 
@@ -305,7 +309,7 @@ Object P_Reverse (x) Object x; {
     return ret;
 }
 
-Object P_Reverse_Set (x) Object x; {
+Object P_Reverse_Set (Object x) {
     Object prev, tail;
 
     for (prev = Null; !Nullp (x); prev = x, x = tail) {
@@ -316,19 +320,19 @@ Object P_Reverse_Set (x) Object x; {
     return prev;
 }
 
-Object P_List_Tail (x, num) Object x, num; {
-    register n;
+Object P_List_Tail (Object x, Object num) {
+    register int n;
 
     for (n = Get_Exact_Integer (num); n > 0 && !Nullp (x); n--, x = P_Cdr (x))
 	;
     return x;
 }
 
-Object P_List_Ref (x, num) Object x, num; {
+Object P_List_Ref (Object x, Object num) {
     return P_Car (P_List_Tail (x, num));
 }
 
-Object Copy_List (x) Object x; {
+Object Copy_List (Object x) {
     Object car, cdr;
     GC_Node3;
 

@@ -11,21 +11,23 @@
 
 #include "kernel.h"
 
+#include <string.h>
+
 static char *heapstr[NUMSTRBUFS];
 static int heaplen[NUMSTRBUFS];
 static int nextstr;
 
-Init_Cstring() {  /* Preallocate memory to avoid fragmentation */
+void Init_Cstring() {  /* Preallocate memory to avoid fragmentation */
     int i;
 
     for (i = 0; i < NUMSTRBUFS; i++)
 	heapstr[i] = Safe_Malloc (heaplen[i] = 512);
 }
 
-char *Get_String (str) Object str; {
+char *Get_String (Object str) {
     char **pp = &heapstr[nextstr];
     int len;
-    
+
     Check_Type (str, T_String);
     if ((len = STRING(str)->size+1) > heaplen[nextstr]) {
 	Disable_Interrupts;
@@ -33,13 +35,13 @@ char *Get_String (str) Object str; {
 	heaplen[nextstr] = len;
 	Enable_Interrupts;
     }
-    bcopy (STRING(str)->data, *pp, --len);
+    memcpy (*pp, STRING(str)->data, --len);
     (*pp)[len] = '\0';
     if (++nextstr == NUMSTRBUFS) nextstr = 0;
     return *pp;
 }
 
-char *Get_Strsym (str) Object str; {
+char *Get_Strsym (Object str) {
     if (TYPE(str) == T_Symbol)
 	str = SYMBOL(str)->name;
     else if (TYPE(str) != T_String)

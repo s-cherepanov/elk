@@ -1,7 +1,11 @@
 #include <ctype.h>
 #include <varargs.h>
+#include <stdlib.h>
 
 #include "kernel.h"
+
+void Reset () __attribute__ ((__noreturn__));
+void Err_Handler () __attribute__ ((__noreturn__));
 
 Object Arg_True;
 
@@ -12,11 +16,11 @@ static Object V_Error_Handler, V_Top_Level_Control_Point;
  * the variable was manipulated directly, therefore it will remain global
  * for some time for backwards compatibility.
  */
-const char *Error_Tag;
+char const *Error_Tag;
 
 char *appname;
 
-Init_Error () {
+void Init_Error () {
     Arg_True = Cons (True, Null);
     Global_GC_Link (Arg_True);
     Define_Variable (&V_Error_Handler, "error-handler", Null);
@@ -24,26 +28,26 @@ Init_Error () {
 	Null);
 }
 
-const char *Get_Error_Tag () {
+char const *Get_Error_Tag () {
     return Error_Tag;
 }
 
-void Set_Error_Tag (tag) const char *tag; {
+void Set_Error_Tag (char const *tag) {
     Error_Tag = tag;
 }
 
-void Set_App_Name (name) char *name; {
+void Set_App_Name (char *name) {
     appname = name;
 }
 
 #ifdef lint
 /*VARARGS1*/
-Fatal_Error (foo) char *foo; { foo = foo; }
+void Fatal_Error (char *foo) { foo = foo; }
 #else
-Fatal_Error (va_alist) va_dcl {
+void Fatal_Error (va_alist) va_dcl {
     va_list args;
     char *fmt;
-    
+
     Disable_Interrupts;
     va_start (args);
     fmt = va_arg (args, char *);
@@ -59,7 +63,7 @@ Fatal_Error (va_alist) va_dcl {
 }
 #endif
 
-Panic (msg) const char *msg; {
+void Panic (char const *msg) {
     Disable_Interrupts;
     (void)fflush (stdout);
     if (appname)
@@ -70,7 +74,7 @@ Panic (msg) const char *msg; {
     abort ();
 }
 
-Uncatchable_Error (errmsg) char *errmsg; {
+void Uncatchable_Error (char *errmsg) {
     Disable_Interrupts;
     Reset_IO (0);
     /*
@@ -87,12 +91,12 @@ Uncatchable_Error (errmsg) char *errmsg; {
 
 #ifdef lint
 /*VARARGS1*/
-Primitive_Error (foo) char *foo; { foo = foo; }
+void Primitive_Error (char *foo) { foo = foo; }
 #else
-Primitive_Error (va_alist) va_dcl {
+void Primitive_Error (va_alist) va_dcl {
     va_list args;
     register char *p, *fmt;
-    register i, n;
+    register int i, n;
     Object msg, sym, argv[10];
     GC_Node; GCNODE gcv;
 
@@ -116,13 +120,13 @@ Primitive_Error (va_alist) va_dcl {
 }
 #endif
 
-Object P_Error (argc, argv) Object *argv; {
+Object P_Error (int argc, Object *argv) {
     Check_Type (argv[1], T_String);
     Err_Handler (argv[0], argv[1], argc-2, argv+2);
     /*NOTREACHED*/
 }
 
-Err_Handler (sym, fmt, argc, argv) Object sym, fmt, *argv; {
+void Err_Handler (Object sym, Object fmt, int argc, Object *argv) {
     Object fun, args, a[1];
     GC_Node3;
 
@@ -145,7 +149,7 @@ Err_Handler (sym, fmt, argc, argv) Object sym, fmt, *argv; {
     /*NOTREACHED*/
 }
 
-Reset () {
+void Reset () {
     Object cp;
 
     cp = Var_Get (V_Top_Level_Control_Point);
@@ -161,6 +165,6 @@ Object P_Reset () {
     /*NOTREACHED*/
 }
 
-Range_Error (i) Object i; {
+void Range_Error (Object i) {
     Primitive_Error ("argument out of range: ~s", i);
 }

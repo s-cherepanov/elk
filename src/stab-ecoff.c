@@ -7,7 +7,7 @@
 
 #include AOUT_H
 
-SYMTAB *Snarf_Symbols (fp) FILE *fp; {
+SYMTAB *Snarf_Symbols (FILE *fp) {
     long fdi;			/* a counter for the file desc table */
     FDR *file_desc;		/* pointer to the filedesc table */
     struct filehdr file_hdr;	/* pointer to the file header */
@@ -74,7 +74,7 @@ symerr:
 		symi++) {
 	    if (symbol[symi].st == stProc && symbol[symi].sc == scText) {
 		p = symbol[symi].iss + strbase;
-	
+
 		/* Allocate and initialize node in the symbol table list;
 		 * link node into list
 		 */
@@ -92,10 +92,10 @@ symerr:
     return tab;
 }
 
-SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
+SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     FILE *fp;
     SYMTAB *tab;
-  
+
     if ((fp = fopen (name, "r")) == NULL)
 	Primitive_Error ("can't open a.out file");
     tab = Snarf_Symbols (fp);

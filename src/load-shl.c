@@ -1,9 +1,12 @@
 #include <dl.h>
 #include <string.h>
 
+extern void Free_Symbols (SYMTAB *);
+extern void Call_Initializers (SYMTAB *, char *, int);
+
 extern int errno;
 
-static void Load_Them (names) Object names; {
+static void Load_Them (Object names) {
     char *fn;
     shl_t handle;
     SYM *sp;
@@ -47,7 +50,7 @@ static void Load_Them (names) Object names; {
     Alloca_End;
 }
 
-Load_Object (names) Object names; {
+Load_Object (Object names) {
     Object port, tail, fullnames, str;
     char *p, *libs = "";
     GC_Node3;

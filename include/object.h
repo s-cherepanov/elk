@@ -45,7 +45,7 @@ typedef struct {
    extern gcspace_t *space;
    extern gcspace_t current_space;
    C_LINKAGE_BEGIN
-   extern Visit P_((Object*));       /* required for REVIVE_OBJ below */
+   extern int Visit P_((Object*));    /* required for REVIVE_OBJ below */
    C_LINKAGE_END
 
 #  ifdef ARRAY_BROKEN
@@ -64,6 +64,9 @@ typedef struct {
 			    (space[OBJ_TO_PAGE(obj)] == current_space))
 #  define REVIVE_OBJ(obj)  Visit (&obj);
 #else
+   C_LINKAGE_BEGIN
+   extern int Visit P_((Object*));    /* required in heap.c */
+   C_LINKAGE_END
 #  define IS_ALIVE(obj)    WAS_FORWARDED(obj)
 #  define REVIVE_OBJ(obj)
 #endif

@@ -249,7 +249,7 @@ static Object P_Ttyname(fd) Object fd; {
     return ret ? Make_String(ret, strlen(ret)) : False;
 }
 
-elk_init_unix_fdescr() {
+void elk_init_unix_fdescr() {
     Def_Prim(P_Close,               "unix-close",               1, 1, EVAL);
     Def_Prim(P_Close_On_Exec,       "unix-close-on-exec",       1, 2, VARARGS);
     Def_Prim(P_Dup,                 "unix-dup",                 1, 2, VARARGS);

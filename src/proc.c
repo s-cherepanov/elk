@@ -25,6 +25,13 @@
 	Funcall_Control_Point (func, args, eval);\
     } else Primitive_Error ("application of non-procedure: ~s", func);\
 
+extern void Switch_Environment (Object);
+extern unsigned int Stack_Size ();
+extern void Uncatchable_Error (char *);
+extern void Funcall_Control_Point (Object, Object, int)
+	__attribute__ ((__noreturn__));
+extern void Pop_Frame ();
+extern void Push_Frame (Object);
 
 /* Tail_Call indicates whether we are executing the last form in a
  * sequence of forms.  If it is true and we are about to call a compound
@@ -40,13 +47,13 @@ static Object tc_fun, tc_argl, tc_env;
 
 Object Macro_Expand(), Funcall_Primitive(), Funcall_Compound();
 
-Init_Proc () {
+void Init_Proc () {
     Define_Symbol (&Sym_Lambda, "lambda");
     Define_Symbol (&Sym_Macro, "macro");
 }
 
-Check_Procedure (x) Object x; {
-    register t = TYPE(x);
+void Check_Procedure (Object x) {
+    register int t = TYPE(x);
 
     if (t != T_Primitive && t != T_Compound)
 	Wrong_Type_Combination (x, "procedure");
@@ -54,21 +61,21 @@ Check_Procedure (x) Object x; {
 	Primitive_Error ("invalid procedure: ~s", x);
 }
 
-Object P_Procedurep (x) Object x; {
-    register t = TYPE(x);
+Object P_Procedurep (Object x) {
+    register int t = TYPE(x);
     return t == T_Primitive || t == T_Compound || t == T_Control_Point
 	 ? True : False;
 }
 
-Object P_Primitivep (x) Object x; {
+Object P_Primitivep (Object x) {
     return TYPE(x) == T_Primitive ? True : False;
 }
 
-Object P_Compoundp (x) Object x; {
+Object P_Compoundp (Object x) {
     return TYPE(x) == T_Compound ? True : False;
 }
 
-Object P_Macrop (x) Object x; {
+Object P_Macrop (Object x) {
     return TYPE(x) == T_Macro ? True : False;
 }
 
@@ -80,8 +87,8 @@ Object Make_Compound () {
     return proc;
 }
 
-Object Make_Primitive (fun, name, min, max, disc) Object (*fun)();
-	const char *name; enum discipline disc; {
+Object Make_Primitive (Object (*fun)(), char const *name, int min, int max,
+	enum discipline disc) {
     Object prim;
     register struct S_Primitive *pr;
 
@@ -96,11 +103,11 @@ Object Make_Primitive (fun, name, min, max, disc) Object (*fun)();
     return prim;
 }
 
-Object Eval (form) Object form; {
-    register t;
+Object Eval (Object form) {
+    register int t;
     register struct S_Symbol *sym;
     Object fun, binding, ret;
-    static unsigned tick;
+    static unsigned int tick;
     GC_Node;
     TC_Prolog;
 
@@ -150,7 +157,7 @@ again:
     /*NOTREACHED*/
 }
 
-Object P_Eval (argc, argv) Object *argv; {
+Object P_Eval (int argc, Object *argv) {
     Object ret, oldenv;
     GC_Node;
 
@@ -166,9 +173,9 @@ Object P_Eval (argc, argv) Object *argv; {
     return ret;
 }
 
-Object P_Apply (argc, argv) Object *argv; {
+Object P_Apply (int argc, Object *argv) {
     Object ret, list, tail, cell, last;
-    register i;
+    register int i;
     GC_Node3;
 
     Check_Procedure (argv[0]);
@@ -196,11 +203,11 @@ Object P_Apply (argc, argv) Object *argv; {
     return ret;
 }
 
-Object Funcall_Primitive (fun, argl, eval) Object fun, argl; {
+Object Funcall_Primitive (Object fun, Object argl, int eval) {
     register struct S_Primitive *prim;
-    register argc, i;
-    const char *last_tag;
-    register Object *argv;
+    register int argc, i;
+    char const *last_tag;
+    register Object *argv = NULL;
     Object abuf[MAX_ARGS_ON_STACK], r, e;
     GC_Node4; GCNODE gcv;
     TC_Prolog;
@@ -299,9 +306,9 @@ Object Funcall_Primitive (fun, argl, eval) Object fun, argl; {
 	frame = Cons (r, frame);\
 }
 
-Object Funcall_Compound (fun, argl, eval) Object fun, argl; {
-    register argc, min, max, i, tail_calling = 0;
-    register Object *argv;
+Object Funcall_Compound (Object fun, Object argl, int eval) {
+    register int argc, min, max, i, tail_calling = 0;
+    register Object *argv = NULL;
     Object abuf[MAX_ARGS_ON_STACK], rest, r, frame, tail,
 	tail_call_env, oldenv, newframe;
     register GCNODE *p;
@@ -386,13 +393,13 @@ again:
     return r;
 }
 
-Object Funcall (fun, argl, eval) Object fun, argl; {
-    register t = TYPE(fun);
+Object Funcall (Object fun, Object argl, int eval) {
+    register int t = TYPE(fun);
     Funcall_Switch (t, fun, argl, eval);
     /*NOTREACHED*/
 }
 
-Check_Formals (x, min, max) Object x; int *min, *max; {
+void Check_Formals (Object x, int *min, int *max) {
     Object s, t1, t2;
 
     *min = *max = 0;
@@ -412,7 +419,7 @@ Check_Formals (x, min, max) Object x; int *min, *max; {
 	Wrong_Type_Combination (t1, "list or symbol");
 }
 
-Object P_Lambda (argl) Object argl; {
+Object P_Lambda (Object argl) {
     Object proc, closure;
     GC_Node2;
 
@@ -429,18 +436,18 @@ Object P_Lambda (argl) Object argl; {
     return proc;
 }
 
-Object P_Procedure_Lambda (p) Object p; {
+Object P_Procedure_Lambda (Object p) {
     Check_Type (p, T_Compound);
     return Copy_List (COMPOUND(p)->closure);
 }
 
-Object P_Procedure_Environment (p) Object p; {
+Object P_Procedure_Environment (Object p) {
     Check_Type (p, T_Compound);
     return COMPOUND(p)->env;
 }
 
-Object General_Map (argc, argv, accum) Object *argv; register accum; {
-    register i;
+Object General_Map (int argc, Object *argv, register int accum) {
+    register int i;
     Object *args;
     Object head, list, tail, cell, arglist, val;
     GC_Node2; GCNODE gcv;
@@ -480,11 +487,11 @@ Object General_Map (argc, argv, accum) Object *argv; register accum; {
     /*NOTREACHED*/
 }
 
-Object P_Map (argc, argv) Object *argv; {
+Object P_Map (int argc, Object *argv) {
     return General_Map (argc, argv, 1);
 }
 
-Object P_For_Each (argc, argv) Object *argv; {
+Object P_For_Each (int argc, Object *argv) {
     return General_Map (argc, argv, 0);
 }
 
@@ -496,7 +503,7 @@ Object Make_Macro () {
     return mac;
 }
 
-Object P_Macro (argl) Object argl; {
+Object P_Macro (Object argl) {
     Object mac, body;
     GC_Node2;
 
@@ -510,13 +517,13 @@ Object P_Macro (argl) Object argl; {
     return mac;
 }
 
-Object P_Macro_Body (m) Object m; {
+Object P_Macro_Body (Object m) {
     Check_Type (m, T_Macro);
     return Copy_List (MACRO(m)->body);
 }
 
-Object Macro_Expand (mac, argl) Object mac, argl; {
-    register argc, min, max, i;
+Object Macro_Expand (Object mac, Object argl) {
+    register int argc, min, max, i;
     Object frame, r, tail;
     GC_Node4;
     TC_Prolog;
@@ -544,7 +551,7 @@ Object Macro_Expand (mac, argl) Object mac, argl; {
     return r;
 }
 
-Object P_Macro_Expand (form) Object form; {
+Object P_Macro_Expand (Object form) {
     Object ret, mac;
     GC_Node;
 

@@ -3,9 +3,9 @@
 
 #include "kernel.h"
 
-Object P_Backtrace_List (argc, argv) Object *argv; {
+Object P_Backtrace_List (int argc, Object *argv) {
     register GCNODE *p, *gp = GC_List;
-    register delta = 0;
+    register int delta = 0;
     Object cp, list, tail, cell, vec;
     GC_Node3;
 

@@ -1,27 +1,31 @@
 #include "kernel.h"
 
-Object P_Booleanp (x) Object x; {
+#include <string.h>
+
+extern int Generic_Equal (Object, Object);
+
+Object P_Booleanp (Object x) {
     return TYPE(x) == T_Boolean ? True : False;
 }
 
-Object P_Not (x) Object x; {
+Object P_Not (Object x) {
     return Truep (x) ? False : True;
 }
 
-Object P_Eq (x1, x2) Object x1, x2; {
+Object P_Eq (Object x1, Object x2) {
     return EQ(x1, x2) ? True : False;
 }
 
-Object P_Eqv (x1, x2) Object x1, x2; {
+Object P_Eqv (Object x1, Object x2) {
     return Eqv (x1, x2) ? True : False;
 }
 
-Object P_Equal (x1, x2) Object x1, x2; {
+Object P_Equal (Object x1, Object x2) {
     return Equal (x1, x2) ? True : False;
 }
 
-Eqv (x1, x2) Object x1, x2; {
-    register t1, t2;
+int Eqv (Object x1, Object x2) {
+    register int t1, t2;
     if (EQ(x1, x2))
 	return 1;
     t1 = TYPE(x1);
@@ -47,8 +51,8 @@ Eqv (x1, x2) Object x1, x2; {
     /*NOTREACHED*/
 }
 
-Equal (x1, x2) Object x1, x2; {
-    register t1, t2, i;
+int Equal (Object x1, Object x2) {
+    register int t1, t2, i;
 
 again:
     if (EQ(x1, x2))
@@ -104,7 +108,7 @@ again:
     /*NOTREACHED*/
 }
 
-Object P_Empty_List_Is_False (is_false) Object is_false; {
+Object P_Empty_List_Is_False (Object is_false) {
     Check_Type (is_false, T_Boolean);
     if (Truep (is_false))
 	False2 = Null;

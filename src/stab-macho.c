@@ -33,7 +33,7 @@ static SYMTAB *Grovel_Over_Nlist (symcmd, nl, strtab, text_sect)
     return tab;
 }
 
-SYMTAB *Snarf_Symbols (mhdr) struct mach_header *mhdr; {
+SYMTAB *Snarf_Symbols (struct mach_header *mhdr) {
     struct load_command *ld_cmd;
     struct symtab_command *sym_cmd;
     struct segment_command *seg_cmd;
@@ -71,8 +71,8 @@ SYMTAB *Snarf_Symbols (mhdr) struct mach_header *mhdr; {
 }
 
 #ifdef INIT_OBJECTS
-SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
+SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     extern char *_mh_execute_header;
     return Snarf_Symbols ((struct mach_header *)&_mh_execute_header);
-} 
+}
 #endif /* INIT_OBJECTS */

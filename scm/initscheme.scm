@@ -33,6 +33,8 @@
 
 (define call/cc call-with-current-continuation)
 
+(define quit exit)
+
 
 ;;; Backwards compatibility.  These procedures are really obsolete;
 ;;; please do not use them any longer.

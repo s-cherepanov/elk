@@ -1,10 +1,10 @@
 #include AOUT_H
 #include <sys/types.h>
 
-SYMTAB *Snarf_Symbols (f, hp) FILE *f; struct header *hp; {
+SYMTAB *Snarf_Symbols (FILE *f, struct header *hp) {
     SYMTAB *tab;
     register SYM *sp, **nextp;
-    register n;
+    register int n;
     struct symbol_dictionary_record r;
 
     tab = (SYMTAB *)Safe_Malloc (sizeof (SYMTAB));
@@ -38,7 +38,7 @@ SYMTAB *Snarf_Symbols (f, hp) FILE *f; struct header *hp; {
     return tab;
 }
 
-SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
+SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     struct header hdr;
     FILE *f;
     SYMTAB *tab;

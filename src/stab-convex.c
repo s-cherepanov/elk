@@ -9,7 +9,7 @@
 #include <sys/mman.h>
 
 #ifdef INIT_OBJECTS
-SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
+SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     int f, n, len = 0;
     char *base;
     struct filehdr *fhp;
@@ -33,7 +33,7 @@ SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
     tab = (SYMTAB *)Safe_Malloc (sizeof (SYMTAB));
     tab->first = 0;
     tab->strings = Safe_Malloc ((unsigned int)fhp->h_strsiz);
-    bcopy (base + fhp->h_strptr, tab->strings, (unsigned int)fhp->h_strsiz);
+    memcpy (tab->strings, base + fhp->h_strptr, (unsigned int)fhp->h_strsiz);
     nextp = &tab->first;
 
     ohp = (struct opthdr *)(base + sizeof *fhp);

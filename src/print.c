@@ -16,34 +16,45 @@
 #endif
 #endif
 
+extern void Print_Bignum (Object, Object);
+
 extern int errno;
+
+void Flush_Output (Object);
+void Print_String (Object, register char *, register int);
+void Pr_Char (Object, register int);
+void Pr_Symbol (Object, Object, int);
+void Pr_List (Object, Object, register int, register int, register int);
+void Pr_String (Object, Object, int);
+void Pr_Vector (Object, Object, register int, register int, register int);
+void Print_Special (Object, register int);
 
 int Saved_Errno;
 
 static Object V_Print_Depth, V_Print_Length;
 
-Init_Print () {
+void Init_Print () {
     Define_Variable (&V_Print_Depth, "print-depth",
 	Make_Integer (DEF_PRINT_DEPTH));
     Define_Variable (&V_Print_Length, "print-length",
 	Make_Integer (DEF_PRINT_LEN));
 }
 
-Print_Length () {
+int Print_Length () {
     Object pl;
 
     pl = Var_Get (V_Print_Length);
     return TYPE(pl) == T_Fixnum ? FIXNUM(pl) : DEF_PRINT_LEN;
 }
 
-Print_Depth () {
+int Print_Depth () {
     Object pd;
 
     pd = Var_Get (V_Print_Depth);
     return TYPE(pd) == T_Fixnum ? FIXNUM(pd) : DEF_PRINT_DEPTH;
 }
 
-Print_Char (port, c) Object port; register c; {
+void Print_Char (Object port, register int c) {
     char buf[1];
 
     if (PORT(port)->flags & P_STRING) {
@@ -57,8 +68,8 @@ Print_Char (port, c) Object port; register c; {
     }
 }
 
-Print_String (port, buf, len) Object port; register char *buf; register len; {
-    register n;
+void Print_String (Object port, register char *buf, register int len) {
+    register int n;
     register struct S_Port *p;
     Object new;
     GC_Node;
@@ -73,19 +84,19 @@ Print_String (port, buf, len) Object port; register char *buf; register len; {
 	new = Make_String ((char *)0, STRING(p->name)->size + n);
 	p = PORT(port);
 	GC_Unlink;
-	bcopy (STRING(p->name)->data, STRING(new)->data, p->ptr);
+	memcpy (STRING(new)->data, STRING(p->name)->data, p->ptr);
 	p->name = new;
     }
-    bcopy (buf, STRING(p->name)->data + p->ptr, len);
+    memcpy (STRING(p->name)->data + p->ptr, buf, len);
     p->ptr += len;
 }
 
 #ifndef VPRINTF
-vfprintf (f, fmt, ap) register FILE *f; register char *fmt; va_list ap; {
+void vfprintf (register FILE *f, register char *fmt, va_list ap) {
     _doprnt (fmt, ap, f);
 }
 
-vsprintf (s, fmt, ap) register char *s, *fmt; va_list ap; {
+void vsprintf (register char *s, register char *fmt, va_list ap) {
     FILE x;
     x._flag = _IOWRT|_IOSTRG;
     x._ptr = s;
@@ -96,7 +107,7 @@ vsprintf (s, fmt, ap) register char *s, *fmt; va_list ap; {
 #endif
 
 /*VARARGS0*/
-Printf (va_alist) va_dcl {
+void Printf (va_alist) va_dcl {
     va_list args;
     Object port;
     char *fmt;
@@ -118,31 +129,31 @@ Printf (va_alist) va_dcl {
     va_end (args);
 }
 
-Object General_Print (argc, argv, raw) Object *argv; {
+Object General_Print (int argc, Object *argv, int raw) {
     General_Print_Object (argv[0], argc == 2 ? argv[1] : Curr_Output_Port, raw);
     return Void;
 }
 
-Object P_Write (argc, argv) Object *argv; {
+Object P_Write (int argc, Object *argv) {
     return General_Print (argc, argv, 0);
 }
 
-Object P_Display (argc, argv) Object *argv; {
+Object P_Display (int argc, Object *argv) {
     return General_Print (argc, argv, 1);
 }
 
-Object P_Write_Char (argc, argv) Object *argv; {
+Object P_Write_Char (int argc, Object *argv) {
     Check_Type (argv[0], T_Character);
     return General_Print (argc, argv, 1);
 }
 
 /*VARARGS1*/
-Object P_Newline (argc, argv) Object *argv; {
+Object P_Newline (int argc, Object *argv) {
     General_Print_Object (Newline, argc == 1 ? argv[0] : Curr_Output_Port, 1);
     return Void;
 }
 
-Object P_Print (argc, argv) Object *argv; {
+Object P_Print (int argc, Object *argv) {
     Object port;
     GC_Node;
 
@@ -155,12 +166,12 @@ Object P_Print (argc, argv) Object *argv; {
     return Void;
 }
 
-Object P_Clear_Output_Port (argc, argv) Object *argv; {
+Object P_Clear_Output_Port (int argc, Object *argv) {
     Discard_Output (argc == 1 ? argv[0] : Curr_Output_Port);
     return Void;
 }
 
-Discard_Output (port) Object port; {
+void Discard_Output (Object port) {
     register FILE *f;
 
     Check_Output_Port (port);
@@ -184,12 +195,12 @@ Discard_Output (port) Object port; {
 #endif
 }
 
-Object P_Flush_Output_Port (argc, argv) Object *argv; {
+Object P_Flush_Output_Port (int argc, Object *argv) {
     Flush_Output (argc == 1 ? argv[0] : Curr_Output_Port);
     return Void;
 }
 
-Flush_Output (port) Object port; {
+void Flush_Output (Object port) {
     Check_Output_Port (port);
     if (PORT(port)->flags & P_STRING)
 	return;
@@ -199,7 +210,7 @@ Flush_Output (port) Object port; {
     }
 }
 
-Object P_Get_Output_String (port) Object port; {
+Object P_Get_Output_String (Object port) {
     register struct S_Port *p;
     Object str;
     GC_Node;
@@ -208,13 +219,13 @@ Object P_Get_Output_String (port) Object port; {
     GC_Link (port);
     str = Make_String ((char *)0, PORT(port)->ptr);
     p = PORT(port);
-    bcopy (STRING(p->name)->data, STRING(str)->data, p->ptr);
+    memcpy (STRING(str)->data, STRING(p->name)->data, p->ptr);
     p->ptr = 0;
     GC_Unlink;
     return str;
 }
-    
-Check_Output_Port (port) Object port; {
+
+void Check_Output_Port (Object port) {
     Check_Type (port, T_Port);
     if (!(PORT(port)->flags & P_OPEN))
 	Primitive_Error ("port has been closed: ~s", port);
@@ -222,14 +233,14 @@ Check_Output_Port (port) Object port; {
 	Primitive_Error ("not an output port: ~s", port);
 }
 
-General_Print_Object (x, port, raw) Object x, port; {
+void General_Print_Object (Object x, Object port, int raw) {
     Check_Output_Port (port);
     Print_Object (x, port, raw, Print_Depth (), Print_Length ());
 }
 
-Print_Object (x, port, raw, depth, length) Object x, port;
-	register raw, depth, length; {
-    register t;
+void Print_Object (Object x, Object port, register int raw, register int depth,
+	register int length) {
+    register int t;
     GC_Node2;
 
     GC_Link2 (port, x);
@@ -341,7 +352,7 @@ Print_Object (x, port, raw, depth, length) Object x, port;
     GC_Unlink;
 }
 
-Pr_Char (port, c) Object port; register c; {
+void Pr_Char (Object port, register int c) {
     register char *p = 0;
 
     switch (c) {
@@ -372,10 +383,10 @@ Pr_Char (port, c) Object port; register c; {
     if (p) Printf (port, p);
 }
 
-Pr_List (port, list, raw, depth, length) Object port, list;
-	register raw, depth, length; {
+void Pr_List (Object port, Object list, register int raw, register int depth,
+	register int length) {
     Object tail;
-    register len;
+    register int len;
     register char *s = 0;
     GC_Node2;
 
@@ -427,9 +438,9 @@ Pr_List (port, list, raw, depth, length) Object port, list;
     GC_Unlink;
 }
 
-Pr_Vector (port, vec, raw, depth, length) Object port, vec;
-	register raw, depth, length; {
-    register i, j;
+void Pr_Vector (Object port, Object vec, register int raw, register int depth,
+	register int length) {
+    register int i, j;
     GC_Node2;
 
     if (depth == 0) {
@@ -451,9 +462,9 @@ Pr_Vector (port, vec, raw, depth, length) Object port, vec;
     GC_Unlink;
 }
 
-Pr_Symbol (port, sym, raw) Object port, sym; {
+void Pr_Symbol (Object port, Object sym, int raw) {
     Object str;
-    register c, i;
+    register int c, i;
     GC_Node2;
 
     str = SYMBOL(sym)->name;
@@ -481,9 +492,9 @@ Pr_Symbol (port, sym, raw) Object port, sym; {
     GC_Unlink;
 }
 
-Pr_String (port, str, raw) Object port, str; {
+void Pr_String (Object port, Object str, int raw) {
     register char *p = STRING(str)->data;
-    register c, i, len = STRING(str)->size;
+    register int c, i, len = STRING(str)->size;
     GC_Node2;
 
     if (raw) {
@@ -512,7 +523,7 @@ Pr_String (port, str, raw) Object port, str; {
     GC_Unlink;
 }
 
-Print_Special (port, c) Object port; register c; {
+void Print_Special (Object port, register int c) {
     register char *fmt = "\\%c";
 
     switch (c) {
@@ -526,9 +537,9 @@ Print_Special (port, c) Object port; register c; {
     Printf (port, fmt, (unsigned char)c);
 }
 
-Object P_Format (argc, argv) Object *argv; {
+Object P_Format (int argc, Object *argv) {
     Object port, str;
-    register stringret = 0;
+    register int stringret = 0;
     GC_Node;
 
     port = argv[0];
@@ -550,24 +561,17 @@ Object P_Format (argc, argv) Object *argv; {
     return stringret ? P_Get_Output_String (port) : Void;
 }
 
-Format (port, fmt, len, argc, argv) Object port; const char *fmt;
-	int len; Object *argv; {
-    register const char *s, *ep;
+void Format (Object port, char const *fmt, int len, int argc, Object *argv) {
+    register char const *s, *ep;
     char *p;
-    register c;
+    register int c;
     char buf[256];
-    extern sys_nerr;
-#ifndef __bsdi__
- #ifndef __linux__
-    extern char *sys_errlist[];
- #endif
-#endif
     GC_Node;
     Alloca_Begin;
 
     GC_Link (port);
     Alloca (p, char*, len);
-    bcopy (fmt, p, len);
+    memcpy (p, fmt, len);
     for (ep = p + len; p < ep; p++) {
 	if (*p == '~') {
 	    if (++p == ep) break;

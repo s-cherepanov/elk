@@ -5,6 +5,7 @@
 
 #include <ctype.h>
 #include <limits.h>
+#include <string.h>
 
 #ifdef FLUSH_TIOCFLUSH
 #  include <sys/ioctl.h>
@@ -18,8 +19,13 @@
 #  include FIONREAD_H
 #endif
 
+extern void Flush_Output (Object);
+
 extern char *index();
 extern double atof();
+
+int Skip_Comment (Object);
+void Reader_Error (Object, char *) __attribute__ ((__noreturn__));
 
 Object Sym_Quote,
        Sym_Quasiquote,
@@ -46,7 +52,7 @@ Object General_Read(), Read_Sequence(), Read_Atom(), Read_Special();
 Object Read_String(), Read_Sharp(), Read_True(), Read_False(), Read_Void();
 Object Read_Kludge(), Read_Vector(), Read_Radix(), Read_Char();
 
-Init_Read () {
+void Init_Read () {
     Define_Symbol (&Sym_Quote, "quote");
     Define_Symbol (&Sym_Quasiquote, "quasiquote");
     Define_Symbol (&Sym_Unquote, "unquote");
@@ -69,7 +75,7 @@ Init_Read () {
     Read_Buf = Safe_Malloc (Read_Max);
 }
 
-String_Getc (port) Object port; {
+int String_Getc (Object port) {
     register struct S_Port *p;
     register struct S_String *s;
 
@@ -82,12 +88,12 @@ String_Getc (port) Object port; {
     return p->ptr >= s->size ? EOF : s->data[p->ptr++];
 }
 
-String_Ungetc (port, c) Object port; register c; {
+void String_Ungetc (Object port, register int c) {
     PORT(port)->flags |= P_UNREAD;
     PORT(port)->unread = c;
 }
 
-Check_Input_Port (port) Object port; {
+void Check_Input_Port (Object port) {
     Check_Type (port, T_Port);
     if (!(PORT(port)->flags & P_OPEN))
 	Primitive_Error ("port has been closed: ~s", port);
@@ -95,12 +101,12 @@ Check_Input_Port (port) Object port; {
 	Primitive_Error ("not an input port: ~s", port);
 }
 
-Object P_Clear_Input_Port (argc, argv) Object *argv; {
+Object P_Clear_Input_Port (int argc, Object *argv) {
     Discard_Input (argc == 1 ? argv[0] : Curr_Input_Port);
     return Void;
 }
 
-Discard_Input (port) Object port; {
+void Discard_Input (Object port) {
     register FILE *f;
 
     Check_Input_Port (port);
@@ -124,7 +130,7 @@ Discard_Input (port) Object port; {
 #endif
 }
 
-Object P_Unread_Char (argc, argv) Object *argv; {
+Object P_Unread_Char (int argc, Object *argv) {
     Object port, ch;
     register struct S_Port *p;
 
@@ -136,7 +142,7 @@ Object P_Unread_Char (argc, argv) Object *argv; {
     if (p->flags & P_STRING) {
 	if (p->flags & P_UNREAD)
 	    Primitive_Error ("cannot push back more than one char");
-	String_Ungetc (port, CHAR(ch));	
+	String_Ungetc (port, CHAR(ch));
     } else {
 	if (ungetc (CHAR(ch), p->file) == EOF)
 	    Primitive_Error ("failed to push back char");
@@ -145,10 +151,10 @@ Object P_Unread_Char (argc, argv) Object *argv; {
     return ch;
 }
 
-Object P_Read_Char (argc, argv) Object *argv; {
+Object P_Read_Char (int argc, Object *argv) {
     Object port;
     register FILE *f;
-    register c, str, flags;
+    register int c, str, flags;
 
     port = argc == 1 ? argv[0] : Curr_Input_Port;
     Check_Input_Port (port);
@@ -160,7 +166,7 @@ Object P_Read_Char (argc, argv) Object *argv; {
     return c == EOF ? Eof : Make_Char (c);
 }
 
-Object P_Peek_Char (argc, argv) Object *argv; {
+Object P_Peek_Char (int argc, Object *argv) {
     Object a[2];
 
     a[0] = P_Read_Char (argc, argv);
@@ -173,7 +179,7 @@ Object P_Peek_Char (argc, argv) Object *argv; {
  * The following is only an approximation; even if FIONREAD is supported,
  * the primitive may return #f although a call to read-char would not block.
  */
-Object P_Char_Readyp (argc, argv) Object *argv; {
+Object P_Char_Readyp (int argc, Object *argv) {
     Object port;
 
     port = argc == 1 ? argv[0] : Curr_Input_Port;
@@ -191,10 +197,10 @@ Object P_Char_Readyp (argc, argv) Object *argv; {
     return False;
 }
 
-Object P_Read_String (argc, argv) Object *argv; {
+Object P_Read_String (int argc, Object *argv) {
     Object port;
     register FILE *f;
-    register c, str;
+    register int c, str;
 
     port = argc == 1 ? argv[0] : Curr_Input_Port;
     Check_Input_Port (port);
@@ -211,13 +217,13 @@ Object P_Read_String (argc, argv) Object *argv; {
     return c == EOF ? Eof : Make_String (Read_Buf, Read_Size);
 }
 
-Object P_Read (argc, argv) Object *argv; {
+Object P_Read (int argc, Object *argv) {
     return General_Read (argc == 1 ? argv[0] : Curr_Input_Port, 0);
 }
 
-Object General_Read (port, konst) Object port; {
+Object General_Read (Object port, int konst) {
     register FILE *f;
-    register c, str;
+    register int c, str;
     Object ret;
 
     Check_Input_Port (port);
@@ -256,9 +262,9 @@ comment:
     return ret;
 }
 
-Skip_Comment (port) Object port; {
+int Skip_Comment (Object port) {
     register FILE *f;
-    register c, str;
+    register int c, str;
 
     f = PORT(port)->file;
     str = PORT(port)->flags & P_STRING;
@@ -268,7 +274,7 @@ Skip_Comment (port) Object port; {
     return c;
 }
 
-Object Read_Atom (port, konst) Object port; {
+Object Read_Atom (Object port, int konst) {
     Object ret;
 
     ret = Read_Special (port, konst);
@@ -277,9 +283,9 @@ Object Read_Atom (port, konst) Object port; {
     return ret;
 }
 
-Object Read_Special (port, konst) Object port; {
+Object Read_Special (Object port, int konst) {
     Object ret;
-    register c, str;
+    register int c, str;
     register FILE *f;
 
 #define READ_QUOTE(sym) \
@@ -361,7 +367,7 @@ eof:
     /*NOTREACHED*/
 }
 
-Object Read_Sequence (port, vec, konst) Object port; {
+Object Read_Sequence (Object port, int vec, int konst) {
     Object ret, e, tail, t;
     GC_Node3;
 
@@ -408,9 +414,9 @@ Object Read_Sequence (port, vec, konst) Object port; {
     /*NOTREACHED*/
 }
 
-Object Read_String (port, konst) Object port; {
+Object Read_String (Object port, int konst) {
     register FILE *f;
-    register n, c, oc, str;
+    register int n, c, oc, str;
 
     Read_Reset ();
     f = PORT(port)->file;
@@ -448,7 +454,7 @@ eof:
     return General_Make_String (Read_Buf, Read_Size, konst);
 }
 
-Object Read_Sharp (port, konst) Object port; {
+Object Read_Sharp (Object port, int konst) {
     int c, str;
     FILE *f;
     char buf[32];
@@ -466,35 +472,35 @@ Object Read_Sharp (port, konst) Object port; {
 }
 
 /*ARGSUSED*/
-Object Read_True (port, chr, konst) Object port; {
+Object Read_True (Object port, int chr, int konst) {
     return True;
 }
 
 /*ARGSUSED*/
-Object Read_False (port, chr, konst) Object port; {
+Object Read_False (Object port, int chr, int konst) {
     return False;
 }
 
 /*ARGSUSED*/
-Object Read_Void (port, chr, konst) Object port; {
+Object Read_Void (Object port, int chr, int konst) {
     Object ret;
-    
+
     ret = Const_Cons (Void, Null);
     return Const_Cons (Sym_Quote, ret);
 }
 
 /*ARGSUSED*/
-Object Read_Kludge (port, chr, konst) Object port; {
+Object Read_Kludge (Object port, int chr, int konst) {
     return Special;
 }
 
 /*ARGSUSED*/
-Object Read_Vector (port, chr, konst) Object port; {
+Object Read_Vector (Object port, int chr, int konst) {
     return List_To_Vector (Read_Sequence (port, 1, konst), konst);
 }
 
 /*ARGSUSED*/
-Object Read_Radix (port, chr, konst) Object port; {
+Object Read_Radix (Object port, int chr, int konst) {
     int c, str;
     FILE *f;
     Object ret;
@@ -520,7 +526,7 @@ Object Read_Radix (port, chr, konst) Object port; {
 }
 
 /*ARGSUSED*/
-Object Read_Char (port, chr, konst) Object port; {
+Object Read_Char (Object port, int chr, int konst) {
     int c, str;
     FILE *f;
     char buf[10], *p = buf;
@@ -570,18 +576,18 @@ Object Read_Char (port, chr, konst) Object port; {
     /*NOTREACHED*/
 }
 
-void Define_Reader (c, fun) READFUN fun; {
+void Define_Reader (int c, READFUN fun) {
     if (Readers[c] && Readers[c] != fun)
 	Primitive_Error ("reader for `~a' already defined", Make_Char (c));
     Readers[c] = fun;
 }
 
-Object Parse_Number (port, buf, radix) Object port; const char *buf; {
-    const char *p;
+Object Parse_Number (Object port, char const *buf, int radix) {
+    char const *p;
     int c, i;
     int mdigit = 0, edigit = 0, expo = 0, neg = 0, point = 0;
     int gotradix = 0, exact = 0, inexact = 0;
-    unsigned max;
+    unsigned int max;
     int maxdig;
     Object ret;
 
@@ -616,7 +622,7 @@ Object Parse_Number (port, buf, radix) Object port; const char *buf; {
     p = buf;
     if (*p == '+' || (neg = *p == '-'))
 	p++;
-    for ( ; c = *p; p++) {
+    for ( ; (c = *p); p++) {
 	if (c == '.') {
 	    if (expo || point++)
 		return Null;
@@ -646,10 +652,10 @@ Object Parse_Number (port, buf, radix) Object port; const char *buf; {
 	 */
 	return Make_Flonum (atof (buf));
     }
-    max = (neg ? -(unsigned)INT_MIN : INT_MAX);
+    max = (neg ? -(unsigned int)INT_MIN : INT_MAX);
     maxdig = max % radix;
     max /= radix;
-    for (i = 0, p = buf; c = *p; p++) {
+    for (i = 0, p = buf; (c = *p); p++) {
 	if (c == '-' || c == '+') {
 	    buf++;
 	    continue;
@@ -661,7 +667,7 @@ Object Parse_Number (port, buf, radix) Object port; const char *buf; {
 		c = '9' + c - 'a' + 1;
 	}
 	c -= '0';
-	if ((unsigned)i > max || (unsigned)i == max && c > maxdig) {
+	if ((unsigned int)i > max || ((unsigned int)i == max && c > maxdig)) {
 	    ret = Make_Bignum (buf, neg, radix);
 	    return inexact ? Make_Flonum (Bignum_To_Double (ret)) : ret;
 	}
@@ -672,7 +678,7 @@ Object Parse_Number (port, buf, radix) Object port; const char *buf; {
     return inexact ? Make_Flonum ((double)i) : Make_Integer (i);
 }
 
-Reader_Error (port, msg) Object port; char *msg; {
+void Reader_Error (Object port, char *msg) {
     char buf[100];
 
     if (PORT(port)->flags & P_STRING) {

@@ -1,6 +1,10 @@
 /* Stop-and-copy garbage collector
  */
 
+#include <string.h>
+
+extern void Uncatchable_Error (char *);
+extern unsigned int Stack_Size ();
 extern void *sbrk();
 
 #define Recursive_Visit(p) {\
@@ -18,9 +22,9 @@ char *Heap_Start,
 
 static char *To;
 
-Make_Heap (size) {
-    register unsigned k = 1024 * size;
-    register unsigned s = 2 * k;
+void Make_Heap (int size) {
+    register unsigned int k = 1024 * size;
+    register unsigned int s = 2 * k;
 
     if ((Hp = Heap_Start = (char *)sbrk (s)) == (char *)-1)
 	Fatal_Error ("cannot allocate heap (%u KBytes)", 2*size);
@@ -29,7 +33,11 @@ Make_Heap (size) {
     Free_End = Free_Start + k;
 }
 
-Object Alloc_Object (size, type, konst) {
+void Free_Heap () {
+    /* Do nothing. */
+}
+
+Object Alloc_Object (int size, int type, int konst) {
     register char *p = Hp;
     Object ret;
 
@@ -55,7 +63,7 @@ Object Alloc_Object (size, type, konst) {
 
 Object P_Collect () {
     register char *tmp;
-    register msg = 0;
+    register int msg = 0;
     Object a[2];
 
     if (!Interpreter_Initialized)
@@ -93,27 +101,27 @@ Object P_Collect () {
     return Void;
 }
 
-Visit (p) register Object *p; {
+int Visit (register Object *p) {
     register Object *tag;
-    register t, size, reloc;
+    register int t, size, reloc = 0;
 
 again:
     t = TYPE(*p);
     if (!Types[t].haspointer)
-	return;
+	return 0;
     tag = (Object *)POINTER(*p);
     if ((char *)tag >= Free_Start && (char *)tag < Free_End)
-	return;
+	return 0;
     if (TYPE(*tag) == T_Broken_Heart) {
 	SETPOINTER(*p, POINTER(*tag));
-	return;
+	return 0;
     }
     ALIGN(To);
     switch (t) {
     case T_Bignum:
 	size = sizeof (struct S_Bignum) - sizeof (gran_t)
 	       + BIGNUM(*p)->size * sizeof (gran_t);
-	bcopy ((char *)tag, To, size);
+	memcpy (To, tag, size);
 	break;
     case T_Flonum:
 	size = sizeof (struct S_Flonum);
@@ -130,12 +138,12 @@ again:
 	break;
     case T_String:
 	size = sizeof (struct S_String) + STRING(*p)->size - 1;
-	bcopy ((char *)tag, To, size);
+	memcpy (To, tag, size);
 	break;
     case T_Vector:
 	size = sizeof (struct S_Vector) + (VECTOR(*p)->size - 1) *
 	    sizeof (Object);
-	bcopy ((char *)tag, To, size);
+	memcpy (To, tag, size);
 	break;
     case T_Primitive:
 	size = sizeof (struct S_Primitive);
@@ -148,7 +156,7 @@ again:
     case T_Control_Point:
 	size = sizeof (struct S_Control) + CONTROL(*p)->size - 1;
 	reloc = To - (char *)tag;
-	bcopy ((char *)tag, To, size);
+	memcpy (To, tag, size);
 	break;
     case T_Promise:
 	size = sizeof (struct S_Promise);
@@ -175,7 +183,7 @@ again:
 	    size = Types[t].const_size;
 	else
 	    size = (Types[t].size)(*p);
-	bcopy ((char *)tag, To, size);
+	memcpy (To, tag, size);
     }
     SETPOINTER(*p, To);
     SET(*tag, T_Broken_Heart, To);
@@ -195,7 +203,7 @@ again:
 	p = &PAIR(*p)->cdr;
 	goto again;
     case T_Vector: {
-	    register i, n;
+	    register int i, n;
 	    for (i = 0, n = VECTOR(*p)->size; i < n; i++)
 		Recursive_Visit (&VECTOR(*p)->data[i]);
 	    break;
@@ -235,6 +243,8 @@ again:
 	if (Types[t].visit)
 	    (Types[t].visit)(p, Visit);
     }
+
+    return 0;
 }
 
 Object Internal_GC_Status (strat, flags) {

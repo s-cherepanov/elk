@@ -33,3 +33,11 @@ Generational/Incremental Garbage Collector
       (a broken-heart is passed to Memoize_Frame() after an ExpandHeap()).
 
    o  The percentage displayed at the end of a GC run is sometimes wrong.
+
+   o  This simple test causes a valgrind error after the first GC run:
+
+	(define (fact x) (if (> x 1) (* x (fact (- x 1))) 1))
+	(fact 100)
+	(fact 1000)
+	(fact 1000)
+

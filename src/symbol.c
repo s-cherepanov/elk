@@ -1,6 +1,9 @@
 #include <ctype.h>
+#include <string.h>
 
 #include "kernel.h"
+
+int Hash (char const *, int);
 
 Object Obarray;
 
@@ -16,7 +19,7 @@ Object Null,
        Zero,
        One;
 
-Init_Symbol () {
+void Init_Symbol () {
     SET(Null, T_Null, 0);
     SET(True, T_Boolean, 1);
     SET(False, T_Boolean, 0);
@@ -32,7 +35,7 @@ Init_Symbol () {
     Define_Symbol (&Void, "");
 }
 
-Object Make_Symbol (name) Object name; {
+Object Make_Symbol (Object name) {
     Object sym;
     register struct S_Symbol *sp;
     GC_Node;
@@ -47,17 +50,17 @@ Object Make_Symbol (name) Object name; {
     return sym;
 }
 
-Object P_Symbolp (x) Object x; {
+Object P_Symbolp (Object x) {
     return TYPE(x) == T_Symbol ? True : False;
 }
 
-Object P_Symbol_To_String (x) Object x; {
+Object P_Symbol_To_String (Object x) {
     Check_Type (x, T_Symbol);
     return SYMBOL(x)->name;
 }
 
-Object Obarray_Lookup (str, len) register char *str; register len; {
-    register h;
+Object Obarray_Lookup (register char const *str, register int len) {
+    register int h;
     register struct S_String *s;
     register struct S_Symbol *sym;
     Object p;
@@ -72,10 +75,10 @@ Object Obarray_Lookup (str, len) register char *str; register len; {
     return Make_Integer (h);
 }
 
-Object CI_Intern (str) const char *str; {
+Object CI_Intern (char const *str) {
     Object s, *p, sym, ostr;
-    register len;
-    register const char *src;
+    register int len;
+    register char const *src;
     char *dst;
     char buf[128];
     Alloca_Begin;
@@ -83,7 +86,7 @@ Object CI_Intern (str) const char *str; {
     len = strlen (str);
     if (len > sizeof (buf)) {
 	Alloca (dst, char*, len);
-    } else 
+    } else
 	dst = buf;
     src = str;
     str = dst;
@@ -103,9 +106,9 @@ Object CI_Intern (str) const char *str; {
     return sym;
 }
 
-Object Intern (str) const char *str; {
+Object Intern (char const *str) {
     Object s, *p, sym, ostr;
-    register len;
+    register int len;
 
     if (Case_Insensitive)
 	return CI_Intern (str);
@@ -121,7 +124,7 @@ Object Intern (str) const char *str; {
     return sym;
 }
 
-Object P_String_To_Symbol (str) Object str; {
+Object P_String_To_Symbol (Object str) {
     Object s, *p, sym;
 
     Check_Type (str, T_String);
@@ -137,7 +140,7 @@ Object P_String_To_Symbol (str) Object str; {
 }
 
 Object P_Oblist () {
-    register i;
+    register int i;
     Object p, list, bucket;
     GC_Node2;
 
@@ -154,7 +157,7 @@ Object P_Oblist () {
     return list;
 }
 
-Object P_Put (argc, argv) Object *argv; {
+Object P_Put (int argc, Object *argv) {
     Object sym, key, last, tail, prop;
     GC_Node3;
 
@@ -189,7 +192,7 @@ Object P_Put (argc, argv) Object *argv; {
     return key;
 }
 
-Object P_Get (sym, key) Object sym, key; {
+Object P_Get (Object sym, Object key) {
     Object prop;
 
     Check_Type (sym, T_Symbol);
@@ -205,14 +208,14 @@ Object P_Get (sym, key) Object sym, key; {
     return Cdr (prop);
 }
 
-Object P_Symbol_Plist (sym) Object sym; {
+Object P_Symbol_Plist (Object sym) {
     Check_Type (sym, T_Symbol);
     return Copy_List (SYMBOL(sym)->plist);
 }
 
-Hash (str, len) char *str; {
-    register h;
-    register char *p, *ep;
+int Hash (char const *str, int len) {
+    register int h;
+    register char const *p, *ep;
 
     h = 5 * len;
     if (len > 5)
@@ -222,12 +225,12 @@ Hash (str, len) char *str; {
     return h & 017777777777;
 }
 
-void Define_Symbol (sym, name) Object *sym; const char *name; {
+void Define_Symbol (Object *sym, char const *name) {
     *sym = Intern (name);
     Func_Global_GC_Link (sym);
 }
 
-void Define_Variable (var, name, init) Object *var, init; const char *name; {
+void Define_Variable (Object *var, char const *name, Object init) {
     Object frame, sym;
     GC_Node;
 
@@ -241,26 +244,26 @@ void Define_Variable (var, name, init) Object *var, init; const char *name; {
     GC_Unlink;
 }
 
-Object Var_Get (var) Object var; {
+Object Var_Get (Object var) {
     return Cdr (var);
 }
 
-void Var_Set (var, val) Object var, val; {
+void Var_Set (Object var, Object val) {
     Cdr (var) = val;
     SYMBOL (Car (var))->value = val;
 }
 
-int Var_Is_True (var) Object var; {
+int Var_Is_True (Object var) {
     var = Var_Get (var);
     return Truep (var);
 }
 
-unsigned long Symbols_To_Bits (x, mflag, stab) Object x; SYMDESCR *stab; {
+unsigned long int Symbols_To_Bits (Object x, int mflag, SYMDESCR *stab) {
     register SYMDESCR *syms;
-    register unsigned long mask = 0;
+    register unsigned long int mask = 0;
     Object l, s;
     register char *p;
-    register n;
+    register int n;
 
     if (!mflag) Check_Type (x, T_Symbol);
     for (l = x; !Nullp (l); l = Cdr (l)) {
@@ -282,7 +285,7 @@ unsigned long Symbols_To_Bits (x, mflag, stab) Object x; SYMDESCR *stab; {
     return mask;
 }
 
-Object Bits_To_Symbols (x, mflag, stab) unsigned long x; SYMDESCR *stab; {
+Object Bits_To_Symbols (unsigned long int x, int mflag, SYMDESCR *stab) {
     register SYMDESCR *syms;
     Object list, tail, cell;
     GC_Node2;
@@ -292,7 +295,7 @@ Object Bits_To_Symbols (x, mflag, stab) unsigned long x; SYMDESCR *stab; {
 	for (list = tail = Null, syms = stab; syms->name; syms++)
 	    if ((x & syms->val) && syms->val != ~0) {
 		Object z;
-		
+
 		z = Intern (syms->name);
 		cell = Cons (z, Null);
 		if (Nullp (list))

@@ -10,6 +10,9 @@ Object V_Load_Path, V_Load_Noisilyp, V_Load_Libraries;
 
 char *Loader_Input;  /* tmp file name used by load.xx.c */
 
+extern void Switch_Environment (Object);
+void Load_Source (Object);
+
 #ifdef CAN_LOAD_OBJ
   void Fork_Load();
 #endif
@@ -30,23 +33,23 @@ char *Loader_Input;  /* tmp file name used by load.xx.c */
 #endif
 #endif
 
-Init_Load () {
+void Init_Load () {
     Define_Variable (&V_Load_Path, "load-path",
 	Cons (Make_String (".", 1),
 	Cons (Make_String (SCM_DIR, sizeof (SCM_DIR) - 1),
 	Cons (Make_String (OBJ_DIR, sizeof (OBJ_DIR) - 1), Null))));
     Define_Variable (&V_Load_Noisilyp, "load-noisily?", False);
-    Define_Variable (&V_Load_Libraries, "load-libraries", 
+    Define_Variable (&V_Load_Libraries, "load-libraries",
 	Make_String (Default_Load_Libraries, sizeof Default_Load_Libraries-1));
 #ifdef CAN_LOAD_OBJ
     Register_Onfork (Fork_Load);
 #endif
 }
 
-Init_Loadpath (s) char *s; {     /* No GC possible here */
+void Init_Loadpath (char *s) {     /* No GC possible here */
     register char *p;
     Object path;
-    
+
     path = Null;
     if (s[0] == '\0')
 	return;
@@ -61,7 +64,7 @@ Init_Loadpath (s) char *s; {     /* No GC possible here */
     Var_Set (V_Load_Path, P_Reverse (path));
 }
 
-Is_O_File (name) Object name; {
+int Is_O_File (Object name) {
     register char *p;
     register struct S_String *str;
 
@@ -72,9 +75,9 @@ Is_O_File (name) Object name; {
     return str->size >= 2 && *--p == 'o' && *--p == '.';
 }
 
-void Check_Loadarg (x) Object x; {
+void Check_Loadarg (Object x) {
     Object tail;
-    register t = TYPE(x);
+    register int t = TYPE(x);
 
     if (t == T_Symbol || t == T_String)
 	return;
@@ -82,7 +85,7 @@ void Check_Loadarg (x) Object x; {
 	Wrong_Type_Combination (x, "string, symbol, or list");
     for (tail = x; !Nullp (tail); tail = Cdr (tail)) {
 	Object f;
-	
+
 	f = Car (tail);
 	if (TYPE(f) != T_Symbol && TYPE(f) != T_String)
 	    Wrong_Type_Combination (f, "string or symbol");
@@ -91,7 +94,7 @@ void Check_Loadarg (x) Object x; {
     }
 }
 
-Object General_Load (what, env) Object what, env; {
+Object General_Load (Object what, Object env) {
     Object oldenv;
     GC_Node;
 
@@ -117,11 +120,11 @@ Object General_Load (what, env) Object what, env; {
     return Void;
 }
 
-Object P_Load (argc, argv) Object *argv; {
+Object P_Load (int argc, Object *argv) {
     return General_Load (argv[0], argc == 1 ? The_Environment : argv[1]);
 }
 
-void Load_Source_Port (port) Object port; {
+void Load_Source_Port (Object port) {
     Object val;
     GC_Node;
     TC_Prolog;
@@ -142,7 +145,7 @@ void Load_Source_Port (port) Object port; {
     GC_Unlink;
 }
 
-Load_Source (name) Object name; {
+void Load_Source (Object name) {
     Object port;
     GC_Node;
 
@@ -155,7 +158,7 @@ Load_Source (name) Object name; {
 
 /* Interface to P_Load() for use by applications.
  */
-void Load_File (name) char *name; {
+void Load_File (char *name) {
     Object arg;
 
     arg = Make_String(name, strlen(name));

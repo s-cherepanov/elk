@@ -9,7 +9,7 @@ extern int errno;
 #  define O_BINARY 0
 #endif
 
-SYMTAB *Snarf_Symbols (f, ep) FILE *f; struct exec *ep; {
+SYMTAB *Snarf_Symbols (FILE *f, struct exec *ep) {
     SYMTAB *tab;
     register SYM *sp, **nextp;
     int nsyms, strsiz;
@@ -56,7 +56,7 @@ strerr:
     return tab;
 }
 
-SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
+SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     struct exec hdr;
     int fd;
     FILE *fp;

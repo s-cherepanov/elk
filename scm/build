@@ -43,22 +43,22 @@ siteinfo.scm: ../config/system ../config/site
 	\$(SHELL) ./build-siteinfo
 
 install: \$(TARGETS)
-	-@if [ ! -d $install_dir/lib ]; then \\
-	    echo mkdir $install_dir/lib; \\
-	    mkdir $install_dir/lib; \\
+	-@if [ ! -d $install_dir/share ]; then \\
+	    echo mkdir $install_dir/share; \\
+	    mkdir $install_dir/share; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk ]; then \\
-	    echo mkdir $install_dir/lib/elk; \\
-	    mkdir $install_dir/lib/elk; \\
+	-@if [ ! -d $install_dir/share/elk ]; then \\
+	    echo mkdir $install_dir/share/elk; \\
+	    mkdir $install_dir/share/elk; \\
 	fi
-	-@if [ ! -d $install_dir/lib/elk/scm ]; then \\
-	    echo mkdir $install_dir/lib/elk/scm; \\
-	    mkdir $install_dir/lib/elk/scm; \\
+	-@if [ ! -d $install_dir/share/elk/scm ]; then \\
+	    echo mkdir $install_dir/share/elk/scm; \\
+	    mkdir $install_dir/share/elk/scm; \\
 	fi
 	@for i in \$(FILES) ;\\
 	do \\
-	    echo cp \$\$i $install_dir/lib/elk/scm; \\
-	    cp \$\$i $install_dir/lib/elk/scm; \\
+	    echo cp \$\$i $install_dir/share/elk/scm; \\
+	    cp \$\$i $install_dir/share/elk/scm; \\
 	done
 
 lint:

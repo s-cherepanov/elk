@@ -11,7 +11,7 @@ extern Object P_Autoload P_((Object, Object));
 /* Bignums
  */
 extern Object Make_Uninitialized_Bignum P_((int));
-extern Bignum_Normalize_In_Place P_((struct S_Bignum *));
+extern void Bignum_Normalize_In_Place P_((struct S_Bignum *));
 
 /* Boolean operators
  */
@@ -82,10 +82,10 @@ extern Object The_Environment, Global_Environment;
 
 /* Error handling
  */
-extern Primitive_Error P_((ELLIPSIS));
-extern Fatal_Error P_((ELLIPSIS));
-extern Range_Error P_((Object));
-extern Panic P_((const char*));
+extern void Primitive_Error P_((ELLIPSIS)) __attribute__ ((__noreturn__));
+extern void Fatal_Error P_((ELLIPSIS)) __attribute__ ((__noreturn__));
+extern void Range_Error P_((Object));
+extern void Panic P_((const char*));
 extern Object P_Error P_((int, Object*));
 extern Object P_Reset P_((void));
 extern const char *Error_Tag;    /* will be removed in the near future */
@@ -110,8 +110,8 @@ extern Object P_Require P_((int, Object*));
  */
 extern int GC_Debug;
 extern Object Alloc_Object P_((int, int, int));
-extern Register_Before_GC P_((void (*)(void)));
-extern Register_After_GC P_((void (*)(void)));
+extern void Register_Before_GC P_((void (*)(void)));
+extern void Register_After_GC P_((void (*)(void)));
 extern Object P_Collect P_((void));
 extern Object P_Garbage_Collect_Status P_((int, Object *));
 #ifdef GENERATIONAL_GC
@@ -122,7 +122,7 @@ extern Object P_Garbage_Collect_Status P_((int, Object *));
  */
 extern Object Curr_Input_Port, Curr_Output_Port;
 extern Object Standard_Input_Port, Standard_Output_Port;
-extern Reset_IO P_((int));
+extern void Reset_IO P_((int));
 extern Object P_Current_Input_Port P_((void));
 extern Object P_Current_Output_Port P_((void));
 extern Object P_Input_Portp P_((Object));
@@ -182,7 +182,7 @@ extern Object P_Caaaar P_((Object));
 extern Object P_Caaadr P_((Object));
 extern Object P_Caadar P_((Object));
 extern Object P_Caaddr P_((Object));
-extern Object P_Cadaar P_((Object)); 
+extern Object P_Cadaar P_((Object));
 extern Object P_Cadadr P_((Object));
 extern Object P_Caddar P_((Object));
 extern Object P_Cadddr P_((Object));
@@ -220,15 +220,15 @@ extern void Elk_Init P_((int, char **av, int, char *));
 
 /* malloc() and realloc()
  */
-extern char *Safe_Malloc P_((unsigned));
-extern char *Safe_Realloc P_((char*, unsigned));
+extern char *Safe_Malloc P_((unsigned int));
+extern char *Safe_Realloc P_((char*, unsigned int));
 
 /* Numbers
  */
 extern Object Make_Integer P_((int));
-extern Object Make_Unsigned P_((unsigned));
-extern Object Make_Long P_((long));
-extern Object Make_Unsigned_Long P_((unsigned long));
+extern Object Make_Unsigned P_((unsigned int));
+extern Object Make_Long P_((long int));
+extern Object Make_Unsigned_Long P_((unsigned long int));
 extern Object Make_Reduced_Flonum P_((double));
 extern Object Make_Flonum P_((double));
 extern Object P_Numberp P_((Object));
@@ -281,23 +281,23 @@ extern Object P_Random P_((void));
 extern Object P_Srandom P_((Object));
 extern Object P_Number_To_String P_((int, Object*));
 extern double Get_Double P_((Object));
-extern Get_Integer P_((Object));
-extern unsigned Get_Unsigned P_((Object));
-extern long Get_Long P_((Object));
-extern unsigned long Get_Unsigned_Long P_((Object));
-extern Get_Exact_Integer P_((Object));
-extern unsigned Get_Exact_Unsigned P_((Object));
-extern long Get_Exact_Long P_((Object));
-extern unsigned long Get_Exact_Unsigned_Long P_((Object));
+extern int Get_Integer P_((Object));
+extern unsigned int Get_Unsigned P_((Object));
+extern long int Get_Long P_((Object));
+extern unsigned long int Get_Unsigned_Long P_((Object));
+extern int Get_Exact_Integer P_((Object));
+extern unsigned int Get_Exact_Unsigned P_((Object));
+extern long int Get_Exact_Long P_((Object));
+extern unsigned long int Get_Exact_Unsigned_Long P_((Object));
 
 /* Onfork handlers
  */
-extern Register_Onfork P_((void (*)(void)));
+extern void Register_Onfork P_((void (*)(void)));
 extern void Call_Onfork P_((void));
 
 /* Define_Primitive()
  */
-extern Define_Primitive P_((Object (*)(ELLIPSIS), const char*, int, int,
+extern void Define_Primitive P_((Object (*)(ELLIPSIS), const char*, int, int,
     enum discipline));
 
 /* Output
@@ -311,12 +311,12 @@ extern Object P_Clear_Output_Port P_((int, Object*));
 extern Object P_Flush_Output_Port P_((int, Object*));
 extern Object P_Print P_((int, Object*));
 extern Object P_Get_Output_String P_((Object));
-extern Check_Output_Port P_((Object));
-extern Discard_Output P_((Object));
-extern Printf P_((ELLIPSIS));
-extern Print_Object P_((Object, Object, int, int, int));
-extern General_Print_Object P_((Object, Object, int));
-extern Format P_((Object, const char*, int, int, Object*));
+extern void Check_Output_Port P_((Object));
+extern void Discard_Output P_((Object));
+extern void Printf P_((ELLIPSIS));
+extern void Print_Object P_((Object, Object, int, int, int));
+extern void General_Print_Object P_((Object, Object, int));
+extern void Format P_((Object, const char*, int, int, Object*));
 extern int Saved_Errno;
 
 /* Evaluator, procedures, macros
@@ -337,7 +337,7 @@ extern Object P_Macro_Expand P_((Object));
 extern Object P_Primitivep P_((Object));
 extern Object P_Compoundp P_((Object));
 extern Object P_Macrop P_((Object));
-extern Check_Procedure P_((Object));
+extern void Check_Procedure P_((Object));
 
 /* Delay and force
  */
@@ -356,8 +356,8 @@ extern Object P_Unread_Char P_((int, Object*));
 extern Object P_Read_String P_((int, Object*));
 extern Object P_Clear_Input_Port P_((int, Object*));
 extern Object General_Read P_((Object, int));
-extern Check_Input_Port P_((Object));
-extern Discard_Input P_((Object));
+extern void Check_Input_Port P_((Object));
+extern void Discard_Input P_((Object));
 extern void Define_Reader P_((int, READFUN));
 
 /* Special forms
@@ -426,8 +426,8 @@ extern Object Sym_Else;
 extern Object Var_Get P_((Object));
 extern void Var_Set P_((Object, Object));
 extern int Var_Is_True P_((Object));
-extern unsigned long Symbols_To_Bits P_((Object, int, SYMDESCR*));
-extern Object Bits_To_Symbols P_((unsigned long, int, SYMDESCR*));
+extern unsigned long int Symbols_To_Bits P_((Object, int, SYMDESCR*));
+extern Object Bits_To_Symbols P_((unsigned long int, int, SYMDESCR*));
 
 /* Termination functions
  */
@@ -441,9 +441,10 @@ extern void Terminate_Type P_((int));
  */
 extern TYPEDESCR *Types;
 extern Object P_Type P_((Object));
-extern Wrong_Type P_((Object, int));
-extern Wrong_Type_Combination P_((Object, const char*));
-extern Define_Type P_((int, const char*, int (*)(Object), int,
+extern void Wrong_Type P_((Object, int)) __attribute__ ((__noreturn__));
+extern void Wrong_Type_Combination P_((Object, const char*))
+    __attribute__ ((__noreturn__));
+extern int Define_Type P_((int, const char*, int (*)(Object), int,
     int (*)(Object, Object), int (*)(Object, Object),
     int (*)(Object, Object, int, int, int),
     int (*)(Object*, int (*)(Object*)) ));

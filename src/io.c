@@ -4,7 +4,9 @@
 #include "kernel.h"
 
 #include <errno.h>
+#include <stdio.h>
 #include <pwd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -13,13 +15,15 @@
 #  include <unistd.h>
 #endif
 
+extern void Flush_Output (Object);
+
 extern int errno;
 extern char *getenv();
 
 Object Curr_Input_Port, Curr_Output_Port;
 Object Standard_Input_Port, Standard_Output_Port;
 
-Init_Io () {
+void Init_Io () {
     Standard_Input_Port = Make_Port (P_INPUT, stdin, Make_String ("stdin", 5));
     Standard_Output_Port = Make_Port (0, stdout, Make_String ("stdout", 6));
     Curr_Input_Port = Standard_Input_Port;
@@ -30,7 +34,7 @@ Init_Io () {
     Global_GC_Link (Curr_Output_Port);
 }
 
-Reset_IO (destructive) {
+void Reset_IO (int destructive) {
     Discard_Input (Curr_Input_Port);
     if (destructive)
 	Discard_Output (Curr_Output_Port);
@@ -40,9 +44,8 @@ Reset_IO (destructive) {
     Curr_Output_Port = Standard_Output_Port;
 }
 
-Object Make_Port (flags, f, name) FILE *f; Object name; {
+Object Make_Port (int flags, FILE *f, Object name) {
     Object port;
-    extern fclose();
     GC_Node;
 
     GC_Link (name);
@@ -57,17 +60,17 @@ Object Make_Port (flags, f, name) FILE *f; Object name; {
     return port;
 }
 
-Object P_Port_File_Name (p) Object p; {
+Object P_Port_File_Name (Object p) {
     Check_Type (p, T_Port);
     return (PORT(p)->flags & P_STRING) ? False : PORT(p)->name;
 }
 
-Object P_Port_Line_Number (p) Object p; {
+Object P_Port_Line_Number (Object p) {
     Check_Type (p, T_Port);
     return Make_Unsigned (PORT(p)->lno);
 }
 
-Object P_Eof_Objectp (x) Object x; {
+Object P_Eof_Objectp (Object x) {
     return TYPE(x) == T_End_Of_File ? True : False;
 }
 
@@ -75,11 +78,11 @@ Object P_Current_Input_Port () { return Curr_Input_Port; }
 
 Object P_Current_Output_Port () { return Curr_Output_Port; }
 
-Object P_Input_Portp (x) Object x; {
+Object P_Input_Portp (Object x) {
     return TYPE(x) == T_Port && IS_INPUT(x) ? True : False;
 }
 
-Object P_Output_Portp (x) Object x; {
+Object P_Output_Portp (Object x) {
     return TYPE(x) == T_Port && IS_OUTPUT(x) ? True : False;
 }
 
@@ -91,7 +94,7 @@ int Path_Max () {
     return MAXPATHLEN;
 #else
 #ifdef PATHCONF_PATH_MAX
-    static r; 
+    static int r;
     if (r == 0) {
 	if ((r = pathconf ("/", _PC_PATH_MAX)) == -1)
 	    r = 1024;
@@ -105,8 +108,8 @@ int Path_Max () {
 #endif
 }
 
-Object Get_File_Name (name) Object name; {
-    register len;
+Object Get_File_Name (Object name) {
+    register int len;
 
     if (TYPE(name) == T_Symbol)
 	name = SYMBOL(name)->name;
@@ -117,8 +120,8 @@ Object Get_File_Name (name) Object name; {
     return name;
 }
 
-char *Internal_Tilde_Expand (s, dirp) register char *s, **dirp; {
-    register char *p; 
+char *Internal_Tilde_Expand (register char *s, register char **dirp) {
+    register char *p;
     struct passwd *pw, *getpwnam();
 
     if (*s++ != '~')
@@ -133,11 +136,11 @@ char *Internal_Tilde_Expand (s, dirp) register char *s, **dirp; {
 	if ((pw = getpwnam (s)) == 0)
 	    Primitive_Error ("unknown user: ~a", Make_String (s, strlen (s)));
 	*dirp = pw->pw_dir;
-    } 
+    }
     return p;
 }
 
-Object General_File_Operation (s, op) Object s; register op; {
+Object General_File_Operation (Object s, register int op) {
     register char *r;
     Object ret, fn;
     Alloca_Begin;
@@ -164,36 +167,39 @@ Object General_File_Operation (s, op) Object s; register op; {
 	ret = stat (r, &st) == 0 ? True : False;
 	Alloca_End;
 	return ret;
+    }
+    default: {
+	return Null; /* Just to avoid compiler warnings */
     }}
     /*NOTREACHED*/
 }
 
-Object P_Tilde_Expand (s) Object s; {
+Object P_Tilde_Expand (Object s) {
     return General_File_Operation (s, 0);
 }
 
-Object P_File_Existsp (s) Object s; {
+Object P_File_Existsp (Object s) {
     return General_File_Operation (s, 1);
 }
 
-Close_All_Files () {
+void Close_All_Files () {
     Terminate_Type (T_Port);
 }
 
-Object Terminate_File (port) Object port; {
+Object Terminate_File (Object port) {
     (void)(PORT(port)->closefun) (PORT(port)->file);
     PORT(port)->flags &= ~P_OPEN;
     return Void;
 }
 
-Object Open_File (name, flags, err) char *name; {
+Object Open_File (char *name, int flags, int err) {
     register FILE *f;
     char *dir, *p;
     Object fn, port;
     struct stat st;
     Alloca_Begin;
 
-    if (p = Internal_Tilde_Expand (name, &dir)) {
+    if ((p = Internal_Tilde_Expand (name, &dir))) {
 	Alloca (name, char*, strlen (dir) + 1 + strlen (p) + 1);
 	sprintf (name, "%s/%s", dir, p);
     }
@@ -220,11 +226,11 @@ Object Open_File (name, flags, err) char *name; {
     return port;
 }
 
-Object General_Open_File (name, flags, path) Object name, path; {
+Object General_Open_File (Object name, int flags, Object path) {
     Object port, pref;
     char *buf = 0;
     register char *fn;
-    register plen, len, blen = 0, gotpath = 0;
+    register int plen, len, blen = 0, gotpath = 0;
     Alloca_Begin;
 
     name = Get_File_Name (name);
@@ -244,10 +250,10 @@ Object General_Open_File (name, flags, path) Object name, path; {
 		blen = len + plen + 2;
 		Alloca (buf, char*, blen);
 	    }
-	    bcopy (STRING(pref)->data, buf, plen);
+	    memcpy (buf, STRING(pref)->data, plen);
 	    if (buf[plen-1] != '/')
 		buf[plen++] = '/';
-	    bcopy (fn, buf+plen, len);
+	    memcpy (buf+plen, fn, len);
 	    buf[len+plen] = '\0';
 	    port = Open_File (buf, flags, 0);
 	    /* No GC has been taken place in Open_File() if it returns Null.
@@ -262,27 +268,27 @@ Object General_Open_File (name, flags, path) Object name, path; {
 	Primitive_Error ("file ~s not found", name);
     if (len + 1 > blen)
 	Alloca (buf, char*, len + 1);
-    bcopy (fn, buf, len);
+    memcpy (buf, fn, len);
     buf[len] = '\0';
     port = Open_File (buf, flags, 1);
     Alloca_End;
     return port;
 }
 
-Object P_Open_Input_File (name) Object name; {
+Object P_Open_Input_File (Object name) {
     return General_Open_File (name, P_INPUT, Null);
 }
 
-Object P_Open_Output_File (name) Object name; {
+Object P_Open_Output_File (Object name) {
     return General_Open_File (name, 0, Null);
 }
 
-Object P_Open_Input_Output_File (name) Object name; {
+Object P_Open_Input_Output_File (Object name) {
     return General_Open_File (name, P_BIDIR, Null);
 }
 
-Object General_Close_Port (port) Object port; {
-    register flags, err = 0;
+Object General_Close_Port (Object port) {
+    register int flags, err = 0;
     FILE *f;
 
     Check_Type (port, T_Port);
@@ -303,11 +309,11 @@ Object General_Close_Port (port) Object port; {
     return Void;
 }
 
-Object P_Close_Input_Port (port) Object port; {
+Object P_Close_Input_Port (Object port) {
     return General_Close_Port (port);
 }
 
-Object P_Close_Output_Port (port) Object port;{
+Object P_Close_Output_Port (Object port) {
     return General_Close_Port (port);
 }
 
@@ -330,7 +336,7 @@ Object P_Close_Output_Port (port) Object port;{
 General_With (P_With_Input_From_File, Curr_Input_Port, P_INPUT)
 General_With (P_With_Output_To_File, Curr_Output_Port, 0)
 
-Object General_Call_With (name, flags, proc) Object name, proc; {
+Object General_Call_With (Object name, int flags, Object proc) {
     Object port, ret;
     GC_Node2;
 
@@ -344,15 +350,15 @@ Object General_Call_With (name, flags, proc) Object name, proc; {
     return ret;
 }
 
-Object P_Call_With_Input_File (name, proc) Object name, proc; {
+Object P_Call_With_Input_File (Object name, Object proc) {
     return General_Call_With (name, P_INPUT, proc);
 }
 
-Object P_Call_With_Output_File (name, proc) Object name, proc; {
+Object P_Call_With_Output_File (Object name, Object proc) {
     return General_Call_With (name, 0, proc);
 }
 
-Object P_Open_Input_String (string) Object string; {
+Object P_Open_Input_String (Object string) {
     Check_Type (string, T_String);
     return Make_Port (P_STRING|P_INPUT, (FILE *)0, string);
 }

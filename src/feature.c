@@ -3,9 +3,11 @@
 
 #include "kernel.h"
 
+#include <string.h>
+
 static Object Features;
 
-Init_Features () {
+void Init_Features () {
     Features = Null;
     Global_GC_Link (Features);
 #ifdef CAN_DUMP
@@ -20,7 +22,7 @@ Object P_Features () {
     return Features;
 }
 
-Object P_Featurep (sym) Object sym; {
+Object P_Featurep (Object sym) {
     Object member;
 
     Check_Type (sym, T_Symbol);
@@ -28,7 +30,7 @@ Object P_Featurep (sym) Object sym; {
     return Truep (member) ? True : False;
 }
 
-Object P_Provide (sym) Object sym; {
+Object P_Provide (Object sym) {
     Object member;
 
     Check_Type (sym, T_Symbol);
@@ -38,7 +40,7 @@ Object P_Provide (sym) Object sym; {
     return Void;
 }
 
-static Object Feature_Filename (str) Object str; {
+static Object Feature_Filename (Object str) {
     struct S_String *sp = STRING(str);
     int len = sp->size;
     char *p;
@@ -51,13 +53,13 @@ static Object Feature_Filename (str) Object str; {
        return str;
     GC_Link (str);
     s = Make_String ((char *)0, len+4);
-    bcopy (STRING(str)->data, STRING(s)->data, len);
-    bcopy (".scm", STRING(s)->data+len, 4);
+    memcpy (STRING(s)->data, STRING(str)->data, len);
+    memcpy (STRING(s)->data+len, ".scm", 4);
     GC_Unlink;
     return s;
 }
 
-Object P_Require (argc, argv) Object *argv; {
+Object P_Require (int argc, Object *argv) {
     Object sym, a[1], isfeature;
     GC_Node;
 

@@ -33,11 +33,11 @@ extern unsigned long Bignum_To_Unsigned_Long P_((Object));
 extern long Bignum_To_Long P_((Object));
 extern Object Bignum_To_String P_((Object, int));
 extern double Bignum_To_Double P_((Object));
-extern Bignum_Equal P_((Object, Object));
-extern Bignum_Greater P_((Object, Object));
-extern Bignum_Less P_((Object, Object));
-extern Bignum_Eq_Less P_((Object, Object));
-extern Bignum_Eq_Greater P_((Object, Object));
+extern int Bignum_Equal P_((Object, Object));
+extern int Bignum_Greater P_((Object, Object));
+extern int Bignum_Less P_((Object, Object));
+extern int Bignum_Eq_Less P_((Object, Object));
+extern int Bignum_Eq_Greater P_((Object, Object));
 
 /* cont.c
  */
@@ -105,7 +105,7 @@ extern char *Flonum_To_String P_((Object));
 /* proc.c
  */
 extern Object Sym_Lambda, Sym_Macro;
-extern Funcall_Control_Point P_((Object, Object, int));
+extern void Funcall_Control_Point P_((Object, Object, int));
 extern Object Make_Primitive
     P_((Object(*)(ELLIPSIS), const char*, int, int, enum discipline));
 
@@ -137,7 +137,7 @@ extern Object Unbound, Special, Zero, One;
 
 /* type.c
  */
-extern Num_Types, Max_Type;
+extern int Num_Types, Max_Type;
 
 /* vector.c
  */

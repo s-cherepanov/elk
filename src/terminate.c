@@ -2,6 +2,7 @@
  */
 
 #include <varargs.h>
+#include <stdlib.h>
 
 #include "kernel.h"
 
@@ -9,7 +10,7 @@ static WEAK_NODE *first;
 
 void Call_Terminators();
 
-Init_Terminate () {
+void Init_Terminate () {
     Register_After_GC (Call_Terminators);
 }
 
@@ -29,7 +30,7 @@ void Register_Object (obj, group, term, leader_flag) Object obj; GENERIC group;
     first = p;
 }
 
-void Deregister_Object (obj) Object obj; {
+void Deregister_Object (Object obj) {
     WEAK_NODE *p, **pp;
 
     Disable_Interrupts;
@@ -95,7 +96,7 @@ Object Find_Object (va_alist) va_dcl {
 
 /* Terminate all objects belonging to the given group except leaders.
  */
-void Terminate_Group (group) GENERIC group; {
+void Terminate_Group (GENERIC group) {
     WEAK_NODE *p, **pp, *q = 0;
 
     Disable_Interrupts;
@@ -120,7 +121,7 @@ void Terminate_Group (group) GENERIC group; {
 
 /* Terminate all objects of a given type.
  */
-void Terminate_Type (type) int type; {
+void Terminate_Type (int type) {
     WEAK_NODE *p, **pp, *q = 0;
 
     Disable_Interrupts;

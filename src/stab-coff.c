@@ -3,7 +3,7 @@
 #undef TYPE         /* ldfnc.h defines a TYPE macro. */
 #include <ldfcn.h>
 
-SYMTAB *Snarf_Symbols (lf, ep) LDFILE *lf; {
+SYMTAB *Snarf_Symbols (LDFILE *lf, int ep) {
     SYMTAB *tab;
     register SYM *sp, **nextp;
     SYMENT sym;
@@ -40,7 +40,7 @@ SYMTAB *Snarf_Symbols (lf, ep) LDFILE *lf; {
 }
 
 #ifdef INIT_OBJECTS
-SYMTAB *Open_File_And_Snarf_Symbols (name) char *name; {
+SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     LDFILE *f;
     SYMTAB *tab;
 

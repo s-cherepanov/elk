@@ -14,7 +14,7 @@ static FUNCT *Before_GC_Funcs, *After_GC_Funcs;
 static Object V_Garbage_Collect_Notifyp;
 static Object Sym_Stop_And_Copy_GC, Sym_Generational_GC, Sym_Incremental_GC;
 
-Init_Heap () {
+void Init_Heap () {
     Define_Variable (&V_Garbage_Collect_Notifyp, "garbage-collect-notify?",
 	True);
 
@@ -23,7 +23,7 @@ Init_Heap () {
     Define_Symbol (&Sym_Incremental_GC, "incremental");
 }
 
-Register_Before_GC (f) void (*f)(); {
+void Register_Before_GC (void (*f)(void)) {
     FUNCT *p;
 
     p = (FUNCT *)Safe_Malloc (sizeof (*p));
@@ -32,14 +32,14 @@ Register_Before_GC (f) void (*f)(); {
     Before_GC_Funcs = p;
 }
 
-Call_Before_GC () {
+void Call_Before_GC () {
     FUNCT *p;
 
     for (p = Before_GC_Funcs; p; p = p->next)
 	p->func();
 }
 
-Register_After_GC (f) void (*f)(); {
+void Register_After_GC (void (*f)(void)) {
     FUNCT *p;
 
     p = (FUNCT *)Safe_Malloc (sizeof (*p));
@@ -48,16 +48,16 @@ Register_After_GC (f) void (*f)(); {
     After_GC_Funcs = p;
 }
 
-Call_After_GC () {
+void Call_After_GC () {
     FUNCT *p;
 
     for (p = After_GC_Funcs; p; p = p->next)
 	p->func();
 }
 
-Visit_GC_List (list, delta) GCNODE *list; {
+void Visit_GC_List (GCNODE *list, int delta) {
     register GCNODE *gp, *p;
-    register n;
+    register int n;
     register Object *vec;
 
     for (gp = list; gp; gp = p->next) {
@@ -72,7 +72,7 @@ Visit_GC_List (list, delta) GCNODE *list; {
     }
 }
 
-Visit_Wind (list, delta) WIND *list; unsigned delta; {
+void Visit_Wind (WIND *list, unsigned int delta) {
     register WIND *wp, *p;
 
     for (wp = list; wp; wp = p->next) {
@@ -81,7 +81,7 @@ Visit_Wind (list, delta) WIND *list; unsigned delta; {
     }
 }
 
-Func_Global_GC_Link (x) Object *x; {
+void Func_Global_GC_Link (Object *x) {
     GCNODE *p;
 
     p = (GCNODE *)Safe_Malloc (sizeof (*p));
@@ -98,7 +98,7 @@ Func_Global_GC_Link (x) Object *x; {
 
 Object Internal_GC_Status();
 
-Object P_Garbage_Collect_Status (argc, argv) Object* argv; {
+Object P_Garbage_Collect_Status (int argc, Object* argv) {
     int strat = 0, flags = 0;
 
     if (argc > 0) {

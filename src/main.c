@@ -2,6 +2,9 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <string.h>
+#include <stdlib.h>
+#include <malloc.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -18,7 +21,41 @@
 #  endif
 #endif
 
+extern void Call_Initializers (SYMTAB *, char *, int);
+extern void Load_Source (Object);
+extern void Call_Finalizers ();
+extern void Finit_Load ();
+extern void Generational_GC_Reinitialize ();
+extern int Check_Stack_Grows_Down ();
+extern void Make_Heap (int);
+extern void Free_Heap ();
+extern void Init_Auto (void);
+extern void Init_Cstring();
+extern void Init_Dump ();
+extern void Init_Env ();
+extern void Init_Error ();
+extern void Init_Exception ();
+extern void Init_Features ();
+extern void Init_Heap ();
+extern void Init_Io ();
+extern void Init_Load ();
+extern void Init_Loadpath (char *);
+extern void Init_Math ();
+extern void Init_Prim ();
+extern void Init_Print ();
+extern void Init_Proc ();
+extern void Init_Read ();
+extern void Init_Special ();
+extern void Init_String ();
+extern void Init_Symbol ();
+extern void Init_Terminate ();
+extern void Init_Type();
+
 extern char *getenv();
+
+void Get_Stack_Limit ();
+void Usage ();
+void Init_Everything ();
 
 char *stkbase;
 int Stack_Grows_Down;
@@ -47,6 +84,7 @@ void Exit_Handler () {
 #ifdef CAN_LOAD_OBJ
     Finit_Load ();
 #endif
+    Free_Heap ();
 }
 
 #ifndef ATEXIT
@@ -76,7 +114,7 @@ char *Brk_On_Dump;
  * This cannot be fixed without changing Elk_Init() and its use in
  * an incompatible way.
  */
-Check_If_Dump_Works () {
+void Check_If_Dump_Works () {
 #ifdef NOMAIN
     Primitive_Error ("not yet supported for standalone applications");
 #endif
@@ -85,18 +123,18 @@ Check_If_Dump_Works () {
 
 #ifdef NOMAIN
 
-void Elk_Init (ac, av, init_objects, toplevel) char **av, *toplevel; {
+void Elk_Init (int ac, char **av, int init_objects, char *toplevel) {
 
 #else
 
-main (ac, av) char **av; {
+int main (int ac, char **av) {
 
 #endif
 
 /* To avoid that the stack copying code overwrites argv if a dumped
  * copy of the interpreter is invoked with more arguments than the
  * original a.out, move the stack base INITIAL_STK_OFFSET bytes down.
- * The call to bzero() is there to prevent the optimizer from removing
+ * The call to memset() is there to prevent the optimizer from removing
  * the array.
  */
 #ifdef CAN_DUMP
@@ -107,13 +145,16 @@ main (ac, av) char **av; {
     Object file;
     struct stat st;
     extern int errno;
-    char foo;
+#ifdef CAN_DUMP
 #ifdef NOMAIN
 #  define foo (av[0][0])
+#else
+    char foo;
+#endif
 #endif
 
 #ifdef CAN_DUMP
-    bzero (unused, 1);  /* see comment above */
+    memset (unused, 0, 1);  /* see comment above */
 #endif
     if (ac == 0) {
 	av[0] = "Elk"; ac = 1;
@@ -136,12 +177,13 @@ main (ac, av) char **av; {
 	    fprintf (stderr,
 "Can't restart dumped interpreter from a different machine architecture\n");
 	    fprintf (stderr,
-"   (Stack delta = %d bytes).\n", stkbase - &foo);
+"   (Stack delta = %lld bytes).\n", (long long int)(ptrdiff_t)(stkbase - &foo));
 	    exit (1);
 	}
 	/* Check if program break must be reset.
 	*/
-	if (Brk_On_Dump && (char *)brk (Brk_On_Dump) == (char *)-1) {
+	if ((ptrdiff_t)Brk_On_Dump && (ptrdiff_t)brk (Brk_On_Dump)
+		== (ptrdiff_t)-1) {
 	    perror ("brk"); exit (1);
 	}
 #if defined(HP9K) && defined(CAN_DUMP) && defined(HPSHLIB)
@@ -220,7 +262,7 @@ main (ac, av) char **av; {
 #endif
     if (loadpath || (loadpath = getenv (LOADPATH_ENV)))
 	Init_Loadpath (loadpath);
-    
+
     /* The following code is sort of a hack.  initscheme.scm should not
      * be resolved against load-path.  However, the .scm-files may not
      * have been installed yet (note that the interpreter is already
@@ -277,7 +319,7 @@ called",
     "   [--]            End options and begin arguments",
     0 };
 
-Usage () {
+void Usage () {
     char **p;
 
     fprintf (stderr, "Usage: %s [options] [arguments]\n", Argv[0]);
@@ -286,7 +328,7 @@ Usage () {
     exit (1);
 }
 
-Init_Everything () {
+void Init_Everything () {
     Init_Type ();
     Init_Cstring ();
     Init_String ();
@@ -311,7 +353,7 @@ Init_Everything () {
 #endif
 }
 
-Get_Stack_Limit () {
+void Get_Stack_Limit () {
 #ifdef MAX_STACK_SIZE
     Max_Stack = MAX_STACK_SIZE;
 #else
@@ -321,21 +363,20 @@ Get_Stack_Limit () {
 	perror ("getrlimit");
 	exit (1);
     }
-
     Max_Stack = rl.rlim_cur;
 #endif
     Max_Stack -= STACK_MARGIN;
 }
 
 #ifdef FIND_AOUT
-Executable (fn) char *fn; {
+int Executable (char *fn) {
     struct stat s;
 
     return stat (fn, &s) != -1 && (s.st_mode & S_IFMT) == S_IFREG
 	    && access (fn, X_OK) != -1;
 }
 
-char *Find_Executable (fn) char *fn; {
+char *Find_Executable (char *fn) {
     char *path, *dir, *getenv();
     static char buf[1025];  /* Can't use Path_Max or Safe_Malloc here */
     register char *p;
@@ -372,14 +413,14 @@ char *Find_Executable (fn) char *fn; {
 
 Object P_Command_Line_Args () {
     Object ret, tail;
-    register i;
+    register int i;
     GC_Node2;
 
     ret = tail = P_Make_List (Make_Integer (Argc-First_Arg), Null);
     GC_Link2 (ret, tail);
     for (i = First_Arg; i < Argc; i++, tail = Cdr (tail)) {
 	Object a;
-	
+
 	a = Make_String (Argv[i], strlen (Argv[i]));
 	Car (tail) = a;
     }
@@ -387,7 +428,7 @@ Object P_Command_Line_Args () {
     return ret;
 }
 
-Object P_Exit (argc, argv) Object *argv; {
+Object P_Exit (int argc, Object *argv) {
     exit (argc == 0 ? 0 : Get_Unsigned (argv[0]));
     /*NOTREACHED*/
 }

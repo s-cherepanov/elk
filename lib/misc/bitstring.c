@@ -15,15 +15,15 @@ static int masks2[] = { 0, 0x1, 0x3, 0x7, 0xF, 0x1F, 0x3F, 0x7F, 0xFF };
 
 int T_Bitstring;
 
-static Object P_Bitstringp(x) Object x; {
+static Object P_Bitstringp(Object x) {
     return TYPE(x) == T_Bitstring ? True : False;
 }
 
-static int Bitstring_Size(b) Object b; {
+static int Bitstring_Size(Object b) {
     return sizeof(struct S_Bitstring) + bits_to_bytes(BITSTRING(b)->len) - 1;
 }
 
-static Bitstring_Equal(b1, b2) Object b1, b2; {
+static Bitstring_Equal(Object b1, Object b2) {
     struct S_Bitstring *a = BITSTRING(b1), *b = BITSTRING(b2);
 
     if (a->len != b->len)
@@ -31,11 +31,11 @@ static Bitstring_Equal(b1, b2) Object b1, b2; {
     return !bcmp(a->data, b->data, bits_to_bytes(a->len));
 }
 
-static Object P_Bitstring_Equalp(a, b) Object a, b; {
+static Object P_Bitstring_Equalp(Object a, Object b) {
     return Bitstring_Equal(a, b) ? True : False;
 }
 
-static char *Digits(c, n) unsigned char c; int n; {
+static char *Digits(unsigned char c, int n) {
     static char buf[9];
     int i = 0;
 
@@ -47,7 +47,7 @@ static char *Digits(c, n) unsigned char c; int n; {
 
 /* Print starting with MSB
  */
-static Bitstring_Print(x, port, raw, depth, length) Object x, port; {
+static Bitstring_Print(Object x, Object port, int raw, int depth, int length) {
     int i, rem;
     struct S_Bitstring *b = BITSTRING(x);
     GC_Node2;
@@ -62,7 +62,7 @@ static Bitstring_Print(x, port, raw, depth, length) Object x, port; {
     GC_Unlink;
 }
 
-static Object Make_Bitstring(len) unsigned len; {
+static Object Make_Bitstring(unsigned int len) {
     Object b;
     int nbytes = bits_to_bytes(len);
 
@@ -73,7 +73,7 @@ static Object Make_Bitstring(len) unsigned len; {
     return b;
 }
 
-static void Fill_Bitstring(bs, fill) Object bs; int fill; {
+static void Fill_Bitstring(Object bs, int fill) {
     struct S_Bitstring *b = BITSTRING(bs);
     int i, rem;
     unsigned char val = fill ? ~0 : 0;
@@ -85,7 +85,7 @@ static void Fill_Bitstring(bs, fill) Object bs; int fill; {
 	b->data[i] = val;
 }
 
-static Object P_Make_Bitstring(len, init) Object len, init; {
+static Object P_Make_Bitstring(Object len, Object init) {
     Object ret;
     int n, fill;
 

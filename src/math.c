@@ -4,14 +4,18 @@
 #include <math.h>
 #include <errno.h>
 #include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "kernel.h"
 
-extern int errno;
+extern int Bignum_To_Integer (Object);
 
 Object Generic_Multiply(), Generic_Divide();
 
-Init_Math () {
+void Init_Math () {
 #ifdef RANDOM
     srandom (getpid ());
 #else
@@ -19,38 +23,38 @@ Init_Math () {
 #endif
 }
 
-Object Make_Integer (n) register n; {
+Object Make_Integer (register int n) {
     Object num;
 
     SET(num, T_Fixnum, n);
     return num;
 }
 
-Object Make_Unsigned (n) register unsigned n; {
+Object Make_Unsigned (register unsigned int n) {
     if (UFIXNUM_FITS(n))
 	return Make_Integer (n);
     else
 	return Unsigned_To_Bignum (n);
 }
 
-Object Make_Long (n) register long n; {
+Object Make_Long (register long int n) {
     if (n < 0 ? (n < (long)INT_MIN) : (n > (long)INT_MAX))
 	return Long_To_Bignum (n);
     else
 	return Make_Integer ((int)n);
 }
 
-Object Make_Unsigned_Long (n) register unsigned long n; {
-    if ((n & ~((unsigned long)SIGNBIT-1)) == 0)
+Object Make_Unsigned_Long (register unsigned long int n) {
+    if ((n & ~((unsigned long int)SIGNBIT-1)) == 0)
 	return Make_Integer ((int)n);
     else
 	return Unsigned_Long_To_Bignum (n);
 }
 
-Object Fixnum_To_String (x, radix) Object x; {
+Object Fixnum_To_String (Object x, int radix) {
     char buf[32];
     register char *p;
-    register n = FIXNUM(x), neg = 0;
+    register int n = FIXNUM(x), neg = 0;
 
     if (n == 0)
 	return Make_String ("0", 1);
@@ -71,7 +75,7 @@ Object Fixnum_To_String (x, radix) Object x; {
     return Make_String (p, strlen (p));
 }
 
-char *Flonum_To_String (x) Object x; {
+char *Flonum_To_String (Object x) {
     static char buf[32];
     char *p;
 
@@ -83,7 +87,7 @@ char *Flonum_To_String (x) Object x; {
     return buf;
 }
 
-Object P_Number_To_String (argc, argv) Object *argv; {
+Object P_Number_To_String (int argc, Object *argv) {
     int radix = 10;
     Object x;
     char *s;
@@ -109,11 +113,13 @@ Object P_Number_To_String (argc, argv) Object *argv; {
 	    Primitive_Error ("radix for reals must be 10");   /* bleah! */
 	s = Flonum_To_String (x);
 	return Make_String (s, strlen (s));
+    default: /* Just to avoid compiler warnings */
+	return Null;
     }
     /*NOTREACHED*/
 }
 
-Get_Integer (x) Object x; {
+int Get_Integer (Object x) {
     double d;
     int expo;
 
@@ -136,7 +142,7 @@ Get_Integer (x) Object x; {
     /*NOTREACHED*/
 }
 
-unsigned Get_Unsigned (x) Object x; {
+unsigned int Get_Unsigned (Object x) {
     double d;
     int expo;
 
@@ -164,7 +170,7 @@ err:
     /*NOTREACHED*/
 }
 
-long Get_Long (x) Object x; {
+long int Get_Long (Object x) {
     double d;
     int expo;
 
@@ -187,7 +193,7 @@ long Get_Long (x) Object x; {
     /*NOTREACHED*/
 }
 
-unsigned long Get_Unsigned_Long (x) Object x; {
+unsigned long int Get_Unsigned_Long (Object x) {
     double d;
     int expo;
 
@@ -195,7 +201,7 @@ unsigned long Get_Unsigned_Long (x) Object x; {
     case T_Fixnum:
 	if (FIXNUM(x) < 0)
 	    goto err;
-	return (unsigned long)FIXNUM(x);
+	return (unsigned long int)FIXNUM(x);
     case T_Bignum:
 	return Bignum_To_Unsigned_Long (x);
     case T_Flonum:
@@ -215,7 +221,7 @@ err:
     /*NOTREACHED*/
 }
 
-Get_Exact_Integer (x) Object x; {
+int Get_Exact_Integer (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
 	return FIXNUM(x);
@@ -227,7 +233,7 @@ Get_Exact_Integer (x) Object x; {
     /*NOTREACHED*/
 }
 
-unsigned Get_Exact_Unsigned (x) Object x; {
+unsigned int Get_Exact_Unsigned (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
 	if (FIXNUM(x) < 0)
@@ -241,7 +247,7 @@ unsigned Get_Exact_Unsigned (x) Object x; {
     /*NOTREACHED*/
 }
 
-long Get_Exact_Long (x) Object x; {
+long int Get_Exact_Long (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
 	return FIXNUM(x);
@@ -253,7 +259,7 @@ long Get_Exact_Long (x) Object x; {
     /*NOTREACHED*/
 }
 
-unsigned long Get_Exact_Unsigned_Long (x) Object x; {
+unsigned long int Get_Exact_Unsigned_Long (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
 	if (FIXNUM(x) < 0)
@@ -267,8 +273,8 @@ unsigned long Get_Exact_Unsigned_Long (x) Object x; {
     /*NOTREACHED*/
 }
 
-Get_Index (n, obj) Object n, obj; {
-    register size, i;
+int Get_Index (Object n, Object obj) {
+    register int size, i;
 
     i = Get_Exact_Integer (n);
     size = TYPE(obj) == T_Vector ? VECTOR(obj)->size : STRING(obj)->size;
@@ -277,7 +283,7 @@ Get_Index (n, obj) Object n, obj; {
     return i;
 }
 
-Object Make_Flonum (d) double d; {
+Object Make_Flonum (double d) {
     Object num;
 
     num = Alloc_Object (sizeof (struct S_Flonum), T_Flonum, 0);
@@ -286,7 +292,7 @@ Object Make_Flonum (d) double d; {
     return num;
 }
 
-Object Make_Reduced_Flonum (d) double d; {
+Object Make_Reduced_Flonum (double d) {
     Object num;
     int expo;
 
@@ -303,7 +309,7 @@ Object Make_Reduced_Flonum (d) double d; {
     return num;
 }
 
-Fixnum_Add (a, b, fits) int *fits; {
+int Fixnum_Add (int a, int b, int *fits) {
     int ret = a + b;
 
     *fits = 1;
@@ -315,7 +321,7 @@ Fixnum_Add (a, b, fits) int *fits; {
     return ret;
 }
 
-Fixnum_Sub (a, b, fits) int *fits; {
+int Fixnum_Sub (int a, int b, int *fits) {
     int ret = a - b;
 
     *fits = 1;
@@ -332,11 +338,11 @@ Fixnum_Sub (a, b, fits) int *fits; {
  * resulting bignum gets reduced to a fixnum (if it fits) anyway.
  * (This should be fixed, though...)
  */
-Object Fixnum_Multiply (a, b) {
-    register unsigned aa = a;
-    register unsigned ab = b;
-    register unsigned prod, prod2;
-    register sign = 1;
+Object Fixnum_Multiply (int a, int b) {
+    register unsigned int aa = a;
+    register unsigned int ab = b;
+    register unsigned int prod, prod2;
+    register int sign = 1;
     if (a < 0) {
 	aa = -a;
 	sign = -1;
@@ -358,7 +364,7 @@ Object Fixnum_Multiply (a, b) {
     if (prod2 > (1 << (FIXBITS - 1 - 16)) - 1) {
 	if (sign == 1 || prod2 != (1 << (FIXBITS - 1 - 16)) || prod != 0)
 	    return Null;
-	return Make_Integer (-(unsigned)SIGNBIT);
+	return Make_Integer (-(unsigned int)SIGNBIT);
     }
     prod += prod2 << 16;
     if (sign == -1)
@@ -366,7 +372,7 @@ Object Fixnum_Multiply (a, b) {
     return Make_Integer (prod);
 }
 
-Object P_Integerp (x) Object x; {
+Object P_Integerp (Object x) {
     double d;
 
     switch (TYPE(x)) {
@@ -379,34 +385,34 @@ Object P_Integerp (x) Object x; {
     return False;
 }
 
-Object P_Rationalp (x) Object x; {
+Object P_Rationalp (Object x) {
     return P_Integerp (x);
 }
 
-Object P_Realp (x) Object x; {
-    register t = TYPE(x);
+Object P_Realp (Object x) {
+    register int t = TYPE(x);
     return t == T_Flonum || t == T_Fixnum  || t == T_Bignum ? True : False;
 }
 
-Object P_Complexp (x) Object x; {
+Object P_Complexp (Object x) {
     return P_Realp (x);
 }
 
-Object P_Numberp (x) Object x; {
+Object P_Numberp (Object x) {
     return P_Complexp (x);
 }
 
-Object P_Exactp (n) Object n; {
+Object P_Exactp (Object n) {
     Check_Number (n);
     return TYPE(n) == T_Flonum ? False : True;
 }
 
-Object P_Inexactp (n) Object n; {
+Object P_Inexactp (Object n) {
     Check_Number (n);
     return TYPE(n) == T_Flonum ? True : False;
 }
 
-Object P_Exact_To_Inexact (n) Object n; {
+Object P_Exact_To_Inexact (Object n) {
     Check_Number (n);
     switch (TYPE(n)) {
     case T_Fixnum:
@@ -415,11 +421,13 @@ Object P_Exact_To_Inexact (n) Object n; {
 	return n;
     case T_Bignum:
 	return Make_Flonum (Bignum_To_Double (n));
+    default: /* Just to avoid compiler warnings */
+	return Null;
     }
     /*NOTREACHED*/
 }
 
-Object P_Inexact_To_Exact (n) Object n; {
+Object P_Inexact_To_Exact (Object n) {
     double d;
     int i;
 
@@ -432,12 +440,14 @@ Object P_Inexact_To_Exact (n) Object n; {
 	d = floor (FLONUM(n)->val + 0.5);
 	(void)frexp (d, &i);
 	return (i <= FIXBITS-1) ? Make_Integer ((int)d) : Double_To_Bignum (d);
+    default: /* Just to avoid compiler warnings */
+	return Null;
     }
     /*NOTREACHED*/
 }
 
-#define General_Generic_Predicate(prim,op,bigop) Object prim (x) Object x; {\
-    register ret;\
+#define General_Generic_Predicate(prim,op,bigop) Object prim (Object x) {\
+    register int ret;\
     Check_Number (x);\
     switch (TYPE(x)) {\
     case T_Flonum:\
@@ -446,6 +456,8 @@ Object P_Inexact_To_Exact (n) Object n; {
 	ret = FIXNUM(x) op 0; break;\
     case T_Bignum:\
 	ret = bigop (x); break;\
+    default: /* Just to avoid compiler warnings */\
+	return False;\
     }\
     return ret ? True : False;\
 }
@@ -454,8 +466,8 @@ General_Generic_Predicate (P_Zerop, ==, Bignum_Zero)
 General_Generic_Predicate (P_Negativep, <, Bignum_Negative)
 General_Generic_Predicate (P_Positivep, >, Bignum_Positive)
 
-Object P_Evenp (x) Object x; {
-    register ret;
+Object P_Evenp (Object x) {
+    register int ret;
     double d;
 
     switch (TYPE(x)) {
@@ -478,14 +490,14 @@ Object P_Evenp (x) Object x; {
     return ret ? True : False;
 }
 
-Object P_Oddp (x) Object x; {
+Object P_Oddp (Object x) {
     Object tmp;
     tmp = P_Evenp (x);
     return EQ(tmp,True) ? False : True;
 }
 
-#define General_Generic_Compare(name,op,bigop) name (x, y) Object x, y; {\
-    Object b; register ret;\
+#define General_Generic_Compare(name,op,bigop) int name (Object x, Object y) {\
+    Object b; register int ret;\
     GC_Node;\
     \
     switch (TYPE(x)) {\
@@ -501,6 +513,8 @@ Object P_Oddp (x) Object x; {
 	    ret = bigop (b, y);\
 	    GC_Unlink;\
 	    return ret;\
+	default: /* Just to avoid compiler warnings */\
+	    return 0;\
 	}\
     case T_Flonum:\
 	switch (TYPE(y)) {\
@@ -510,6 +524,8 @@ Object P_Oddp (x) Object x; {
 	    return FLONUM(x)->val op FLONUM(y)->val;\
 	case T_Bignum:\
 	    return FLONUM(x)->val op Bignum_To_Double (y);\
+	default: /* Just to avoid compiler warnings */\
+	    return 0;\
 	}\
     case T_Bignum:\
 	switch (TYPE(y)) {\
@@ -523,7 +539,11 @@ Object P_Oddp (x) Object x; {
 	    return Bignum_To_Double (x) op FLONUM(y)->val;\
 	case T_Bignum:\
 	    return bigop (x, y);\
+	default: /* Just to avoid compiler warnings */\
+	    return 0;\
 	}\
+    default: /* Just to avoid compiler warnings */\
+	return 0;\
     }\
     /*NOTREACHED*/ /* ...but lint never sees it */\
 }
@@ -534,8 +554,8 @@ General_Generic_Compare (Generic_Greater,     >, Bignum_Greater)
 General_Generic_Compare (Generic_Eq_Less,    <=, Bignum_Eq_Less)
 General_Generic_Compare (Generic_Eq_Greater, >=, Bignum_Eq_Greater)
 
-Object General_Compare (argc, argv, op) Object *argv; register (*op)(); {
-    register i;
+Object General_Compare (int argc, Object *argv, register int (*op)()) {
+    register int i;
 
     Check_Number (argv[0]);
     for (i = 1; i < argc; i++) {
@@ -546,29 +566,29 @@ Object General_Compare (argc, argv, op) Object *argv; register (*op)(); {
     return True;
 }
 
-Object P_Generic_Equal (argc, argv) Object *argv; {
+Object P_Generic_Equal (int argc, Object *argv) {
     return General_Compare (argc, argv, Generic_Equal);
 }
 
-Object P_Generic_Less (argc, argv) Object *argv; {
+Object P_Generic_Less (int argc, Object *argv) {
     return General_Compare (argc, argv, Generic_Less);
 }
 
-Object P_Generic_Greater (argc, argv) Object *argv; {
+Object P_Generic_Greater (int argc, Object *argv) {
     return General_Compare (argc, argv, Generic_Greater);
 }
 
-Object P_Generic_Eq_Less (argc, argv) Object *argv; {
+Object P_Generic_Eq_Less (int argc, Object *argv) {
     return General_Compare (argc, argv, Generic_Eq_Less);
 }
 
-Object P_Generic_Eq_Greater (argc, argv) Object *argv; {
+Object P_Generic_Eq_Greater (int argc, Object *argv) {
     return General_Compare (argc, argv, Generic_Eq_Greater);
 }
 
-#define General_Generic_Operator(name,op,fixop,bigop) Object name (x, y)\
-	Object x, y; {\
-    Object b1, b2, ret; register i;\
+#define General_Generic_Operator(name,op,fixop,bigop) Object name (Object x,\
+	Object y) {\
+    Object b1, b2, ret; register int i;\
     int fits;\
     GC_Node2;\
     \
@@ -594,6 +614,8 @@ Object P_Generic_Eq_Greater (argc, argv) Object *argv; {
 	    ret = bigop (b1, y);\
 	    GC_Unlink;\
 	    return ret;\
+	default: /* Just to avoid compiler warnings */\
+	    return False;\
 	}\
     case T_Flonum:\
 	switch (TYPE(y)) {\
@@ -603,6 +625,8 @@ Object P_Generic_Eq_Greater (argc, argv) Object *argv; {
 	    return Make_Flonum (FLONUM(x)->val op FLONUM(y)->val);\
 	case T_Bignum:\
 	    return Make_Flonum (FLONUM(x)->val op Bignum_To_Double (y));\
+	default: /* Just to avoid compiler warnings */\
+	    return False;\
 	}\
     case T_Bignum:\
 	switch (TYPE(y)) {\
@@ -616,7 +640,11 @@ Object P_Generic_Eq_Greater (argc, argv) Object *argv; {
 	    return Make_Flonum (Bignum_To_Double (x) op FLONUM(y)->val);\
 	case T_Bignum:\
 	    return bigop (x, y);\
+	default: /* Just to avoid compiler warnings */\
+	    return False;\
 	}\
+    default: /* Just to avoid compiler warnings */\
+	return False;\
     }\
     /*NOTREACHED*/ /* ...but lint never sees it */\
 }
@@ -624,19 +652,19 @@ Object P_Generic_Eq_Greater (argc, argv) Object *argv; {
 General_Generic_Operator (Generic_Plus,  +, Fixnum_Add, Bignum_Plus)
 General_Generic_Operator (Generic_Minus, -, Fixnum_Sub, Bignum_Minus)
 
-Object P_Inc (x) Object x; {
+Object P_Inc (Object x) {
     Check_Number (x);
     return Generic_Plus (x, One);
 }
 
-Object P_Dec (x) Object x; {
+Object P_Dec (Object x) {
     Check_Number (x);
     return Generic_Minus (x, One);
 }
 
-Object General_Operator (argc, argv, start, op) Object *argv, start;
-	register Object (*op)(); {
-    register i;
+Object General_Operator (int argc, Object *argv, Object start,
+	register Object (*op)()) {
+    register int i;
     Object accum;
 
     if (argc > 0)
@@ -656,23 +684,23 @@ Object General_Operator (argc, argv, start, op) Object *argv, start;
     return accum;
 }
 
-Object P_Generic_Plus (argc, argv) Object *argv; {
+Object P_Generic_Plus (int argc, Object *argv) {
     return General_Operator (argc, argv, Zero, Generic_Plus);
 }
 
-Object P_Generic_Minus (argc, argv) Object *argv; {
+Object P_Generic_Minus (int argc, Object *argv) {
     return General_Operator (argc, argv, Zero, Generic_Minus);
 }
 
-Object P_Generic_Multiply (argc, argv) Object *argv; {
+Object P_Generic_Multiply (int argc, Object *argv) {
     return General_Operator (argc, argv, One, Generic_Multiply);
 }
 
-Object P_Generic_Divide (argc, argv) Object *argv; {
+Object P_Generic_Divide (int argc, Object *argv) {
     return General_Operator (argc, argv, One, Generic_Divide);
 }
 
-Object Generic_Multiply (x, y) Object x, y; {
+Object Generic_Multiply (Object x, Object y) {
     Object b, ret;
 
     switch (TYPE(x)) {
@@ -689,6 +717,8 @@ Object Generic_Multiply (x, y) Object x, y; {
 	    return Make_Flonum (FIXNUM(x) * FLONUM(y)->val);
 	case T_Bignum:
 	    return Bignum_Fixnum_Multiply (y, x);
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
     case T_Flonum:
 	switch (TYPE(y)) {
@@ -698,6 +728,8 @@ Object Generic_Multiply (x, y) Object x, y; {
 	    return Make_Flonum (FLONUM(x)->val * FLONUM(y)->val);
 	case T_Bignum:
 	    return Make_Flonum (FLONUM(x)->val * Bignum_To_Double (y));
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
     case T_Bignum:
 	switch (TYPE(y)) {
@@ -707,13 +739,17 @@ Object Generic_Multiply (x, y) Object x, y; {
 	    return Make_Flonum (Bignum_To_Double (x) * FLONUM(y)->val);
 	case T_Bignum:
 	    return Bignum_Multiply (x, y);
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
+    default: /* Just to avoid compiler warnings */
+	return Null;
     }
     /*NOTREACHED*/
 }
 
-Object Generic_Divide (x, y) Object x, y; {
-    register t = TYPE(y);
+Object Generic_Divide (Object x, Object y) {
+    register int t = TYPE(y);
     Object b, ret;
     GC_Node2;
 
@@ -736,6 +772,8 @@ Object Generic_Divide (x, y) Object x, y; {
 		return Car (ret);
 	    return Make_Reduced_Flonum ((double)FIXNUM(x)
 		/ Bignum_To_Double (y));
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
     case T_Flonum:
 	switch (t) {
@@ -745,6 +783,8 @@ Object Generic_Divide (x, y) Object x, y; {
 	    return Make_Flonum (FLONUM(x)->val / FLONUM(y)->val);
 	case T_Bignum:
 	    return Make_Flonum (FLONUM(x)->val / Bignum_To_Double (y));
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
     case T_Bignum:
 	switch (t) {
@@ -766,13 +806,17 @@ Object Generic_Divide (x, y) Object x, y; {
 		return Car (ret);
 	    return Make_Reduced_Flonum (Bignum_To_Double (x)
 		/ Bignum_To_Double (y));
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
+    default: /* Just to avoid compiler warnings */
+	return Null;
     }
     /*NOTREACHED*/
 }
 
-Object P_Abs (x) Object x; {
-    register i;
+Object P_Abs (Object x) {
+    register int i;
 
     Check_Number (x);
     switch (TYPE(x)) {
@@ -783,12 +827,14 @@ Object P_Abs (x) Object x; {
 	return Make_Flonum (fabs (FLONUM(x)->val));
     case T_Bignum:
 	return Bignum_Abs (x);
+    default: /* Just to avoid compiler warnings */
+	return Null;
     }
     /*NOTREACHED*/
 }
 
-Object General_Integer_Divide (x, y, rem) Object x, y; {
-    register fx = FIXNUM(x), fy = FIXNUM(y);
+Object General_Integer_Divide (Object x, Object y, int rem) {
+    register int fx = FIXNUM(x), fy = FIXNUM(y);
     Object b, ret;
     GC_Node;
 
@@ -806,6 +852,8 @@ Object General_Integer_Divide (x, y, rem) Object x, y; {
 	    ret = Bignum_Divide (b, y);
 done:
 	    return rem ? Cdr (ret) : Car (ret);
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
     case T_Bignum:
 	switch (TYPE(y)) {
@@ -815,20 +863,24 @@ done:
 	case T_Bignum:
 	    ret = Bignum_Divide (x, y);
 	    goto done;
+	default: /* Just to avoid compiler warnings */
+	    return Null;
 	}
+    default: /* Just to avoid compiler warnings */
+	return Null;
     }
     /*NOTREACHED*/
 }
 
-Object Exact_Quotient (x, y) Object x, y; {
+Object Exact_Quotient (Object x, Object y) {
     return General_Integer_Divide (x, y, 0);
 }
 
-Object Exact_Remainder (x, y) Object x, y; {
+Object Exact_Remainder (Object x, Object y) {
     return General_Integer_Divide (x, y, 1);
 }
 
-Object Exact_Modulo (x, y) Object x, y; {
+Object Exact_Modulo (Object x, Object y) {
     Object rem, xneg, yneg;
     GC_Node2;
 
@@ -842,7 +894,7 @@ Object Exact_Modulo (x, y) Object x, y; {
     return rem;
 }
 
-Object With_Exact_Ints (x, y, fun) Object x, y, (*fun)(); {
+Object With_Exact_Ints (Object x, Object y, Object (*fun)()) {
     Object i, ret;
     int inex = 0;
     GC_Node3;
@@ -868,19 +920,19 @@ Object With_Exact_Ints (x, y, fun) Object x, y, (*fun)(); {
     return ret;
 }
 
-Object P_Quotient (x, y) Object x, y; {
+Object P_Quotient (Object x, Object y) {
     return With_Exact_Ints (x, y, Exact_Quotient);
 }
 
-Object P_Remainder (x, y) Object x, y; {
+Object P_Remainder (Object x, Object y) {
     return With_Exact_Ints (x, y, Exact_Remainder);
 }
 
-Object P_Modulo (x, y) Object x, y; {
+Object P_Modulo (Object x, Object y) {
     return With_Exact_Ints (x, y, Exact_Modulo);
 }
 
-Object Exact_Gcd (x, y) Object x, y; {
+Object Exact_Gcd (Object x, Object y) {
     Object r, z;
     GC_Node2;
 
@@ -904,15 +956,15 @@ Object Exact_Gcd (x, y) Object x, y; {
     return r;
 }
 
-Object General_Gcd (x, y) Object x, y; {
+Object General_Gcd (Object x, Object y) {
     return With_Exact_Ints (x, y, Exact_Gcd);
 }
 
-Object P_Gcd (argc, argv) Object *argv; {
+Object P_Gcd (int argc, Object *argv) {
     return P_Abs (General_Operator (argc, argv, Zero, General_Gcd));
 }
 
-Object Exact_Lcm (x, y) Object x, y; {
+Object Exact_Lcm (Object x, Object y) {
     Object ret, p, z;
     GC_Node3;
 
@@ -928,15 +980,15 @@ Object Exact_Lcm (x, y) Object x, y; {
     return ret;
 }
 
-Object General_Lcm (x, y) Object x, y; {
+Object General_Lcm (Object x, Object y) {
     return With_Exact_Ints (x, y, Exact_Lcm);
 }
 
-Object P_Lcm (argc, argv) Object *argv; {
+Object P_Lcm (int argc, Object *argv) {
     return P_Abs (General_Operator (argc, argv, One, General_Lcm));
 }
 
-#define General_Conversion(name,op) Object name (x) Object x; {\
+#define General_Conversion(name,op) Object name (Object x) {\
     double d, i;\
 \
     Check_Number (x);\
@@ -953,7 +1005,7 @@ General_Conversion (P_Floor, floor)
 General_Conversion (P_Ceiling, ceil)
 General_Conversion (P_Truncate, trunc)
 
-Object P_Round (x) Object x; {
+Object P_Round (Object x) {
     double d, y, f;
     Object ret, isodd;
 
@@ -972,7 +1024,7 @@ Object P_Round (x) Object x; {
     return ret;
 }
 
-double Get_Double (x) Object x; {
+double Get_Double (Object x) {
     Check_Number (x);
     switch (TYPE(x)) {
     case T_Fixnum:
@@ -981,11 +1033,13 @@ double Get_Double (x) Object x; {
 	return FLONUM(x)->val;
     case T_Bignum:
 	return Bignum_To_Double (x);
+    default: /* Just to avoid compiler warnings */
+	return 0.0;
     }
     /*NOTREACHED*/
 }
 
-Object General_Function (x, y, fun) Object x, y; double (*fun)(); {
+Object General_Function (Object x, Object y, double (*fun)()) {
     double d, ret;
 
     d = Get_Double (x);
@@ -999,64 +1053,64 @@ Object General_Function (x, y, fun) Object x, y; double (*fun)(); {
     return Make_Flonum (ret);
 }
 
-Object P_Sqrt (x) Object x; { return General_Function (x, Null, sqrt); }
+Object P_Sqrt (Object x) { return General_Function (x, Null, sqrt); }
 
-Object P_Exp (x) Object x; { return General_Function (x, Null, exp); }
+Object P_Exp (Object x) { return General_Function (x, Null, exp); }
 
-Object P_Log (x) Object x; { return General_Function (x, Null, log); }
+Object P_Log (Object x) { return General_Function (x, Null, log); }
 
-Object P_Sin (x) Object x; { return General_Function (x, Null, sin); }
+Object P_Sin (Object x) { return General_Function (x, Null, sin); }
 
-Object P_Cos (x) Object x; { return General_Function (x, Null, cos); }
+Object P_Cos (Object x) { return General_Function (x, Null, cos); }
 
-Object P_Tan (x) Object x; { return General_Function (x, Null, tan); }
+Object P_Tan (Object x) { return General_Function (x, Null, tan); }
 
-Object P_Asin (x) Object x; { return General_Function (x, Null, asin); }
+Object P_Asin (Object x) { return General_Function (x, Null, asin); }
 
-Object P_Acos (x) Object x; { return General_Function (x, Null, acos); }
+Object P_Acos (Object x) { return General_Function (x, Null, acos); }
 
-Object P_Atan (argc, argv) Object *argv; {
-    register a2 = argc == 2;
-    return General_Function (argv[0], a2 ? argv[1] : Null, a2 ? 
+Object P_Atan (int argc, Object *argv) {
+    register int a2 = argc == 2;
+    return General_Function (argv[0], a2 ? argv[1] : Null, a2 ?
 	(double(*)())atan2 : (double(*)())atan);
 }
 
-Object Min (x, y) Object x, y; {
+Object Min (Object x, Object y) {
     Object ret;
-    
+
     ret = Generic_Less (x, y) ? x : y;
     if (TYPE(x) == T_Flonum || TYPE(y) == T_Flonum)
 	ret = P_Exact_To_Inexact (ret);
     return ret;
 }
 
-Object Max (x, y) Object x, y; {
+Object Max (Object x, Object y) {
     Object ret;
-    
+
     ret = Generic_Less (x, y) ? y : x;
     if (TYPE(x) == T_Flonum || TYPE(y) == T_Flonum)
 	ret = P_Exact_To_Inexact (ret);
     return ret;
 }
 
-Object P_Min (argc, argv) Object *argv; {
+Object P_Min (int argc, Object *argv) {
     return General_Operator (argc, argv, argv[0], Min);
 }
 
-Object P_Max (argc, argv) Object *argv; {
+Object P_Max (int argc, Object *argv) {
     return General_Operator (argc, argv, argv[0], Max);
 }
 
 Object P_Random () {
 #ifdef RANDOM
-    extern long random();
+    extern long int random();
     return Make_Long (random ());
 #else
     return Make_Integer (rand ());
 #endif
 }
 
-Object P_Srandom (x) Object x; {
+Object P_Srandom (Object x) {
 #ifdef RANDOM
     srandom (Get_Unsigned (x));
 #else

@@ -18,23 +18,23 @@ static int getpagesize () {
 }
 #endif
 
-Object P_Dump (ofile) Object ofile; {
+Object P_Dump (Object ofile) {
 #ifdef COFF
     static struct scnhdr thdr, dhdr, bhdr, scn;
     static struct filehdr hdr;
     static struct aouthdr ohdr;
-    unsigned bias;
-    unsigned lnno_start, syms_start;
-    unsigned text_scn_start, data_scn_start;
-    unsigned data_end;
+    unsigned int bias;
+    unsigned int lnno_start, syms_start;
+    unsigned int text_scn_start, data_scn_start;
+    unsigned int data_end;
     int pagemask = COFF_PAGESIZE-1;
 #else
     struct exec hdr, shdr;
-    unsigned data_start, data_end;
+    unsigned int data_start, data_end;
     int pagemask = getpagesize () - 1;
 #endif
     char *afn;
-    register n;
+    register int n;
     char buf[BUFSIZ];
 
     Dump_Prolog;
@@ -48,7 +48,7 @@ badaout:
 	Primitive_Error ("corrupt a.out file");
     }
 #ifdef COFF
-    data_end = ((unsigned)sbrk (0) + pagemask) & ~pagemask;
+    data_end = ((unsigned int)sbrk (0) + pagemask) & ~pagemask;
     syms_start = sizeof (hdr);
     if (hdr.f_opthdr > 0) {
 	if (read (afd, (char *)&ohdr, sizeof (ohdr)) != sizeof (ohdr))
@@ -120,7 +120,7 @@ badwrite:
 #endif
     data_start = (data_start + SEG_SIZ-1) & ~(SEG_SIZ-1);
 #endif
-    data_end = (unsigned)sbrk (0);
+    data_end = (unsigned int)sbrk (0);
 #if !defined(__bsdi__)
     data_end = (data_end + pagemask) & ~pagemask;
 #endif
@@ -168,7 +168,7 @@ badwrite:
 #else
 
     if (Heap_Start > Free_Start) {
-	n = (unsigned)Free_Start - data_start;
+	n = (unsigned int)Free_Start - data_start;
 	if (write (ofd, (char *)data_start, n) != n)
 	    goto badwrite;
 	(void)lseek (ofd, (off_t)(Free_End - Free_Start), 1);
@@ -176,15 +176,15 @@ badwrite:
 	if (write (ofd, Heap_Start, n) != n)
 	    goto badwrite;
 	(void)lseek (ofd, (off_t)(Heap_End - Hp), 1);
-	n = data_end - (unsigned)Heap_End;
+	n = data_end - (unsigned int)Heap_End;
 	if (write (ofd, Heap_End, n) != n)
 	    goto badwrite;
     } else {
-	n = (unsigned)Hp - data_start;
+	n = (unsigned int)Hp - data_start;
 	if (write (ofd, (char *)data_start, n) != n)
 	    goto badwrite;
 	(void)lseek (ofd, (off_t)(Free_End - Hp), 1);
-	n = data_end - (unsigned)Free_End;
+	n = data_end - (unsigned int)Free_End;
 	if (write (ofd, Free_End, n) != n)
 	    goto badwrite;
     }

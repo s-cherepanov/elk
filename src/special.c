@@ -3,17 +3,22 @@
 
 #include "kernel.h"
 
+extern void Do_Wind (Object);
+extern void Pop_Frame ();
+extern void Push_Frame (Object);
+extern void Add_Wind (register WIND *, Object, Object);
+
 Object Sym_Else;
 
-Init_Special () {
+void Init_Special () {
     Define_Symbol (&Sym_Else, "else");
 }
 
-Object P_Quote (argl) Object argl; {
+Object P_Quote (Object argl) {
     return Car (argl);
 }
 
-Object Quasiquote (x, level) Object x; {
+Object Quasiquote (Object x, int level) {
     Object form, list, tail, cell, qcar, qcdr, ret;
     TC_Prolog;
 
@@ -88,11 +93,11 @@ Object Quasiquote (x, level) Object x; {
     }
 }
 
-Object P_Quasiquote (argl) Object argl; {
+Object P_Quasiquote (Object argl) {
     return Quasiquote (Car (argl), 0);
 }
 
-Object P_Begin (forms) Object forms; {
+Object P_Begin (Object forms) {
     GC_Node;
     TC_Prolog;
 
@@ -107,8 +112,8 @@ Object P_Begin (forms) Object forms; {
     return Eval (Car (forms));
 }
 
-Object P_Begin1 (forms) Object forms; {
-    register n;
+Object P_Begin1 (Object forms) {
+    register int n;
     Object r, ret;
     GC_Node;
     TC_Prolog;
@@ -126,7 +131,7 @@ Object P_Begin1 (forms) Object forms; {
     return n ? r : ret;
 }
 
-Object P_If (argl) Object argl; {
+Object P_If (Object argl) {
     Object cond, ret;
     GC_Node;
     TC_Prolog;
@@ -153,7 +158,7 @@ Object P_If (argl) Object argl; {
     return ret;
 }
 
-Object P_Case (argl) Object argl; {
+Object P_Case (Object argl) {
     Object ret, key, clause, select;
     GC_Node;
     TC_Prolog;
@@ -189,7 +194,7 @@ Object P_Case (argl) Object argl; {
     return ret;
 }
 
-Object P_Cond (argl) Object argl; {
+Object P_Cond (Object argl) {
     Object ret, clause, guard;
     int else_clause = 0;
     GC_Node3;
@@ -237,7 +242,7 @@ Object P_Cond (argl) Object argl; {
     return ret;
 }
 
-Object General_Junction (argl, and) Object argl; register and; {
+Object General_Junction (Object argl, register int and) {
     Object ret;
     GC_Node;
     TC_Prolog;
@@ -259,17 +264,17 @@ Object General_Junction (argl, and) Object argl; register and; {
     return ret;
 }
 
-Object P_And (argl) Object argl; {
+Object P_And (Object argl) {
     return General_Junction (argl, 1);
 }
 
-Object P_Or (argl) Object argl; {
+Object P_Or (Object argl) {
     return General_Junction (argl, 0);
 }
 
-Object P_Do (argl) Object argl; {
+Object P_Do (Object argl) {
     Object tail, b, val, test, frame, newframe, len, ret;
-    register local_vars;
+    register int local_vars;
     GC_Node6;
     TC_Prolog;
 
@@ -292,7 +297,7 @@ Object P_Do (argl) Object argl; {
 	    Primitive_Error ("~s: duplicate variable binding", b);
 	frame = Add_Binding (frame, b, val);
     }
-    if (local_vars = !Nullp (frame))
+    if ((local_vars = !Nullp (frame)))
 	Push_Frame (frame);
     test = Car (Cdr (argl));
     Check_Type (test, T_Pair);
@@ -324,7 +329,7 @@ Object P_Do (argl) Object argl; {
     return ret;
 }
 
-Object General_Let (argl, disc) Object argl; {
+Object General_Let (Object argl, int disc) {
     Object frame, b, binding, val, tail, ret;
     GC_Node5;
     TC_Prolog;
@@ -384,7 +389,7 @@ Object General_Let (argl, disc) Object argl; {
     return ret;
 }
 
-Object Named_Let (argl) Object argl; {
+Object Named_Let (Object argl) {
     Object b, val, tail, vlist, vtail, flist, ftail, cell;
     GC_Node6;
     TC_Prolog;
@@ -433,22 +438,22 @@ Object Named_Let (argl) Object argl; {
     return tail;
 }
 
-Object P_Let (argl) Object argl; {
+Object P_Let (Object argl) {
     if (TYPE(Car (argl)) == T_Symbol)
 	return Named_Let (argl);
-    else 
+    else
 	return General_Let (argl, 0);
 }
 
-Object P_Letseq (argl) Object argl; {
+Object P_Letseq (Object argl) {
     return General_Let (argl, 1);
 }
 
-Object P_Letrec (argl) Object argl; {
+Object P_Letrec (Object argl) {
     return General_Let (argl, 2);
 }
 
-Object Internal_Fluid_Let (bindings, argl) Object bindings, argl; {
+Object Internal_Fluid_Let (Object bindings, Object argl) {
     Object b, sym, val, vec, ret;
     WIND w;
     GC_Node5;
@@ -483,14 +488,14 @@ Object Internal_Fluid_Let (bindings, argl) Object bindings, argl; {
     return ret;
 }
 
-Object P_Fluid_Let (argl) Object argl; {
+Object P_Fluid_Let (Object argl) {
     Object ret;
     WIND *first = First_Wind, *last = Last_Wind;
     TC_Prolog;
 
     TC_Disable;
     ret = Internal_Fluid_Let (Car (argl), argl);
-    if (Last_Wind = last)
+    if ((Last_Wind = last))
 	last->next = 0;
     First_Wind = first;
     TC_Enable;

@@ -1,7 +1,11 @@
 #include "kernel.h"
 
+#include <stdlib.h>
+
+extern void Reset () __attribute__ ((__noreturn__));
+
 int Intr_Was_Ignored;
-unsigned long Intr_Level;
+unsigned long int Intr_Level;
 
 #ifdef POSIX_SIGNALS
 sigset_t Sigset_Old, Sigset_Block;
@@ -16,12 +20,12 @@ static Object V_Interrupt_Handler;
 /* Make sure temp files are removed on hangup and broken pipe.
  */
 /*ARGSUSED*/
-void Signal_Exit (sig) int sig; {
+void Signal_Exit (int sig) {
     Exit_Handler ();
     exit (1);
 }
 
-Init_Exception () {
+void Init_Exception () {
     Define_Variable (&V_Interrupt_Handler, "interrupt-handler", Null);
 #ifdef POSIX_SIGNALS
     sigemptyset (&Sigset_Block);
@@ -38,7 +42,7 @@ Init_Exception () {
 }
 
 /*ARGSUSED*/
-void Intr_Handler (sig) int sig; {
+void Intr_Handler (int sig) {
     Object fun;
 
 #ifndef BSD_SIGNALS

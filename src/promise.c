@@ -3,11 +3,11 @@
 
 #include "kernel.h"
 
-Object P_Promisep (x) Object x; {
+Object P_Promisep (Object x) {
     return TYPE(x) == T_Promise ? True : False;
 }
 
-Object P_Delay (argl) Object argl; {
+Object P_Delay (Object argl) {
     Object d;
     GC_Node;
 
@@ -20,7 +20,7 @@ Object P_Delay (argl) Object argl; {
     return d;
 }
 
-Object P_Force (d) Object d; {
+Object P_Force (Object d) {
     Object ret, a[2];
     GC_Node;
     TC_Prolog;
@@ -41,7 +41,7 @@ Object P_Force (d) Object d; {
     return ret;
 }
 
-Object P_Promise_Environment (p) Object p; {
+Object P_Promise_Environment (Object p) {
     Check_Type (p, T_Promise);
     return PROMISE(p)->env;
 }

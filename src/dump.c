@@ -11,11 +11,18 @@
 #  define O_BINARY 0
 #endif
 
+extern void Check_If_Dump_Works ();
+extern void Flush_Output (Object);
+extern void Close_All_Files ();
+extern void Generational_GC_Finalize ();
+
 extern int errno;
+
+void Set_File_Executable (int, char *);
 
 Object Dump_Control_Point;
 
-Init_Dump () {
+void Init_Dump () {
     Dump_Control_Point = Null;
     Global_GC_Link (Dump_Control_Point);
 }
@@ -60,7 +67,7 @@ Init_Dump () {
     }
 
 #define Dump_Finalize    Saved_Errno = errno; close (afd); close (ofd)
-    
+
 
 #define Dump_Epilog {\
     close (afd);\
@@ -85,16 +92,16 @@ Init_Dump () {
 #endif
 
 /*ARGSUSED1*/
-Set_File_Executable (fd, fn) int fd; char *fn; {
+void Set_File_Executable (int fd, char *fn) {
     struct stat st;
 
     if (fstat (fd, &st) != -1) {
 	int omask = umask (0);
 	(void)umask (omask);
 #ifdef FCHMOD_BROKEN
-	(void)chmod (fn, st.st_mode & 0777 | 0111 & ~omask);
+	(void)chmod (fn, (st.st_mode & 0777) | (0111 & ~omask));
 #else
-	(void)fchmod (fd, st.st_mode & 0777 | 0111 & ~omask);
+	(void)fchmod (fd, (st.st_mode & 0777) | (0111 & ~omask));
 #endif
     }
 }

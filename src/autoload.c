@@ -2,11 +2,11 @@
 
 Object V_Autoload_Notifyp;
 
-Init_Auto () {
+void Init_Auto (void) {
     Define_Variable (&V_Autoload_Notifyp, "autoload-notify?", True);
 }
 
-Object P_Autoload (sym, files) Object sym, files; {
+Object P_Autoload (Object sym, Object files) {
     Object al, ret;
     GC_Node3;
 
@@ -24,7 +24,7 @@ Object P_Autoload (sym, files) Object sym, files; {
     return ret;
 }
 
-Object Do_Autoload (sym, al) Object sym, al; {
+Object Do_Autoload (Object sym, Object al) {
     Object val, a[1];
     GC_Node;
 

@@ -3,6 +3,11 @@
 
 #include "kernel.h"
 
+void Set_Name (Object, Object);
+void Memoize_Frame (Object);
+void Memoize_Frames (Object, Object);
+void Forget_Frame (Object);
+
 #define Env_To_List(env, list) SET((list), T_Pair, POINTER(env))
 #define List_To_Env(list, env) SET((env), T_Environment, POINTER(list))
 
@@ -10,14 +15,14 @@ Object The_Environment, Global_Environment;
 
 Object General_Define();
 
-Init_Env () {
+void Init_Env () {
     List_To_Env (Cons (Null, Null), Global_Environment);
     The_Environment = Global_Environment;
     Global_GC_Link (Global_Environment);
     Global_GC_Link (The_Environment);
 }
 
-Object P_Environment_To_List (env) Object env; {
+Object P_Environment_To_List (Object env) {
     Object e;
 
     Check_Type (env, T_Environment);
@@ -25,11 +30,11 @@ Object P_Environment_To_List (env) Object env; {
     return Copy_List (e);
 }
 
-Object P_Environmentp (x) Object x; {
+Object P_Environmentp (Object x) {
     return TYPE(x) == T_Environment ? True : False;
 }
 
-Push_Frame (frame) Object frame; {
+void Push_Frame (Object frame) {
     Object e;
 
     Memoize_Frame (frame);
@@ -37,15 +42,15 @@ Push_Frame (frame) Object frame; {
     List_To_Env (Cons (frame, e), The_Environment);
 }
 
-Pop_Frame () {
+void Pop_Frame () {
     Object e;
-    
+
     Env_To_List (The_Environment, e);
     List_To_Env (Cdr (e), The_Environment);
     Forget_Frame (Car (e));
 }
 
-Switch_Environment (to) Object to; {
+void Switch_Environment (Object to) {
     Object old, new, n;
 
     if (EQ(The_Environment,to))
@@ -64,14 +69,14 @@ Switch_Environment (to) Object to; {
     The_Environment = to;
 }
 
-Memoize_Frames (this, last) Object this, last; {
+void Memoize_Frames (Object this, Object last) {
     if (Nullp (this) || EQ(this,last))
 	return;
     Memoize_Frames (Cdr (this), last);
     Memoize_Frame (Car (this));
 }
 
-Memoize_Frame (frame) Object frame; {
+void Memoize_Frame (Object frame) {
     Object binding;
 
     for (; !Nullp (frame); frame = Cdr (frame)) {
@@ -80,12 +85,12 @@ Memoize_Frame (frame) Object frame; {
     }
 }
 
-Forget_Frame (frame) Object frame; {
+void Forget_Frame (Object frame) {
     for (; !Nullp (frame); frame = Cdr (frame))
 	SYMBOL(Car (Car (frame)))->value = Unbound;
 }
 
-Object Add_Binding (frame, sym, val) Object frame, sym, val; {
+Object Add_Binding (Object frame, Object sym, Object val) {
     Object b;
     GC_Node;
 
@@ -95,7 +100,7 @@ Object Add_Binding (frame, sym, val) Object frame, sym, val; {
     return Cons (b, frame);
 }
 
-Object Lookup_Symbol (sym, err) Object sym; {
+Object Lookup_Symbol (Object sym, int err) {
     Object p, f, b;
 
     Env_To_List (The_Environment, p);
@@ -115,7 +120,7 @@ Object P_The_Environment () { return The_Environment; }
 
 Object P_Global_Environment () { return Global_Environment; }
 
-Object Define_Procedure (form, body, sym) Object form, body, sym; {
+Object Define_Procedure (Object form, Object body, Object sym) {
     Object ret;
     GC_Node3;
 
@@ -129,7 +134,7 @@ Object Define_Procedure (form, body, sym) Object form, body, sym; {
     return ret;
 }
 
-Object General_Define (argl, sym) Object argl, sym; {
+Object General_Define (Object argl, Object sym) {
     Object val, var, frame, binding;
     GC_Node3;
     TC_Prolog;
@@ -165,15 +170,15 @@ Object General_Define (argl, sym) Object argl, sym; {
     /*NOTREACHED*/
 }
 
-Object P_Define (argl) Object argl; {
+Object P_Define (Object argl) {
     return General_Define (argl, Sym_Lambda);
 }
 
-Object P_Define_Macro (argl) Object argl; {
+Object P_Define_Macro (Object argl) {
     return General_Define (argl, Sym_Macro);
 }
 
-Object P_Set (argl) Object argl; {
+Object P_Set (Object argl) {
     Object val, var, binding, old;
     GC_Node3;
     TC_Prolog;
@@ -194,8 +199,8 @@ Object P_Set (argl) Object argl; {
     return old;
 }
 
-Set_Name (var, val) Object var, val; {
-    register t;
+void Set_Name (Object var, Object val) {
+    register int t;
 
     t = TYPE(val);
     if (t == T_Compound) {
@@ -207,7 +212,7 @@ Set_Name (var, val) Object var, val; {
     }
 }
 
-Object P_Boundp (x) Object x; {
+Object P_Boundp (Object x) {
     Check_Type (x, T_Symbol);
     return Nullp (Lookup_Symbol (x, 0)) ? False : True;
 }

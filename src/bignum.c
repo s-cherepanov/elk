@@ -1,11 +1,16 @@
 #include <math.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "kernel.h"
 
-Object Make_Uninitialized_Bignum (size) {
+static void Bignum_Mult_In_Place (register struct S_Bignum *, int);
+static void Bignum_Add_In_Place (register struct S_Bignum *, int);
+static int Bignum_Div_In_Place (register struct S_Bignum *, int);
+
+Object Make_Uninitialized_Bignum (int size) {
     Object big;
-    
+
     big = Alloc_Object ((sizeof (struct S_Bignum) - sizeof (gran_t)) +
 		   (size * sizeof (gran_t)), T_Bignum, 0);
     BIGNUM(big)->minusp = False;
@@ -14,43 +19,41 @@ Object Make_Uninitialized_Bignum (size) {
     return big;
 }
 
-Object Copy_Bignum (x) Object x; {
+Object Copy_Bignum (Object x) {
     Object big;
-    register size;
+    register int size;
     GC_Node;
 
     GC_Link (x);
     big = Make_Uninitialized_Bignum (size = BIGNUM(x)->usize);
     BIGNUM(big)->minusp = BIGNUM(x)->minusp;
     BIGNUM(big)->usize = size;
-    bcopy ((char *)BIGNUM(x)->data, (char *)BIGNUM(big)->data,
-	  size * sizeof (gran_t));
+    memcpy (BIGNUM(big)->data, BIGNUM(x)->data, size * sizeof (gran_t));
     GC_Unlink;
     return big;
 }
 
-Object Copy_S_Bignum (s) struct S_Bignum *s; {
+Object Copy_S_Bignum (struct S_Bignum *s) {
     Object big;
-    register size;
+    register int size;
 
     big = Make_Uninitialized_Bignum (size = s->usize);
     BIGNUM(big)->minusp = s->minusp;
     BIGNUM(big)->usize = size;
-    bcopy ((char *)s->data, (char *)BIGNUM(big)->data,
-	  size * sizeof (gran_t));
+    memcpy (BIGNUM(big)->data, s->data, size * sizeof (gran_t));
     return big;
 }
 
-Object Make_Bignum (buf, neg, radix) const char *buf; {
+Object Make_Bignum (char const *buf, int neg, int radix) {
     Object big;
-    register const char *p;
-    register c;
-    register size = (strlen (buf) + 4) / 4;
+    register char const *p;
+    register int c;
+    register int size = (strlen (buf) + 4) / 4;
 
     big = Make_Uninitialized_Bignum (size);
     BIGNUM(big)->minusp = neg ? True : False;
     p = buf;
-    while (c = *p++) {
+    while ((c = *p++)) {
 	Bignum_Mult_In_Place (BIGNUM(big), radix);
 	if (radix == 16) {
 	    if (isupper (c))
@@ -64,32 +67,32 @@ Object Make_Bignum (buf, neg, radix) const char *buf; {
     return big;
 }
 
-Object Reduce_Bignum (x) Object x; {
-    unsigned ret = 0;
+Object Reduce_Bignum (Object x) {
+    unsigned int ret = 0;
     int i, shift = 0, size = BIGNUM(x)->usize;
     int digits = sizeof(int)/2;
 
     if (size > digits)
 	return x;
     for (i = 0; i < digits && i < size; i++, shift += 16)
-	ret |= (unsigned)BIGNUM(x)->data[i] << shift;
+	ret |= (unsigned int)BIGNUM(x)->data[i] << shift;
     if (Truep (BIGNUM(x)->minusp)) {
-	if (ret > (~(unsigned)0 >> 1) + 1)
+	if (ret > (~(unsigned int)0 >> 1) + 1)
 	    return x;
 	return Make_Integer (-ret);
     } else {
-	if (ret > ~(unsigned)0 >> 1)
+	if (ret > ~(unsigned int)0 >> 1)
 	    return x;
 	return Make_Integer (ret);
     }
 }
 
-Bignum_Mult_In_Place (x, n) register struct S_Bignum *x; {
-    register i = x->usize;
+static void Bignum_Mult_In_Place (register struct S_Bignum *x, int n) {
+    register int i = x->usize;
     register gran_t *p = x->data;
-    register j;
-    register unsigned k = 0;
-    
+    register int j;
+    register unsigned int k = 0;
+
     for (j = 0; j < i; ++j) {
 	k += n * *p;
         *p++ = k;
@@ -103,11 +106,11 @@ Bignum_Mult_In_Place (x, n) register struct S_Bignum *x; {
     }
 }
 
-Bignum_Add_In_Place (x, n) register struct S_Bignum *x; {
-    register i = x->usize;
+static void Bignum_Add_In_Place (register struct S_Bignum *x, int n) {
+    register int i = x->usize;
     register gran_t *p = x->data;
-    register j = 0;
-    register unsigned k = n;
+    register int j = 0;
+    register unsigned int k = n;
 
     if (i == 0) goto extend;
     k += *p;
@@ -126,10 +129,10 @@ Bignum_Add_In_Place (x, n) register struct S_Bignum *x; {
     }
 }
 
-Bignum_Div_In_Place (x, n) register struct S_Bignum *x; {
-    register i = x->usize;
+static int Bignum_Div_In_Place (register struct S_Bignum *x, int n) {
+    register int i = x->usize;
     register gran_t *p = x->data + i;
-    register unsigned k = 0;
+    register unsigned int k = 0;
     for ( ; i; --i) {
 	k <<= 16;
 	k += *--p;
@@ -140,8 +143,8 @@ Bignum_Div_In_Place (x, n) register struct S_Bignum *x; {
     return k;
 }
 
-Bignum_Normalize_In_Place (x) register struct S_Bignum *x; {
-    register i = x->usize;
+void Bignum_Normalize_In_Place (register struct S_Bignum *x) {
+    register int i = x->usize;
     register gran_t *p = x->data + i;
     while (i && !*--p)
 	--i;
@@ -150,18 +153,18 @@ Bignum_Normalize_In_Place (x) register struct S_Bignum *x; {
 	x->minusp = False;
 }
 
-Print_Bignum (port, x) Object port, x; {
+void Print_Bignum (Object port, Object x) {
     register char *p;
     char *buf;
-    register size;
+    register int size;
     struct S_Bignum *big;
     Alloca_Begin;
-    
+
     if (Bignum_Zero (x)) {
 	Printf (port, "0");
 	return;
     }
-    
+
     size = BIGNUM(x)->usize * 5 + 3;
     Alloca (buf, char*, size + 1);
     p = buf + size;
@@ -170,11 +173,11 @@ Print_Bignum (port, x) Object port, x; {
     size = (sizeof (struct S_Bignum) - sizeof (gran_t))
 	+ BIGNUM(x)->usize * sizeof (gran_t);
     Alloca (big, struct S_Bignum*, size);
-    bcopy ((char *)POINTER(x), (char *)big, size);
+    memcpy (big, POINTER(x), size);
     big->size = BIGNUM(x)->usize;
 
     while (big->usize) {
-	register unsigned bigdig = Bignum_Div_In_Place (big, 10000);
+	register unsigned int bigdig = Bignum_Div_In_Place (big, 10000);
 	*--p = '0' + bigdig % 10;
 	bigdig /= 10;
 	*--p = '0' + bigdig % 10;
@@ -191,17 +194,17 @@ Print_Bignum (port, x) Object port, x; {
     Alloca_End;
 }
 
-Object Bignum_To_String (x, radix) Object x; {
+Object Bignum_To_String (Object x, int radix) {
     register char *p;
     char *buf;
-    register unsigned div, ndig, size;
+    register unsigned int div, ndig, size;
     struct S_Bignum *big;
     Object ret;
     Alloca_Begin;
-    
+
     if (Bignum_Zero (x))
 	return Make_String ("0", 1);
-    
+
     size = BIGNUM(x)->usize * (radix == 2 ? 17 : 6) + 3;
     Alloca (buf, char*, size + 1);
     p = buf + size;
@@ -210,7 +213,7 @@ Object Bignum_To_String (x, radix) Object x; {
     size = (sizeof (struct S_Bignum) - sizeof (gran_t))
 	+ BIGNUM(x)->usize * sizeof (gran_t);
     Alloca (big, struct S_Bignum*, size);
-    bcopy ((char *)POINTER(x), (char *)big, size);
+    memcpy (big, POINTER(x), size);
     big->size = BIGNUM(x)->usize;
 
     switch (radix) {
@@ -221,12 +224,13 @@ Object Bignum_To_String (x, radix) Object x; {
     case 10:
 	div = 10000; ndig = 4; break;
     case 16:
+    default: /* Just to avoid compiler warnings */
 	div = 65536; ndig = 4; break;
     }
 
     while (big->usize) {
-	register unsigned bigdig = Bignum_Div_In_Place (big, div);
-	register i;
+	register unsigned int bigdig = Bignum_Div_In_Place (big, div);
+	register int i;
 	for (i = 0; i < ndig; i++) {
 	    *--p = '0' + bigdig % radix;
 	    if (*p > '9')
@@ -243,8 +247,8 @@ Object Bignum_To_String (x, radix) Object x; {
     return ret;
 }
 
-Bignum_To_Integer (x) Object x; {
-    unsigned ret = 0;
+int Bignum_To_Integer (Object x) {
+    unsigned int ret = 0;
     int i, shift = 0, size = BIGNUM(x)->usize;
     int digits = sizeof(int)/2;
 
@@ -252,32 +256,32 @@ Bignum_To_Integer (x) Object x; {
 err:
 	Primitive_Error ("integer out of range: ~s", x);
     for (i = 0; i < digits && i < size; i++, shift += 16)
-	ret |= (unsigned)BIGNUM(x)->data[i] << shift;
+	ret |= (unsigned int)BIGNUM(x)->data[i] << shift;
     if (Truep (BIGNUM(x)->minusp)) {
-	if (ret > (~(unsigned)0 >> 1) + 1)
+	if (ret > (~(unsigned int)0 >> 1) + 1)
 	    goto err;
 	return -ret;
     } else {
-	if (ret > ~(unsigned)0 >> 1)
+	if (ret > ~(unsigned int)0 >> 1)
 	    goto err;
 	return ret;
     }
 }
 
-unsigned Bignum_To_Unsigned (x) Object x; {
-    unsigned ret = 0;
+unsigned int Bignum_To_Unsigned (Object x) {
+    unsigned int ret = 0;
     int i, shift = 0, size = BIGNUM(x)->usize;
     int digits = sizeof(int)/2;
 
     if (size > digits || Truep (BIGNUM(x)->minusp))
 	Primitive_Error ("integer out of range: ~s", x);
     for (i = 0; i < digits && i < size; i++, shift += 16)
-	ret |= (unsigned)BIGNUM(x)->data[i] << shift;
+	ret |= (unsigned int)BIGNUM(x)->data[i] << shift;
     return ret;
 }
 
-long Bignum_To_Long (x) Object x; {
-    unsigned long ret = 0;
+long Bignum_To_Long (Object x) {
+    unsigned long int ret = 0;
     int i, shift = 0, size = BIGNUM(x)->usize;
     int digits = sizeof(long)/2;
 
@@ -285,34 +289,34 @@ long Bignum_To_Long (x) Object x; {
 err:
 	Primitive_Error ("integer out of range: ~s", x);
     for (i = 0; i < digits && i < size; i++, shift += 16)
-	ret |= (unsigned long)BIGNUM(x)->data[i] << shift;
+	ret |= (unsigned long int)BIGNUM(x)->data[i] << shift;
     if (Truep (BIGNUM(x)->minusp)) {
-	if (ret > (~(unsigned long)0 >> 1) + 1)
+	if (ret > (~(unsigned long int)0 >> 1) + 1)
 	    goto err;
 	return -ret;
     } else {
-	if (ret > ~(unsigned long)0 >> 1)
+	if (ret > ~(unsigned long int)0 >> 1)
 	    goto err;
 	return ret;
     }
 }
 
-unsigned long Bignum_To_Unsigned_Long (x) Object x; {
-    unsigned long ret = 0;
+unsigned long int Bignum_To_Unsigned_Long (Object x) {
+    unsigned long int ret = 0;
     int i, shift = 0, size = BIGNUM(x)->usize;
     int digits = sizeof(long)/2;
 
     if (size > digits || Truep (BIGNUM(x)->minusp))
 	Primitive_Error ("integer out of range: ~s", x);
     for (i = 0; i < digits && i < size; i++, shift += 16)
-	ret |= (unsigned long)BIGNUM(x)->data[i] << shift;
+	ret |= (unsigned long int)BIGNUM(x)->data[i] << shift;
     return ret;
 }
 
-Object Integer_To_Bignum (i) {
+Object Integer_To_Bignum (int i) {
     int k, digits = sizeof(int)/2;
-    Object big; 
-    unsigned n = i;
+    Object big;
+    unsigned int n = i;
 
     big = Make_Uninitialized_Bignum (digits);
     if (i < 0) {
@@ -326,10 +330,10 @@ Object Integer_To_Bignum (i) {
     return big;
 }
 
-Object Unsigned_To_Bignum (i) unsigned i; {
+Object Unsigned_To_Bignum (unsigned int i) {
     int k, digits = sizeof(int)/2;
     Object big;
-    
+
     big = Make_Uninitialized_Bignum (digits);
     for (k = 0; k < digits; k++, i >>= 16)
 	BIGNUM(big)->data[k] = i & 0xffff;
@@ -338,10 +342,10 @@ Object Unsigned_To_Bignum (i) unsigned i; {
     return big;
 }
 
-Object Long_To_Bignum (i) long i; {
+Object Long_To_Bignum (long i) {
     int k, digits = sizeof(long)/2;
     Object big;
-    unsigned long n = i;
+    unsigned long int n = i;
 
     big = Make_Uninitialized_Bignum (digits);
     if (i < 0) {
@@ -355,10 +359,10 @@ Object Long_To_Bignum (i) long i; {
     return big;
 }
 
-Object Unsigned_Long_To_Bignum (i) unsigned long i; {
+Object Unsigned_Long_To_Bignum (unsigned long int i) {
     int k, digits = sizeof(long)/2;
     Object big;
-    
+
     big = Make_Uninitialized_Bignum (digits);
     for (k = 0; k < digits; k++, i >>= 16)
 	BIGNUM(big)->data[k] = i & 0xffff;
@@ -367,12 +371,12 @@ Object Unsigned_Long_To_Bignum (i) unsigned long i; {
     return big;
 }
 
-Object Double_To_Bignum (d) double d; {         /* Truncates the double */
+Object Double_To_Bignum (double d) {         /* Truncates the double */
     Object big;
     int expo, size;
     double mantissa = frexp (d, &expo);
     register gran_t *p;
-    
+
     if (expo <= 0 || mantissa == 0.0)
 	return Make_Uninitialized_Bignum (0);
     size = (expo + (16-1)) / 16;
@@ -383,7 +387,7 @@ Object Double_To_Bignum (d) double d; {         /* Truncates the double */
 	mantissa = -mantissa;
     }
     p = BIGNUM(big)->data;
-    bzero ((char *)p, size * sizeof (gran_t));
+    memset (p, 0, size * sizeof (gran_t));
     p += size;
     if (expo &= (16-1))
 	mantissa = ldexp (mantissa, expo - 16);
@@ -398,9 +402,9 @@ Object Double_To_Bignum (d) double d; {         /* Truncates the double */
     return Reduce_Bignum (big);
 }
 
-double Bignum_To_Double (x) Object x; {   /* error if it ain't fit */
+double Bignum_To_Double (Object x) {   /* error if it ain't fit */
     double rx = 0.0;
-    register i = BIGNUM(x)->usize;
+    register int i = BIGNUM(x)->usize;
     register gran_t *p = BIGNUM(x)->data + i;
 
     for (i = BIGNUM(x)->usize; --i >= 0; ) {
@@ -414,23 +418,23 @@ double Bignum_To_Double (x) Object x; {   /* error if it ain't fit */
     return rx;
 }
 
-Bignum_Zero (x) Object x; {
+int Bignum_Zero (Object x) {
     return BIGNUM(x)->usize == 0;
 }
 
-Bignum_Negative (x) Object x; {
+int Bignum_Negative (Object x) {
     return Truep (BIGNUM(x)->minusp);
 }
 
-Bignum_Positive (x) Object x; {
+int Bignum_Positive (Object x) {
     return !Truep (BIGNUM(x)->minusp) && BIGNUM(x)->usize != 0;
 }
 
-Bignum_Even (x) Object x; {
+int Bignum_Even (Object x) {
     return BIGNUM(x)->usize == 0 || (BIGNUM(x)->data[0] & 1) == 0;
 }
 
-Object Bignum_Abs (x) Object x; {
+Object Bignum_Abs (Object x) {
     Object big;
 
     big = Copy_Bignum (x);
@@ -438,8 +442,9 @@ Object Bignum_Abs (x) Object x; {
     return big;
 }
 
-Bignum_Mantissa_Cmp (x, y) register struct S_Bignum *x, *y; {
-    register i = x->usize;
+int Bignum_Mantissa_Cmp (register struct S_Bignum *x,
+	register struct S_Bignum *y) {
+    register int i = x->usize;
     if (i < y->usize)
 	return -1;
     else if (i > y->usize)
@@ -448,17 +453,17 @@ Bignum_Mantissa_Cmp (x, y) register struct S_Bignum *x, *y; {
 	register gran_t *xbuf = x->data + i;
 	register gran_t *ybuf = y->data + i;
 	for ( ; i; --i) {
-	    register n;
-	    if (n = (int)*--xbuf - (int)*--ybuf)
+	    register int n;
+	    if ((n = (int)*--xbuf - (int)*--ybuf))
 		return n;
 	}
 	return 0;
     }
 }
 
-Bignum_Cmp (x, y) register struct S_Bignum *x, *y; {
-    register xm = Truep (x->minusp);
-    register ym = Truep (y->minusp);
+int Bignum_Cmp (register struct S_Bignum *x, register struct S_Bignum *y) {
+    register int xm = Truep (x->minusp);
+    register int ym = Truep (y->minusp);
     if (xm) {
 	if (ym)
 	    return -Bignum_Mantissa_Cmp (x, y);
@@ -470,27 +475,27 @@ Bignum_Cmp (x, y) register struct S_Bignum *x, *y; {
     }
 }
 
-Bignum_Equal (x, y) Object x, y; {
+int Bignum_Equal (Object x, Object y) {
     return Bignum_Cmp (BIGNUM(x), BIGNUM(y)) == 0;
 }
 
-Bignum_Less (x, y) Object x, y; {
+int Bignum_Less (Object x, Object y) {
     return Bignum_Cmp (BIGNUM(x), BIGNUM(y)) < 0;
 }
 
-Bignum_Greater (x, y) Object x, y; {
+int Bignum_Greater (Object x, Object y) {
     return Bignum_Cmp (BIGNUM(x), BIGNUM(y)) > 0;
 }
 
-Bignum_Eq_Less (x, y) Object x, y; {
+int Bignum_Eq_Less (Object x, Object y) {
     return Bignum_Cmp (BIGNUM(x), BIGNUM(y)) <= 0;
 }
 
-Bignum_Eq_Greater (x, y) Object x, y; {
+int Bignum_Eq_Greater (Object x, Object y) {
     return Bignum_Cmp (BIGNUM(x), BIGNUM(y)) >= 0;
 }
 
-Object General_Bignum_Plus_Minus (x, y, neg) Object x, y; {
+Object General_Bignum_Plus_Minus (Object x, Object y, int neg) {
     Object big;
     int size, xsize, ysize, xminusp, yminusp;
     GC_Node2;
@@ -511,8 +516,8 @@ Object General_Bignum_Plus_Minus (x, y, neg) Object x, y; {
 
     if (xminusp == yminusp) {
 	/* Add x and y */
-	register unsigned k = 0;
-	register i;
+	register unsigned int k = 0;
+	register int i;
 	register gran_t *xbuf = BIGNUM(x)->data;
 	register gran_t *ybuf = BIGNUM(y)->data;
 	register gran_t *zbuf = BIGNUM(big)->data;
@@ -527,7 +532,7 @@ Object General_Bignum_Plus_Minus (x, y, neg) Object x, y; {
     } else {
 	if (Bignum_Mantissa_Cmp (BIGNUM(x), BIGNUM(y)) < 0) {
 	    Object temp;
-	    
+
 	    temp = x; x = y; y = temp;
 	    xsize = ysize;
 	    ysize = BIGNUM(y)->usize;
@@ -535,8 +540,8 @@ Object General_Bignum_Plus_Minus (x, y, neg) Object x, y; {
 	}
 	/* Subtract y from x */
     {
-	register unsigned k = 1;
-	register i;
+	register unsigned int k = 1;
+	register int i;
 	register gran_t *xbuf = BIGNUM(x)->data;
 	register gran_t *ybuf = BIGNUM(y)->data;
 	register gran_t *zbuf = BIGNUM(big)->data;
@@ -557,22 +562,22 @@ Object General_Bignum_Plus_Minus (x, y, neg) Object x, y; {
     return Reduce_Bignum (big);
 }
 
-Object Bignum_Plus (x, y) Object x, y; {   /* bignum + bignum */
+Object Bignum_Plus (Object x, Object y) {   /* bignum + bignum */
     return General_Bignum_Plus_Minus (x, y, 0);
 }
 
-Object Bignum_Minus (x, y) Object x, y; {   /* bignum - bignum */
+Object Bignum_Minus (Object x, Object y) {   /* bignum - bignum */
     return General_Bignum_Plus_Minus (x, y, 1);
 }
 
-Object Bignum_Fixnum_Multiply (x, y) Object x, y; {   /* bignum * fixnum */
+Object Bignum_Fixnum_Multiply (Object x, Object y) {   /* bignum * fixnum */
     Object big;
-    register size, xsize, i;
+    register int size, xsize, i;
     register gran_t *xbuf, *zbuf;
     int fix = FIXNUM(y);
-    register unsigned yl, yh;
+    register unsigned int yl, yh;
     GC_Node;
-    
+
     GC_Link (x);
     xsize = BIGNUM(x)->usize;
     size = xsize + 2;
@@ -580,7 +585,7 @@ Object Bignum_Fixnum_Multiply (x, y) Object x, y; {   /* bignum * fixnum */
     BIGNUM(big)->usize = size;
     if (Truep (BIGNUM(x)->minusp) != (fix < 0))
 	BIGNUM(big)->minusp = True;
-    bzero ((char *)BIGNUM(big)->data, size * sizeof (gran_t));
+    memset (BIGNUM(big)->data, 0, size * sizeof (gran_t));
     xbuf = BIGNUM(x)->data;
     if (fix < 0)
 	fix = -fix;
@@ -588,8 +593,8 @@ Object Bignum_Fixnum_Multiply (x, y) Object x, y; {   /* bignum * fixnum */
     yh = fix >> 16;
     zbuf = BIGNUM(big)->data;
     for (i = 0; i < xsize; ++i) {
-	register unsigned xf = xbuf[i];
-	register unsigned k = 0;
+	register unsigned int xf = xbuf[i];
+	register unsigned int k = 0;
 	register gran_t *r = zbuf + i;
 	k += xf * yl + *r;
 	*r++ = k;
@@ -604,12 +609,12 @@ Object Bignum_Fixnum_Multiply (x, y) Object x, y; {   /* bignum * fixnum */
     return Reduce_Bignum (big);
 }
 
-Object Bignum_Multiply (x, y) Object x, y; {   /* bignum * bignum */
+Object Bignum_Multiply (Object x, Object y) {   /* bignum * bignum */
     Object big;
-    register size, xsize, ysize, i, j;
+    register int size, xsize, ysize, i, j;
     register gran_t *xbuf, *ybuf, *zbuf;
     GC_Node2;
-    
+
     GC_Link2 (x, y);
     xsize = BIGNUM(x)->usize;
     ysize = BIGNUM(y)->usize;
@@ -618,13 +623,13 @@ Object Bignum_Multiply (x, y) Object x, y; {   /* bignum * bignum */
     BIGNUM(big)->usize = size;
     if (!EQ(BIGNUM(x)->minusp, BIGNUM(y)->minusp))
 	BIGNUM(big)->minusp = True;
-    bzero ((char *)BIGNUM(big)->data, size * sizeof (gran_t));
+    memset (BIGNUM(big)->data, 0, size * sizeof (gran_t));
     xbuf = BIGNUM(x)->data;
     ybuf = BIGNUM(y)->data;
     zbuf = BIGNUM(big)->data;
     for (i = 0; i < xsize; ++i) {
-	register unsigned xf = xbuf[i];
-	register unsigned k = 0;
+	register unsigned int xf = xbuf[i];
+	register unsigned int k = 0;
 	register gran_t *p = ybuf;
 	register gran_t *r = zbuf + i;
 	for (j = 0; j < ysize; ++j) {
@@ -641,13 +646,13 @@ Object Bignum_Multiply (x, y) Object x, y; {   /* bignum * bignum */
 
 /* Returns cons cell (quotient . remainder); cdr is a fixnum
  */
-Object Bignum_Fixnum_Divide (x, y) Object x, y; {   /* bignum / fixnum */
+Object Bignum_Fixnum_Divide (Object x, Object y) {   /* bignum / fixnum */
     Object big;
-    register xsize, i;
+    register int xsize, i;
     register gran_t *xbuf, *zbuf;
     int fix = FIXNUM(y);
     int xminusp, yminusp = 0;
-    register unsigned rem;
+    register unsigned int rem;
     GC_Node;
 
     GC_Link (x);
@@ -684,10 +689,10 @@ Object Bignum_Fixnum_Divide (x, y) Object x, y; {   /* bignum / fixnum */
 
 /* Returns cons cell (quotient . remainder); cdr is a fixnum
  */
-Object Bignum_Divide (x, y) Object x, y; {   /* bignum / bignum */
+Object Bignum_Divide (Object x, Object y) {   /* bignum / bignum */
     struct S_Bignum *dend, *dor;
     int quotsize, dendsize, dorsize, scale;
-    unsigned dor1, dor2;
+    unsigned int dor1, dor2;
     Object quot, rem;
     register gran_t *qp, *dendp;
     GC_Node2;
@@ -706,7 +711,7 @@ Object Bignum_Divide (x, y) Object x, y; {   /* bignum / bignum */
     dendsize = (sizeof (struct S_Bignum) - sizeof (gran_t))
 	+ (BIGNUM(x)->usize + 1) * sizeof (gran_t);
     Alloca (dend, struct S_Bignum*, dendsize);
-    bcopy ((char *)POINTER(x), (char *)dend, dendsize);
+    memcpy (dend, POINTER(x), dendsize);
     dend->size = BIGNUM(x)->usize + 1;
 
     if (quotsize == 0 || Bignum_Mantissa_Cmp (dend, BIGNUM(y)) < 0)
@@ -715,7 +720,7 @@ Object Bignum_Divide (x, y) Object x, y; {   /* bignum / bignum */
     dorsize = (sizeof (struct S_Bignum) - sizeof (gran_t))
 	+ BIGNUM (y)->usize * sizeof (gran_t);
     Alloca (dor, struct S_Bignum*, dorsize);
-    bcopy ((char *)POINTER(y), (char *)dor, dorsize);
+    memcpy (dor, POINTER(y), dorsize);
     dor->size = dorsize = BIGNUM(y)->usize;
 
     scale = 65536 / (unsigned int)(dor->data[dor->usize - 1] + 1);
@@ -729,18 +734,18 @@ Object Bignum_Divide (x, y) Object x, y; {   /* bignum / bignum */
     dendp = dend->data + dend->usize;
     dor1 = dor->data[dor->usize - 1];
     dor2 = dor->data[dor->usize - 2];
-        
+
     while (qp > BIGNUM(quot)->data) {
-	unsigned msw, guess;
+	unsigned int msw, guess;
 	int k;
 	register gran_t *dep, *dop, *edop;
-	
+
 	msw = dendp[-1] << 16 | dendp[-2];
 	guess = msw / dor1;
 	if (guess >= 65536)	/* [65535, 0, 0] / [65535, 65535] */
 	    guess = 65535;
 	for (;;) {
-	    unsigned d1, d2, d3;
+	    unsigned int d1, d2, d3;
 	    d3 = dor2 * guess;
 	    d2 = dor1 * guess + (d3 >> 16);
 	    d3 &= 0xFFFF;
@@ -756,7 +761,7 @@ Object Bignum_Divide (x, y) Object x, y; {   /* bignum / bignum */
 	k = 0;
 	dep = dendp - dorsize;
 	for (dop = dor->data, edop = dop + dor->usize; dop < edop; ) {
-	    register unsigned prod = *dop++ * guess;
+	    register unsigned int prod = *dop++ * guess;
 	    k += *dep;
 	    k -= prod & 0xFFFF;
 	    *dep++ = k;
@@ -779,7 +784,7 @@ Object Bignum_Divide (x, y) Object x, y; {   /* bignum / bignum */
 	}
 	*--qp = guess;
     }
-    
+
     if (Bignum_Div_In_Place (dend, scale))
 	Panic ("Bignum_Div scale");
  zero:
