@@ -2,7 +2,7 @@ Source: elk
 Section: devel
 Priority: optional
 Maintainer: Sam Hocevar (Debian packages) <sam+deb@zoy.org>
-Build-Depends: debhelper (>= 3.0), groff, libelf1-dev, xlibs-dev, lesstif-dev, libgdbm-dev, libxaw7-dev
+Build-Depends: debhelper (>= 3.0), groff, libelfg0-dev, xlibs-dev, lesstif-dev, libgdbm-dev, libxaw7-dev
 Standards-Version: 3.6.1.0
 
 Package: elk
@@ -36,7 +36,7 @@ Description: implementation of Scheme (the Extension Language Kit)
 Package: libelk0-dev
 Architecture: any
 Section: libdevel
-Depends: ${shlibs:Depends}, libelf1-dev, xlibs-dev
+Depends: ${shlibs:Depends}, libelfg0-dev, xlibs-dev
 Conflicts: elk (<< 3.99-1)
 Replaces: elk (<< 3.99-1)
 Description: development files for libelk0

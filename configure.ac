@@ -490,7 +490,7 @@ AC_CHECK_LIB(X11, XOpenDisplay,
   X_CFLAGS="-I${x_includes}"
   X_LIBS="-lX11 -L${x_libraries}"],
  [ac_cv_my_have_x11=no],
- [[-lXt -L${x_libraries}]])
+ [[-L${x_libraries}]])
 AM_CONDITIONAL(HAVE_X11, test "${ac_cv_my_have_x11}" = "yes")
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_LIBS)
