@@ -1226,5 +1226,4 @@
 (newline)
 (display "(test-cont) (test-sc4) (test-delay)")
 (newline)
-(test-cont) (test-sc4) (test-delay)
 "last item in file"
