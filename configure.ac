@@ -250,6 +250,9 @@ fi
 # mprotect is supported, but only for mmap()ed memory.
 AC_CHECK_FUNCS(mprotect)
 if false; then
+  AC_DEFINE(MPROTECT_SIG, 1, [FIXME HARD])
+fi
+if false; then
   AC_DEFINE(MPROTECT_MMAP, 1, [FIXME HARD])
 fi
 

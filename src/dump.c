@@ -77,18 +77,14 @@ void Init_Dump () {
     return False;\
 }
 
-#ifdef ELF
+#if defined(ELF)
 #  include "dump-elf.c"
-#else
-#ifdef ECOFF
+#elif defined(ECOFF)
 #  include "dump-ecoff.c"
-#else
-#ifdef HP9K
+#elif defined(HP9K)
 #  include "dump-hp9k.c"
 #else
 #  include "dump-vanilla.c"
-#endif
-#endif
 #endif
 
 /*ARGSUSED1*/

@@ -12,13 +12,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
 #  include <sys/mman.h>
 #endif
-#ifdef HAVE_GETPAGESIZE
-#  define SC_PAGESIZE_IN_UNISTD_H
-#endif
-#ifdef SC_PAGESIZE_IN_UNISTD_H
+#if defined(HAVE_GETPAGESIZE) || defined(SC_PAGESIZE_IN_UNISTD_H)
 #  define link FOO
 #  include <unistd.h>
 #  undef link
@@ -135,8 +132,8 @@ static void TerminateGC ();
 
 /* PAGEBYTES is defined in object.h */
 
-#define PAGEWORDS      (PAGEBYTES / sizeof (Object))
-#define HEAPPAGEMASK   ~(PAGEBYTES-1)
+#define PAGEWORDS      ((addrarith_t)(PAGEBYTES / sizeof (Object)))
+#define HEAPPAGEMASK   ~((gcptr_t)PAGEBYTES-1)
 
 #ifdef ALIGN_8BYTE
 #  define MAX_OBJECTWORDS       (PAGEWORDS - 1)
@@ -191,7 +188,7 @@ static void TerminateGC ();
 #define SET_PROTECT(addr)    { PMAP (addr) = 1; protected_pages++; }
 #define SET_UNPROTECT(addr)  { PMAP (addr) = 0; protected_pages--; }
 
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
 #  ifndef PROT_RW
 #    define PROT_RW   (PROT_READ | PROT_WRITE)
 #  endif
@@ -463,7 +460,7 @@ void Make_Heap (int size) {
     Object heap_obj;
     pageno_t i;
 
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
     InstallHandler ();
 #endif
 
@@ -472,19 +469,15 @@ void Make_Heap (int size) {
      * then calculate the resulting number of heap pages.
      */
 
-#ifdef SC_PAGESIZE_IN_UNISTD_H
+#if defined(SC_PAGESIZE_IN_UNISTD_H)
     if ((bytes_per_pp = sysconf (_SC_PAGESIZE)) == -1)
 	Fatal_Error ("sysconf(_SC_PAGESIZE) failed; can't get pagesize");
-#else
-#ifdef HAVE_GETPAGESIZE
+#elif defined(HAVE_GETPAGESIZE)
     bytes_per_pp = getpagesize ();
+#elif defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
+#   error "mprotect requires getpagesize or sysconf_pagesize"
 #else
-#   ifdef HAVE_MPROTECT
-#       include "mprotect requires getpagesize or sysconf_pagesize"
-#   else
-        bytes_per_pp = 4096;
-#   endif
-#endif
+    bytes_per_pp = 4096;
 #endif
     physical_pages = (heapsize+bytes_per_pp-1)/bytes_per_pp;
     hp_per_pp = bytes_per_pp / PAGEBYTES;
@@ -1290,7 +1283,7 @@ static int Scanner (pageno_t npages) {
     return (scanned);
 }
 
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
 /* the following function handles a page fault. If the fault was caused
  * by the mutator and incremental collection is enabled, this will result
  * in scanning the physical page the fault occured on.
@@ -1633,7 +1626,7 @@ void Generational_GC_Finalize () {
 }
 
 void Generational_GC_Reinitialize () {
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
     InstallHandler ();
 #endif
 }
@@ -1641,7 +1634,7 @@ void Generational_GC_Reinitialize () {
 
 Object Internal_GC_Status (int strat, int flags) {
     Object list;
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
     Object cell;
 #endif
     GC_Node;
@@ -1650,7 +1643,7 @@ Object Internal_GC_Status (int strat, int flags) {
     GC_Link (list);
     switch (strat) {
     default:            /* query or stop-and-copy */
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
 	if (inc_collection) {
 	    cell = Cons (Sym_Incremental_GC, Null);
 	    (void)P_Set_Cdr (list, cell);
@@ -1659,7 +1652,7 @@ Object Internal_GC_Status (int strat, int flags) {
 	break;
     case GC_STRAT_GEN:
 	if (flags == GC_FLAGS_INCR) {
-#ifdef HAVE_MPROTECT
+#if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
 	    inc_collection = 1;
 	    cell = Cons (Sym_Incremental_GC, Null);
 	    (void)P_Set_Cdr (list, cell);

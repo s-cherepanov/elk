@@ -490,7 +490,8 @@ void Pr_Symbol (Object port, Object sym, int raw) {
 
 void Pr_String (Object port, Object str, int raw) {
     register char *p = STRING(str)->data;
-    register int c, i, len = STRING(str)->size;
+    register int c, i;
+    register size_t len = STRING(str)->size;
     GC_Node2;
 
     if (raw) {

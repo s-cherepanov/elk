@@ -10,10 +10,10 @@ typedef struct {
     int tag;
 } Object;
 
-#define FIXBITS         (8 * sizeof(int))
+#define FIXBITS         (8 * (int)sizeof(int))
 #define SIGNBIT         ((unsigned)1 << (FIXBITS-1))
 #define CONSTBIT        1
-#define TYPEBITS        (8 * sizeof(int) - 1)
+#define TYPEBITS        (8 * (int)sizeof(int) - 1)
 #define MAX_TYPE        ((1 << TYPEBITS) - 1)
 
 #define UFIXNUM_FITS(i) (((i) & SIGNBIT) == 0)
@@ -41,8 +41,8 @@ typedef struct {
 #ifdef GENERATIONAL_GC
 
    typedef int gcspace_t;                 /* type for space and type arrays */
-   typedef unsigned long int gcptr_t;     /* type for pointers */
-   typedef unsigned long int pageno_t;    /* type for page numbers */
+   typedef ptrdiff_t gcptr_t;             /* type for pointers */
+   typedef long int pageno_t;             /* type for page numbers */
    typedef ptrdiff_t addrarith_t;         /* type for address arithmetic */
 
    extern gcspace_t *space;

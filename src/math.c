@@ -133,7 +133,7 @@ int Get_Integer (Object x) {
 	if (d != floor (d))
 	    Wrong_Type (x, T_Fixnum);
 	(void)frexp (d, &expo);
-	if (expo <= 8 * sizeof(int) - 1)
+	if (expo <= 8 * (int)sizeof(int) - 1)
 	    return d;
 	Primitive_Error ("integer out of range: ~s", x);
     default:
@@ -160,7 +160,7 @@ unsigned int Get_Unsigned (Object x) {
 	if (d != floor (d))
 	    Wrong_Type (x, T_Fixnum);
 	(void)frexp (d, &expo);
-	if (expo <= 8 * sizeof(int))
+	if (expo <= 8 * (int)sizeof(int))
 	    return d;
 err:
 	Primitive_Error ("integer out of range: ~s", x);
@@ -184,7 +184,7 @@ long int Get_Long (Object x) {
 	if (d != floor (d))
 	    Wrong_Type (x, T_Fixnum);
 	(void)frexp (d, &expo);
-	if (expo <= 8 * sizeof(long) - 1)
+	if (expo <= 8 * (int)sizeof(long) - 1)
 	    return d;
 	Primitive_Error ("integer out of range: ~s", x);
     default:
@@ -211,7 +211,7 @@ unsigned long int Get_Unsigned_Long (Object x) {
 	if (d != floor (d))
 	    Wrong_Type (x, T_Fixnum);
 	(void)frexp (d, &expo);
-	if (expo <= 8 * sizeof(long))
+	if (expo <= 8 * (int)sizeof(long))
 	    return d;
 err:
 	Primitive_Error ("integer out of range: ~s", x);

@@ -10,34 +10,22 @@ void Free_Symbols (SYMTAB *);
 
 #if defined(CAN_LOAD_OBJ) || defined (INIT_OBJECTS)
 
-#ifdef MACH_O
+#if defined(MACH_O)
 #  include "stab-macho.c"
-#else
-#ifdef ELF
+#elif defined(ELF)
 #  include "stab-elf.c"
-#else
-#if defined(COFF) || defined(XCOFF)
+#elif defined(COFF) || defined(XCOFF)
 #  include "stab-coff.c"
-#else
-#ifdef ECOFF
+#elif defined(ECOFF)
 #  include "stab-ecoff.c"
-#else
-#ifdef CONVEX_AOUT
+#elif defined(CONVEX_AOUT)
 #  include "stab-convex.c"
-#else
-#if defined(hp9000s300) || defined(__hp9000s300) || defined(__hp9000s300__)
+#elif defined(hp9000s300) || defined(__hp9000s300) || defined(__hp9000s300__)
 #  include "stab-hp9k300.c"
-#else
-#if defined(hp9000s800) || defined(__hp9000s800) || defined(__hp9000s800__)
+#elif defined(hp9000s800) || defined(__hp9000s800) || defined(__hp9000s800__)
 #  include "stab-hp9k800.c"
 #else
 #  include "stab-bsd.c"
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
 #endif
 
 static SYMPREFIX Ignore_Prefixes[] =  {

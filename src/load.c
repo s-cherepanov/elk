@@ -17,20 +17,14 @@ void Load_Source (Object);
   void Fork_Load();
 #endif
 
-#ifdef USE_LD
+#if defined(USE_LD)
 #  include "load-ld.c"
-#else
-#ifdef USE_RLD
+#elif defined(USE_RLD)
 #  include "load-rld.c"
-#else
-#ifdef USE_SHL
+#elif defined(USE_SHL)
 #  include "load-shl.c"
-#else
-#ifdef USE_DLOPEN
+#elif defined(USE_DLOPEN)
 #  include "load-dl.c"
-#endif
-#endif
-#endif
 #endif
 
 void Init_Load () {
