@@ -144,13 +144,11 @@ static Object P_Get_Property (Object w, Object prop, Object type, Object start,
         } else {
             Object v;
             GC_Node;
-            /* Assumes short is 16 bits and int is 32 bits.
-             */
             v = Make_Vector ((int)nitems, Null);
             GC_Link (v);
             for (i = 0; i < nitems; i++) {
                 x = Make_Unsigned (format == 16 ?
-                    *((short *)data + i) : *((int *)data + i));
+                    *((int16_t *)data + i) : *((int32_t *)data + i));
                 VECTOR(v)->data[i] = x;
             }
             Car (t) = v;
@@ -189,8 +187,8 @@ static Object P_Change_Property (Object w, Object prop, Object type,
             if (f == 16) {
                 if (x > 65535)
                     Primitive_Error ("format mismatch");
-                *((short *)buf + i) = x;     /* Assumes short is 16 bits */
-            } else *((int *)buf + i) = x;    /*   and int is 32 bits. */
+                *((int16_t *)buf + i) = x;
+            } else *((int32_t *)buf + i) = x;
         }
         break;
     default:

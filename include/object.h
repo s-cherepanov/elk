@@ -256,7 +256,7 @@ struct S_Promise {
 
 struct S_Port {
     Object name;    /* string */
-    short flags;
+    uint16_t flags;
     char unread;
     unsigned int ptr;
     FILE *file;
