@@ -361,7 +361,7 @@ err:
 }
 
 void elk_init_unix_process() {
-#ifdef HAVE_UNISTD_H
+#if defined(HAVE_ENVIRON) && !defined(SYS_DARWIN)
     Def_Prim(P_Environ,             "unix-environ",              0, 0, EVAL);
 #endif
     Def_Prim(P_Exec,                "unix-exec",                 2, 3, VARARGS);
