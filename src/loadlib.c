@@ -32,10 +32,15 @@
 
 #ifdef CAN_LOAD_LIB
 
-#include <dlfcn.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#if defined(HAVE_DL_DYLD)
+#   include <mach-o/dyld.h>
+#elif defined(HAVE_DL_DLOPEN)
+#   include <dlfcn.h>
+#endif
 
 #include "kernel.h"
 
@@ -43,25 +48,76 @@ extern void Free_Symbols (SYMTAB *);
 extern void Call_Initializers (SYMTAB *, char *, int);
 
 void Dlopen_File (char *fn) {
-    void *handle;
     SYM *sp;
+
+#if defined(HAVE_DL_DYLD)
+    NSModule handle;
+    NSObjectFileImage image;
+    NSObjectFileImageReturnCode ret;
+
+    if (Verb_Load)
+        printf ("[dyld %s]\n", fn);
+
+    ret = NSCreateObjectFileImageFromFile(fn, &image);
+
+    if (ret != NSObjectFileImageSuccess)
+        Primitive_Error ("could not map `~%~s'",
+                         Make_String (fn, strlen (fn)));
+
+    /* Open the dynamic module */
+    handle = NSLinkModule(image, fn, NSLINKMODULE_OPTION_RETURN_ON_ERROR);
+
+    if (!handle) {
+        NSLinkEditErrors errors;
+        const char *file, *errstr;
+        int errnum;
+        NSLinkEditError(&errors, &errnum, &file, &errstr);
+        Primitive_Error ("could not dyld `~%~s': ~%~s",
+                         Make_String (file, strlen (file)),
+                         Make_String (errstr, strlen (errstr)));
+    }
+
+    /* Destroy our image, we won't need it */
+    NSDestroyObjectFileImage(image);
+
+    /* NSUnLinkModule(handle, FALSE); */
+
+#elif defined(HAVE_DL_DLOPEN)
+    void *handle;
 
     if (Verb_Load)
         printf ("[dlopen %s]\n", fn);
-    if ((handle = dlopen (fn, RTLD_NOW|RTLD_GLOBAL)) == 0) {
+
+    handle = dlopen (fn, RTLD_NOW|RTLD_GLOBAL);
+
+    if (handle == NULL) {
         char *errstr = dlerror ();
-        Primitive_Error ("dlopen failed:~%~s",
-            Make_String (errstr, strlen (errstr)));
+        Primitive_Error ("dlopen failed: ~%~s",
+                         Make_String (errstr, strlen (errstr)));
     }
+
+#else
+#   error "No dynamic plugins API"
+#endif
+
     if (The_Symbols)
         Free_Symbols (The_Symbols);
+
     The_Symbols = Open_File_And_Snarf_Symbols (fn);
-    /*
-     * dlsym() may fail for symbols not exported by object file;
-     * this can be safely ignored.
-     */
-    for (sp = The_Symbols->first; sp; sp = sp->next)
+    for (sp = The_Symbols->first; sp; sp = sp->next) {
+#if defined(HAVE_DL_DYLD)
+        NSSymbol sym = NSLookupSymbolInModule(handle, sp->name);
+        if (sym)
+            sp->value = (unsigned long int)(intptr_t)NSAddressOfSymbol(sym);
+
+#elif defined(HAVE_DL_DLOPEN)
+        /* dlsym() may fail for symbols not exported by object file;
+         * this can be safely ignored. */
         sp->value = (unsigned long int)(intptr_t)dlsym (handle, sp->name);
+
+#endif
+    }
+
     Call_Initializers (The_Symbols, 0, PR_CONSTRUCTOR);
     Call_Initializers (The_Symbols, 0, PR_EXTENSION);
 }

@@ -158,9 +158,10 @@ ac_cv_my_can_load_lib=no
 AC_CHECK_HEADERS(mach-o/dyld.h,
   [AC_CHECK_FUNCS(NSLinkModule,
     [AC_DEFINE(HAVE_DL_DYLD, 1, [Define if you have the Darwin dyld API])
+     AC_DEFINE(SYMS_BEGIN_WITH, ['_'], [Define if symbols start with '_'])
      ac_cv_my_can_load_lib=yes])])
 
-AC_CHECK_HEADERS(a.out.h, ac_cv_my_can_load_lib=yes)
+AC_CHECK_HEADERS(a.out.h)
 
 # Only test for dlopen() if the others didn't work
 if test "${ac_cv_my_can_load_lib}" = "no"; then
@@ -184,13 +185,6 @@ AC_DEFINE(CACHECTL_H, <sys/cachectl.h>, [FIXME HARD])
 # If not, the exit library function will be redefined and will end in
 # a call to _exit.
 AC_CHECK_FUNCS(atexit)
-
-# Do the names of external functions in the symbol table always begin
-# with a special character (such as underline)?  If so, syms_begin_with
-# should hold this character, otherwise leave it empty.
-if false; then
-  AC_DEFINE(SYMS_BEGIN_WITH, ['_'], [FIXME HARD])
-fi
 
 # The symbol prefixes of extension initialization and finalization
 # functions (without the initial $syms_begin_with).  Do not change
