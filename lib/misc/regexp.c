@@ -37,11 +37,13 @@
 #include <string.h>
 
 #ifdef HAVE_REGCOMP
-
-#include <sys/types.h>
-#include <regex.h>
+#  include <sys/types.h>
+#  include <regex.h>
+#endif
 
 #include "scheme.h"
+
+#ifdef HAVE_REGCOMP
 
 #define REGEXP(x)   ((struct S_Regexp *)POINTER(x))
 #define MATCH(x)    ((struct S_Match *)POINTER(x))
