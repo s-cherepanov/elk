@@ -371,9 +371,11 @@ AC_OUTPUT([
   debian/Makefile
   doc/Makefile
   examples/Makefile
+  include/Makefile
   lib/Makefile
   lib/misc/Makefile
   lib/unix/Makefile
+  lib/xlib/Makefile
   scm/Makefile
   src/Makefile
   util/Makefile
