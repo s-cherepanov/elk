@@ -32,17 +32,20 @@
 
 #include <string.h>
 #include <stdio.h>
+
 #ifdef HAVE_SYS_TIMES_H
 #   include <sys/times.h>
 #endif
 
 #ifndef WIN32
-/* "extern" in front of the next declaration causes the Ultrix 4.2 linker
- * to fail when dynamically loading unix.o (but omitting it does no longer
- * work with modern C compilers):
- */
-extern char **environ;
 
+#ifdef ENVIRON_IN_UNISTD_H
+/* "extern" in front of the next declaration causes the Ultrix 4.2 linker
+ * to fail, but omitting it no longer works with modern C compilers: */
+extern char **environ;
+#endif
+
+#ifdef HAVE_ENVIRON
 static Object P_Environ() {
     Object ret, cell, str;
     char *p, **ep;
@@ -67,6 +70,7 @@ static Object P_Environ() {
     GC_Unlink;
     return P_Reverse(ret);
 }
+#endif
 
 static Object General_Exec(int argc, Object *argv, int path) {
     Object fn, args,  p, e;
@@ -357,7 +361,9 @@ err:
 }
 
 void elk_init_unix_process() {
+#ifdef HAVE_UNISTD_H
     Def_Prim(P_Environ,             "unix-environ",              0, 0, EVAL);
+#endif
     Def_Prim(P_Exec,                "unix-exec",                 2, 3, VARARGS);
     Def_Prim(P_Exec_Path,           "unix-exec-path",            2, 3, VARARGS);
     Def_Prim(P_Fork,                "unix-fork",                 0, 0, EVAL);
