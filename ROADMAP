@@ -32,16 +32,9 @@ elk-3.0 --+-- README      Explains the purpose and release status of Elk
           |
           +-- COPYRIGHT   The copyright status of the distribution
           |
-          +-- CONTRIBUTORS
-	  |               A list of people who have contributed significantly
+          +-- AUTHORS     A list of people who have contributed significantly
 	  |               to Elk; acknowledgments and credits
 	  |
-	  +-- PATCHLEVEL  The current patchlevel
-          |
-          +-- config/     Holds the configuration files with machine- and
-	  |               site-specific information required for building
-	  |               Elk.  See INSTALL for details.
-          |
           +-- include/    The include files to be #included by applications
 	  |               that use Elk as their extension language, and by
 	  |               extensions to Elk.  Including scheme.h from this
@@ -49,12 +42,6 @@ elk-3.0 --+-- README      Explains the purpose and release status of Elk
 	  |               included in the right order.  The include files may
 	  |               or may not use ANSI/ISO-C prototypes, depending on
 	  |               the config file you have chosen.
-          |
-          +-- scripts/    Shell scripts to link the Scheme interpreter with
-	  |               extensions (useful on platforms that to not support
-	  |               dynamic loading of objects), and to create
-	  |               dynamically loadable objects from .o files.  See
-	  |               INSTALL and scripts/README for details.
           |
           +-- src/        The C source files of the Scheme interpreter
           |
@@ -106,7 +93,7 @@ elk-3.0 --+-- README      Explains the purpose and release status of Elk
 	  |              |
 	  |              +-- regexp  A demonstration of the regexp extension
 	  |              |
-	  |              `-- CC      A few simple C++ programs demonstrating
+	  |              `-- c++     A few simple C++ programs demonstrating
 	  |                          use of Elk with C++ applications (see
 	  |                          README in this directory)
 	  |
