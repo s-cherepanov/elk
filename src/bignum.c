@@ -36,6 +36,14 @@
 
 #include "kernel.h"
 
+#ifndef DBL_MAX
+#   ifdef HUGE_VAL
+#       define DBL_MAX HUGE_VAL
+#   else
+#       define DBL_MAX (3.40282e+38)
+#   endif
+#endif
+
 static void Bignum_Mult_In_Place (register struct S_Bignum *, int);
 static void Bignum_Add_In_Place (register struct S_Bignum *, int);
 static int Bignum_Div_In_Place (register struct S_Bignum *, int);
@@ -440,7 +448,7 @@ double Bignum_To_Double (Object x) {   /* error if it ain't fit */
     register gran_t *p = BIGNUM(x)->data + i;
 
     for (i = BIGNUM(x)->usize; --i >= 0; ) {
-        if (rx >= HUGE / 65536.0)
+        if (rx >= DBL_MAX / 65536.0)
             Primitive_Error ("cannot coerce to real: ~s", x);
         rx *= 65536.0;
         rx += *--p;

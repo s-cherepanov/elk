@@ -36,10 +36,6 @@
 #  define __asm__ asm
 #endif
 
-#ifndef HUGE
-#  define HUGE HUGE_VAL
-#endif
-
 /* Under gcc, we use the __attribute__ macro to tell the compiler that a
  * function does not return. */
 #ifdef __GNUC__
