@@ -17,6 +17,11 @@ mkdir "${DIRNAME}"
 #   ./configure --host=i586-mingw32msvc --prefix=/ --bindir=/ --libdir=/
 #   make pkglibdir=/lib pkgdatadir=/scm
 make install DESTDIR="${DESTDIR}" pkglibdir=/lib pkgdatadir=/scm
+mv "${DESTDIR}/share/doc/elk/examples" "${DESTDIR}/examples"
+mv "${DESTDIR}/share/doc/elk/ps" "${DESTDIR}/doc"
+rmdir "${DESTDIR}/share/doc/elk"
+rmdir "${DESTDIR}/share/doc"
+rmdir "${DESTDIR}/share"
 cp "src/.libs/libelk-0.dll" "${DESTDIR}"
 
 # Pack the directory

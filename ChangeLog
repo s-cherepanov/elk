@@ -1,4 +1,439 @@
 ------------------------------------------------------------------------
+rev 220:  sam | 2003-09-28 14:49:25 +0200 (Sun, 28 Sep 2003) | 3 lines
+Changed paths:
+   M /COPYING
+   M /MACHINES
+
+  * Removed deprecated notes from MACHINES
+  * Added $Id to COPYING and removed date information.
+
+------------------------------------------------------------------------
+rev 219:  sam | 2003-09-28 13:22:30 +0200 (Sun, 28 Sep 2003) | 4 lines
+Changed paths:
+   M /examples/tests/Makefile.am
+   M /examples/tests/r4rstest.scm
+
+  * r4rstest.scm is the original test again, we add extra tests at build time
+    in a generated file.
+  * Fixed a $(srcdir) / $(builddir) confusion.
+
+------------------------------------------------------------------------
+rev 218:  sam | 2003-09-28 13:15:47 +0200 (Sun, 28 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/bitstring/Makefile.am
+   M /doc/cprog/Makefile.am
+   M /doc/kernel/Makefile.am
+   M /doc/man/Makefile.am
+   M /doc/oops/Makefile.am
+   M /doc/record/Makefile.am
+   M /doc/regexp/Makefile.am
+   M /doc/unix/Makefile.am
+   M /doc/usenix/Makefile.am
+   M /doc/xlib/Makefile.am
+   M /doc/xt/Makefile.am
+
+  * Fixed a couple of $(srcdir) / $(builddir) mistakes in the doc rules.
+
+------------------------------------------------------------------------
+rev 217:  sam | 2003-09-28 12:12:49 +0200 (Sun, 28 Sep 2003) | 3 lines
+Changed paths:
+   M /examples/tests/Makefile.am
+
+  * Use printf "" instead of touch to create timestamps because of systems
+    where touch does not create the file.
+
+------------------------------------------------------------------------
+rev 216:  sam | 2003-09-28 12:00:48 +0200 (Sun, 28 Sep 2003) | 2 lines
+Changed paths:
+   M /scm/xwidgets.scm
+
+  * Fixed xaw.la and motif.la loading.
+
+------------------------------------------------------------------------
+rev 215:  sam | 2003-09-28 12:00:26 +0200 (Sun, 28 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/xwidgets/Makefile.am
+   A /lib/xwidgets/error.c (from /lib/xwidgets/xterror.c:214)
+   A /lib/xwidgets/init.c (from /lib/xwidgets/xtinit.c:214)
+   A /lib/xwidgets/objects.c (from /lib/xwidgets/xtobjects.c:214)
+   D /lib/xwidgets/xterror.c
+   D /lib/xwidgets/xtinit.c
+   D /lib/xwidgets/xtobjects.c
+
+  * Renamed xt*.c to *.c, because it is their original name in Elk 3.0.
+
+------------------------------------------------------------------------
+rev 214:  sam | 2003-09-28 11:57:09 +0200 (Sun, 28 Sep 2003) | 3 lines
+Changed paths:
+   M /configure.ac
+   M /lib/xwidgets/Makefile.am
+   M /lib/xwidgets/mkwidget.scm
+   A /lib/xwidgets/motif/Makefile.am
+   A /lib/xwidgets/motif/init.c
+   A /lib/xwidgets/xaw/Makefile.am
+   A /lib/xwidgets/xaw/init.c
+   M /lib/xwidgets/xt.h
+
+  * Split the common part of the xaw and motif plugins into a separate
+    libelk-xt shared library.
+
+------------------------------------------------------------------------
+rev 213:  sam | 2003-09-28 11:50:15 +0200 (Sun, 28 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/xlib/Makefile.am
+   A /lib/xlib/init.c (from /lib/xlib/plugin.c:212)
+   D /lib/xlib/plugin.c
+
+  * Renamed plugin.c to init.c to match the xt plugin.
+
+------------------------------------------------------------------------
+rev 212:  sam | 2003-09-27 17:20:14 +0200 (Sat, 27 Sep 2003) | 4 lines
+Changed paths:
+   M /lib/xlib/Makefile.am
+   A /lib/xlib/error.c (from /lib/xlib/xerror.c:192)
+   A /lib/xlib/objects.c (from /lib/xlib/xobjects.c:192)
+   A /lib/xlib/plugin.c (from /lib/xlib/xinit.c:192)
+   D /lib/xlib/xerror.c
+   D /lib/xlib/xinit.c
+   M /lib/xlib/xlib.h
+   D /lib/xlib/xobjects.c
+
+  * Split the xlib.la module into a shared library and a module, so that the
+    shared library can be used by the xaw and motif modules (which I am going
+    to split as well).
+
+------------------------------------------------------------------------
+rev 211:  sam | 2003-09-27 16:41:16 +0200 (Sat, 27 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Fixed a syntax error.
+
+------------------------------------------------------------------------
+rev 210:  sam | 2003-09-27 14:34:27 +0200 (Sat, 27 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/xwidgets/motif
+   M /lib/xwidgets/xaw
+
+  * Ask SVN to ignore the .dirstamp entry.
+
+------------------------------------------------------------------------
+rev 209:  sam | 2003-09-27 14:30:10 +0200 (Sat, 27 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/cprog/Makefile.am
+
+  * Replaced a GNU sed syntax with two combined grep + sed calls.
+
+------------------------------------------------------------------------
+rev 208:  sam | 2003-09-27 14:07:13 +0200 (Sat, 27 Sep 2003) | 2 lines
+Changed paths:
+   M /doc/bitstring/Makefile.am
+   M /doc/cprog/Makefile.am
+   M /doc/kernel/Makefile.am
+   M /doc/oops/Makefile.am
+   M /doc/record/Makefile.am
+   M /doc/regexp/Makefile.am
+   M /doc/unix/Makefile.am
+   M /doc/xlib/Makefile.am
+   M /doc/xt/Makefile.am
+
+  * Use $(AWK) instead of awk.
+
+------------------------------------------------------------------------
+rev 207:  sam | 2003-09-27 14:05:59 +0200 (Sat, 27 Sep 2003) | 3 lines
+Changed paths:
+   M /doc/util/mkindex.awk
+
+  * Changed the recursion into an iteration so that we don't use awk functions
+    and it properly works with the Solaris implementation.
+
+------------------------------------------------------------------------
+rev 206:  sam | 2003-09-26 19:58:08 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/unix/process.c
+
+  * Use __environ instead of environ on platforms where it exists.
+
+------------------------------------------------------------------------
+rev 205:  sam | 2003-09-26 19:54:52 +0200 (Fri, 26 Sep 2003) | 3 lines
+Changed paths:
+   M /configure.ac
+   M /lib/xwidgets/Makefile.am
+   M /lib/xwidgets/mkwidget.scm
+   D /lib/xwidgets/motif/Makefile.am
+   D /lib/xwidgets/motif/init.c
+   D /lib/xwidgets/xaw/Makefile.am
+   D /lib/xwidgets/xaw/init.c
+   M /lib/xwidgets/xtinit.c
+   M /scm/xwidgets.scm
+
+  * Merged the *-xt.la and *-widgets.la module pairs into one *.la to avoid
+    undefined symbols.
+
+------------------------------------------------------------------------
+rev 204:  sam | 2003-09-26 18:23:47 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/unix/process.c
+
+  * Fixed environ detection under OS X.
+
+------------------------------------------------------------------------
+rev 203:  sam | 2003-09-26 18:21:24 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /examples/Makefile.am
+   M /examples/tests
+   A /examples/tests/Makefile.am
+   M /examples/tests/r4rstest.scm
+
+  * We run r4rstest.scm after having built elk.
+
+------------------------------------------------------------------------
+rev 202:  sam | 2003-09-26 17:57:43 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Fixed shell syntax (if "foo" = "bar" instead of if test "foo" = "bar").
+
+------------------------------------------------------------------------
+rev 201:  sam | 2003-09-26 17:42:13 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Don't build the Xaw and Motif plugins when cross-compiling.
+
+------------------------------------------------------------------------
+rev 200:  sam | 2003-09-26 17:33:30 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/unix/process.c
+
+  * Fixed linking on OS X.
+
+------------------------------------------------------------------------
+rev 199:  sam | 2003-09-26 17:32:16 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /lib/unix/process.c
+
+  * Disabled the use of environ on OS X.
+
+------------------------------------------------------------------------
+rev 198:  sam | 2003-09-26 17:03:20 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /lib/xwidgets/motif/Makefile.am
+   M /lib/xwidgets/xaw/Makefile.am
+
+  * Call Elk with case-sensitive symbols when building code.
+
+------------------------------------------------------------------------
+rev 197:  sam | 2003-09-26 17:02:53 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /include/misc.h
+   M /src/heap-sc.c
+   M /src/libelk.c
+   M /src/list.c
+
+  * Renamed ALIGN into ELK_ALIGN because OS X's <ppc/param.h> defines it.
+
+------------------------------------------------------------------------
+rev 196:  sam | 2003-09-26 14:28:31 +0200 (Fri, 26 Sep 2003) | 3 lines
+Changed paths:
+   M /configure.ac
+   M /lib/unix/fdescr.c
+   M /src/heap-gen.c
+   M /src/io.c
+
+  * Removed compile-time checks for _SC_OPEN_MAX, _PC_PATH_MAX and _SC_PAGESIZE
+    and used simple build-time #ifdefs.
+
+------------------------------------------------------------------------
+rev 195:  sam | 2003-09-26 14:17:33 +0200 (Fri, 26 Sep 2003) | 3 lines
+Changed paths:
+   M /include/misc.h
+
+  * Added '\r' to the list of whitespace characters, as in the patch I found
+    on http://verno.ueda.info.waseda.ac.jp/network/patch-z .
+
+------------------------------------------------------------------------
+rev 194:  sam | 2003-09-26 14:13:29 +0200 (Fri, 26 Sep 2003) | 3 lines
+Changed paths:
+   M /COPYING
+   M /debian/copyright
+
+  * Added my copyright to the license.
+  * Removed useless stuff from debian/copyright.
+
+------------------------------------------------------------------------
+rev 193:  sam | 2003-09-26 11:18:39 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /
+
+  * Ignore the INSTALL file.
+
+------------------------------------------------------------------------
+rev 192:  sam | 2003-09-26 11:11:20 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /BUGS
+   M /src/math.c
+
+  * Fixed the bignum/double comparisons.
+
+------------------------------------------------------------------------
+rev 191:  sam | 2003-09-26 11:10:53 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /src/bool.c
+
+  * Fixed a minor compilation warning.
+
+------------------------------------------------------------------------
+rev 190:  sam | 2003-09-26 03:27:04 +0200 (Fri, 26 Sep 2003) | 2 lines
+Changed paths:
+   M /examples/tests/r4rstest.scm
+
+  * Updated Aubrey's r4rs conformance test which now features my suggestion.
+
+------------------------------------------------------------------------
+rev 189:  sam | 2003-09-25 15:28:07 +0200 (Thu, 25 Sep 2003) | 2 lines
+Changed paths:
+   M /include/object.h
+   M /lib/xlib/property.c
+
+  * Replaced short with int16_t where necessary.
+
+------------------------------------------------------------------------
+rev 188:  sam | 2003-09-25 15:04:01 +0200 (Thu, 25 Sep 2003) | 2 lines
+Changed paths:
+   M /examples/Makefile.am
+   A /examples/tests
+   A /examples/tests/README
+   A /examples/tests/r4rstest.scm
+
+  * Added the r4rstest.scm compliance test, with a minor addition.
+
+------------------------------------------------------------------------
+rev 187:  sam | 2003-09-24 20:49:46 +0200 (Wed, 24 Sep 2003) | 2 lines
+Changed paths:
+   M /src/bool.c
+
+  * According to r4rs section 6.2, (eqv? 1 1.0) returns #f.
+
+------------------------------------------------------------------------
+rev 186:  sam | 2003-09-24 19:42:55 +0200 (Wed, 24 Sep 2003) | 2 lines
+Changed paths:
+   M /include/object.h
+
+  * BigNums now use uint16_t, not unsigned short.
+
+------------------------------------------------------------------------
+rev 185:  sam | 2003-09-24 18:32:46 +0200 (Wed, 24 Sep 2003) | 3 lines
+Changed paths:
+   M /BUGS
+   M /src/special.c
+
+  * Fixed scope of named let variables, fixing the bug described here:
+    http://groups.google.com/groups?selm=871zemtmd4.fsf%40app.dial.idiom.com
+
+------------------------------------------------------------------------
+rev 184:  sam | 2003-09-24 17:14:16 +0200 (Wed, 24 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+   M /lib/unix/process.c
+
+  * Fixed the check for "environ" on OS X and Solaris.
+
+------------------------------------------------------------------------
+rev 183:  sam | 2003-09-24 11:19:40 +0200 (Wed, 24 Sep 2003) | 2 lines
+Changed paths:
+   D /INSTALL
+   M /bootstrap
+
+  * Removed INSTALL from repository, automake installs it for us.
+
+------------------------------------------------------------------------
+rev 182:  sam | 2003-09-24 11:15:37 +0200 (Wed, 24 Sep 2003) | 2 lines
+Changed paths:
+   M /BUGS
+
+  * New bugs.
+
+------------------------------------------------------------------------
+rev 181:  sam | 2003-09-24 11:14:51 +0200 (Wed, 24 Sep 2003) | 2 lines
+Changed paths:
+   M /AUTHORS
+   M /include/site.h.in
+
+  * extern_c should expand to extern in C, not to /* */, thanks to Mark Sapa.
+
+------------------------------------------------------------------------
+rev 180:  sam | 2003-09-23 14:16:43 +0200 (Tue, 23 Sep 2003) | 2 lines
+Changed paths:
+   M /src/libelk.c
+
+  * Case-insensitive symbols by default.
+
+------------------------------------------------------------------------
+rev 179:  sam | 2003-09-23 14:16:22 +0200 (Tue, 23 Sep 2003) | 2 lines
+Changed paths:
+   M /include/site.h.in
+   M /src/bignum.c
+
+  * Use DBL_MAX instead of HUGE_VAL for float precision when available.
+
+------------------------------------------------------------------------
+rev 178:  sam | 2003-09-23 14:15:36 +0200 (Tue, 23 Sep 2003) | 2 lines
+Changed paths:
+   M /src/math.c
+
+  * Promoted precision in Float->String transformations.
+
+------------------------------------------------------------------------
+rev 177:  sam | 2003-09-23 00:54:22 +0200 (Tue, 23 Sep 2003) | 2 lines
+Changed paths:
+   M /src/prim.c
+   M /src/special.c
+
+  * Empty (begin), (begin1) and (cond) return #<unspecified>.
+
+------------------------------------------------------------------------
+rev 176:  sam | 2003-09-23 00:47:03 +0200 (Tue, 23 Sep 2003) | 2 lines
+Changed paths:
+   M /src/print.c
+
+  * Display #<foo> instead of #[foo], to mimic Guile's output.
+
+------------------------------------------------------------------------
+rev 175:  sam | 2003-09-23 00:46:24 +0200 (Tue, 23 Sep 2003) | 2 lines
+Changed paths:
+   M /include/extern.h
+   M /include/object.h
+   M /src/symbol.c
+
+  * Added the "unspecified" type.
+
+------------------------------------------------------------------------
+rev 174:  sam | 2003-09-23 00:44:19 +0200 (Tue, 23 Sep 2003) | 2 lines
+Changed paths:
+   M /ChangeLog
+   M /NEWS
+
+  * Fixed fucked up ChangeLog and NEWS files.
+
+------------------------------------------------------------------------
+rev 173:  sam | 2003-09-22 19:00:33 +0200 (Mon, 22 Sep 2003) | 2 lines
+Changed paths:
+   M /configure.ac
+
+  * Linux compilation fix.
+
+------------------------------------------------------------------------
+rev 172:  sam | 2003-09-20 05:25:58 +0200 (Sat, 20 Sep 2003) | 3 lines
+Changed paths:
+   M /lib/misc/bitstring.c
+
+  * Fixed the bitstring->unsigned-integer return value with a patch
+    from David Marmor.
+
+------------------------------------------------------------------------
 rev 171:  sam | 2003-09-20 04:27:44 +0200 (Sat, 20 Sep 2003) | 3 lines
 Changed paths:
    M /NEWS
