@@ -44,8 +44,7 @@ void Init_Terminate () {
 /* Register an object with the given group and termination function;
  * object can be marked as LEADER.
  */
-void Register_Object (obj, group, term, leader_flag) Object obj; GENERIC group;
-        PFO term; {
+void Register_Object (Object obj, GENERIC group, PFO term, int leader_flag) {
     WEAK_NODE *p;
 
     p = (WEAK_NODE *)Safe_Malloc (sizeof (*p));

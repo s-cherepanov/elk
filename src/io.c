@@ -340,8 +340,7 @@ Object P_Close_Output_Port (Object port) {
     return General_Close_Port (port);
 }
 
-#define General_With(prim,curr,flags) Object prim (name, thunk)\
-        Object name, thunk; {\
+#define General_With(prim,curr,flags) Object prim (Object name, Object thunk) {\
     Object old, ret;\
     GC_Node2;\
 \
