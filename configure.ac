@@ -462,7 +462,7 @@ AC_CHECK_LIB(Xmu, XmuDrawLogo,
  [xmu_libraries=""],
  [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])
 
-if "${cross_compile}" = "no"; then
+if test "${cross_compile}" = "no"; then
   AC_CHECK_LIB(Xaw, XawTextSearch,
    [ac_cv_my_have_xaw=yes
     XAW_CFLAGS="-I${x_includes}"
@@ -476,7 +476,7 @@ AM_CONDITIONAL(HAVE_XAW, test "${ac_cv_my_have_xaw}" = "yes")
 AC_SUBST(XAW_CFLAGS)
 AC_SUBST(XAW_LIBS)
 
-if "${cross_compile}" = "no"; then
+if test "${cross_compile}" = "no"; then
   AC_CHECK_LIB(Xm, XmStringConcat,
    [ac_cv_my_have_motif=yes
     MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
