@@ -196,8 +196,7 @@ static void TerminateGC ();
 
 #define IS_CLUSTER(a,b) (SAME_PHYSPAGE (PAGE_TO_ADDR ((a)), \
                                         PAGE_TO_ADDR ((b))) || \
-                         (space[(a)&hp_per_pp_mask] == \
-                          space[((b)&hp_per_pp_mask)+hp_per_pp] && \
+                         (space[a] == space[b] && \
                           type[(a)&hp_per_pp_mask] == OBJECTPAGE && \
                           type[((b)&hp_per_pp_mask)+hp_per_pp] == OBJECTPAGE))
 
@@ -805,54 +804,54 @@ static void AllocPage (pageno_t npg) {
 
     /* now look for a cluster of npg free pages. cont_free counts the
      * number of free pages found, first_freepage is the number of the
-     * first free heap page in the cluster.
-     */
-
+     * first free heap page in the cluster. */
     for (p = spanning_pages, cont_free = 0; p; p--) {
-        if (space[current_freepage] < previous_space
-            && !STABLE (current_freepage)) {
-            if (cont_free == 0) {
-                /* This is our first free page, first check that we have a
-                 * continuous cluster of pages (we'll check later that they
-                 * are free). Otherwise, go to the next free page */
-                if (current_freepage+npg-1 <= lastpage
-                    && IS_CLUSTER (current_freepage, current_freepage+npg-1))
-                    first_freepage = current_freepage;
-                else {
-                    current_freepage = next (current_freepage -
-                                             current_freepage % hp_per_pp +
-                                             hp_per_pp-1);
-                    continue;
-                }
-            }
 
-            cont_free++;
-
-            if (cont_free == npg) {
-                space[first_freepage] = current_space;
-                type[first_freepage] = OBJECTPAGE;
-                for (n = 1; n < npg; n++) {
-                    space[first_freepage+n] = current_space;
-                    type[first_freepage+n] = CONTPAGE;
-                }
-                current_freep = PAGE_TO_OBJ (first_freepage);
-                current_free = npg*PAGEWORDS;
-                current_pages += npg;
-                allocated_pages += npg;
-                current_freepage = next (first_freepage+npg-1);
-                if (ProtectedInRegion (first_freepage, npg))
-                    (void)ScanCluster (PHYSPAGE (first_freepage));
-                return;
-            }
-
-            /* check the next free page. If we warped, reset cont_free to 0. */
-            current_freepage = next (current_freepage);
-            if (current_freepage == firstpage) cont_free = 0;
-
-        } else {
+        /* If we have more space than before, or if the current page is
+         * stable, start again with the next page. */
+        if (space[current_freepage] >= previous_space
+             || STABLE (current_freepage)) {
             current_freepage = next (current_freepage);
             cont_free = 0;
+            continue;
         }
+
+        if (cont_free == 0) {
+            /* This is our first free page, first check that we have a
+             * continuous cluster of pages (we'll check later that they
+             * are free). Otherwise, go to the next free page. */
+            if ((current_freepage+npg-1) > lastpage
+                || !IS_CLUSTER (current_freepage, current_freepage+npg-1)) {
+                current_freepage = next ((current_freepage&hp_per_pp_mask)
+                                          +hp_per_pp-1);
+                continue;
+            }
+
+            first_freepage = current_freepage;
+        }
+
+        cont_free++;
+
+        if (cont_free == npg) {
+            space[first_freepage] = current_space;
+            type[first_freepage] = OBJECTPAGE;
+            for (n = 1; n < npg; n++) {
+                space[first_freepage+n] = current_space;
+                type[first_freepage+n] = CONTPAGE;
+            }
+            current_freep = PAGE_TO_OBJ (first_freepage);
+            current_free = npg*PAGEWORDS;
+            current_pages += npg;
+            allocated_pages += npg;
+            current_freepage = next (first_freepage+npg-1);
+            if (ProtectedInRegion (first_freepage, npg))
+                (void)ScanCluster (PHYSPAGE (first_freepage));
+            return;
+        }
+
+        /* check the next free page. If we warped, reset cont_free to 0. */
+        current_freepage = next (current_freepage);
+        if (current_freepage == firstpage) cont_free = 0;
     }
 
     /* no space available, try to expand heap */
