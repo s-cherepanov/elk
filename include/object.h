@@ -145,12 +145,12 @@ typedef struct {
 #define AUTOLOAD(x) ((struct S_Autoload *)POINTER(x))
 #define MACRO(x)    ((struct S_Macro *)POINTER(x))
 
-typedef unsigned short gran_t;  /* Granularity of bignums */
+typedef uint16_t gran_t;  /* Granularity of bignums */
 
 struct S_Bignum {
     Object minusp;
-    unsigned int size;          /* Number of ushorts allocated */
-    unsigned int usize;         /* Number of ushorts actually used */
+    unsigned int size;          /* Number of uint16_t allocated */
+    unsigned int usize;         /* Number of uint16_t actually used */
     gran_t data[1];             /* Data, lsw first */
 };
 
