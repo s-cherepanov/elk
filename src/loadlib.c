@@ -1,4 +1,4 @@
-/* load-dl.c
+/* loadlib.c
  *
  * $Id$
  *

@@ -51,24 +51,26 @@ SYMTAB *Snarf_Symbols (FILE *f) {
     tab->strings = 0;
     nextp = &tab->first;
 
-    while (start != end || !feof(f)) {
+    while (start != end || !feof (f)) {
         if (i == end) {
             /* If we filled our buffer without finding a string, we set
              * start = end so that the buffer is completely emptied */
-            if(start == 0 && end != 0)
+            if (start == 0 && end != 0)
                 start = end;
 
             /* Fill our buffer some more */
-            memmove(buffer, buffer + start, end - start);
+            memmove (buffer, buffer + start, end - start);
             end -= start;
             start = 0;
-            i = fread(buffer + end, 1, BUFSIZ - end, f);
-            if(i == 0) break;
+            i = fread (buffer + end, 1, BUFSIZ - end, f);
+            if (i == 0)
+                break;
             end += i;
         }
 
         for (i = start; i < end; i++)
-            if(buffer[i] >= 0x20 && buffer[i] < 0x80) break;
+            if (buffer[i] >= 0x20 && buffer[i] < 0x80)
+                break;
 
         if (i == end)
             continue;
@@ -76,19 +78,20 @@ SYMTAB *Snarf_Symbols (FILE *f) {
         start = i;
 
         for (i = start + 1; i < end; i++)
-            if(buffer[i] == 0) break;
+            if (buffer[i] == 0)
+                break;
 
         if (i == end)
             continue;
 
         /* If this string contains INIT_PREFIX or FINIT_PREFIX, it's
          * potentially a valid symbol. */
-        if (strstr(buffer + start, INIT_PREFIX)
-             || strstr(buffer + start, FINIT_PREFIX)) {
+        if (strstr (buffer + start, INIT_PREFIX)
+             || strstr (buffer + start, FINIT_PREFIX)) {
 
             sp = tab->first;
-            while(sp) {
-                if(!strcmp(sp->name, buffer + start)) {
+            while (sp) {
+                if (!strcmp (sp->name, buffer + start)) {
                     /* We have already seen this symbol; abort */
                     goto next_string;
                 }
