@@ -309,11 +309,7 @@ void Elk_Init (int ac, char **av, int init_objects, char *toplevel) {
      */
     Set_Error_Tag ("scheme-init");
     initfile = Safe_Malloc (strlen (Scm_Dir) + 1 + sizeof (INITFILE) + 1);
-#ifdef WIN32
-    sprintf (initfile, "%s\\%s", Scm_Dir, INITFILE);
-#else
-    sprintf (initfile, "%s/%s", Scm_Dir, INITFILE);
-#endif
+    sprintf (initfile, "%s" SEPARATOR_STRING "%s", Scm_Dir, INITFILE);
     if (stat (initfile, &st) == -1 && errno == ENOENT)
         file = Make_String (INITFILE, sizeof(INITFILE)-1);
     else

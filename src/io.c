@@ -190,11 +190,7 @@ Object General_File_Operation (Object s, register int op) {
             return s;
         }
         Alloca (r, char*, strlen (dir) + 1 + strlen (p) + 1);
-#ifdef WIN32
-        sprintf (r, "%s\\%s", dir, p);
-#else
-        sprintf (r, "%s/%s", dir, p);
-#endif
+        sprintf (r, "%s" SEPARATOR_STRING "%s", dir, p);
         ret = Make_String (r, strlen (r));
         Alloca_End;
         return ret;
@@ -241,11 +237,7 @@ Object Open_File (char *name, int flags, int err) {
     p = Internal_Tilde_Expand (name, &dir);
     if (p) {
         Alloca (name, char*, strlen (dir) + 1 + strlen (p) + 1);
-#ifdef WIN32
-        sprintf (name, "%s\\%s", dir, p);
-#else
-        sprintf (name, "%s/%s", dir, p);
-#endif
+        sprintf (name, "%s" SEPARATOR_STRING "%s", dir, p);
     }
     if (!err && stat (name, &st) == -1 &&
             (errno == ENOENT || errno == ENOTDIR)) {
@@ -300,13 +292,8 @@ Object General_Open_File (Object name, int flags, Object path) {
                 Alloca (buf, char*, blen);
             }
             memcpy (buf, STRING(pref)->data, plen);
-#ifdef WIN32
-            if (buf[plen-1] != '\\')
-                buf[plen++] = '\\';
-#else
-            if (buf[plen-1] != '/')
-                buf[plen++] = '/';
-#endif
+            if (buf[plen-1] != SEPARATOR_CHAR)
+                buf[plen++] = SEPARATOR_CHAR;
             memcpy (buf+plen, fn, len);
             buf[len+plen] = '\0';
             port = Open_File (buf, flags, 0);

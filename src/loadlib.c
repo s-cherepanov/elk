@@ -197,21 +197,21 @@ static void Load_Lib (Object libs) {
         /* Our line starts with dlname='... */
         if (strncmp (buffer, "dlname", 6))
             continue;
-        dlname = index (buffer, '\'');
+        dlname = strchr (buffer, '\'');
         if (dlname == NULL)
             continue;
         dlname++;
-        eol = rindex (buffer, '\'');
+        eol = strrchr (buffer, '\'');
         if (eol == NULL || eol == dlname)
             continue;
         *eol = '\0';
         path = strdup (STRING(PORT(port)->name)->data);
-        eol = rindex (path, '/');
+        eol = strrchr (path, SEPARATOR_CHAR);
         if (eol == NULL)
             eol = path;
         *eol = '\0';
         lib = malloc (strlen (path) + 1 + strlen (dlname) + 1);
-        sprintf (lib, "%s/%s", path, dlname);
+        sprintf (lib, "%s" SEPARATOR_STRING "%s", path, dlname);
         free (path);
         break;
     }
