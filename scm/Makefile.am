@@ -1,4 +1,5 @@
 NULL = 
+
 pkgdata_DATA = \
 	apropos.scm \
 	bitstring.scm \
@@ -17,6 +18,7 @@ pkgdata_DATA = \
 	regexp.scm \
 	safe-env.scm \
 	setf.scm \
+	slib.scm \
 	struct.scm \
 	toplevel.scm \
 	trace.scm \
@@ -25,3 +27,6 @@ pkgdata_DATA = \
 	xt.scm \
 	xwidgets.scm \
 	$(NULL)
+
+EXTRA_DIST = slib.scm.in
+

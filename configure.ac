@@ -375,8 +375,10 @@ AC_OUTPUT([
   lib/Makefile
   lib/misc/Makefile
   lib/unix/Makefile
+  lib/xaw/Makefile
   lib/xlib/Makefile
   scm/Makefile
+  scm/slib.scm
   src/Makefile
   util/Makefile
 ])

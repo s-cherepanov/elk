@@ -46,8 +46,6 @@ install: build
 
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/elk
 
-	install -m 644 debian/elk.ini $(CURDIR)/debian/elk/usr/share/elk
-
 	mv $(CURDIR)/debian/elk/usr/lib/*.so.* \
 	   $(CURDIR)/debian/libelk0/usr/lib/
 
