@@ -92,6 +92,19 @@ void Dlopen_File (char *fn) {
 
     /* NSUnLinkModule (handle, FALSE); */
 
+#elif defined(WIN32)
+    void *handle;
+
+    if (Verb_Load)
+        printf ("[dll %s]\n", fn);
+
+    handle = LoadLibrary (fn);
+
+    if (handle == NULL) {
+        Primitive_Error ("LoadLibrary failed on ~%~s",
+                         Make_String (fn, strlen (fn)));
+    }
+
 #elif defined(HAVE_DL_DLOPEN)
     void *handle;
 
@@ -139,6 +152,9 @@ void Dlopen_File (char *fn) {
         NSSymbol sym = NSLookupSymbolInModule (handle, sp->name);
         if (sym)
             sp->value = (unsigned long int)(intptr_t)NSAddressOfSymbol (sym);
+
+#elif defined(WIN32)
+        sp->value = (void *)GetProcAddress (handle, (MYCHAR *)sym);
 
 #elif defined(HAVE_DL_DLOPEN)
         /* dlsym() may fail for symbols not exported by object file;
