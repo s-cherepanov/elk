@@ -32,7 +32,7 @@
 
 static Object Sym_Wm_Hints, Sym_Size_Hints;
 
-static Object P_Iconify_Window (w, scr) Object w, scr; {
+static Object P_Iconify_Window (Object w, Object scr) {
     Check_Type (w, T_Window);
     if (!XIconifyWindow (WINDOW(w)->dpy, WINDOW(w)->win,
             Get_Screen_Number (WINDOW(w)->dpy, scr)))
@@ -40,7 +40,7 @@ static Object P_Iconify_Window (w, scr) Object w, scr; {
     return Void;
 }
 
-static Object P_Withdraw_Window (w, scr) Object w, scr; {
+static Object P_Withdraw_Window (Object w, Object scr) {
     Check_Type (w, T_Window);
     if (!XWithdrawWindow (WINDOW(w)->dpy, WINDOW(w)->win,
             Get_Screen_Number (WINDOW(w)->dpy, scr)))
@@ -48,7 +48,7 @@ static Object P_Withdraw_Window (w, scr) Object w, scr; {
     return Void;
 }
 
-static Object P_Reconfigure_Wm_Window (w, scr, conf) Object w, scr, conf; {
+static Object P_Reconfigure_Wm_Window (Object w, Object scr, Object conf) {
     unsigned long mask;
 
     Check_Type (w, T_Window);
@@ -59,7 +59,7 @@ static Object P_Reconfigure_Wm_Window (w, scr, conf) Object w, scr, conf; {
     return Void;
 }
 
-static Object P_Wm_Command (w) Object w; {
+static Object P_Wm_Command (Object w) {
     int i, ac;
     char **av;
     Object s, ret, t;
@@ -81,7 +81,7 @@ static Object P_Wm_Command (w) Object w; {
     return ret;
 }
 
-static String_List_To_Text_Property (x, ret) Object x; XTextProperty *ret; {
+static String_List_To_Text_Property (Object x, XTextProperty *ret) {
     register i, n;
     register char **s;
     Object t;
@@ -99,7 +99,7 @@ static String_List_To_Text_Property (x, ret) Object x; XTextProperty *ret; {
     Alloca_End;
 }
 
-static Object Text_Property_To_String_List (p) XTextProperty *p; {
+static Object Text_Property_To_String_List (XTextProperty *p) {
     int n;
     register i;
     char **s;
@@ -119,7 +119,7 @@ static Object Text_Property_To_String_List (p) XTextProperty *p; {
     return ret;
 }
 
-static Object P_Get_Text_Property (w, a) Object w, a; {
+static Object P_Get_Text_Property (Object w, Object a) {
     XTextProperty ret;
 
     Check_Type (w, T_Window);
@@ -134,7 +134,7 @@ static Object P_Get_Text_Property (w, a) Object w, a; {
     return Text_Property_To_String_List (&ret);
 }
 
-static Object P_Set_Text_Property (w, prop, a) Object w, prop, a; {
+static Object P_Set_Text_Property (Object w, Object prop, Object a) {
     XTextProperty p;
 
     Check_Type (w, T_Window);
@@ -145,7 +145,7 @@ static Object P_Set_Text_Property (w, prop, a) Object w, prop, a; {
     return Void;
 }
 
-static Object P_Wm_Protocols (w) Object w; {
+static Object P_Wm_Protocols (Object w) {
     Atom *p;
     int i, n;
     Object ret;
@@ -169,7 +169,7 @@ static Object P_Wm_Protocols (w) Object w; {
     return ret;
 }
 
-static Object P_Set_Wm_Protocols (w, v) Object w, v; {
+static Object P_Set_Wm_Protocols (Object w, Object v) {
     Atom *p;
     int i, n;
     Alloca_Begin;
@@ -190,7 +190,7 @@ static Object P_Set_Wm_Protocols (w, v) Object w, v; {
     return Void;
 }
 
-static Object P_Wm_Class (w) Object w; {
+static Object P_Wm_Class (Object w) {
     Object ret, x;
     XClassHint c;
     GC_Node;
@@ -221,7 +221,7 @@ static Object P_Wm_Class (w) Object w; {
     return ret;
 }
 
-static Object P_Set_Wm_Class (w, name, class) Object w, name, class; {
+static Object P_Set_Wm_Class (Object w, Object name, Object class) {
     XClassHint c;
 
     Check_Type (w, T_Window);
@@ -231,7 +231,7 @@ static Object P_Set_Wm_Class (w, name, class) Object w, name, class; {
     return Void;
 }
 
-static Object P_Set_Wm_Command (w, cmd) Object w, cmd; {
+static Object P_Set_Wm_Command (Object w, Object cmd) {
     register i, n;
     register char **argv;
     Object c;
@@ -250,7 +250,7 @@ static Object P_Set_Wm_Command (w, cmd) Object w, cmd; {
     return Void;
 }
 
-static Object P_Wm_Hints (w) Object w; {
+static Object P_Wm_Hints (Object w) {
     XWMHints *p;
 
     Check_Type (w, T_Window);
@@ -267,7 +267,7 @@ static Object P_Wm_Hints (w) Object w; {
         WINDOW(w)->dpy, (unsigned long)WMH.flags);
 }
 
-static Object P_Set_Wm_Hints (w, h) Object w, h; {
+static Object P_Set_Wm_Hints (Object w, Object h) {
     unsigned long mask;
 
     Check_Type (w, T_Window);
@@ -277,7 +277,7 @@ static Object P_Set_Wm_Hints (w, h) Object w, h; {
     return Void;
 }
 
-static Object P_Size_Hints (w, a) Object w, a; {
+static Object P_Size_Hints (Object w, Object a) {
     long supplied;
 
     Check_Type (w, T_Window);
@@ -299,7 +299,7 @@ static Object P_Size_Hints (w, a) Object w, a; {
         WINDOW(w)->dpy, (unsigned long)SZH.flags);
 }
 
-static Object P_Set_Size_Hints (w, a, h) Object w, a, h; {
+static Object P_Set_Size_Hints (Object w, Object a, Object h) {
     unsigned long mask;
 
     Check_Type (w, T_Window);
@@ -316,7 +316,7 @@ static Object P_Set_Size_Hints (w, a, h) Object w, a, h; {
     return Void;
 }
 
-static Object P_Icon_Sizes (w) Object w; {
+static Object P_Icon_Sizes (Object w) {
     XIconSize *p;
     int i, n;
     Object v;
@@ -348,7 +348,7 @@ static Object P_Icon_Sizes (w) Object w; {
     return v;
 }
 
-static Object P_Set_Icon_Sizes (w, v) Object w, v; {
+static Object P_Set_Icon_Sizes (Object w, Object v) {
     register i, n;
     XIconSize *p;
     Alloca_Begin;
@@ -377,7 +377,7 @@ static Object P_Set_Icon_Sizes (w, v) Object w, v; {
     return Void;
 }
 
-static Object P_Transient_For (w) Object w; {
+static Object P_Transient_For (Object w) {
     Window win;
 
     Disable_Interrupts;
@@ -387,7 +387,7 @@ static Object P_Transient_For (w) Object w; {
     return Make_Window (0, WINDOW(w)->dpy, win);
 }
 
-static Object P_Set_Transient_For (w, pw) Object w, pw; {
+static Object P_Set_Transient_For (Object w, Object pw) {
     Check_Type (w, T_Window);
     XSetTransientForHint (WINDOW(w)->dpy, WINDOW(w)->win, Get_Window (pw));
     return Void;

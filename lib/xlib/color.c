@@ -32,14 +32,14 @@
 
 Generic_Predicate (Color)
 
-static Color_Equal (x, y) Object x, y; {
+static Color_Equal (Object x, Object y) {
     register XColor *p = &COLOR(x)->c, *q = &COLOR(y)->c;
     return p->red == q->red && p->green == q->green && p->blue == q->blue;
 }
 
 Generic_Print (Color, "#[color %lu]", POINTER(x))
 
-Object Make_Color (r, g, b) unsigned int r, g, b; {
+Object Make_Color (unsigned int r, unsigned int g, unsigned int b) {
     Object c;
 
     c = Find_Object (T_Color, (GENERIC)0, Match_X_Obj, r, g, b);
@@ -54,7 +54,7 @@ Object Make_Color (r, g, b) unsigned int r, g, b; {
     return c;
 }
 
-XColor *Get_Color (c) Object c; {
+XColor *Get_Color (Object c) {
     Check_Type (c, T_Color);
     return &COLOR(c)->c;
 }
