@@ -4,16 +4,13 @@ SOURCES_XLIB = \
 	../xlib/colormap.c \
 	../xlib/cursor.c \
 	../xlib/display.c \
-	../xlib/error.c \
 	../xlib/event.c \
 	../xlib/extension.c \
 	../xlib/font.c \
 	../xlib/gcontext.c \
 	../xlib/grab.c \
 	../xlib/graphics.c \
-	../xlib/init.c \
 	../xlib/key.c \
-	../xlib/objects.c \
 	../xlib/pixel.c \
 	../xlib/pixmap.c \
 	../xlib/property.c \
@@ -22,4 +19,7 @@ SOURCES_XLIB = \
 	../xlib/util.c \
 	../xlib/window.c \
 	../xlib/wm.c \
+	../xlib/xerror.c \
+	../xlib/xinit.c \
+	../xlib/xobjects.c \
 	$(NULL)
