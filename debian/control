@@ -10,12 +10,15 @@ Architecture: any
 Section: interpreters
 Depends: ${shlibs:Depends}
 Conflicts: pact (<= 980714-1)
-Description: the Elk Scheme interpreted
+Description: the Elk Scheme interpreter
  Elk is an implementation of the Scheme programming language, designed
  specifically as an embeddable, reusable extension language subsystem for
  applications written in C or C++.
  .
- This package contains the Elk Scheme interpreter.
+ This package contains the Elk Scheme interpreter, as well as several plugins
+ shipped with Elk. They provide hooks for Unix system calls, the X Window
+ System, as well as the X Athena Widgets and the Motif toolkits. Example
+ scripts on how to use these plugins are provided in the elkdoc package.
 
 Package: libelk0
 Architecture: any
@@ -28,10 +31,7 @@ Description: implementation of Scheme (the Extension Language Kit)
  specifically as an embeddable, reusable extension language subsystem for
  applications written in C or C++.
  .
- This package contains the libelk0 runtime library, as well as several plugins
- shipped with Elk. They provide hooks for Unix system calls, the X Window
- System, as well as the X Athena Widgets and the Motif toolkits. Example
- scripts on how to use these plugins are provided in the elkdoc package.
+ This package contains the libelk0 runtime library.
 
 Package: libelk0-dev
 Architecture: any

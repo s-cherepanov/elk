@@ -1,8 +1,9 @@
 elk (3.99.0-1) unstable; urgency=low
 
-  * Pending release.
+  * New release.
+  * elk is now split into the library and the interpreter.
 
- -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu, 21 Aug 2003 12:55:31 +0200
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed,  3 Sep 2003 01:38:09 +0200
 
 elk (3.0-16) unstable; urgency=low
 

@@ -67,6 +67,8 @@ binary-indep: build install
 	dh_testroot
 #	dh_installdebconf
 	dh_installdocs
+	rm -Rf `find $(CURDIR)/debian/elkdoc/usr/share/doc/elkdoc/ -type d -name .svn`
+	rm -f `find $(CURDIR)/debian/elkdoc/usr/share/doc/elkdoc/ -type f -name 'Makefile*'`
 #	dh_installexamples
 #	dh_installmenu
 #	dh_installemacsen
