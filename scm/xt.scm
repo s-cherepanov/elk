@@ -2,8 +2,6 @@
 ;;;
 ;;; The Scheme part of the Xt extension.
 
-(require 'siteinfo)
-
 (if (feature? 'motif)
     (fluid-let ((load-libraries
 		  (string-append site-force-load-xm " " site-lib-xmotif " "

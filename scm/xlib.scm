@@ -2,8 +2,6 @@
 ;;;
 ;;; The Scheme part of the Xlib extension.
 
-(require 'siteinfo)
-
 (fluid-let ((load-libraries (string-append site-lib-xlib " " load-libraries)))
   (require 'xlib.so))
 
