@@ -464,12 +464,14 @@ if test "x${ac_cv_c_Wall}" != "xno"; then
   CFLAGS_save="-Wall ${CFLAGS_save}"
 fi
 
-AC_CACHE_CHECK([if \$CC accepts -Wsign-compare],
-  [ac_cv_c_Wsign_compare],
-  [CFLAGS="-Wsign-compare ${CFLAGS_save}"
-   AC_TRY_COMPILE([],,ac_cv_c_Wsign_compare=yes, ac_cv_c_Wsign_compare=no)])
-if test "x${ac_cv_c_Wsign_compare}" != "xno"; then
-  CFLAGS_save="-Wsign-compare ${CFLAGS_save}"
+# Code qui fait des warnings == code de porc == deux baffes dans ta gueule
+CFLAGS_warn="-Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Waggregate-return -Wmissing-prototypes -Wnested-externs -Wsign-compare"
+AC_CACHE_CHECK([if \$CC accepts ${CFLAGS_warn}],
+  [ac_cv_c_Wwarn],
+  [CFLAGS="${CFLAGS_warn} ${CFLAGS_save}"
+   AC_TRY_COMPILE([],,ac_cv_c_Wwarn=yes, ac_cv_c_Wwarn=no)])
+if test "x${ac_cv_c_Wwarn}" != "xno"; then
+  CFLAGS_save="${CFLAGS_warn} ${CFLAGS_save}"
 fi
 
 dnl
@@ -568,7 +570,6 @@ dnl  Finished!
 dnl
 AC_OUTPUT([
   Makefile
-  autotools/Makefile
   debian/Makefile
   doc/Makefile
   doc/bitstring/Makefile
