@@ -363,14 +363,42 @@ fi
 CFLAGS="${CFLAGS_save}"
 INCLUDES="${INCLUDES} -I\$(top_srcdir)/include"
 
+X_CFLAGS="-I/usr/X11R6/include"
+X_LIBS="-L/usr/X11R6/lib -lX11"
+
+XAW_CFLAGS="-I/usr/X11R6/include"
+XAW_LIBS="-L/usr/X11R6/lib -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11"
+
+XM_CFLAGS="-I/usr/X11R6/include -I/usr/include/Xm"
+XM_LIBS="-L/usr/X11R6/lib -lXm -lXmu -lXt -lSM -lICE -lXext -lX11"
+
+
 dnl  Export variables
 AC_SUBST(INCLUDES)
+AC_SUBST(X_CFLAGS)
+AC_SUBST(X_LIBS)
+AC_SUBST(XAW_CFLAGS)
+AC_SUBST(XAW_LIBS)
+AC_SUBST(XM_CFLAGS)
+AC_SUBST(XM_LIBS)
 
 AC_OUTPUT([
   Makefile
   autotools/Makefile
   debian/Makefile
   doc/Makefile
+  doc/bitstring/Makefile
+  doc/cprog/Makefile
+  doc/kernel/Makefile
+  doc/man/Makefile
+  doc/oops/Makefile
+  doc/record/Makefile
+  doc/regexp/Makefile
+  doc/unix/Makefile
+  doc/usenix/Makefile
+  doc/util/Makefile
+  doc/xlib/Makefile
+  doc/xt/Makefile
   examples/Makefile
   include/Makefile
   lib/Makefile
