@@ -1,1 +1,1 @@
-EXTRA_DIST = block.awk fixindex.awk mkindex.c tmac.index tmac.scheme
+EXTRA_DIST = block.awk fixindex.awk mkindex.awk tmac.index tmac.scheme
