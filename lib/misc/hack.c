@@ -41,5 +41,4 @@ void elk_init_lib_hack () {
     Define_Primitive (P_Hack_Procedure_Environment,
         "hack-procedure-environment!", 2, 2, EVAL);
     P_Provide (Intern ("hack.so"));
-    P_Provide (Intern ("hack.o"));
 }

@@ -74,5 +74,4 @@ elk_init_xt_init () {
         0, 0, EVAL);
     XtToolkitInitialize ();
     P_Provide (Intern ("xt.so"));
-    P_Provide (Intern ("xt.o"));
 }

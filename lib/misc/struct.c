@@ -139,5 +139,4 @@ void elk_init_lib_struct () {
     Define_Primitive (P_Structure_Set,    "structure-set!",   4, 4, EVAL);
     Define_Primitive (P_Make_Structure,   "make-structure",   2, 2, EVAL);
     P_Provide (Intern ("struct.so"));
-    P_Provide (Intern ("struct.o"));
 }

@@ -250,5 +250,4 @@ void elk_init_lib_regexp() {
     P_Provide(Intern(":regular-expressions"));
 #endif
     P_Provide(Intern ("regexp.so"));
-    P_Provide(Intern ("regexp.o"));
 }

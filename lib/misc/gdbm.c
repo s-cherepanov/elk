@@ -288,5 +288,4 @@ void elk_init_lib_gdbm () {
         sizeof (struct S_gdbm_fh), Gdbm_fh_Equal, Gdbm_fh_Equal,
         Gdbm_fh_Print, NOFUNC);
     P_Provide (Intern ("gdbm.so"));
-    P_Provide (Intern ("gdbm.o"));
 }
