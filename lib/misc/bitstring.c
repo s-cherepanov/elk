@@ -238,17 +238,29 @@ static Object Bitstring_To_Bignum (Object bs) {
 
 static Object P_Bitstring_To_Int(Object bs) {
     struct S_Bitstring *b;
-    unsigned u = 0;
+    unsigned int u = 0;
     int i;
 
     Check_Type(bs, T_Bitstring);
     b = BITSTRING(bs);
 
-    for (i = bits_to_bytes(b->len) - 1; i >= 0; i--) {
-        u = u << 8 | b->data[i];
-        if (!UFIXNUM_FITS(u))
+    /* If there are any 1 bits above the position which fits in an
+     * integer, use a bignum */
+    if (b->len >= FIXBITS)
+    {
+        if (b->data[sizeof(int) - 1] & (1 << 7))
             return Bitstring_To_Bignum(bs);
+
+        for (i = sizeof(int); i < (int)bits_to_bytes(b->len); i++) {
+            if (b->data[i] != 0)
+                return Bitstring_To_Bignum(bs);
+        }
     }
+
+    /* Otherwise, use an integer */
+    for (i = bits_to_bytes(b->len) - 1; i >= 0; i--)
+        u = u << 8 | b->data[i];
+
     return Make_Integer(u);
 }
 
