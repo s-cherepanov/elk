@@ -56,6 +56,9 @@ install: build
 	   $(CURDIR)/debian/elk/usr/lib/*.a \
 	   $(CURDIR)/debian/libelk0-dev/usr/lib/
 
+	mv $(CURDIR)/debian/elk/usr/share/doc/elk/examples \
+	   $(CURDIR)/debian/elkdoc/usr/share/doc/elkdoc/
+
 # Build architecture-independent files here.
 # Pass -i to all debhelper commands in this target to reduce clutter.
 binary-indep: DH_OPTIONS=-i
@@ -64,8 +67,7 @@ binary-indep: build install
 	dh_testroot
 #	dh_installdebconf
 	dh_installdocs
-	dh_installexamples examples/*
-	rm -Rf `find $(CURDIR)/debian/elkdoc/ -type d -name .svn`
+#	dh_installexamples
 #	dh_installmenu
 #	dh_installemacsen
 #	dh_installpam
@@ -99,7 +101,7 @@ binary-arch: build install
 #	dh_installinit
 #	dh_installcron
 #	dh_installmanpages
-	dh_installman doc/man/elk.1
+#	dh_installman
 #	dh_installinfo
 #	dh_undocumented
 	dh_installchangelogs NEWS
