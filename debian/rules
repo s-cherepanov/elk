@@ -1,27 +1,17 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper. 
-# GNU copyright 1997 by Joey Hess.
-#
-# This version is for a hypothetical package that builds an
-# architecture-dependant package, as well as an architecture-independent
-# package.
 
 # Uncomment this to turn on verbose mode. 
 #export DH_VERBOSE=1
-
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
 
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
 
-	# Touch stuff
-	touch configure.ac \
-	&& touch aclocal.m4 \
-	&& touch configure \
-	&& touch config.h.in \
-	&& touch `find . -name Makefile.in`
+	touch configure.ac
+	touch aclocal.m4
+	touch configure
+	touch config.h.in
+	touch `find . -name Makefile.in`
 
 	./configure --prefix=/usr --mandir=/usr/share/man
 
@@ -30,21 +20,16 @@ configure-stamp:
 build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
-
 	$(MAKE)
-
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-
 	-$(MAKE) -i distclean
-
 	dh_clean
 
-install: DH_OPTIONS=
 install: build
 	dh_testdir
 	dh_testroot
@@ -68,63 +53,34 @@ install: build
 	mv $(CURDIR)/debian/elk/usr/share/doc/elk/examples \
 	   $(CURDIR)/debian/elkdoc/usr/share/doc/elkdoc/
 
-# Build architecture-independent files here.
-# Pass -i to all debhelper commands in this target to reduce clutter.
-binary-indep: DH_OPTIONS=-i
 binary-indep: build install
-	dh_testdir
-	dh_testroot
-#	dh_installdebconf
-	dh_installdocs
-#	dh_installexamples
-#	dh_installmenu
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installinit
-#	dh_installcron
-#	dh_installmanpages
-#	dh_installinfo
-#	dh_undocumented
-	dh_installchangelogs ChangeLog
-#	dh_link
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-#	dh_perl
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+	dh_testdir -i
+	dh_testroot -i
+	dh_installdocs -i
+	dh_installchangelogs -i ChangeLog
+	dh_compress -i
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
 
-# Build architecture-dependent files here.
-# Pass -a to all debhelper commands in this target to reduce clutter.
-binary-arch: DH_OPTIONS=-a
 binary-arch: build install
-	dh_testdir
-	dh_testroot
-#	dh_installdebconf
-	dh_installdocs
-#	dh_installexamples
-	dh_installmenu
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installinit
-#	dh_installcron
-#	dh_installmanpages
-#	dh_installman
-#	dh_installinfo
-#	dh_undocumented
-	dh_installchangelogs ChangeLog
-	dh_strip
-	dh_link usr/bin/elk usr/bin/scheme-elk
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_makeshlibs -X usr/lib/elk
-#	dh_perl
-	dh_shlibdeps -L libelk0 -l debian/libelk0/usr/lib
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+	dh_testdir -a
+	dh_testroot -a
+	dh_installdocs -a
+	dh_installmenu -a
+	dh_installchangelogs -a ChangeLog
+	dh_strip -a
+	dh_link -a usr/bin/elk usr/bin/scheme-elk
+	dh_compress -a
+	dh_fixperms -a
+	dh_installdeb -a
+	dh_makeshlibs -a -X usr/lib/elk
+	dh_shlibdeps -a -L libelk0 -l debian/libelk0/usr/lib
+	dh_gencontrol -a
+	dh_md5sums -a
+	dh_builddeb -a
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure

@@ -1,3 +1,10 @@
+elk (3.99.6-3) unstable; urgency=low
+
+  * debian/control:
+    + Build-depend on the new X development packages instead of xlibs-dev.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 14 Mar 2004 13:09:32 +0100
+
 elk (3.99.6-2) unstable; urgency=low
 
   * debian/control:
