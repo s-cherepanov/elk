@@ -284,11 +284,14 @@ int main (int ac, char **av) {
 
     Set_Error_Tag ("top-level");
 #ifdef NOMAIN
-    if ((loadfile = toplevel) == 0) {
+    if (toplevel == 0) {
 	Interpreter_Initialized = 1;
 	GC_Debug = debug;
 	return;
     }
+    /* Special case: if toplevel is "", act as if run from main() */
+    if (loadfile == 0 && toplevel[0] != '\0')
+	loadfile = toplevel;
 #endif
     if (loadfile == 0)
 	loadfile = "toplevel.scm";
