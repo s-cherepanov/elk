@@ -50,10 +50,11 @@
  * hacking by editing mon.o with emacs.
  */
 
-
-#include "scheme.h"
+#include "config.h"
 
 #include <sys/types.h>
+
+#include "scheme.h"
 
 #define MONSTART 2
 

@@ -28,6 +28,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include "scheme.h"
 
 static Object P_Debug (Object on) {

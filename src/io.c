@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -41,6 +41,8 @@
 #ifdef PC_PATH_MAX_IN_UNISTD_H
 #  include <unistd.h>
 #endif
+
+#include "kernel.h"
 
 extern void Flush_Output (Object);
 

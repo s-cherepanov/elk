@@ -37,6 +37,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include "kernel.h"
 
 static FUNCT *Onfork_Funcs;

@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <errno.h>
 #include <limits.h>
@@ -50,6 +50,8 @@
 #    include <sys/file.h>
 #  endif
 #endif
+
+#include "kernel.h"
 
 extern void Call_Initializers (SYMTAB *, char *, int);
 extern void Load_Source (Object);

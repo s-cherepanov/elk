@@ -28,6 +28,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include "kernel.h"
 
 Object V_Load_Path, V_Load_Noisilyp, V_Load_Libraries;

@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <ctype.h>
 #include <limits.h>
@@ -45,6 +45,8 @@
 #ifdef FIONREAD_H
 #  include FIONREAD_H
 #endif
+
+#include "kernel.h"
 
 extern void Flush_Output (Object);
 

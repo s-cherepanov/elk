@@ -28,10 +28,12 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <string.h>
 #include <stdlib.h>
+
+#include "kernel.h"
 
 void Free_Symbols (SYMTAB *);
 

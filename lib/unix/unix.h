@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "scheme.h"
+#include "config.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -41,6 +41,8 @@
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
+
+#include "scheme.h"
 
 extern int errno;
 extern char *index();

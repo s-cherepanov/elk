@@ -28,9 +28,11 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <stdlib.h>
+
+#include "kernel.h"
 
 char *Safe_Malloc (unsigned int size) {
     char *ret;

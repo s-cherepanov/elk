@@ -28,6 +28,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include <math.h>
 #include <errno.h>
 #include <limits.h>

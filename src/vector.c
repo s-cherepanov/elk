@@ -28,9 +28,11 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <string.h>
+
+#include "kernel.h"
 
 extern int Get_Index (Object, Object);
 

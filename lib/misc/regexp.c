@@ -32,7 +32,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "scheme.h"
+#include "config.h"
 
 #include <string.h>
 
@@ -40,6 +40,8 @@
 
 #include <sys/types.h>
 #include <regex.h>
+
+#include "scheme.h"
 
 #define REGEXP(x)   ((struct S_Regexp *)POINTER(x))
 #define MATCH(x)    ((struct S_Match *)POINTER(x))

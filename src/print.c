@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <string.h>
 #include <errno.h>
@@ -42,6 +42,8 @@
 #  include <termio.h>
 #endif
 #endif
+
+#include "kernel.h"
 
 extern void Print_Bignum (Object, Object);
 

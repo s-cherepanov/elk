@@ -28,9 +28,11 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #include <stdlib.h>
+
+#include "kernel.h"
 
 #ifdef HAVE_ATTRIBUTE_NORETURN
 extern void Reset () __attribute__ ((__noreturn__));

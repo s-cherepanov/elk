@@ -93,10 +93,13 @@
  */
 
 
-#include "scheme.h"
+#include "config.h"
+
 #include <gdbm.h>
 #include <errno.h>
 #include <string.h>
+
+#include "scheme.h"
 
 extern gdbm_error gdbm_errno;
 extern int errno;

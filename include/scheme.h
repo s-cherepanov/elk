@@ -34,7 +34,6 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include "config.h"
 #include "funcproto.h"
 #include "param.h"
 #include "object.h"

@@ -42,6 +42,8 @@
  * arguments.
  */
 
+#include "config.h"
+
 #include <string.h>
 
 #include "scheme.h"

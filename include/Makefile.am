@@ -1,4 +1,5 @@
 NULL = 
+
 pkginclude_HEADERS = \
 	compat.h \
 	cstring.h \
@@ -15,3 +16,7 @@ pkginclude_HEADERS = \
 	stkmem.h \
 	type.h \
 	$(NULL)
+
+nodist_pkginclude_HEADERS = site.h
+EXTRA_DIST = site.h.in
+

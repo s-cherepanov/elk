@@ -30,6 +30,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include "scheme.h"
 
 #define STRUCT(x)  ((struct S_Struct *)POINTER(x))

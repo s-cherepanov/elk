@@ -28,6 +28,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include "scheme.h"
 
 #define RTD(x)     ((struct S_Rtd *)POINTER(x))

@@ -28,7 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include "kernel.h"
+#include "config.h"
 
 #ifdef CAN_DUMP
 
@@ -36,6 +36,8 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include "kernel.h"
 
 #ifndef O_BINARY
 #  define O_BINARY 0

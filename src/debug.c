@@ -28,6 +28,8 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include "kernel.h"
 
 Object P_Backtrace_List (int argc, Object *argv) {
