@@ -27,7 +27,7 @@ SCM_FILES = \
 	trace.scm \
 	unix.scm \
 	xlib.scm \
-	xt.scm \
 	xaw.scm \
+	xwidgets.scm \
 	$(NULL)
 
