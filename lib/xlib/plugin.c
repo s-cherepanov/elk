@@ -1,4 +1,4 @@
-/* xinit.c
+/* plugin.c
  *
  * $Id$
  *
@@ -51,6 +51,30 @@ static Object P_Xlib_Release_6_Or_Laterp () {
 }
 
 void elk_init_xlib_init () {
+    /* From libelk-xlib.so */
+    elk_init_xlib_client ();
+    elk_init_xlib_color ();
+    elk_init_xlib_colormap ();
+    elk_init_xlib_cursor ();
+    elk_init_xlib_display ();
+    elk_init_xlib_error ();
+    elk_init_xlib_event ();
+    elk_init_xlib_extension ();
+    elk_init_xlib_font ();
+    elk_init_xlib_gcontext ();
+    elk_init_xlib_grab ();
+    elk_init_xlib_graphics ();
+    elk_init_xlib_key ();
+    elk_init_xlib_objects ();
+    elk_init_xlib_pixel ();
+    elk_init_xlib_pixmap ();
+    elk_init_xlib_property ();
+    elk_init_xlib_text ();
+    elk_init_xlib_type ();
+    elk_init_xlib_util ();
+    elk_init_xlib_window ();
+    elk_init_xlib_wm ();
+    /* From this plugin */
     Define_Primitive (P_Xlib_Release_4_Or_Laterp,
                         "xlib-release-4-or-later?",               0, 0, EVAL);
     Define_Primitive (P_Xlib_Release_5_Or_Laterp,
@@ -60,21 +84,3 @@ void elk_init_xlib_init () {
     P_Provide (Intern ("xlib.la"));
 }
 
-#if defined(XLIB_RELEASE_5_OR_LATER) && (defined(sun) || defined(__sun__)) &&\
-    defined(__svr4__)
-/*
- * Stub interface to dynamic linker routines
- * that SunOS uses but didn't ship with 4.1.
- *
- * The C library routine wcstombs in SunOS 4.1 tries to dynamically
- * load some routines using the dlsym interface, described in dlsym(3x).
- * Unfortunately SunOS 4.1 does not include the necessary library, libdl.
- */
-
-void *dlopen() { return 0; }
-
-void *dlsym() { return 0; }
-
-int dlclose() { return -1; }
-
-#endif

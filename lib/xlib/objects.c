@@ -1,4 +1,4 @@
-/* xobjects.c
+/* objects.c
  *
  * $Id$
  *

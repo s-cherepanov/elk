@@ -1,4 +1,4 @@
-/* xerror.c
+/* error.c
  *
  * $Id$
  *

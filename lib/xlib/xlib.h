@@ -199,6 +199,29 @@ extern Object Record_To_Vector
 extern unsigned long int Vector_To_Record
     P_((Object, unsigned int, Object, RECORD*));
 
+extern void elk_init_xlib_client P_(());
+extern void elk_init_xlib_color P_(());
+extern void elk_init_xlib_colormap P_(());
+extern void elk_init_xlib_cursor P_(());
+extern void elk_init_xlib_display P_(());
+extern void elk_init_xlib_error P_(());
+extern void elk_init_xlib_event P_(());
+extern void elk_init_xlib_extension P_(());
+extern void elk_init_xlib_font P_(());
+extern void elk_init_xlib_gcontext P_(());
+extern void elk_init_xlib_grab P_(());
+extern void elk_init_xlib_graphics P_(());
+extern void elk_init_xlib_key P_(());
+extern void elk_init_xlib_objects P_(());
+extern void elk_init_xlib_pixel P_(());
+extern void elk_init_xlib_pixmap P_(());
+extern void elk_init_xlib_property P_(());
+extern void elk_init_xlib_text P_(());
+extern void elk_init_xlib_type P_(());
+extern void elk_init_xlib_util P_(());
+extern void elk_init_xlib_window P_(());
+extern void elk_init_xlib_wm P_(());
+
 C_LINKAGE_END
 
 extern XSetWindowAttributes SWA;
