@@ -1,3 +1,13 @@
+elk (3.0-16) unstable; urgency=low
+
+  * **/build: Use gcc to link shared objects instead of ld, because gcc does
+    a lot of additional magic. Fixes the __canonicalize_funcptr_for_compare
+    unresolved symbol on HPPA (Closes: #205645).
+  * src/build: Make the build continue if debian/arch-config is not found.
+  * debian/compat: Use this instead of DH_COMPAT.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed, 20 Aug 2003 11:34:24 +0200
+
 elk (3.0-15) unstable; urgency=low
 
   * In math.c:Exact_Modulo(), follow R5RS's definition of Modulo: if x/y is an
