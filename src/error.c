@@ -55,7 +55,7 @@ void Init_Error () {
     Global_GC_Link (Arg_True);
     Define_Variable (&V_Error_Handler, "error-handler", Null);
     Define_Variable (&V_Top_Level_Control_Point, "top-level-control-point",
-	Null);
+        Null);
 }
 
 char const *Get_Error_Tag () {
@@ -81,9 +81,9 @@ void Fatal_Error (const char *fmt, ...) {
     va_start (args, fmt);
     (void)fflush (stdout);
     if (appname)
-	fprintf (stderr, "\n%s: fatal error: ", appname);
+        fprintf (stderr, "\n%s: fatal error: ", appname);
     else
-	fprintf (stderr, "\nFatal error: ");
+        fprintf (stderr, "\nFatal error: ");
     vfprintf (stderr, fmt, args);
     fprintf (stderr, ".\n");
     va_end (args);
@@ -95,9 +95,9 @@ void Panic (char const *msg) {
     Disable_Interrupts;
     (void)fflush (stdout);
     if (appname)
-	fprintf (stderr, "\n%s: panic: ", appname);
+        fprintf (stderr, "\n%s: panic: ", appname);
     else
-	fprintf (stderr, "\nPanic: ");
+        fprintf (stderr, "\nPanic: ");
     fprintf (stderr, "%s (dumping core).\n", msg);
     abort ();
 }
@@ -110,8 +110,8 @@ void Uncatchable_Error (char *errmsg) {
      * current output port back to the Standard_Output_Port:
      */
     if (appname) {
-	printf ("%s: %c", appname, tolower (errmsg[0]));
-	errmsg++;
+        printf ("%s: %c", appname, tolower (errmsg[0]));
+        errmsg++;
     }
     printf("%s\n", errmsg);
     Reset ();
@@ -130,13 +130,13 @@ void Primitive_Error (const char *fmt, ...) {
 
     va_start (args, fmt);
     for (n = 0, p = fmt; *p; p++)
-	if (*p == '~' && p[1] != '~' && p[1] != '%'
-		&& p[1] != 'E' && p[1] != 'e')
-	    n++;
+        if (*p == '~' && p[1] != '~' && p[1] != '%'
+                && p[1] != 'E' && p[1] != 'e')
+            n++;
     if (n > 10)
-	Panic ("Primitive_Error args");
+        Panic ("Primitive_Error args");
     for (i = 0; i < n; i++)
-	argv[i] = va_arg (args, Object);
+        argv[i] = va_arg (args, Object);
     sym = Null;
     GC_Link (sym);
     gcv.gclen = 1 + i; gcv.gcobj = argv; gcv.next = &gc1; GC_List = &gcv;
@@ -165,11 +165,11 @@ void Err_Handler (Object sym, Object fmt, int argc, Object *argv) {
     args = Cons (sym, args);
     fun = Var_Get (V_Error_Handler);
     if (TYPE(fun) == T_Compound)
-	(void)Funcall (fun, args, 0);
+        (void)Funcall (fun, args, 0);
     a[0] = sym;
     Format (Curr_Output_Port, "~s: ", 4, 1, a);
     Format (Curr_Output_Port, STRING(fmt)->data, STRING(fmt)->size,
-	argc, argv);
+        argc, argv);
     (void)P_Newline (0, (Object *)0);
     GC_Unlink;
     Reset ();
@@ -181,7 +181,7 @@ void Reset () {
 
     cp = Var_Get (V_Top_Level_Control_Point);
     if (TYPE(cp) == T_Control_Point)
-	(void)Funcall_Control_Point (cp, Arg_True, 0);
+        (void)Funcall_Control_Point (cp, Arg_True, 0);
     (void)fflush (stdout);
     exit (1);
 }

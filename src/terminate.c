@@ -45,7 +45,7 @@ void Init_Terminate () {
  * object can be marked as LEADER.
  */
 void Register_Object (obj, group, term, leader_flag) Object obj; GENERIC group;
-	PFO term; {
+        PFO term; {
     WEAK_NODE *p;
 
     p = (WEAK_NODE *)Safe_Malloc (sizeof (*p));
@@ -62,12 +62,12 @@ void Deregister_Object (Object obj) {
 
     Disable_Interrupts;
     for (pp = &first; (p = *pp); ) {
-	if (WAS_FORWARDED(p->obj))
-	    UPDATE_OBJ(p->obj);
-	if (EQ(p->obj, obj)) {
-	    *pp = p->next;
-	    free ((char *)p);
-	} else pp = &p->next;
+        if (WAS_FORWARDED(p->obj))
+            UPDATE_OBJ(p->obj);
+        if (EQ(p->obj, obj)) {
+            *pp = p->next;
+            free ((char *)p);
+        } else pp = &p->next;
     }
     Enable_Interrupts;
 }
@@ -84,22 +84,22 @@ Object Find_Object (int type, GENERIC group, MATCHFUN match, ...) {
 
     va_start (args, match);
     for (p = first; p; p = p->next) {
-	if (TYPE(p->obj) != type || p->group != group)
-	    continue;
-	/*
-	 * I believe updating the object is wrong here, as Find_Object() may
-	 * be called from within GC (see Widget_Visit() in lib/xt/widget.c).
-	 * If an object is updated here, it will no longer be regarded as
-	 * alive in the call to Call_Terminators() later.
-	 *
-	if (WAS_FORWARDED(p->obj))
-	    UPDATE_OBJ(p->obj);
-	 */
-	if (match (p->obj, args)) {
-	    va_end (args);
-	    REVIVE_OBJ(p->obj);
-	    return p->obj;
-	}
+        if (TYPE(p->obj) != type || p->group != group)
+            continue;
+        /*
+         * I believe updating the object is wrong here, as Find_Object() may
+         * be called from within GC (see Widget_Visit() in lib/xt/widget.c).
+         * If an object is updated here, it will no longer be regarded as
+         * alive in the call to Call_Terminators() later.
+         *
+        if (WAS_FORWARDED(p->obj))
+            UPDATE_OBJ(p->obj);
+         */
+        if (match (p->obj, args)) {
+            va_end (args);
+            REVIVE_OBJ(p->obj);
+            return p->obj;
+        }
     }
     va_end (args);
     return Null;
@@ -122,20 +122,20 @@ void Terminate_Group (GENERIC group) {
 
     Disable_Interrupts;
     for (pp = &first; (p = *pp); ) {
-	if (p->group == group && !(p->flags & WK_LEADER)) {
-	    if (WAS_FORWARDED(p->obj))
-		UPDATE_OBJ(p->obj);
-	    *pp = p->next;    /* move object to temporary list */
-	    p->next = q;
-	    q = p;
-	} else pp = &p->next;
+        if (p->group == group && !(p->flags & WK_LEADER)) {
+            if (WAS_FORWARDED(p->obj))
+                UPDATE_OBJ(p->obj);
+            *pp = p->next;    /* move object to temporary list */
+            p->next = q;
+            q = p;
+        } else pp = &p->next;
     }
     while (q) {    /* scan temporary list, call terminators and free objects */
-	WEAK_NODE *tmp = q;
-	if (q->term)
-	    (void)q->term (q->obj);
-	q = q->next;
-	free ((char *)tmp);
+        WEAK_NODE *tmp = q;
+        if (q->term)
+            (void)q->term (q->obj);
+        q = q->next;
+        free ((char *)tmp);
     }
     Enable_Interrupts;
 }
@@ -147,20 +147,20 @@ void Terminate_Type (int type) {
 
     Disable_Interrupts;
     for (pp = &first; (p = *pp); ) {
-	if (TYPE(p->obj) == type) {
-	    if (WAS_FORWARDED(p->obj))
-		UPDATE_OBJ(p->obj);
-	    *pp = p->next;    /* move object to temporary list */
-	    p->next = q;
-	    q = p;
-	} else pp = &p->next;
+        if (TYPE(p->obj) == type) {
+            if (WAS_FORWARDED(p->obj))
+                UPDATE_OBJ(p->obj);
+            *pp = p->next;    /* move object to temporary list */
+            p->next = q;
+            q = p;
+        } else pp = &p->next;
     }
     while (q) {    /* scan temporary list, call terminators and free objects */
-	WEAK_NODE *tmp = q;
-	if (q->term)
-	    (void)q->term (q->obj);
-	q = q->next;
-	free ((char *)tmp);
+        WEAK_NODE *tmp = q;
+        if (q->term)
+            (void)q->term (q->obj);
+        q = q->next;
+        free ((char *)tmp);
     }
     Enable_Interrupts;
 }
@@ -172,33 +172,33 @@ void Call_Terminators () {
 
     Disable_Interrupts;
     for (pp = &first; (p = *pp); ) {
-	if (IS_ALIVE(p->obj)) {
-	    if (WAS_FORWARDED(p->obj))
-		UPDATE_OBJ(p->obj);
-	    pp = &p->next;
-	} else {
-	    *pp = p->next;
-	    if (p->flags & WK_LEADER) {
-		*qq = p;    /* move leader to end of temporary list */
-		qq = &p->next;
-		*qq = 0;
-	    } else {
-		p->next = q;    /* move non-leader to front of list */
-		if (qq == &q) qq = &p->next;
-		q = p;
-	    }
-	}
+        if (IS_ALIVE(p->obj)) {
+            if (WAS_FORWARDED(p->obj))
+                UPDATE_OBJ(p->obj);
+            pp = &p->next;
+        } else {
+            *pp = p->next;
+            if (p->flags & WK_LEADER) {
+                *qq = p;    /* move leader to end of temporary list */
+                qq = &p->next;
+                *qq = 0;
+            } else {
+                p->next = q;    /* move non-leader to front of list */
+                if (qq == &q) qq = &p->next;
+                q = p;
+            }
+        }
     }
     /* Scan the temporary list, call terminators and free objects.
      * As leaders have been appended to the list, they are now
      * scanned after all non-leaders have been taken care of.
      */
     while (q) {
-	WEAK_NODE *tmp = q;
-	if (q->term)
-	    (void)q->term (q->obj);
-	q = q->next;
-	free ((char *)tmp);
+        WEAK_NODE *tmp = q;
+        if (q->term)
+            (void)q->term (q->obj);
+        q = q->next;
+        free ((char *)tmp);
     }
     Enable_Interrupts;
 }

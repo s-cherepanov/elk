@@ -58,9 +58,9 @@ void Wrong_Type_Combination (Object x, register char const *name) {
     char buf[100];
 
     if (t < 0 || t >= Num_Types)
-	Panic ("bad type1");
+        Panic ("bad type1");
     sprintf (buf, "wrong argument type %s (expected %s)",
-	Types[t].name, name);
+        Types[t].name, name);
     Primitive_Error (buf);
 }
 
@@ -68,22 +68,22 @@ Object P_Type (Object x) {
     register int t = TYPE(x);
 
     if (t < 0 || t >= Num_Types)
-	Panic ("bad type2");
+        Panic ("bad type2");
     return Intern (Types[t].name);
 }
 
 int Define_Type (register int t, char const *name,
-	int (*size)(), int const_size, int (*eqv)(), int (*equal)(),
-	int (*print)(), int (*visit)()) {
+        int (*size)(), int const_size, int (*eqv)(), int (*equal)(),
+        int (*print)(), int (*visit)()) {
     register TYPEDESCR *p;
 
     Set_Error_Tag ("define-type");
     if (t != 0)
-	Fatal_Error("first arg of Define_Type() must be 0");
+        Fatal_Error("first arg of Define_Type() must be 0");
     if (Num_Types == Max_Type) {
-	Max_Type += TYPE_GROW;
-	Types = (TYPEDESCR *)Safe_Realloc((char *)Types,
-	    Max_Type * sizeof(TYPEDESCR));
+        Max_Type += TYPE_GROW;
+        Types = (TYPEDESCR *)Safe_Realloc((char *)Types,
+            Max_Type * sizeof(TYPEDESCR));
     }
     Disable_Interrupts;
     p = &Types[Num_Types++];
@@ -109,7 +109,7 @@ void Init_Type() {
     Types = (TYPEDESCR *)Safe_Malloc(bytes);
     memset(Types, 0, bytes);
     for (i = 0; (p = builtin_types[i]); i++) {
-	Types[i].haspointer = *p != '0';
-	Types[i].name = ++p;
+        Types[i].haspointer = *p != '0';
+        Types[i].name = ++p;
     }
 }

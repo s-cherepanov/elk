@@ -69,7 +69,7 @@ extern GCNODE *GC_List;
 #define GC_Link4_Tag_Primitive(args,fun,env,x4) {\
     gc1.gclen = TAG_ARGS; gc1.gcobj = &args; gc1.next = GC_List;\
     gc2.gclen = Tail_Call ? TAG_TCFUN : TAG_FUN;\
-			  gc2.gcobj = &fun;  gc2.next = &gc1;\
+                          gc2.gcobj = &fun;  gc2.next = &gc1;\
     gc3.gclen = TAG_ENV;  gc3.gcobj = &env;  gc3.next = &gc2;\
     gc4.gclen = 0;        gc4.gcobj = &x4;   gc4.next = &gc3; GC_List = &gc4;\
 }
@@ -104,11 +104,11 @@ extern GCNODE *GC_List;
 /* see src/proc.c */
 #define GC_Link7_Tag_Compound(args,fun,env,x4,x5,x6,x7) {\
     gc1.gclen = TAG_ARGS;\
-		   gc1.gcobj = &args; gc1.next = GC_List;\
+                   gc1.gcobj = &args; gc1.next = GC_List;\
     gc2.gclen = Tail_Call ? TAG_TCFUN : TAG_FUN;\
-		   gc2.gcobj = &fun; gc2.next = &gc1;\
+                   gc2.gcobj = &fun; gc2.next = &gc1;\
     gc3.gclen = TAG_ENV;\
-		   gc3.gcobj = &env; gc3.next = &gc2;\
+                   gc3.gcobj = &env; gc3.next = &gc2;\
     gc4.gclen = 0; gc4.gcobj = &x4; gc4.next = &gc3;\
     gc5.gclen = 0; gc5.gcobj = &x5; gc5.next = &gc4;\
     gc6.gclen = 0; gc6.gcobj = &x6; gc6.next = &gc5;\

@@ -24,11 +24,11 @@ Object Syms_To_List P_((SYMDESCR*));
 #define Get_Filename_Or_Filedescr(obj,fd,fn) \
     switch (TYPE(obj)) {\
     case T_String: case T_Symbol:\
-	(fn) = Get_Strsym(obj); break;\
+        (fn) = Get_Strsym(obj); break;\
     case T_Fixnum: case T_Bignum:\
-	(fd) = Get_Integer(obj); break;\
+        (fd) = Get_Integer(obj); break;\
     default:\
-	Wrong_Type_Combination(obj, "symbol, string, or integer");\
+        Wrong_Type_Combination(obj, "symbol, string, or integer");\
     }
 
 #define Raise_System_Error(msg) {\
@@ -38,7 +38,7 @@ Object Syms_To_List P_((SYMDESCR*));
 
 #define Raise_Error(msg) {\
     if (Var_Is_True(V_Call_Errhandler))\
-	Primitive_Error(msg);\
+        Primitive_Error(msg);\
     return Unix_Errobj;\
 }
 
@@ -49,7 +49,7 @@ Object Syms_To_List P_((SYMDESCR*));
 
 #define Raise_Error1(msg,a1) {\
     if (Var_Is_True(V_Call_Errhandler))\
-	Primitive_Error(msg,a1);\
+        Primitive_Error(msg,a1);\
     return Unix_Errobj;\
 }
 
@@ -60,7 +60,7 @@ Object Syms_To_List P_((SYMDESCR*));
 
 #define Raise_Error2(msg,a1,a2) {\
     if (Var_Is_True(V_Call_Errhandler))\
-	Primitive_Error(msg,a1,a2);\
+        Primitive_Error(msg,a1,a2);\
     return Unix_Errobj;\
 }
 

@@ -91,7 +91,7 @@ typedef struct {
 #  define MAKEOBJ(o,t,p)   (SET(o, t, p))
 #  define IS_ALIVE(obj)    ((WAS_FORWARDED(obj)) || \
                             (STABLE(OBJ_TO_PAGE(obj))) || \
-			    (space[OBJ_TO_PAGE(obj)] == current_space))
+                            (space[OBJ_TO_PAGE(obj)] == current_space))
 #  define REVIVE_OBJ(obj)  Visit (&obj);
 #else
    C_LINKAGE_BEGIN
@@ -144,13 +144,13 @@ typedef struct {
 #define AUTOLOAD(x) ((struct S_Autoload *)POINTER(x))
 #define MACRO(x)    ((struct S_Macro *)POINTER(x))
 
-typedef unsigned short gran_t;	/* Granularity of bignums */
+typedef unsigned short gran_t;  /* Granularity of bignums */
 
 struct S_Bignum {
     Object minusp;
-    unsigned int size;		/* Number of ushorts allocated */
-    unsigned int usize;		/* Number of ushorts actually used */
-    gran_t data[1];		/* Data, lsw first */
+    unsigned int size;          /* Number of ushorts allocated */
+    unsigned int usize;         /* Number of ushorts actually used */
+    gran_t data[1];             /* Data, lsw first */
 };
 
 struct S_Flonum {

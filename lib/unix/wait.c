@@ -44,7 +44,7 @@ static SYMDESCR Wait_Flags[] = {
 
 
 static Object General_Wait(ret, ruret, haspid, pid, options)
-	Object ret, ruret; int haspid, pid, options; {
+        Object ret, ruret; int haspid, pid, options; {
     int retpid, st, code;
     char *status;
 #ifdef WAIT_RUSAGE
@@ -59,47 +59,47 @@ static Object General_Wait(ret, ruret, haspid, pid, options)
     Check_Result_Vector(ruret, 2);
     if (haspid) {
 #ifdef HAVE_WAIT4
-	retpid = wait4(pid, &st, options, &ru);
+        retpid = wait4(pid, &st, options, &ru);
 #else
 #ifdef HAVE_WAITPID
-	retpid = waitpid(pid, &st, options);
+        retpid = waitpid(pid, &st, options);
 #endif
 #endif
     } else {
 #ifdef HAVE_WAIT3
-	retpid = wait3(&st, options, &ru);
+        retpid = wait3(&st, options, &ru);
 #else
-	retpid = wait(&st);
+        retpid = wait(&st);
 #endif
     }
     if (retpid == -1 && errno != ECHILD)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     GC_Link3(ret, ruret, x);
     x = Make_Integer(retpid); VECTOR(ret)->data[0] = x;
     if (retpid == 0 || retpid == -1) {
-	 status = "none";
-	 st = code = 0;
+         status = "none";
+         st = code = 0;
 #ifdef WAIT_RUSAGE
-	 bzero((char *)&ru, sizeof(ru));
+         bzero((char *)&ru, sizeof(ru));
 #endif
     } else if (WIFSTOPPED(st)) {
-	status = "stopped";  code = WSTOPSIG(st);
+        status = "stopped";  code = WSTOPSIG(st);
     } else if (WIFSIGNALED(st)) {
-	status = "signaled"; code = WTERMSIG(st);
+        status = "signaled"; code = WTERMSIG(st);
     } else {
-	status = "exited";   code = WEXITSTATUS(st);
+        status = "exited";   code = WEXITSTATUS(st);
     }
     x = Intern(status);     VECTOR(ret)->data[1] = x;
     x = Make_Integer(code); VECTOR(ret)->data[2] = x;
     VECTOR(ret)->data[3] = st & 0200 ? True : False;
 #ifdef WAIT_RUSAGE
     x = Cons(Null, Make_Unsigned_Long((unsigned long)ru.ru_utime.tv_usec
-	* 1000));
+        * 1000));
     sec = Make_Unsigned_Long((unsigned long)ru.ru_utime.tv_sec);
     Car(x) = sec;
     VECTOR(ruret)->data[0] = x;
     x = Cons(Null, Make_Unsigned_Long((unsigned long)ru.ru_stime.tv_usec
-	* 1000));
+        * 1000));
     sec = Make_Unsigned_Long((unsigned long)ru.ru_stime.tv_sec);
     Car(x) = sec;
     VECTOR(ruret)->data[1] = x;
@@ -113,9 +113,9 @@ static Object P_Wait(argc, argv) int argc; Object *argv; {
 
     if (argc == 3)
 #ifdef WAIT_OPTIONS
-	flags = (int)Symbols_To_Bits(argv[2], 1, Wait_Flags);
+        flags = (int)Symbols_To_Bits(argv[2], 1, Wait_Flags);
 #else
-	Primitive_Error("wait options not supported");
+        Primitive_Error("wait options not supported");
 #endif
     return General_Wait(argv[0], argv[1], 0, 0, flags);
 }
@@ -126,7 +126,7 @@ static Object P_Wait(argc, argv) int argc; Object *argv; {
  */
 static Object P_Wait_Process(argc, argv) int argc; Object *argv; {
     return General_Wait(argv[0], argv[1], 1, Get_Integer(argv[2]),
-	argc == 4 ? (int)Symbols_To_Bits(argv[3], 1, Wait_Flags) : 0);
+        argc == 4 ? (int)Symbols_To_Bits(argv[3], 1, Wait_Flags) : 0);
 }
 #endif
 

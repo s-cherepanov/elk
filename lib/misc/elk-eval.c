@@ -64,7 +64,7 @@ static char *String_Eval(char *expr) {
     str = P_Get_Output_String(out);
     p = Get_String(str);
     if (strlen(p) > sizeof buf - 1)
-	p = "too long";
+        p = "too long";
     strcpy(buf, p);
     GC_Unlink;
     return buf;
@@ -74,11 +74,11 @@ char *Elk_Eval(char *expr) {
     char *s;
 
     s = String_Eval("\
-	(call-with-current-continuation (lambda (c)\
-	  (set! error-handler (lambda a (print a) (c #f))) #t))\
+        (call-with-current-continuation (lambda (c)\
+          (set! error-handler (lambda a (print a) (c #f))) #t))\
     ");
     if (strcmp(s, "#f") == 0)
-	return 0;
+        return 0;
     return String_Eval(expr);
 }
 

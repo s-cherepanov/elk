@@ -81,7 +81,7 @@ elk_init_unix_error() {
     Global_GC_Link(Unix_Errobj);
 
     Define_Variable(&V_Call_Errhandler, "unix-call-standard-error-handler?",
-	True);
+        True);
 
     Def_Prim(P_Errorp,              "unix-error?",               1, 1, EVAL);
     Def_Prim(P_Errno,               "unix-errno",                0, 0, EVAL);

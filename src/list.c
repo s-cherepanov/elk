@@ -58,12 +58,12 @@ Object P_Cons (Object car, Object cdr) {
     p = Hp;
     ALIGN(p);
     if (p + sizeof (struct S_Pair) <= Heap_End && !GC_Debug) {
-	Hp = p + sizeof (struct S_Pair);
-	SET(cell, T_Pair, (struct S_Pair *)p);
+        Hp = p + sizeof (struct S_Pair);
+        SET(cell, T_Pair, (struct S_Pair *)p);
     } else {
-	GC_Link2 (car, cdr);
-	cell = Alloc_Object (sizeof (struct S_Pair), T_Pair, 0);
-	GC_Unlink;
+        GC_Link2 (car, cdr);
+        cell = Alloc_Object (sizeof (struct S_Pair), T_Pair, 0);
+        GC_Unlink;
     }
 #endif
     Car (cell) = car;
@@ -85,11 +85,11 @@ Object Cxr (Object x, register char *pat, register int len) {
     Object ret;
 
     for (ret = x, pat += len; len > 0; len--)
-	switch (*--pat) {
-	case 'a': ret = P_Car (ret); break;
-	case 'd': ret = P_Cdr (ret); break;
-	default: Primitive_Error ("invalid pattern");
-	}
+        switch (*--pat) {
+        case 'a': ret = P_Car (ret); break;
+        case 'd': ret = P_Cdr (ret); break;
+        default: Primitive_Error ("invalid pattern");
+        }
     return ret;
 }
 
@@ -127,9 +127,9 @@ Object P_Cddddr (Object x) { return Cxr (x, "dddd", 4); }
 Object P_Cxr (Object x, Object pat) {
     Check_List (x);
     if (TYPE(pat) == T_Symbol)
-	pat = SYMBOL(pat)->name;
+        pat = SYMBOL(pat)->name;
     else if (TYPE(pat) != T_String)
-	Wrong_Type_Combination (pat, "string or symbol");
+        Wrong_Type_Combination (pat, "string or symbol");
     return Cxr (x, STRING(pat)->data, STRING(pat)->size);
 }
 
@@ -146,12 +146,12 @@ Object P_Listp (Object x) {
     register int f;
 
     for (s = x, f = 0; !Nullp (x); f ^= 1) {
-	if (TYPE(x) != T_Pair)
-	    return False;
-	x = Cdr (x);
-	if (EQ(x, s))
-	    return False;
-	if (f) s = Cdr (s);
+        if (TYPE(x) != T_Pair)
+            return False;
+        x = Cdr (x);
+        if (EQ(x, s))
+            return False;
+        if (f) s = Cdr (s);
     }
     return True;
 }
@@ -174,14 +174,14 @@ Object General_Member (Object key, Object list, register int comp) {
     register int r;
 
     for ( ; !Nullp (list); list = Cdr (list)) {
-	Check_List (list);
-	if (comp == 0)
-	    r = EQ(Car (list), key);
-	else if (comp == 1)
-	    r = Eqv (Car (list), key);
-	else
-	    r = Equal (Car (list), key);
-	if (r) return list;
+        Check_List (list);
+        if (comp == 0)
+            r = EQ(Car (list), key);
+        else if (comp == 1)
+            r = Eqv (Car (list), key);
+        else
+            r = Equal (Car (list), key);
+        if (r) return list;
     }
     return False;
 }
@@ -203,17 +203,17 @@ Object General_Assoc (Object key, Object alist, register int comp) {
     register int r;
 
     for ( ; !Nullp (alist); alist = Cdr (alist)) {
-	Check_List (alist);
-	elem = Car (alist);
-	if (TYPE(elem) != T_Pair)
-	    continue;
-	if (comp == 0)
-	    r = EQ(Car (elem), key);
-	else if (comp == 1)
-	    r = Eqv (Car (elem), key);
-	else
-	    r = Equal (Car (elem), key);
-	if (r) return elem;
+        Check_List (alist);
+        elem = Car (alist);
+        if (TYPE(elem) != T_Pair)
+            continue;
+        if (comp == 0)
+            r = EQ(Car (elem), key);
+        else if (comp == 1)
+            r = Eqv (Car (elem), key);
+        else
+            r = Equal (Car (elem), key);
+        if (r) return elem;
     }
     return False;
 }
@@ -235,7 +235,7 @@ int Fast_Length (Object list) {
     register int i;
 
     for (i = 0, tail = list; TYPE(tail) == T_Pair; tail = Cdr (tail), i++)
-	;
+        ;
     return i;
 }
 
@@ -244,7 +244,7 @@ Object P_Length (Object list) {
     register int i;
 
     for (i = 0, tail = list; !Nullp (tail); tail = Cdr (tail), i++)
-	Check_List (tail);
+        Check_List (tail);
     return Make_Integer (i);
 }
 
@@ -254,11 +254,11 @@ Object P_Make_List (Object n, Object init) {
     GC_Node;
 
     if ((len = Get_Exact_Integer (n)) < 0)
-	Range_Error (n);
+        Range_Error (n);
     list = Null;
     GC_Link (init);
     while (len-- > 0)
-	list = Cons (init, list);
+        list = Cons (init, list);
     GC_Unlink;
     return list;
 }
@@ -269,11 +269,11 @@ Object P_List (int argc, Object *argv) {
 
     GC_Link2 (list, tail);
     for (list = tail = Null; argc-- > 0; tail = cell) {
-	cell = Cons (*argv++, Null);
-	if (Nullp (list))
-	    list = cell;
-	else
-	    (void)P_Set_Cdr (tail, cell);
+        cell = Cons (*argv++, Null);
+        if (Nullp (list))
+            list = cell;
+        else
+            (void)P_Set_Cdr (tail, cell);
     }
     GC_Unlink;
     return list;
@@ -293,21 +293,21 @@ Object P_Append (int argc, Object *argv) {
     list = last = Null;
     GC_Link3 (list, last, tail);
     for (i = 0; i < argc-1; i++) {
-	for (tail = argv[i]; !Nullp (tail); tail = Cdr (tail)) {
-	    Check_List (tail);
-	    cell = Cons (Car (tail), Null);
-	    if (Nullp (list))
-		list = cell;
-	    else
-		(void)P_Set_Cdr (last, cell);
-	    last = cell;
-	}
+        for (tail = argv[i]; !Nullp (tail); tail = Cdr (tail)) {
+            Check_List (tail);
+            cell = Cons (Car (tail), Null);
+            if (Nullp (list))
+                list = cell;
+            else
+                (void)P_Set_Cdr (last, cell);
+            last = cell;
+        }
     }
     if (argc) {
-	if (Nullp (list))
-	    list = argv[i];
-	else
-	    (void)P_Set_Cdr (last, argv[i]);
+        if (Nullp (list))
+            list = argv[i];
+        else
+            (void)P_Set_Cdr (last, argv[i]);
     }
     GC_Unlink;
     return list;
@@ -317,12 +317,12 @@ Object P_Append_Set (int argc, Object *argv) {
     register int i, j;
 
     for (i = j = 0; i < argc; i++)
-	if (!Nullp (argv[i]))
-	    argv[j++] = argv[i];
+        if (!Nullp (argv[i]))
+            argv[j++] = argv[i];
     if (j == 0)
-	return Null;
+        return Null;
     for (i = 0; i < j-1; i++)
-	(void)P_Set_Cdr (P_Last_Pair (argv[i]), argv[i+1]);
+        (void)P_Set_Cdr (P_Last_Pair (argv[i]), argv[i+1]);
     return *argv;
 }
 
@@ -332,8 +332,8 @@ Object P_Reverse (Object x) {
 
     GC_Link (x);
     for (ret = Null; !Nullp (x); x = Cdr (x)) {
-	Check_List (x);
-	ret = Cons (Car (x), ret);
+        Check_List (x);
+        ret = Cons (Car (x), ret);
     }
     GC_Unlink;
     return ret;
@@ -343,9 +343,9 @@ Object P_Reverse_Set (Object x) {
     Object prev, tail;
 
     for (prev = Null; !Nullp (x); prev = x, x = tail) {
-	Check_List (x);
-	tail = Cdr (x);
-	(void)P_Set_Cdr (x, prev);
+        Check_List (x);
+        tail = Cdr (x);
+        (void)P_Set_Cdr (x, prev);
     }
     return prev;
 }
@@ -354,7 +354,7 @@ Object P_List_Tail (Object x, Object num) {
     register int n;
 
     for (n = Get_Exact_Integer (num); n > 0 && !Nullp (x); n--, x = P_Cdr (x))
-	;
+        ;
     return x;
 }
 
@@ -367,14 +367,14 @@ Object Copy_List (Object x) {
     GC_Node3;
 
     if (TYPE(x) == T_Pair) {
-	if (Stack_Size () > Max_Stack)
-	    Uncatchable_Error ("Out of stack space");
-	car = cdr = Null;
-	GC_Link3 (x, car, cdr);
-	car = Copy_List (Car (x));
-	cdr = Copy_List (Cdr (x));
-	x = Cons (car, cdr);
-	GC_Unlink;
+        if (Stack_Size () > Max_Stack)
+            Uncatchable_Error ("Out of stack space");
+        car = cdr = Null;
+        GC_Link3 (x, car, cdr);
+        car = Copy_List (Car (x));
+        cdr = Copy_List (Cdr (x));
+        x = Cons (car, cdr);
+        GC_Unlink;
     }
     return x;
 }

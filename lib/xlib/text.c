@@ -6,9 +6,9 @@ static Object Sym_1byte, Sym_2byte;
 static Two_Byte (format) Object format; {
     Check_Type (format, T_Symbol);
     if (EQ(format, Sym_1byte))
-	return 0;
+        return 0;
     else if (EQ(format, Sym_2byte))
-	return 1;
+        return 1;
     Primitive_Error ("index format must be '1-byte or '2-byte");
     /*NOTREACHED*/
 }
@@ -16,14 +16,14 @@ static Two_Byte (format) Object format; {
 static Get_1_Byte_Char (x) Object x; {
     register c = Get_Integer (x);
     if (c < 0 || c > 255)
-	Range_Error (x);
+        Range_Error (x);
     return c;
 }
 
 static Get_2_Byte_Char (x) Object x; {
     register c = Get_Integer (x);
     if (c < 0 || c > 65535)
-	Range_Error (x);
+        Range_Error (x);
     return c;
 }
 
@@ -48,28 +48,28 @@ static Object Internal_Text_Metrics (font, t, f, width) Object font, t, f; {
     n = VECTOR(t)->size;
     data = VECTOR(t)->data;
     if (Two_Byte (f)) {
-	Alloca (s2, XChar2b*, n * sizeof (XChar2b));
-	for (i = 0; i < n; i++) {
-	    register c = Get_2_Byte_Char (data[i]);
-	    s2[i].byte1 = (c >> 8) & 0xff;
-	    s2[i].byte2 = c & 0xff;
-	}
-	if (width)
-	    i = XTextWidth16 (info, s2, n);
-	else
-	    XTextExtents16 (info, s2, n, &dir, &fasc, &fdesc, &CI);
+        Alloca (s2, XChar2b*, n * sizeof (XChar2b));
+        for (i = 0; i < n; i++) {
+            register c = Get_2_Byte_Char (data[i]);
+            s2[i].byte1 = (c >> 8) & 0xff;
+            s2[i].byte2 = c & 0xff;
+        }
+        if (width)
+            i = XTextWidth16 (info, s2, n);
+        else
+            XTextExtents16 (info, s2, n, &dir, &fasc, &fdesc, &CI);
     } else {
-	Alloca (s, char*, n);
-	for (i = 0; i < n; i++)
-	    s[i] = Get_1_Byte_Char (data[i]);
-	if (width)
-	    i = XTextWidth (info, s, n);
-	else
-	    XTextExtents (info, s, n, &dir, &fasc, &fdesc, &CI);
+        Alloca (s, char*, n);
+        for (i = 0; i < n; i++)
+            s[i] = Get_1_Byte_Char (data[i]);
+        if (width)
+            i = XTextWidth (info, s, n);
+        else
+            XTextExtents (info, s, n, &dir, &fasc, &fdesc, &CI);
     }
     Alloca_End;
     return width ? Make_Integer (i) : Record_To_Vector (Char_Info_Rec,
-	Char_Info_Size, Sym_Char_Info, FONT(font)->dpy, ~0L);
+        Char_Info_Size, Sym_Char_Info, FONT(font)->dpy, ~0L);
 }
 
 static Object P_Text_Width (font, t, f) Object font, t, f; {
@@ -94,20 +94,20 @@ static Object P_Draw_Image_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
     n = VECTOR(t)->size;
     data = VECTOR(t)->data;
     if (Two_Byte (f)) {
-	Alloca (s2, XChar2b*, n * sizeof (XChar2b));
-	for (i = 0; i < n; i++) {
-	    register c = Get_2_Byte_Char (data[i]);
-	    s2[i].byte1 = (c >> 8) & 0xff;
-	    s2[i].byte2 = c & 0xff;
-	}
-	XDrawImageString16 (dpy, dr, GCONTEXT(gc)->gc, Get_Integer (x),
-	    Get_Integer (y), s2, n);
+        Alloca (s2, XChar2b*, n * sizeof (XChar2b));
+        for (i = 0; i < n; i++) {
+            register c = Get_2_Byte_Char (data[i]);
+            s2[i].byte1 = (c >> 8) & 0xff;
+            s2[i].byte2 = c & 0xff;
+        }
+        XDrawImageString16 (dpy, dr, GCONTEXT(gc)->gc, Get_Integer (x),
+            Get_Integer (y), s2, n);
     } else {
-	Alloca (s, char*, n);
-	for (i = 0; i < n; i++)
-	    s[i] = Get_1_Byte_Char (data[i]);
-	XDrawImageString (dpy, dr, GCONTEXT(gc)->gc, Get_Integer (x),
-	    Get_Integer (y), s, n);
+        Alloca (s, char*, n);
+        for (i = 0; i < n; i++)
+            s[i] = Get_1_Byte_Char (data[i]);
+        XDrawImageString (dpy, dr, GCONTEXT(gc)->gc, Get_Integer (x),
+            Get_Integer (y), s, n);
     }
     Alloca_End;
     return Void;
@@ -128,44 +128,44 @@ static Object P_Draw_Poly_Text (d, gc, x, y, t, f) Object d, gc, x, y, t, f; {
     func = twobyte ? (int(*)())XDrawText16 : (int(*)())XDrawText;
     Check_Type (t, T_Vector);
     if ((n = VECTOR(t)->size) == 0)
-	return Void;
+        return Void;
     for (data = VECTOR(t)->data, i = 0, nitems = 1; i < n; i++)
-	if (TYPE(data[i]) == T_Font) nitems++;
+        if (TYPE(data[i]) == T_Font) nitems++;
     Alloca (items, XTextItem*, nitems * sizeof (XTextItem));
     items[0].delta = 0;
     items[0].font = None;
     for (j = k = i = 0; i <= n; i++) {
-	if (i == n || TYPE(data[i]) == T_Font) {
-	    items[j].nchars = i-k;
-	    if (twobyte) {
-		register XChar2b *p;
+        if (i == n || TYPE(data[i]) == T_Font) {
+            items[j].nchars = i-k;
+            if (twobyte) {
+                register XChar2b *p;
 
-		Alloca (p, XChar2b*, (i-k) * sizeof (XChar2b));
-		((XTextItem16 *)items)[j].chars = p;
-		for ( ; k < i; k++, p++) {
-		    register c = Get_2_Byte_Char (data[k]);
-		    p->byte1 = (c >> 8) & 0xff;
-		    p->byte2 = c & 0xff;
-		}
-	    } else {
-		register char *p;
+                Alloca (p, XChar2b*, (i-k) * sizeof (XChar2b));
+                ((XTextItem16 *)items)[j].chars = p;
+                for ( ; k < i; k++, p++) {
+                    register c = Get_2_Byte_Char (data[k]);
+                    p->byte1 = (c >> 8) & 0xff;
+                    p->byte2 = c & 0xff;
+                }
+            } else {
+                register char *p;
 
-		Alloca (p, char*, i-k);
-		items[j].chars = p;
-		for ( ; k < i; k++)
-		    *p++ = Get_1_Byte_Char (data[k]);
-	    }
-	    k++;
-	    j++;
-	    if (i < n) {
-		items[j].delta = 0;
-		Open_Font_Maybe (data[i]);
-		items[j].font = FONT(data[i])->id;
-	    }
-	}
+                Alloca (p, char*, i-k);
+                items[j].chars = p;
+                for ( ; k < i; k++)
+                    *p++ = Get_1_Byte_Char (data[k]);
+            }
+            k++;
+            j++;
+            if (i < n) {
+                items[j].delta = 0;
+                Open_Font_Maybe (data[i]);
+                items[j].font = FONT(data[i])->id;
+            }
+        }
     }
     (*func)(dpy, dr, GCONTEXT(gc)->gc, Get_Integer (x), Get_Integer (y),
-	items, nitems);
+        items, nitems);
     Alloca_End;
     return Void;
 }

@@ -12,16 +12,16 @@ Object Make_Colormap (finalize, dpy, cmap) Display *dpy; Colormap cmap; {
     Object cm;
 
     if (cmap == None)
-	return Sym_None;
+        return Sym_None;
     cm = Find_Object (T_Colormap, (GENERIC)dpy, Match_X_Obj, cmap);
     if (Nullp (cm)) {
-	cm = Alloc_Object (sizeof (struct S_Colormap), T_Colormap, 0);
-	COLORMAP(cm)->tag = Null;
-	COLORMAP(cm)->cm = cmap;
-	COLORMAP(cm)->dpy = dpy;
-	COLORMAP(cm)->free = 0;
-	Register_Object (cm, (GENERIC)dpy, finalize ? P_Free_Colormap :
-	    (PFO)0, 0);
+        cm = Alloc_Object (sizeof (struct S_Colormap), T_Colormap, 0);
+        COLORMAP(cm)->tag = Null;
+        COLORMAP(cm)->cm = cmap;
+        COLORMAP(cm)->dpy = dpy;
+        COLORMAP(cm)->free = 0;
+        Register_Object (cm, (GENERIC)dpy, finalize ? P_Free_Colormap :
+            (PFO)0, 0);
     }
     return cm;
 }
@@ -34,7 +34,7 @@ Colormap Get_Colormap (c) Object c; {
 Object P_Free_Colormap (c) Object c; {
     Check_Type (c, T_Colormap);
     if (!COLORMAP(c)->free)
-	XFreeColormap (COLORMAP(c)->dpy, COLORMAP(c)->cm);
+        XFreeColormap (COLORMAP(c)->dpy, COLORMAP(c)->cm);
     Deregister_Object (c);
     COLORMAP(c)->free = 1;
     return Void;
@@ -50,7 +50,7 @@ static Object P_Alloc_Color (cmap, color) Object cmap, color; {
     r = XAllocColor (COLORMAP(cmap)->dpy, cm, &c);
     Enable_Interrupts;
     if (!r)
-	return False;
+        return False;
     return Make_Pixel (c.pixel);
 }
 
@@ -63,10 +63,10 @@ static Object P_Alloc_Named_Color (cmap, name) Object cmap, name; {
 
     Disable_Interrupts;
     r = XAllocNamedColor (COLORMAP(cmap)->dpy, cm, Get_Strsym (name),
-	&screen, &exact);
+        &screen, &exact);
     Enable_Interrupts;
     if (!r)
-	return False;
+        return False;
     t = ret = P_Make_List (Make_Integer (3), Null);
     GC_Link2 (t, ret);
     x = Make_Pixel (screen.pixel);

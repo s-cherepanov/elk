@@ -83,7 +83,7 @@ int Foo_Equal(Object x, Object y) {
 
 extern "C" void elk_init_foo() {
     T_Foo = Define_Type(0, "foo", NOFUNC, sizeof(struct S_Foo),
-	Foo_Equal, Foo_Equal, Foo_Print, NOFUNC);
+        Foo_Equal, Foo_Equal, Foo_Print, NOFUNC);
     Define_Primitive((Object(*)(...))P_Make_Foo,  "make-foo",     0, 0, EVAL);
     Define_Primitive((Object(*)(...))P_Read_Val,  "read-val",     1, 1, EVAL);
     Define_Primitive((Object(*)(...))P_Write_Val, "write-val!",   2, 2, EVAL);

@@ -48,7 +48,7 @@ void Init_Cstring() {  /* Preallocate memory to avoid fragmentation */
     int i;
 
     for (i = 0; i < NUMSTRBUFS; i++)
-	heapstr[i] = Safe_Malloc (heaplen[i] = 512);
+        heapstr[i] = Safe_Malloc (heaplen[i] = 512);
 }
 
 char *Get_String (Object str) {
@@ -57,10 +57,10 @@ char *Get_String (Object str) {
 
     Check_Type (str, T_String);
     if ((len = STRING(str)->size+1) > heaplen[nextstr]) {
-	Disable_Interrupts;
-	*pp = Safe_Realloc (*pp, len);
-	heaplen[nextstr] = len;
-	Enable_Interrupts;
+        Disable_Interrupts;
+        *pp = Safe_Realloc (*pp, len);
+        heaplen[nextstr] = len;
+        Enable_Interrupts;
     }
     memcpy (*pp, STRING(str)->data, --len);
     (*pp)[len] = '\0';
@@ -70,8 +70,8 @@ char *Get_String (Object str) {
 
 char *Get_Strsym (Object str) {
     if (TYPE(str) == T_Symbol)
-	str = SYMBOL(str)->name;
+        str = SYMBOL(str)->name;
     else if (TYPE(str) != T_String)
-	Wrong_Type_Combination (str, "string or symbol");
+        Wrong_Type_Combination (str, "string or symbol");
     return Get_String (str);
 }

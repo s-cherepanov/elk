@@ -49,13 +49,13 @@ SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     SYM *sp, **nextp;
 
     if ((f = open (name, O_RDONLY)) == -1) {
-	Saved_Errno = errno;
-	Primitive_Error ("can't open a.out file: ~E");
+        Saved_Errno = errno;
+        Primitive_Error ("can't open a.out file: ~E");
     }
     if ((base = mmap (0xc0000000, &len, PROT_READ, MAP_FILE, f, (off_t)0))
-	    == (char *)-1) {
-	Saved_Errno = errno;
-	Primitive_Error ("can't mmap a.out file: ~E");
+            == (char *)-1) {
+        Saved_Errno = errno;
+        Primitive_Error ("can't mmap a.out file: ~E");
     }
     close (f);
     fhp = (struct filehdr *)base;
@@ -69,16 +69,16 @@ SYMTAB *Open_File_And_Snarf_Symbols (char *name) {
     ohp = (struct opthdr *)(base + sizeof *fhp);
     np = (struct nlist *)(base + ohp->o_symptr);
     for (n = 0; n < ohp->o_nsyms; n++, np++) {
-	if (np->n_un.n_strx == 0 || np->n_type & N_STAB)
-	    continue;
-	if ((np->n_type & N_TYPE) != N_TEXT)
-	    continue;
-	sp = (SYM *)Safe_Malloc (sizeof (SYM));
-	sp->name = tab->strings + np->n_un.n_strx;
-	sp->value = np->n_value;
-	*nextp = sp;
-	nextp = &sp->next;
-	*nextp = 0;
+        if (np->n_un.n_strx == 0 || np->n_type & N_STAB)
+            continue;
+        if ((np->n_type & N_TYPE) != N_TEXT)
+            continue;
+        sp = (SYM *)Safe_Malloc (sizeof (SYM));
+        sp->name = tab->strings + np->n_un.n_strx;
+        sp->value = np->n_value;
+        *nextp = sp;
+        nextp = &sp->next;
+        *nextp = 0;
     }
     (void)munmap (base, len);
     return tab;

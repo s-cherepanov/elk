@@ -10,26 +10,26 @@ static Object P_Get_Passwd(argc, argv) int argc; Object *argv; {
     Check_Result_Vector(argv[0], 7);
     Disable_Interrupts;
     if (argc == 1) {
-	if ((p = getpwent()) == 0) {
-	    Enable_Interrupts;
-	    Raise_Error("no more passwd entries");
-	}
+        if ((p = getpwent()) == 0) {
+            Enable_Interrupts;
+            Raise_Error("no more passwd entries");
+        }
     } else {
-	arg = argv[1];
-	switch (TYPE(arg)) {
-	case T_Fixnum: case T_Bignum:
-	    p = getpwuid(Get_Integer(arg));
-	    break;
-	case T_String: case T_Symbol:
-	    p = getpwnam(Get_String(arg));
-	    break;
-	default:
-	    Wrong_Type_Combination(arg, "integer, string, or symbol");
-	}
-	if (p == 0) {
-	    Enable_Interrupts;
-	    Raise_Error1("no passwd entry for ~s", arg);
-	}
+        arg = argv[1];
+        switch (TYPE(arg)) {
+        case T_Fixnum: case T_Bignum:
+            p = getpwuid(Get_Integer(arg));
+            break;
+        case T_String: case T_Symbol:
+            p = getpwnam(Get_String(arg));
+            break;
+        default:
+            Wrong_Type_Combination(arg, "integer, string, or symbol");
+        }
+        if (p == 0) {
+            Enable_Interrupts;
+            Raise_Error1("no passwd entry for ~s", arg);
+        }
     }
     Enable_Interrupts;
     x = Make_String(p->pw_name, strlen(p->pw_name));
@@ -72,26 +72,26 @@ static Object P_Get_Group(argc, argv) int argc; Object *argv; {
     Check_Result_Vector(argv[0], 4);
     Disable_Interrupts;
     if (argc == 1) {
-	if ((p = getgrent()) == 0) {
-	    Enable_Interrupts;
-	    Raise_Error("no more group entries");
-	}
+        if ((p = getgrent()) == 0) {
+            Enable_Interrupts;
+            Raise_Error("no more group entries");
+        }
     } else {
-	arg = argv[1];
-	switch (TYPE(arg)) {
-	case T_Fixnum: case T_Bignum:
-	    p = getgrgid(Get_Integer(arg));
-	    break;
-	case T_String: case T_Symbol:
-	    p = getgrnam(Get_String(arg));
-	    break;
-	default:
-	    Wrong_Type_Combination(arg, "integer, string, or symbol");
-	}
-	if (p == 0) {
-	    Enable_Interrupts;
-	    Raise_Error1("no group entry for ~s", arg);
-	}
+        arg = argv[1];
+        switch (TYPE(arg)) {
+        case T_Fixnum: case T_Bignum:
+            p = getgrgid(Get_Integer(arg));
+            break;
+        case T_String: case T_Symbol:
+            p = getgrnam(Get_String(arg));
+            break;
+        default:
+            Wrong_Type_Combination(arg, "integer, string, or symbol");
+        }
+        if (p == 0) {
+            Enable_Interrupts;
+            Raise_Error1("no group entry for ~s", arg);
+        }
     }
     Enable_Interrupts;
     x = Make_String(p->gr_name, strlen(p->gr_name));
@@ -103,8 +103,8 @@ static Object P_Get_Group(argc, argv) int argc; Object *argv; {
     x = Null;
     GC_Link(x);
     for (pp = p->gr_mem; *pp; pp++) {
-	member = Intern(*pp);
-	x = Cons(member, x);
+        member = Intern(*pp);
+        x = Cons(member, x);
     }
     x = P_Reverse(x);
     GC_Unlink;

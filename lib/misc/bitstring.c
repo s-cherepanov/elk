@@ -60,7 +60,7 @@ static int Bitstring_Equal(Object b1, Object b2) {
     struct S_Bitstring *a = BITSTRING(b1), *b = BITSTRING(b2);
 
     if (a->len != b->len)
-	return 0;
+        return 0;
     return !bcmp(a->data, b->data, bits_to_bytes(a->len));
 }
 
@@ -73,7 +73,7 @@ static char *Digits(unsigned char c, int n) {
     int i = 0;
 
     for (; n > 0; n--)
-	buf[i++] = c & masks[n] ? '1' : '0';
+        buf[i++] = c & masks[n] ? '1' : '0';
     buf[i] = '\0';
     return buf;
 }
@@ -91,9 +91,9 @@ static int Bitstring_Print(Object x, Object port, int raw, int depth,
     i = bits_to_bytes(b->len) - 1;
     rem = b->len;
     if (rem % 8)
-	Printf(port, Digits(b->data[i--], rem));
+        Printf(port, Digits(b->data[i--], rem));
     for ( ; i >= 0; i--)
-	Printf(port, Digits(b->data[i], 8));
+        Printf(port, Digits(b->data[i], 8));
     GC_Unlink;
     return 0;
 }
@@ -116,9 +116,9 @@ static void Fill_Bitstring(Object bs, int fill) {
 
     i = bits_to_bytes(b->len) - 1;
     if (val && (rem = b->len % 8))
-	b->data[i--] |= masks2[rem];
+        b->data[i--] |= masks2[rem];
     for ( ; i >= 0; i--)
-	b->data[i] = val;
+        b->data[i] = val;
 }
 
 static Object P_Make_Bitstring(Object len, Object init) {
@@ -126,12 +126,12 @@ static Object P_Make_Bitstring(Object len, Object init) {
     int n, fill;
 
     if ((n = Get_Integer(len)) < 0)
-	Range_Error(len);
+        Range_Error(len);
     Check_Type(init, T_Boolean);
     fill = Truep(init);
     ret = Make_Bitstring((unsigned)n);
     if (fill)
-	Fill_Bitstring(ret, 1);
+        Fill_Bitstring(ret, 1);
     return ret;
 }
 
@@ -144,7 +144,7 @@ static int Ulong_Size(unsigned long ul) {
     int n;
 
     for (n = 0; ul; ul >>= 1, n++)
-	;
+        ;
     return n;
 }
 
@@ -157,17 +157,17 @@ static Object Ulong_To_Bitstring(unsigned long ul, unsigned int len) {
     ret = Make_Bitstring(len);
     b = BITSTRING(ret);
     if (siz > len) {
-	sprintf(buf, "length %u too small for integer %lu", len, ul);
-	Primitive_Error(buf);
+        sprintf(buf, "length %u too small for integer %lu", len, ul);
+        Primitive_Error(buf);
     }
     for (i = 0; ul; ul >>= 8, i++)
-	b->data[i] = ul & 0xFF;
+        b->data[i] = ul & 0xFF;
     return ret;
 }
 
 static unsigned int Bigbits(struct S_Bignum *b) {
     return b->usize ? (Ulong_Size((unsigned long)b->data[b->usize-1]) +
-	    (b->usize-1) * sizeof(gran_t) * 8) : 0;
+            (b->usize-1) * sizeof(gran_t) * 8) : 0;
 }
 
 static Object Bignum_To_Bitstring(Object big, unsigned int len) {
@@ -179,8 +179,8 @@ static Object Bignum_To_Bitstring(Object big, unsigned int len) {
     GC_Node;
 
     if (Bigbits(BIGNUM(big)) > len) {
-	sprintf(buf, "length %u too small for integer ~s", len);
-	Primitive_Error(buf, big);
+        sprintf(buf, "length %u too small for integer ~s", len);
+        Primitive_Error(buf, big);
     }
     GC_Link(big);
     ret = Make_Bitstring(len);
@@ -189,9 +189,9 @@ static Object Bignum_To_Bitstring(Object big, unsigned int len) {
     bn = BIGNUM(big);
     n = bits_to_bytes(len);
     for (i = k = 0; k < bn->usize; k++, i++) {
-	b->data[i] = bn->data[k] & 0xFF;
-	if (i < n)
-	    b->data[++i] = bn->data[k] >> 8 & 0xFF;
+        b->data[i] = bn->data[k] & 0xFF;
+        if (i < n)
+            b->data[++i] = bn->data[k] >> 8 & 0xFF;
     }
     return ret;
 }
@@ -201,13 +201,13 @@ static Object P_Int_To_Bitstring(Object len, Object i) {
     int ilen;
 
     if ((ilen = Get_Integer(len)) < 0)
-	Range_Error(len);
+        Range_Error(len);
     Check_Integer(i);
     isneg = P_Negativep(i);
     if (Truep(isneg))
-	Range_Error(i);
+        Range_Error(i);
     if (TYPE(i) == T_Fixnum)
-	return Ulong_To_Bitstring((unsigned long)FIXNUM(i), (unsigned)ilen);
+        return Ulong_To_Bitstring((unsigned long)FIXNUM(i), (unsigned)ilen);
     return Bignum_To_Bitstring(i, (unsigned)ilen);
 }
 
@@ -224,10 +224,10 @@ static Object Bitstring_To_Bignum (Object bs) {
     GC_Unlink;
     b = BITSTRING(bs);
     for (i = k = 0; i < n; k++, i++) {
-	digit = b->data[i];
-	if (!(i & 1))
-	    digit |= (unsigned)b->data[++i] << 8;
-	BIGNUM(big)->data[k] = digit;
+        digit = b->data[i];
+        if (!(i & 1))
+            digit |= (unsigned)b->data[++i] << 8;
+        BIGNUM(big)->data[k] = digit;
     }
     BIGNUM(big)->usize = k;
     Bignum_Normalize_In_Place (BIGNUM(big));
@@ -243,9 +243,9 @@ static Object P_Bitstring_To_Int(Object bs) {
     b = BITSTRING(bs);
 
     for (i = bits_to_bytes(b->len) - 1; i >= 0; i--) {
-	u = u << 8 | b->data[i];
-	if (!UFIXNUM_FITS(u))
-	    return Bitstring_To_Bignum(bs);
+        u = u << 8 | b->data[i];
+        if (!UFIXNUM_FITS(u))
+            return Bitstring_To_Bignum(bs);
     }
     return Make_Integer(u);
 }
@@ -258,7 +258,7 @@ static Object P_Bitstring_Ref(Object bs, Object inx) {
     b = BITSTRING(bs);
     i = Get_Integer(inx);
     if (i < 0 || i >= (int)b->len)
-	Range_Error(inx);
+        Range_Error(inx);
     return b->data[i/8] & 1 << i % 8 ? True : False;
 }
 
@@ -271,14 +271,14 @@ static Object P_Bitstring_Set(Object bs, Object inx, Object val) {
     b = BITSTRING(bs);
     i = Get_Integer(inx);
     if (i < 0 || i >= (int)b->len)
-	Range_Error(inx);
+        Range_Error(inx);
     j = i/8;
     mask = 1 << i%8;
     old = b->data[j] & mask;
     if (Truep(val))
-	b->data[j] |= mask;
+        b->data[j] |= mask;
     else
-	b->data[j] &= ~mask;
+        b->data[j] &= ~mask;
     return old ? True : False;
 }
 
@@ -289,7 +289,7 @@ static Object P_Bitstring_Zerop(Object bs) {
     Check_Type(bs, T_Bitstring);
     b = BITSTRING(bs);
     for (i = bits_to_bytes(b->len); --i >= 0 && b->data[i] == 0 ;)
-	;
+        ;
     return i < 0 ? True : False;
 }
 
@@ -305,16 +305,16 @@ static Object P_Bitstring_Fill(Object bs, Object fill) {
     int i, rem;\
 \
     if (a->len != b->len) {\
-	printf("bitstrings must be of same length\n"); exit(1);\
+        printf("bitstrings must be of same length\n"); exit(1);\
     }\
     i = bits_to_bytes(a->len) - 1;\
     rem = a->len % 8;\
     if (rem % 8) {\
-	a->data[i] op b->data[i];\
-	a->data[i--] &= masks2[rem];\
+        a->data[i] op b->data[i];\
+        a->data[i--] &= masks2[rem];\
     }\
     for ( ; i >= 0; i--)\
-	a->data[i] op b->data[i];\
+        a->data[i] op b->data[i];\
 }
 
 bitop(bmove, =)
@@ -332,7 +332,7 @@ static Object Bit_Operation(Object b1, Object b2, void (*fun)()) {
     a = BITSTRING(b1);
     b = BITSTRING(b2);
     if (a->len != b->len)
-	Primitive_Error("bitstrings must have identical length");
+        Primitive_Error("bitstrings must have identical length");
     fun(a, b);
     return Void;
 }
@@ -378,134 +378,134 @@ static Object P_Substring_Move(Object b1, Object from, Object to,
     end2 = start2 + len;
 
     if (start1 < 0 || start1 > end1)
-	Range_Error(from);
+        Range_Error(from);
     if (end1 > (int)a->len)
-	Range_Error(to);
+        Range_Error(to);
     if (start2 < 0 || end2 > (int)b->len)
-	Range_Error(dst);
+        Range_Error(dst);
 
     if (a == b && start2 < start1) { /* copy forward (LSB to MSB) */
-	off1 = start1 % 8;
-	off2 = start2 % 8;
-	i = start1 / 8;
-	j = start2 / 8;
-	if (off1 == off2) {
-	    if (off1) {
-		mask = 0xFF & ~masks2[off1];
-		if (off1 + len < 8)
-		    mask &= masks2[off1+len];
-		b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
-		len -= 8 - off1; i++; j++;
-	    }
-	    for (; len >= 8; len -= 8)
-		b->data[j++] = a->data[i++];
-	    if (len > 0) {
-		mask = masks2[len];
-		b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
-	    }
-	} else {
-	    unsigned char dmask;
-	    int n, delta, shift;
+        off1 = start1 % 8;
+        off2 = start2 % 8;
+        i = start1 / 8;
+        j = start2 / 8;
+        if (off1 == off2) {
+            if (off1) {
+                mask = 0xFF & ~masks2[off1];
+                if (off1 + len < 8)
+                    mask &= masks2[off1+len];
+                b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
+                len -= 8 - off1; i++; j++;
+            }
+            for (; len >= 8; len -= 8)
+                b->data[j++] = a->data[i++];
+            if (len > 0) {
+                mask = masks2[len];
+                b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
+            }
+        } else {
+            unsigned char dmask;
+            int n, delta, shift;
 
-	    while (len > 0) {
-		shift = delta = off2 - off1;
-		if (shift < 0)
-		    shift = -shift;
-		n = 8 - off1;
-		mask = 0xFF & ~masks2[off1];
-		if (len < n) {
-		    n = len;
-		    mask &= masks2[off1+len];
-		}
-		if (8 - off2 >= n) {  /* rest of src byte fits into dst byte */
+            while (len > 0) {
+                shift = delta = off2 - off1;
+                if (shift < 0)
+                    shift = -shift;
+                n = 8 - off1;
+                mask = 0xFF & ~masks2[off1];
+                if (len < n) {
+                    n = len;
+                    mask &= masks2[off1+len];
+                }
+                if (8 - off2 >= n) {  /* rest of src byte fits into dst byte */
 
-		    if (delta > 0) {
-			dmask = mask << shift;
-			b->data[j] = (b->data[j] & ~dmask) |
-			    (a->data[i] & mask) << shift;
-		    } else {
-			dmask = mask >> shift;
-			b->data[j] = (b->data[j] & ~dmask) |
-			    (unsigned int)(a->data[i] & mask) >> shift;
-		    }
-		} else {  /* nope, copy as many bits as fit into dst bye */
+                    if (delta > 0) {
+                        dmask = mask << shift;
+                        b->data[j] = (b->data[j] & ~dmask) |
+                            (a->data[i] & mask) << shift;
+                    } else {
+                        dmask = mask >> shift;
+                        b->data[j] = (b->data[j] & ~dmask) |
+                            (unsigned int)(a->data[i] & mask) >> shift;
+                    }
+                } else {  /* nope, copy as many bits as fit into dst bye */
 
-		    n = 8 - off2;
-		    mask &= masks2[off1+n];
-		    dmask = mask << shift;
-		    b->data[j] = (b->data[j] & ~dmask) |
-			(a->data[i] & mask) << shift;
-		}
+                    n = 8 - off2;
+                    mask &= masks2[off1+n];
+                    dmask = mask << shift;
+                    b->data[j] = (b->data[j] & ~dmask) |
+                        (a->data[i] & mask) << shift;
+                }
 
-		if (off1 + n >= 8) i++;
-		if (off2 + n >= 8) j++;
-		off1 = (off1 + n) % 8;
-		off2 = (off2 + n) % 8;
-		len -= n;
-	    }
-	}
+                if (off1 + n >= 8) i++;
+                if (off2 + n >= 8) j++;
+                off1 = (off1 + n) % 8;
+                off2 = (off2 + n) % 8;
+                len -= n;
+            }
+        }
     } else {  /* copy backwards (MSB to LSB) */
 
-	if ((off1 = end1 % 8 - 1) < 0) off1 = 7;
-	if ((off2 = end2 % 8 - 1) < 0) off2 = 7;
-	i = (end1 - 1) / 8;
-	j = (end2 - 1) / 8;
-	if (off1 == off2) {
-	    if (off1 < 7) {
-		if (len <= off1)
-		    mask = masks2[len] << (off1-len+1);
-		else
-		    mask = masks2[off1+1];
-		b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
-		len -= off1+1; i--; j--;
-	    }
-	    for (; len >= 8; len -= 8)
-		b->data[j--] = a->data[i--];
-	    if (len > 0) {
-		mask = masks2[len] << (8 - len);
-		b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
-	    }
-	} else {
-	    unsigned char dmask;
-	    int n, delta, shift;
+        if ((off1 = end1 % 8 - 1) < 0) off1 = 7;
+        if ((off2 = end2 % 8 - 1) < 0) off2 = 7;
+        i = (end1 - 1) / 8;
+        j = (end2 - 1) / 8;
+        if (off1 == off2) {
+            if (off1 < 7) {
+                if (len <= off1)
+                    mask = masks2[len] << (off1-len+1);
+                else
+                    mask = masks2[off1+1];
+                b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
+                len -= off1+1; i--; j--;
+            }
+            for (; len >= 8; len -= 8)
+                b->data[j--] = a->data[i--];
+            if (len > 0) {
+                mask = masks2[len] << (8 - len);
+                b->data[j] = (b->data[j] & ~mask) | (a->data[i] & mask);
+            }
+        } else {
+            unsigned char dmask;
+            int n, delta, shift;
 
-	    while (len > 0) {
-		shift = delta = off2 - off1;
-		if (shift < 0)
-		    shift = -shift;
-		n = off1 + 1;
-		mask = masks2[n];
-		if (len < n) {
-		    mask = masks2[len] << (n-len);
-		    n = len;
-		}
-		if (off2 + 1 >= n) { /* rest of src byte fits into dst byte */
+            while (len > 0) {
+                shift = delta = off2 - off1;
+                if (shift < 0)
+                    shift = -shift;
+                n = off1 + 1;
+                mask = masks2[n];
+                if (len < n) {
+                    mask = masks2[len] << (n-len);
+                    n = len;
+                }
+                if (off2 + 1 >= n) { /* rest of src byte fits into dst byte */
 
-		    if (delta > 0) {
-			dmask = mask << shift;
-			b->data[j] = (b->data[j] & ~dmask) |
-			    (a->data[i] & mask) << shift;
-		    } else {
-			dmask = mask >> shift;
-			b->data[j] = (b->data[j] & ~dmask) |
-			    (unsigned int)(a->data[i] & mask) >> shift;
-		    }
-		} else {  /* nope, copy as many bits as fit into dst bye */
+                    if (delta > 0) {
+                        dmask = mask << shift;
+                        b->data[j] = (b->data[j] & ~dmask) |
+                            (a->data[i] & mask) << shift;
+                    } else {
+                        dmask = mask >> shift;
+                        b->data[j] = (b->data[j] & ~dmask) |
+                            (unsigned int)(a->data[i] & mask) >> shift;
+                    }
+                } else {  /* nope, copy as many bits as fit into dst bye */
 
-		    n = off2 + 1;
-		    mask = masks2[n] << (off1-n+1);
-		    dmask = mask >> shift;
-		    b->data[j] = (b->data[j] & ~dmask) |
-			(unsigned int)(a->data[i] & mask) >> shift;
-		}
+                    n = off2 + 1;
+                    mask = masks2[n] << (off1-n+1);
+                    dmask = mask >> shift;
+                    b->data[j] = (b->data[j] & ~dmask) |
+                        (unsigned int)(a->data[i] & mask) >> shift;
+                }
 
-		if (off1 - n < 0) i--;
-		if (off2 - n < 0) j--;
-		if ((off1 -= n) < 0) off1 += 8;
-		if ((off2 -= n) < 0) off2 += 8;
-		len -= n;
-	    }
-	}
+                if (off1 - n < 0) i--;
+                if (off2 - n < 0) j--;
+                if ((off1 -= n) < 0) off1 += 8;
+                if ((off2 -= n) < 0) off2 += 8;
+                len -= n;
+            }
+        }
     }
     return Void;
 }
@@ -520,22 +520,22 @@ static Object Bitstring_Read(Object port, int chr, int konst) {
     f = PORT(port)->file;
     str = PORT(port)->flags & P_STRING;
     while (1) {
-	Reader_Getc;
-	if (c == EOF)
-	    Reader_Sharp_Eof;
-	if (Whitespace (c) || Delimiter (c))
-	    break;
-	if (p == buf+1024)
-	    Reader_Error(port, "bitstring constant too long for reader");
-	if (c != '0' && c != '1')
-	    Reader_Error(port, "bad digit in bitstring constant");
-	*p++ = c;
+        Reader_Getc;
+        if (c == EOF)
+            Reader_Sharp_Eof;
+        if (Whitespace (c) || Delimiter (c))
+            break;
+        if (p == buf+1024)
+            Reader_Error(port, "bitstring constant too long for reader");
+        if (c != '0' && c != '1')
+            Reader_Error(port, "bad digit in bitstring constant");
+        *p++ = c;
     }
     Reader_Ungetc;
     ret = Make_Bitstring(p-buf);
     for (i = 0; p > buf; i++)
-	if (*--p == '1')
-	    BITSTRING(ret)->data[i/8] |= 1 << i%8;
+        if (*--p == '1')
+            BITSTRING(ret)->data[i/8] |= 1 << i%8;
     return ret;
 }
 
@@ -543,7 +543,7 @@ static Object Bitstring_Read(Object port, int chr, int konst) {
 
 void elk_init_lib_bitstring() {
     T_Bitstring = Define_Type(0, "bitstring", Bitstring_Size, 0,
-	Bitstring_Equal, Bitstring_Equal, Bitstring_Print, NOFUNC);
+        Bitstring_Equal, Bitstring_Equal, Bitstring_Print, NOFUNC);
     Define_Reader('*', Bitstring_Read);
     Def_Prim(P_Bitstringp,       "bitstring?",                  1, 1, EVAL);
     Def_Prim(P_Bitstring_Equalp, "bitstring=?",                 2, 2, EVAL);

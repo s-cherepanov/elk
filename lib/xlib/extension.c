@@ -14,10 +14,10 @@ static Object P_List_Extensions (d) Object d; {
     ret = Make_Vector (n, Null);
     GC_Link (ret);
     for (i = 0; i < n; i++) {
-	Object e;
+        Object e;
 
-	e = Make_String (p[i], strlen (p[i]));
-	VECTOR(ret)->data[i] = e;
+        e = Make_String (p[i], strlen (p[i]));
+        VECTOR(ret)->data[i] = e;
     }
     GC_Unlink;
     XFreeExtensionList (p);
@@ -31,8 +31,8 @@ static Object P_Query_Extension (d, name) Object d, name; {
 
     Check_Type (d, T_Display);
     if (!XQueryExtension (DISPLAY(d)->dpy, Get_Strsym (name), &opcode,
-	    &event, &error))
-	return False;
+            &event, &error))
+        return False;
     t = ret = P_Make_List (Make_Integer (3), Null);
     GC_Link2 (ret, t);
     Car (t) = (opcode ? Make_Integer (opcode) : False); t = Cdr (t);

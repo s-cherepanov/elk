@@ -63,7 +63,7 @@ Object P_Provide (Object sym) {
     Check_Type (sym, T_Symbol);
     member = P_Memq (sym, Features);
     if (!Truep (member))
-	Features = Cons (sym, Features);
+        Features = Cons (sym, Features);
     return Void;
 }
 
@@ -75,7 +75,7 @@ static Object Feature_Filename (Object str) {
     GC_Node;
 
     for (p = sp->data+len-1; p >= sp->data && *p != '.'; p--)
-	;
+        ;
     if (p >= sp->data)
        return str;
     GC_Link (str);
@@ -94,15 +94,15 @@ Object P_Require (int argc, Object *argv) {
     GC_Link (sym);
     isfeature = P_Featurep (sym);
     if (!Truep (isfeature)) {
-	if (argc == 3)
-	    Check_Type (argv[2], T_Environment);
-	a[0] = argc == 1 ? Feature_Filename (SYMBOL(sym)->name) : argv[1];
-	if (Var_Is_True (V_Autoload_Notifyp))
-	    Format (Standard_Output_Port, "[Autoloading ~a]~%", 18, 1, a);
-	(void)General_Load (a[0], argc == 3 ? argv[2] : The_Environment);
-	isfeature = P_Featurep (sym);
-	if (!Truep (isfeature))
-	    Primitive_Error ("feature ~s was not provided", sym);
+        if (argc == 3)
+            Check_Type (argv[2], T_Environment);
+        a[0] = argc == 1 ? Feature_Filename (SYMBOL(sym)->name) : argv[1];
+        if (Var_Is_True (V_Autoload_Notifyp))
+            Format (Standard_Output_Port, "[Autoloading ~a]~%", 18, 1, a);
+        (void)General_Load (a[0], argc == 3 ? argv[2] : The_Environment);
+        isfeature = P_Featurep (sym);
+        if (!Truep (isfeature))
+            Primitive_Error ("feature ~s was not provided", sym);
     }
     GC_Unlink;
     return Void;

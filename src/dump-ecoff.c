@@ -43,12 +43,12 @@ extern char *sbrk();
     char err[100];\
     int _i;\
     for (_i = 0; _i < fhdr.f_nscns; _i++)\
-	if (strncmp (sect[_i].s_name, (name), sizeof(sect[_i].s_name)) == 0)\
-	    break;\
+        if (strncmp (sect[_i].s_name, (name), sizeof(sect[_i].s_name)) == 0)\
+            break;\
     if (_i == fhdr.f_nscns) {\
-	Dump_Finalize;\
-	sprintf (err, "running a.out doesn't have %s section", (name));\
-	Primitive_Error (err);\
+        Dump_Finalize;\
+        sprintf (err, "running a.out doesn't have %s section", (name));\
+        Primitive_Error (err);\
     }\
     (ptr) = sect+_i;\
 }
@@ -75,18 +75,18 @@ Object P_Dump (Object ofile) {
      * whether they haven't been modified.
      */
     if (read (afd, (char *)&fhdr, sizeof (fhdr)) != sizeof (fhdr) ||
-	    read (afd, (char *)&ahdr, sizeof (ahdr)) != sizeof (ahdr)) {
-	Dump_Finalize;
-	Primitive_Error ("error reading a.out headers: ~E");
+            read (afd, (char *)&ahdr, sizeof (ahdr)) != sizeof (ahdr)) {
+        Dump_Finalize;
+        Primitive_Error ("error reading a.out headers: ~E");
     }
     if (fhdr.f_nscns > MAX_SECTS) {
-	Dump_Finalize;
-	Primitive_Error ("too many sections in a.out");
+        Dump_Finalize;
+        Primitive_Error ("too many sections in a.out");
     }
     if (read (afd, (char *)sect, fhdr.f_nscns * sizeof (sect[0])) !=
-	    fhdr.f_nscns * sizeof (sect[0])) {
-	Dump_Finalize;
-	Primitive_Error ("error reading section headers: ~E");
+            fhdr.f_nscns * sizeof (sect[0])) {
+        Dump_Finalize;
+        Primitive_Error ("error reading section headers: ~E");
     }
     FIND_SECTHDR (_DATA, datap);
 
@@ -110,27 +110,27 @@ Object P_Dump (Object ofile) {
      * .comment).  (XXX: Should s_lnnoptr be adjusted as well?)
      */
     for (sp = datap+1; sp < sect+fhdr.f_nscns; sp++) {
-	switch (sp->s_flags & ~0xf) {
-	case STYP_BSS:
-	case STYP_SBSS:
-	case STYP_LIT4:
-	case STYP_LIT8:
-	case STYP_SDATA:
+        switch (sp->s_flags & ~0xf) {
+        case STYP_BSS:
+        case STYP_SBSS:
+        case STYP_LIT4:
+        case STYP_LIT8:
+        case STYP_SDATA:
 #ifdef DEBUG_DUMP
-	    /* .comment is not null-terminated */
-	    printf ("nuking %.8s\n", sp->s_name);
+            /* .comment is not null-terminated */
+            printf ("nuking %.8s\n", sp->s_name);
 #endif
-	    sp->s_paddr = sp->s_vaddr = sp->s_scnptr = sp->s_lnnoptr = 0;
-	    sp->s_size = 0;
-	    break;
-	default:
+            sp->s_paddr = sp->s_vaddr = sp->s_scnptr = sp->s_lnnoptr = 0;
+            sp->s_size = 0;
+            break;
+        default:
 #ifdef DEBUG_DUMP
-	    printf ("adjusting %.8s\n", sp->s_name);
+            printf ("adjusting %.8s\n", sp->s_name);
 #endif
-	    sp->s_paddr += delta;
-	    sp->s_vaddr += delta;
-	    if (sp->s_scnptr) sp->s_scnptr += delta;
-	}
+            sp->s_paddr += delta;
+            sp->s_vaddr += delta;
+            if (sp->s_scnptr) sp->s_scnptr += delta;
+        }
     }
     delta = ahdr.tsize + ahdr.dsize - fhdr.f_symptr;
     fhdr.f_symptr += delta;
@@ -139,10 +139,10 @@ Object P_Dump (Object ofile) {
      */
     n = fhdr.f_nscns * sizeof (sect[0]);
     if (write (ofd, (char *)&fhdr, sizeof (fhdr)) != sizeof (fhdr) ||
-	    write (ofd, (char *)&ahdr, sizeof (ahdr)) != sizeof (ahdr) ||
-	    write (ofd, (char *)sect, n) != n) {
-	Dump_Finalize;
-	Primitive_Error ("error writing a.out/section headers: ~E");
+            write (ofd, (char *)&ahdr, sizeof (ahdr)) != sizeof (ahdr) ||
+            write (ofd, (char *)sect, n) != n) {
+        Dump_Finalize;
+        Primitive_Error ("error writing a.out/section headers: ~E");
     }
 
     /* Write sections
@@ -151,15 +151,15 @@ Object P_Dump (Object ofile) {
     n += sizeof (fhdr) + sizeof (ahdr);
 #ifdef DEBUG_DUMP
     printf ("writing text 0x%x bytes and data 0x%x bytes\n",
-	ahdr.tsize-n, ahdr.dsize);
+        ahdr.tsize-n, ahdr.dsize);
 #endif
     if (write (ofd, (char *)ahdr.text_start+n, ahdr.tsize-n) != ahdr.tsize-n) {
-	Dump_Finalize;
-	Primitive_Error ("error writing text section: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error writing text section: ~E");
     }
     if (write (ofd, (char *)ahdr.data_start, ahdr.dsize) != ahdr.dsize) {
-	Dump_Finalize;
-	Primitive_Error ("error writing data sections: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error writing data sections: ~E");
     }
 
     /* Copy the symbol table.  If an object file has been loaded into
@@ -169,29 +169,29 @@ Object P_Dump (Object ofile) {
      * (XXX: Are there any offsets to be adjusted in the table proper?)
      */
     if (Loader_Input) {
-	close (afd);
-	if ((afd = open (Loader_Input, O_RDONLY)) == -1) {
-	    Dump_Finalize;
-	    Primitive_Error ("cannot open symbol table file: ~E");
-	}
-	delta = fhdr.f_symptr;
-	if (read (afd, (char *)&fhdr, sizeof (fhdr)) != sizeof (fhdr)) {
-	    Dump_Finalize;
-	    Primitive_Error ("error reading a.out header: ~E");
-	}
-	delta -= fhdr.f_symptr;
-	(void)lseek (afd, (off_t)fhdr.f_symptr, SEEK_SET);
+        close (afd);
+        if ((afd = open (Loader_Input, O_RDONLY)) == -1) {
+            Dump_Finalize;
+            Primitive_Error ("cannot open symbol table file: ~E");
+        }
+        delta = fhdr.f_symptr;
+        if (read (afd, (char *)&fhdr, sizeof (fhdr)) != sizeof (fhdr)) {
+            Dump_Finalize;
+            Primitive_Error ("error reading a.out header: ~E");
+        }
+        delta -= fhdr.f_symptr;
+        (void)lseek (afd, (off_t)fhdr.f_symptr, SEEK_SET);
     } else
-	(void)lseek (afd, (off_t)fhdr.f_symptr-delta, SEEK_SET);
+        (void)lseek (afd, (off_t)fhdr.f_symptr-delta, SEEK_SET);
 
 #ifdef DEBUG_DUMP
     printf ("copying symbols from %s\n", Loader_Input ? Loader_Input :
-	A_Out_Name);
+        A_Out_Name);
 #endif
     if (read (afd, (char *)&shdr, sizeof (shdr)) != sizeof (shdr)) {
 symrerr:
-	Dump_Finalize;
-	Primitive_Error ("error reading symbol table: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error reading symbol table: ~E");
     }
 #define ADJUST(what) if (shdr.what > 0) shdr.what += delta
     ADJUST (cbLineOffset);
@@ -208,11 +208,11 @@ symrerr:
 
     if (write (ofd, (char *)&shdr, sizeof (shdr)) != sizeof (shdr)) {
 symwerr:
-	Dump_Finalize;
-	Primitive_Error ("error writing symbol table: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error writing symbol table: ~E");
     }
     while ((n = read (afd, buf, 4096)) > 0)
-	if (write (ofd, buf, n) != n) goto symwerr;
+        if (write (ofd, buf, n) != n) goto symwerr;
     if (n < 0) goto symrerr;
 
     Dump_Epilog;

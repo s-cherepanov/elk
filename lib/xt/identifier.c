@@ -15,13 +15,13 @@ Object Make_Id (type, val, num) XtPointer val; {
 
     i = Find_Object (T_Identifier, (GENERIC)0, Match_Xt_Obj, type, val);
     if (Nullp (i)) {
-	i = Alloc_Object (sizeof (struct S_Identifier), T_Identifier, 0);
-	IDENTIFIER(i)->tag = Null;
-	IDENTIFIER(i)->type = type;
-	IDENTIFIER(i)->val = val;
-	IDENTIFIER(i)->num = num;
-	IDENTIFIER(i)->free = 0;
-	Register_Object (i, (GENERIC)0, (PFO)0, 0);
+        i = Alloc_Object (sizeof (struct S_Identifier), T_Identifier, 0);
+        IDENTIFIER(i)->tag = Null;
+        IDENTIFIER(i)->type = type;
+        IDENTIFIER(i)->val = val;
+        IDENTIFIER(i)->num = num;
+        IDENTIFIER(i)->free = 0;
+        Register_Object (i, (GENERIC)0, (PFO)0, 0);
     }
     return i;
 }
@@ -29,7 +29,7 @@ Object Make_Id (type, val, num) XtPointer val; {
 XtPointer Use_Id (x, type) Object x; {
     Check_Type (x, T_Identifier);
     if (IDENTIFIER(x)->type != type || IDENTIFIER(x)->free)
-	Primitive_Error ("invalid identifier");
+        Primitive_Error ("invalid identifier");
     IDENTIFIER(x)->free = 1;
     Deregister_Object (x);
     return IDENTIFIER(x)->val;

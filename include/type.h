@@ -50,5 +50,5 @@
 
 #define Check_Mutable(x) {\
     if (ISCONST(x))\
-	Primitive_Error ("attempt to modify constant");\
+        Primitive_Error ("attempt to modify constant");\
 }

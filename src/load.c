@@ -59,12 +59,12 @@ void Load_Source (Object);
 
 void Init_Load () {
     Define_Variable (&V_Load_Path, "load-path",
-	Cons (Make_String (".", 1),
-	Cons (Make_String (SCM_DIR, sizeof (SCM_DIR) - 1),
-	Cons (Make_String (OBJ_DIR, sizeof (OBJ_DIR) - 1), Null))));
+        Cons (Make_String (".", 1),
+        Cons (Make_String (SCM_DIR, sizeof (SCM_DIR) - 1),
+        Cons (Make_String (OBJ_DIR, sizeof (OBJ_DIR) - 1), Null))));
     Define_Variable (&V_Load_Noisilyp, "load-noisily?", False);
     Define_Variable (&V_Load_Libraries, "load-libraries",
-	Make_String (Default_Load_Libraries, sizeof Default_Load_Libraries-1));
+        Make_String (Default_Load_Libraries, sizeof Default_Load_Libraries-1));
 #ifdef CAN_LOAD_OBJ
     Register_Onfork (Fork_Load);
 #endif
@@ -76,14 +76,14 @@ void Init_Loadpath (char *s) {     /* No GC possible here */
 
     path = Null;
     if (s[0] == '\0')
-	return;
+        return;
     while (1) {
-	for (p = s; *p && *p != ':'; p++)
-	    ;
-	path = Cons (Make_String (s, p-s), path);
-	if (*p == '\0')
-	    break;
-	s = ++p;
+        for (p = s; *p && *p != ':'; p++)
+            ;
+        path = Cons (Make_String (s, p-s), path);
+        if (*p == '\0')
+            break;
+        s = ++p;
     }
     Var_Set (V_Load_Path, P_Reverse (path));
 }
@@ -94,7 +94,7 @@ int Has_Suffix (Object name, char const *suffix) {
     register struct S_String *str;
 
     if (TYPE(name) == T_Symbol)
-	name = SYMBOL(name)->name;
+        name = SYMBOL(name)->name;
     str = STRING(name);
     p = str->data + str->size - len;
     return len <= str->size && !strncasecmp(p, suffix, len);
@@ -105,17 +105,17 @@ void Check_Loadarg (Object x) {
     register int t = TYPE(x);
 
     if (t == T_Symbol || t == T_String)
-	return;
+        return;
     if (t != T_Pair)
-	Wrong_Type_Combination (x, "string, symbol, or list");
+        Wrong_Type_Combination (x, "string, symbol, or list");
     for (tail = x; !Nullp (tail); tail = Cdr (tail)) {
-	Object f;
+        Object f;
 
-	f = Car (tail);
-	if (TYPE(f) != T_Symbol && TYPE(f) != T_String)
-	    Wrong_Type_Combination (f, "string or symbol");
-	if (!Has_Suffix (f, ".o") && !Has_Suffix (f, ".so"))
-	    Primitive_Error ("~s: not an object file", f);
+        f = Car (tail);
+        if (TYPE(f) != T_Symbol && TYPE(f) != T_String)
+            Wrong_Type_Combination (f, "string or symbol");
+        if (!Has_Suffix (f, ".o") && !Has_Suffix (f, ".so"))
+            Primitive_Error ("~s: not an object file", f);
     }
 }
 
@@ -129,29 +129,29 @@ Object General_Load (Object what, Object env) {
     Switch_Environment (env);
     Check_Loadarg (what);
     if (TYPE(what) == T_Pair) {
-	if (Has_Suffix (Car (what), ".o"))
+        if (Has_Suffix (Car (what), ".o"))
 #ifdef CAN_LOAD_OBJ
-	    Load_Object (what)
+            Load_Object (what)
 #endif
-	    ;
-	else if (Has_Suffix (Car (what), ".so"))
+            ;
+        else if (Has_Suffix (Car (what), ".so"))
 #ifdef CAN_LOAD_LIB
-	    Load_Library (what)
+            Load_Library (what)
 #endif
-	    ;
+            ;
     }
     else if (Has_Suffix (what, ".o"))
 #ifdef CAN_LOAD_OBJ
-	Load_Object (Cons (what, Null))
+        Load_Object (Cons (what, Null))
 #endif
-	;
+        ;
     else if (Has_Suffix (what, ".so"))
 #ifdef CAN_LOAD_LIB
-	Load_Library (Cons (what, Null))
+        Load_Library (Cons (what, Null))
 #endif
-	;
+        ;
     else
-	Load_Source (what);
+        Load_Source (what);
     Switch_Environment (oldenv);
     GC_Unlink;
     return Void;
@@ -168,16 +168,16 @@ void Load_Source_Port (Object port) {
 
     GC_Link (port);
     while (1) {
-	val = General_Read (port, 1);
-	if (TYPE(val) == T_End_Of_File)
-	    break;
-	TC_Disable;
-	val = Eval (val);
-	TC_Enable;
-	if (Var_Is_True (V_Load_Noisilyp)) {
-	    Print (val);
-	    (void)P_Newline (0, (Object *)0);
-	}
+        val = General_Read (port, 1);
+        if (TYPE(val) == T_End_Of_File)
+            break;
+        TC_Disable;
+        val = Eval (val);
+        TC_Enable;
+        if (Var_Is_True (V_Load_Noisilyp)) {
+            Print (val);
+            (void)P_Newline (0, (Object *)0);
+        }
     }
     GC_Unlink;
 }

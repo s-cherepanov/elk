@@ -82,12 +82,12 @@ static Object P_Matchp(Object x) {
 
 static int Regexp_Eqv(Object a, Object b) {
     return EQ(REGEXP(a)->pattern, REGEXP(b)->pattern)
-	&& REGEXP(a)->flags == REGEXP(b)->flags;
+        && REGEXP(a)->flags == REGEXP(b)->flags;
 }
 
 static int Regexp_Equal(Object a, Object b) {
     return Equal(REGEXP(a)->pattern, REGEXP(b)->pattern)
-	&& REGEXP(a)->flags == REGEXP(b)->flags;
+        && REGEXP(a)->flags == REGEXP(b)->flags;
 }
 
 static int Match_Equal(Object a, Object b) {
@@ -95,11 +95,11 @@ static int Match_Equal(Object a, Object b) {
     struct S_Match *ap = MATCH(a), *bp = MATCH(b);
 
     if (ap->num != bp->num)
-	return 0;
+        return 0;
     for (i = 0; i < ap->num; i++) {
-	if (ap->matches[i].rm_so != bp->matches[i].rm_so ||
-	    ap->matches[i].rm_eo != bp->matches[i].rm_eo)
-		return 0;
+        if (ap->matches[i].rm_so != bp->matches[i].rm_so ||
+            ap->matches[i].rm_eo != bp->matches[i].rm_eo)
+                return 0;
     }
     return 1;
 }
@@ -135,18 +135,18 @@ static Object P_Make_Regexp(int argc, Object *argv) {
 
     Check_Type(argv[0], T_String);
     if (argc == 2)
-	flags = Symbols_To_Bits(argv[1], 1, Compile_Syms);
+        flags = Symbols_To_Bits(argv[1], 1, Compile_Syms);
     r = Alloc_Object(sizeof(struct S_Regexp), T_Regexp, 0);
     REGEXP(r)->pattern = argv[0];
     REGEXP(r)->flags = flags;
     ret = regcomp(&REGEXP(r)->r, Get_String(argv[0]), flags);
     if (ret != 0) {
 #ifdef REG_ENOSYS
-	if (ret == REG_ENOSYS)
-	    Primitive_Error("function not supported by operating system");
+        if (ret == REG_ENOSYS)
+            Primitive_Error("function not supported by operating system");
 #endif
-	(void)regerror(ret, &REGEXP(r)->r, msg, sizeof(msg));
-	Primitive_Error("~a", Make_String(msg, strlen(msg)));
+        (void)regerror(ret, &REGEXP(r)->r, msg, sizeof(msg));
+        Primitive_Error("~a", Make_String(msg, strlen(msg)));
     }
     Register_Object(r, (GENERIC)0, Terminate_Regexp, 0);
     return r;
@@ -175,28 +175,28 @@ static Object P_Regexp_Exec(int argc, Object *argv) {
     str = Get_String(argv[1]);
     from = Get_Unsigned(argv[2]);
     if (from > STRING(argv[1])->size)
-	Range_Error(argv[2]);
+        Range_Error(argv[2]);
     if (argc == 4)
-	flags = (int)Symbols_To_Bits(argv[3], 1, Exec_Syms);
+        flags = (int)Symbols_To_Bits(argv[3], 1, Exec_Syms);
     else
-	flags = 0;
+        flags = 0;
     if (REGEXP(r)->flags & REG_NOSUB)
-	num = 1;
+        num = 1;
     else
-	num = REGEXP(r)->r.re_nsub + 1;
+        num = REGEXP(r)->r.re_nsub + 1;
     GC_Link(r);
     m = Alloc_Object(sizeof(struct S_Match) + (num-1) * sizeof(regmatch_t),
-	T_Match, 0);
+        T_Match, 0);
     GC_Unlink;
     MATCH(m)->tag = Null;
     if (REGEXP(r)->flags & REG_NOSUB)
-	num = 0;
+        num = 0;
     MATCH(m)->num = num;
     ret = regexec(&REGEXP(r)->r, str+from, num, MATCH(m)->matches, flags);
     if (ret == 0)
-	return m;
+        return m;
     if (ret == REG_NOMATCH)
-	return False;
+        return False;
     (void)regerror(ret, &REGEXP(r)->r, msg, sizeof(msg));
     Primitive_Error("~a", Make_String(msg, strlen(msg)));
     /*NOTREACHED*/
@@ -213,7 +213,7 @@ static Object P_Match_Start(Object m, Object n) {
     Check_Type(m, T_Match);
     i = (size_t)Get_Unsigned_Long(n);
     if (i >= MATCH(m)->num)
-	Range_Error(n);
+        Range_Error(n);
     return Make_Unsigned_Long((unsigned long)MATCH(m)->matches[i].rm_so);
 }
 
@@ -223,7 +223,7 @@ static Object P_Match_End(Object m, Object n) {
     Check_Type(m, T_Match);
     i = (size_t)Get_Unsigned_Long(n);
     if (i >= MATCH(m)->num)
-	Range_Error(n);
+        Range_Error(n);
     return Make_Unsigned_Long((unsigned long)MATCH(m)->matches[i].rm_eo);
 }
 
@@ -235,9 +235,9 @@ static Object P_Match_End(Object m, Object n) {
 void elk_init_lib_regexp() {
 #ifdef HAVE_REGCOMP
     T_Regexp = Define_Type(0, "regexp", 0, sizeof(struct S_Regexp),
-	Regexp_Eqv, Regexp_Equal, Regexp_Print, Regexp_Visit);
+        Regexp_Eqv, Regexp_Equal, Regexp_Print, Regexp_Visit);
     T_Match = Define_Type(0, "regexp-match", Match_Size, 0,
-	Match_Equal, Match_Equal, Match_Print, 0);
+        Match_Equal, Match_Equal, Match_Print, 0);
     Def_Prim(P_Regexpp,       "regexp?",                  1, 1, EVAL);
     Def_Prim(P_Matchp,        "regexp-match?",            1, 1, EVAL);
     Def_Prim(P_Make_Regexp,   "make-regexp",              1, 2, VARARGS);

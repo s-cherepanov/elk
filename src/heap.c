@@ -43,7 +43,7 @@ static Object Sym_Stop_And_Copy_GC, Sym_Generational_GC, Sym_Incremental_GC;
 
 void Init_Heap () {
     Define_Variable (&V_Garbage_Collect_Notifyp, "garbage-collect-notify?",
-	False);
+        False);
 
     Define_Symbol (&Sym_Stop_And_Copy_GC, "stop-and-copy");
     Define_Symbol (&Sym_Generational_GC, "generational");
@@ -63,7 +63,7 @@ void Call_Before_GC () {
     FUNCT *p;
 
     for (p = Before_GC_Funcs; p; p = p->next)
-	p->func();
+        p->func();
 }
 
 void Register_After_GC (void (*f)(void)) {
@@ -79,7 +79,7 @@ void Call_After_GC () {
     FUNCT *p;
 
     for (p = After_GC_Funcs; p; p = p->next)
-	p->func();
+        p->func();
 }
 
 void Visit_GC_List (GCNODE *list, ptrdiff_t delta) {
@@ -88,14 +88,14 @@ void Visit_GC_List (GCNODE *list, ptrdiff_t delta) {
     register Object *vec;
 
     for (gp = list; gp; gp = p->next) {
-	p = (GCNODE *)NORM(gp);
-	if (p->gclen <= 0) {
-	    Visit ((Object *)NORM(p->gcobj));
-	} else {
-	    vec = (Object *)NORM(p->gcobj);
-	    for (n = 0; n < p->gclen-1; n++)
-		Visit (&vec[n]);
-	}
+        p = (GCNODE *)NORM(gp);
+        if (p->gclen <= 0) {
+            Visit ((Object *)NORM(p->gcobj));
+        } else {
+            vec = (Object *)NORM(p->gcobj);
+            for (n = 0; n < p->gclen-1; n++)
+                Visit (&vec[n]);
+        }
     }
 }
 
@@ -103,8 +103,8 @@ void Visit_Wind (WIND *list, ptrdiff_t delta) {
     register WIND *wp, *p;
 
     for (wp = list; wp; wp = p->next) {
-	p = (WIND *)NORM(wp);
-	Visit (&p->inout);
+        p = (WIND *)NORM(wp);
+        Visit (&p->inout);
     }
 }
 
@@ -129,18 +129,18 @@ Object P_Garbage_Collect_Status (int argc, Object* argv) {
     int strat = 0, flags = 0;
 
     if (argc > 0) {
-	Check_Type (argv[0], T_Symbol);
+        Check_Type (argv[0], T_Symbol);
         if (EQ (argv[0], Sym_Stop_And_Copy_GC))
-	    strat = GC_STRAT_SAC;
+            strat = GC_STRAT_SAC;
         else if (EQ (argv[0], Sym_Generational_GC))
-	    strat = GC_STRAT_GEN;
-	else Primitive_Error ("unknown GC strategy: ~s", argv[0]);
-	if (argc == 2) {
-	    Check_Type (argv[1], T_Symbol);
-	    if (EQ (argv[1], Sym_Incremental_GC))
-		flags = GC_FLAGS_INCR;
-	    else Primitive_Error ("unknown GC strategy: ~s", argv[1]);
-	}
+            strat = GC_STRAT_GEN;
+        else Primitive_Error ("unknown GC strategy: ~s", argv[0]);
+        if (argc == 2) {
+            Check_Type (argv[1], T_Symbol);
+            if (EQ (argv[1], Sym_Incremental_GC))
+                flags = GC_FLAGS_INCR;
+            else Primitive_Error ("unknown GC strategy: ~s", argv[1]);
+        }
     }
     return Internal_GC_Status (strat, flags);
 }

@@ -14,12 +14,12 @@ Object Make_Color (r, g, b) unsigned int r, g, b; {
 
     c = Find_Object (T_Color, (GENERIC)0, Match_X_Obj, r, g, b);
     if (Nullp (c)) {
-	c = Alloc_Object (sizeof (struct S_Color), T_Color, 0);
-	COLOR(c)->tag = Null;
-	COLOR(c)->c.red = r;
-	COLOR(c)->c.green = g;
-	COLOR(c)->c.blue = b;
-	Register_Object (c, (GENERIC)0, (PFO)0, 0);
+        c = Alloc_Object (sizeof (struct S_Color), T_Color, 0);
+        COLOR(c)->tag = Null;
+        COLOR(c)->c.red = r;
+        COLOR(c)->c.green = g;
+        COLOR(c)->c.blue = b;
+        Register_Object (c, (GENERIC)0, (PFO)0, 0);
     }
     return c;
 }
@@ -34,7 +34,7 @@ static unsigned short Get_RGB_Value (x) Object x; {
 
     d = Get_Double (x);
     if (d < 0.0 || d > 1.0)
-	Primitive_Error ("bad RGB value: ~s", x);
+        Primitive_Error ("bad RGB value: ~s", x);
     return (unsigned short)(d * 65535);
 }
 
@@ -83,17 +83,17 @@ static Object P_Query_Colors (cmap, v) Object cmap, v; {
     n = VECTOR(v)->size;
     Alloca (p, XColor*, n * sizeof (XColor));
     for (i = 0; i < n; i++)
-	p[i].pixel = Get_Pixel (VECTOR(v)->data[i]);
+        p[i].pixel = Get_Pixel (VECTOR(v)->data[i]);
     Disable_Interrupts;
     XQueryColors (COLORMAP(cmap)->dpy, cm, p, n);
     Enable_Interrupts;
     ret = Make_Vector (n, Null);
     GC_Link (ret);
     for (i = 0; i < n; i++, p++) {
-	Object x;
+        Object x;
 
-	x = Make_Color (p->red, p->green, p->blue);
-	VECTOR(ret)->data[i] = x;
+        x = Make_Color (p->red, p->green, p->blue);
+        VECTOR(ret)->data[i] = x;
     }
     GC_Unlink;
     Alloca_End;
@@ -107,8 +107,8 @@ static Object P_Lookup_Color (cmap, name) Object cmap, name; {
     GC_Node;
 
     if (!XLookupColor (COLORMAP(cmap)->dpy, cm, Get_Strsym (name),
-	    &visual, &exact))
-	Primitive_Error ("no such color: ~s", name);
+            &visual, &exact))
+        Primitive_Error ("no such color: ~s", name);
     ret = Cons (Null, Null);
     GC_Link (ret);
     x = Make_Color (visual.red, visual.green, visual.blue);

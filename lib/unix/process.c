@@ -17,23 +17,23 @@ static Object P_Environ() {
     cell = ret = Null;
     GC_Link2(ret, cell);
     for (ep = environ; *ep; ep++) {
-	cell = Cons(Null, Null);
-	if (p = index(*ep, '='))
-	    *p++ = 0;
-	else p = c+1;
-	str = Make_String(p, strlen(p));
-	Cdr(cell) = str;
-	str = Make_String(*ep, strlen(*ep));
-	Car(cell) = str;
-	ret = Cons(cell, ret);
-	*--p = '=';
+        cell = Cons(Null, Null);
+        if (p = index(*ep, '='))
+            *p++ = 0;
+        else p = c+1;
+        str = Make_String(p, strlen(p));
+        Cdr(cell) = str;
+        str = Make_String(*ep, strlen(*ep));
+        Car(cell) = str;
+        ret = Cons(cell, ret);
+        *--p = '=';
     }
     GC_Unlink;
     return P_Reverse(ret);
 }
 
 static Object General_Exec(argc, argv, path) int argc; Object *argv;
-	int path; {
+        int path; {
     Object fn, args,  p, e;
     char *fnp, **argp, **envp;
     int i, len;
@@ -45,42 +45,42 @@ static Object General_Exec(argc, argv, path) int argc; Object *argv;
     len = Fast_Length(args);
     Alloca(argp, char**, (len+1) * sizeof(char*));
     for (i = 0, p = args; i < len; i++, p = Cdr(p)) {
-	e = Car(p);
-	Get_String_Stack(e, argp[i]);
+        e = Car(p);
+        Get_String_Stack(e, argp[i]);
     }
     argp[i] = 0;
     if (argc == 3) {
-	args = argv[2];
-	Check_List(args);
-	len = Fast_Length(args);
-	Alloca(envp, char**, (len+1) * sizeof(char*));
-	for (i = 0, p = args; i < len; i++, p = Cdr(p)) {
-	    struct S_String *s1, *s2;
+        args = argv[2];
+        Check_List(args);
+        len = Fast_Length(args);
+        Alloca(envp, char**, (len+1) * sizeof(char*));
+        for (i = 0, p = args; i < len; i++, p = Cdr(p)) {
+            struct S_String *s1, *s2;
 
-	    e = Car(p);
-	    Check_Type(e, T_Pair);
-	    Check_Type(Car(e), T_String);
-	    Check_Type(Cdr(e), T_String);
-	    s1 = STRING(Car(e));
-	    s2 = STRING(Cdr(e));
-	    Alloca(envp[i], char*, s1->size + 1 + s2->size + 1);
-	    sprintf(envp[i], "%.*s=%.*s", s1->size, s1->data,
-		s2->size, s2->data);
-	}
-	envp[i] = 0;
-	Exit_Handler();
+            e = Car(p);
+            Check_Type(e, T_Pair);
+            Check_Type(Car(e), T_String);
+            Check_Type(Cdr(e), T_String);
+            s1 = STRING(Car(e));
+            s2 = STRING(Cdr(e));
+            Alloca(envp[i], char*, s1->size + 1 + s2->size + 1);
+            sprintf(envp[i], "%.*s=%.*s", s1->size, s1->data,
+                s2->size, s2->data);
+        }
+        envp[i] = 0;
+        Exit_Handler();
 #if 0
-	if (path)
-	    (void)execvpe(fnp, argp, envp);   /* ... doesn't exist */
-	else
+        if (path)
+            (void)execvpe(fnp, argp, envp);   /* ... doesn't exist */
+        else
 #endif
-	    (void)execve(fnp, argp, envp);
+            (void)execve(fnp, argp, envp);
     } else {
-	Exit_Handler();
-	if (path)
-	    (void)execvp(fnp, argp);
-	else
-	    (void)execv(fnp, argp);
+        Exit_Handler();
+        if (path)
+            (void)execvp(fnp, argp);
+        else
+            (void)execv(fnp, argp);
     }
     Alloca_End;
     Raise_System_Error1("~s: ~E", fn);
@@ -92,7 +92,7 @@ static Object P_Exec(argc, argv) int argc; Object *argv; {
 
 static Object P_Exec_Path(argc, argv) int argc; Object *argv; {
     if (argc == 3)   /* There is no execvpe (yet?). */
-	Primitive_Error("environment argument not supported");
+        Primitive_Error("environment argument not supported");
     return General_Exec(argc, argv, 1);
 }
 
@@ -101,9 +101,9 @@ static Object P_Fork() {
 
     switch (pid = fork()) {
     case -1:
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     case 0:
-	Call_Onfork();
+        Call_Onfork();
     }
     return Make_Integer(pid);
 }
@@ -123,7 +123,7 @@ static Object P_Getlogin() {
     s = getlogin();
     Enable_Interrupts;
     if (s == 0)
-	Raise_Error("cannot get login name");
+        Raise_Error("cannot get login name");
     return Make_String(s, strlen(s));
 }
 
@@ -146,19 +146,19 @@ static Object P_Getgroups() {
      */
     if ((n = getgroups(0, (GETGROUPS_TYPE *)0)) == -1)
 #ifdef NGROUPS
-	n = NGROUPS;    /* 4.3BSD */
+        n = NGROUPS;    /* 4.3BSD */
 #else
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
 #endif
     Alloca(p, GETGROUPS_TYPE*, n*sizeof(GETGROUPS_TYPE));
     (void)getgroups(n, p);
     next = ret = P_Make_List(Make_Integer(n), Null);
     GC_Link2(ret, next);
     for (i = 0; i < n; i++, next = Cdr(next)) {
-	Object x;
+        Object x;
 
-	x = Make_Unsigned((unsigned)p[i]);
-	Car(next) = x;
+        x = Make_Unsigned((unsigned)p[i]);
+        Car(next) = x;
     }
     GC_Unlink;
     Alloca_End;
@@ -170,7 +170,7 @@ static Object P_Nice(incr) Object incr; {
 
     errno = 0;
     if ((ret = nice(Get_Integer(incr))) == -1 && errno != 0)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     return Make_Integer(ret);
 }
 
@@ -181,8 +181,8 @@ static Object Open_Pipe(cmd, flags) Object cmd; int flags; {
 
     Disable_Interrupts;
     if ((fp = popen(Get_String(cmd), flags == P_INPUT ? "r" : "w")) == 0) {
-	Enable_Interrupts;
-	Raise_Error("cannot open pipe to process");
+        Enable_Interrupts;
+        Raise_Error("cannot open pipe to process");
     }
     ret = Make_Port(flags, fp, Make_String("pipe-port", 9));
     PORT(ret)->closefun = pclose;
@@ -207,15 +207,15 @@ static Object P_Process_Resources(ret1, ret2) Object ret1, ret2; {
 
     if (hzval == 0) {
 #ifdef HZ
-	hzval = HZ;
+        hzval = HZ;
 #else
 #ifdef CLK_TCK
-	hzval = CLK_TCK;
+        hzval = CLK_TCK;
 #else
 #ifdef _SC_CLK_TCK
-	hzval = (int)sysconf(_SC_CLK_TCK);
+        hzval = (int)sysconf(_SC_CLK_TCK);
 #else
-	hzval = 60;    /* Fallback for 4.3BSD.  I don't have a better idea. */
+        hzval = 60;    /* Fallback for 4.3BSD.  I don't have a better idea. */
 #endif
 #endif
 #endif
@@ -251,24 +251,24 @@ static Object P_System(cmd) Object cmd; {
     switch (pid = fork()) {
 #endif
     case -1:
-	Raise_System_Error("fork: ~E");
+        Raise_System_Error("fork: ~E");
     case 0:
-	for (n = Num_Filedescriptors(); n >= 3; n--)
-	    (void)close(n);
-	execl("/bin/sh", "sh", "-c", s, (char *)0);
-	_exit(127);
+        for (n = Num_Filedescriptors(); n >= 3; n--)
+            (void)close(n);
+        execl("/bin/sh", "sh", "-c", s, (char *)0);
+        _exit(127);
     default:
-	Disable_Interrupts;
-	while ((n = wait(&status)) != pid && n != -1)
-		;
-	Enable_Interrupts;
+        Disable_Interrupts;
+        while ((n = wait(&status)) != pid && n != -1)
+                ;
+        Enable_Interrupts;
     }
     /* Can this happen?
     if (n == -1)
-	return False;
+        return False;
     */
     if (n = (status & 0377))
-	return Cons(Make_Integer(n), Null);
+        return Cons(Make_Integer(n), Null);
     return Make_Integer((status >> 8) & 0377);
 }
 
@@ -290,27 +290,27 @@ static Object P_Working_Directory() {
     Disable_Interrupts;
 #ifdef HAVE_GETCWD
     if (getcwd(buf, max) == 0) {
-	Saved_Errno = errno;
-	Alloca_End;
-	Enable_Interrupts;
-	Raise_System_Error("~E");
+        Saved_Errno = errno;
+        Alloca_End;
+        Enable_Interrupts;
+        Raise_System_Error("~E");
     }
 #else
 #ifdef HAVE_GETWD
     if (getwd(buf) == 0) {
-	Alloca_End;
-	Enable_Interrupts;
-	Raise_Error(buf);
+        Alloca_End;
+        Enable_Interrupts;
+        Raise_Error(buf);
     }
 #else
     if ((fp = popen("pwd", "r")) == 0) {
 err:
-	Alloca_End;
-	Enable_Interrupts;
-	Raise_Error("cannot get output from pwd");
+        Alloca_End;
+        Enable_Interrupts;
+        Raise_Error("cannot get output from pwd");
     }
     if (fgets(buf, max, fp) == 0)
-	goto err;
+        goto err;
     if (p = index(buf, '\n')) *p = '\0';
     (void)pclose(fp);
 #endif
@@ -336,7 +336,7 @@ elk_init_unix_process() {
     Def_Prim(P_Open_Input_Pipe,     "unix-open-input-pipe",      1, 1, EVAL);
     Def_Prim(P_Open_Output_Pipe,    "unix-open-output-pipe",     1, 1, EVAL);
     Def_Prim(P_Process_Resources,   "unix-process-resources-vector-fill!",
-								 2, 2, EVAL);
+                                                                 2, 2, EVAL);
     Def_Prim(P_Sleep,               "unix-sleep",                1, 1, EVAL);
     Def_Prim(P_System,              "unix-system",               1, 1, EVAL);
     Def_Prim(P_Umask,               "unix-umask",                1, 1, EVAL);

@@ -230,25 +230,25 @@ static Object conc3(P_,type,p) (x) Object x; {\
  *    }
  */
 #define Generic_Equal(type,cast,field) static conc(type,_Equal) (x, y)\
-	Object x, y; {\
+        Object x, y; {\
     return cast(x)->field == cast(y)->field\
-	&& !cast(x)->free && !cast(y)->free;\
+        && !cast(x)->free && !cast(y)->free;\
 }
 
 /* Same as above, but doesn't check for ->free:
  */
 #define Generic_Simple_Equal(type,cast,field) static conc(type,_Equal) (x, y)\
-	Object x, y; {\
+        Object x, y; {\
     return cast(x)->field == cast(y)->field;\
 }
 
 /* Same as above, but also checks ->dpy
  */
 #define Generic_Equal_Dpy(type,cast,field) static conc(type,_Equal)\
-	    (x, y)\
-	Object x, y; {\
+            (x, y)\
+        Object x, y; {\
     return cast(x)->field == cast(y)->field && cast(x)->dpy == cast(y)->dpy\
-	&& !cast(x)->free && !cast(y)->free;\
+        && !cast(x)->free && !cast(y)->free;\
 }
 
 /* Generic_Print (Pixmap, "#[pixmap %u]", PIXMAP(x)->pm) generates:
@@ -258,7 +258,7 @@ static Object conc3(P_,type,p) (x) Object x; {\
  *    }
  */
 #define Generic_Print(type,fmt,how) static conc(type,_Print)\
-	(x, port, raw, depth, len) Object x, port; {\
+        (x, port, raw, depth, len) Object x, port; {\
     Printf (port, fmt, (unsigned)how);\
 }
 
@@ -270,7 +270,7 @@ static Object conc3(P_,type,p) (x) Object x; {\
  */
 #define Generic_Define(type,name,pred) conc(T_,type) =\
     Define_Type (0, name, NOFUNC, sizeof (struct conc(S_,type)),\
-	conc(type,_Equal), conc(type,_Equal), conc(type,_Print), NOFUNC);\
+        conc(type,_Equal), conc(type,_Equal), conc(type,_Print), NOFUNC);\
     Define_Primitive (conc3(P_,type,p), pred, 1, 1, EVAL);
 
 /* Generic_Get_Display (Pixmap, PIXMAP) generates:
@@ -281,7 +281,7 @@ static Object conc3(P_,type,p) (x) Object x; {\
  *    }
  */
 #define Generic_Get_Display(type,cast) static Object conc3(P_,type,_Display)\
-	(x) Object x; {\
+        (x) Object x; {\
     Check_Type (x, conc(T_,type));\
     return Make_Display (0, cast(x)->dpy);\
 }

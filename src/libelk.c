@@ -187,7 +187,7 @@ int main (int ac, char **av) {
     memset (unused, 0, 1);  /* see comment above */
 #endif
     if (ac == 0) {
-	av[0] = "Elk"; ac = 1;
+        av[0] = "Elk"; ac = 1;
     }
     Get_Stack_Limit ();
 
@@ -199,72 +199,72 @@ int main (int ac, char **av) {
     First_Arg = 1;
 #ifdef CAN_DUMP
     if (Was_Dumped) {
-	/* Check if beginning of stack has moved by a large amount.
-	 * This is the case, for instance, on a Sun-4m when the
-	 * interpreter was dumped on a Sun-4c and vice versa.
-	 */
-	if (abs (stkbase - &foo) > INITIAL_STK_OFFSET) {
-	    fprintf (stderr,
+        /* Check if beginning of stack has moved by a large amount.
+         * This is the case, for instance, on a Sun-4m when the
+         * interpreter was dumped on a Sun-4c and vice versa.
+         */
+        if (abs (stkbase - &foo) > INITIAL_STK_OFFSET) {
+            fprintf (stderr,
 "Can't restart dumped interpreter from a different machine architecture\n");
-	    fprintf (stderr,
+            fprintf (stderr,
 "   (Stack delta = %lld bytes).\n", (long long int)(ptrdiff_t)(stkbase - &foo));
-	    exit (1);
-	}
-	/* Check if program break must be reset.
-	*/
-	if ((ptrdiff_t)Brk_On_Dump && (ptrdiff_t)brk (Brk_On_Dump)
-		== (ptrdiff_t)-1) {
-	    perror ("brk"); exit (1);
-	}
+            exit (1);
+        }
+        /* Check if program break must be reset.
+        */
+        if ((ptrdiff_t)Brk_On_Dump && (ptrdiff_t)brk (Brk_On_Dump)
+                == (ptrdiff_t)-1) {
+            perror ("brk"); exit (1);
+        }
 #if defined(HP9K) && defined(CAN_DUMP) && defined(HPSHLIB)
-	Restore_Shared_Data ();
+        Restore_Shared_Data ();
 #endif
 #ifdef GENERATIONAL_GC
-	Generational_GC_Reinitialize ();
+        Generational_GC_Reinitialize ();
 #endif
-	Loader_Input = 0;
-	Install_Intr_Handler ();
-	(void)Funcall_Control_Point (Dump_Control_Point, Arg_True, 0);
-	/*NOTREACHED*/
+        Loader_Input = 0;
+        Install_Intr_Handler ();
+        (void)Funcall_Control_Point (Dump_Control_Point, Arg_True, 0);
+        /*NOTREACHED*/
     }
 #endif
 
     for ( ; First_Arg < ac; First_Arg++) {
-	if (strcmp (av[First_Arg], "-g") == 0) {
-	    debug = 1;
-	} else if (strcmp (av[First_Arg], "-i") == 0) {
-	    Case_Insensitive = 1;
-	} else if (strcmp (av[First_Arg], "-v") == 0) {
-	    if (++First_Arg == ac)
-		Usage ();
-	    if (strcmp (av[First_Arg], "load") == 0)
-		Verb_Load = 1;
-	    else if (strcmp (av[First_Arg], "init") == 0)
-		Verb_Init = 1;
-	    else Usage ();
-	} else if (strcmp (av[First_Arg], "-h") == 0) {
-	    if (++First_Arg == ac)
-		Usage ();
-	    if ((heap = atoi (av[First_Arg])) <= 0) {
-		fprintf (stderr, "Heap size must be a positive number.\n");
-		exit (1);
-	    }
-	} else if (strcmp (av[First_Arg], "-l") == 0) {
-	    if (++First_Arg == ac || loadfile)
-		Usage ();
-	    loadfile = av[First_Arg];
-	} else if (strcmp (av[First_Arg], "-p") == 0) {
-	    if (++First_Arg == ac || loadpath)
-		Usage ();
-	    loadpath = av[First_Arg];
-	} else if (strcmp (av[First_Arg], "--") == 0) {
-	    First_Arg++;
-	    break;
-	} else if (av[First_Arg][0] == '-') {
-	    Usage ();
-	} else {
-	    break;
-	}
+        if (strcmp (av[First_Arg], "-g") == 0) {
+            debug = 1;
+        } else if (strcmp (av[First_Arg], "-i") == 0) {
+            Case_Insensitive = 1;
+        } else if (strcmp (av[First_Arg], "-v") == 0) {
+            if (++First_Arg == ac)
+                Usage ();
+            if (strcmp (av[First_Arg], "load") == 0)
+                Verb_Load = 1;
+            else if (strcmp (av[First_Arg], "init") == 0)
+                Verb_Init = 1;
+            else Usage ();
+        } else if (strcmp (av[First_Arg], "-h") == 0) {
+            if (++First_Arg == ac)
+                Usage ();
+            if ((heap = atoi (av[First_Arg])) <= 0) {
+                fprintf (stderr, "Heap size must be a positive number.\n");
+                exit (1);
+            }
+        } else if (strcmp (av[First_Arg], "-l") == 0) {
+            if (++First_Arg == ac || loadfile)
+                Usage ();
+            loadfile = av[First_Arg];
+        } else if (strcmp (av[First_Arg], "-p") == 0) {
+            if (++First_Arg == ac || loadpath)
+                Usage ();
+            loadpath = av[First_Arg];
+        } else if (strcmp (av[First_Arg], "--") == 0) {
+            First_Arg++;
+            break;
+        } else if (av[First_Arg][0] == '-') {
+            Usage ();
+        } else {
+            break;
+        }
     }
 
     stkbase = &foo;
@@ -274,14 +274,14 @@ int main (int ac, char **av) {
     Init_Everything ();
 #ifdef HAVE_ATEXIT
     if (atexit (Exit_Handler) != 0)
-	Fatal_Error ("atexit returned non-zero value");
+        Fatal_Error ("atexit returned non-zero value");
 #endif
 #ifdef INIT_OBJECTS
 #ifdef NOMAIN
     if (init_objects) {
-	Set_Error_Tag ("init-objects");
-	The_Symbols = Open_File_And_Snarf_Symbols (A_Out_Name);
-	Call_Initializers (The_Symbols, (char *)0, PR_EXTENSION);
+        Set_Error_Tag ("init-objects");
+        The_Symbols = Open_File_And_Snarf_Symbols (A_Out_Name);
+        Call_Initializers (The_Symbols, (char *)0, PR_EXTENSION);
     }
 #else
     Set_Error_Tag ("init-objects");
@@ -291,7 +291,7 @@ int main (int ac, char **av) {
 #endif
 #endif
     if (loadpath || (loadpath = getenv (LOADPATH_ENV)))
-	Init_Loadpath (loadpath);
+        Init_Loadpath (loadpath);
 
     /* The following code is sort of a hack.  initscheme.scm should not
      * be resolved against load-path.  However, the .scm-files may not
@@ -304,9 +304,9 @@ int main (int ac, char **av) {
     initfile = Safe_Malloc (strlen (SCM_DIR) + 1 + sizeof (INITFILE) + 1);
     sprintf (initfile, "%s/%s", SCM_DIR, INITFILE);
     if (stat (initfile, &st) == -1 && errno == ENOENT)
-	file = Make_String (INITFILE, sizeof(INITFILE)-1);
+        file = Make_String (INITFILE, sizeof(INITFILE)-1);
     else
-	file = Make_String (initfile, strlen (initfile));
+        file = Make_String (initfile, strlen (initfile));
     free (initfile);
     (void)General_Load (file, The_Environment);
 
@@ -315,23 +315,23 @@ int main (int ac, char **av) {
     Set_Error_Tag ("top-level");
 #ifdef NOMAIN
     if (toplevel == 0) {
-	Interpreter_Initialized = 1;
-	GC_Debug = debug;
-	return;
+        Interpreter_Initialized = 1;
+        GC_Debug = debug;
+        return;
     }
     /* Special case: if toplevel is "", act as if run from main() */
     if (loadfile == 0 && toplevel[0] != '\0')
-	loadfile = toplevel;
+        loadfile = toplevel;
 #endif
     if (loadfile == 0)
-	loadfile = "toplevel.scm";
+        loadfile = "toplevel.scm";
     file = Make_String (loadfile, strlen (loadfile));
     Interpreter_Initialized = 1;
     GC_Debug = debug;
     if (loadfile[0] == '-' && loadfile[1] == '\0')
-	Load_Source_Port (Standard_Input_Port);
+        Load_Source_Port (Standard_Input_Port);
     else
-	(void)General_Load (file, The_Environment);
+        (void)General_Load (file, The_Environment);
 #ifndef NOMAIN
     return 0;
 #endif
@@ -357,7 +357,7 @@ void Usage () {
 
     fprintf (stderr, "Usage: %s [options] [arguments]\n", Argv[0]);
     for (p = Usage_Msg; *p; p++)
-	fprintf (stderr, "%s\n", *p);
+        fprintf (stderr, "%s\n", *p);
     exit (1);
 }
 
@@ -393,8 +393,8 @@ void Get_Stack_Limit () {
     struct rlimit rl;
 
     if (getrlimit (RLIMIT_STACK, &rl) == -1) {
-	perror ("getrlimit");
-	exit (1);
+        perror ("getrlimit");
+        exit (1);
     }
     Max_Stack = rl.rlim_cur;
 #endif
@@ -406,7 +406,7 @@ int Executable (char *fn) {
     struct stat s;
 
     return stat (fn, &s) != -1 && (s.st_mode & S_IFMT) == S_IFREG
-	    && access (fn, X_OK) != -1;
+            && access (fn, X_OK) != -1;
 }
 
 char *Find_Executable (char *fn) {
@@ -415,30 +415,30 @@ char *Find_Executable (char *fn) {
     register char *p;
 
     for (p = fn; *p; p++) {
-	if (*p == '/') {
-	    if (Executable (fn))
-		return fn;
-	    else
-		Fatal_Error ("%s is not executable", fn);
-	}
+        if (*p == '/') {
+            if (Executable (fn))
+                return fn;
+            else
+                Fatal_Error ("%s is not executable", fn);
+        }
     }
     if ((path = getenv ("PATH")) == 0)
-	path = ":/usr/ucb:/bin:/usr/bin";
+        path = ":/usr/ucb:/bin:/usr/bin";
     dir = path;
     do {
-	p = buf;
-	while (*dir && *dir != ':')
-	    *p++ = *dir++;
-	if (*dir)
-	    ++dir;
-	if (p > buf)
-	    *p++ = '/';
-	strcpy (p, fn);
-	if (Executable (buf))
-	    return buf;
+        p = buf;
+        while (*dir && *dir != ':')
+            *p++ = *dir++;
+        if (*dir)
+            ++dir;
+        if (p > buf)
+            *p++ = '/';
+        strcpy (p, fn);
+        if (Executable (buf))
+            return buf;
     } while (*dir);
     if (dir > path && dir[-1] == ':' && Executable (fn))
-	return fn;
+        return fn;
     Fatal_Error ("cannot find pathname of %s", fn);
     /*NOTREACHED*/
 }
@@ -452,10 +452,10 @@ Object P_Command_Line_Args () {
     ret = tail = P_Make_List (Make_Integer (Argc-First_Arg), Null);
     GC_Link2 (ret, tail);
     for (i = First_Arg; i < Argc; i++, tail = Cdr (tail)) {
-	Object a;
+        Object a;
 
-	a = Make_String (Argv[i], strlen (Argv[i]));
-	Car (tail) = a;
+        a = Make_String (Argv[i], strlen (Argv[i]));
+        Car (tail) = a;
     }
     GC_Unlink;
     return ret;

@@ -39,17 +39,17 @@ main(ac, av) char **av; {
     FILE *fp;
 
     if (ac < 2) {
-	fn = "stdin";
-	doit(stdin);
+        fn = "stdin";
+        doit(stdin);
     } else {
-	while (--ac > 0) {
-	    fn = *++av;
-	    if ((fp = fopen(fn, "r")) == 0) {
-		perror(fn); exit(1);
-	    }
-	    doit(fp);
-	    fclose(fp);
-	}
+        while (--ac > 0) {
+            fn = *++av;
+            if ((fp = fopen(fn, "r")) == 0) {
+                perror(fn); exit(1);
+            }
+            doit(fp);
+            fclose(fp);
+        }
     }
     return 0;
 }
@@ -61,81 +61,81 @@ doit(fp) FILE *fp; {
 
     line = 1;
     while (fgets(buf, 10000, fp) != NULL) {
-	if (p = index(buf, '\n'))
-	    *p = 0;
-	p = buf;
-	while (*p) {
-	    if (*p == '@' && p[1] == '[') {
-		start = p;
-		p += 2;
-		switch (*p) {
-		case '.':
-		    macro = "Ix"; break;
-		case '!':
-		    macro = "Id"; break;
-		case 0:
-		    error("index truncated");
-		default:
-		    error("invalid index type");
-		}
-		p++;
-		q = inx;
-		while (*p != ']') {
-		    if (*p == 0)
-			error("missing ]");
-		    if (*p == '\\' && p[1] == ']')
-			p++;
-		    *q++ = *p++;
-		}
-		if (q == inx)
-		    error("empty index");
-		*q = 0;
-		eatfont(inx, arg);
-		if (start > buf && start[-1] == '(')
-			printf("\\c");
-		if (need_nl)
-		    putchar('\n');
-		printf(".%s ", macro);
-		p++;
-		if (arg[0] == '=') {
-		    printf("\"%s\"", arg+1);
-		    if (*p) {
-			putchar('\n');
-			need_nl = 0;
-			if (*p == ' ')
-			    p++;
-		    }
-		} else if (q = index(arg, '|')) {
-		    *q = 0; q++;
-		    printf("\"%s, %s\"\n%s %s", q, arg, arg, q);
-		    need_nl = 1;
-		} else {
-		    printf("\"%s\"\n%s", arg, inx);
-		    need_nl = 1;
-		}
-	    } else {
-		putchar(*p);
-		need_nl = 1;
-		p++;
-	    }
-	}
-	putchar('\n');
-	need_nl = 0;
-	line++;
+        if (p = index(buf, '\n'))
+            *p = 0;
+        p = buf;
+        while (*p) {
+            if (*p == '@' && p[1] == '[') {
+                start = p;
+                p += 2;
+                switch (*p) {
+                case '.':
+                    macro = "Ix"; break;
+                case '!':
+                    macro = "Id"; break;
+                case 0:
+                    error("index truncated");
+                default:
+                    error("invalid index type");
+                }
+                p++;
+                q = inx;
+                while (*p != ']') {
+                    if (*p == 0)
+                        error("missing ]");
+                    if (*p == '\\' && p[1] == ']')
+                        p++;
+                    *q++ = *p++;
+                }
+                if (q == inx)
+                    error("empty index");
+                *q = 0;
+                eatfont(inx, arg);
+                if (start > buf && start[-1] == '(')
+                        printf("\\c");
+                if (need_nl)
+                    putchar('\n');
+                printf(".%s ", macro);
+                p++;
+                if (arg[0] == '=') {
+                    printf("\"%s\"", arg+1);
+                    if (*p) {
+                        putchar('\n');
+                        need_nl = 0;
+                        if (*p == ' ')
+                            p++;
+                    }
+                } else if (q = index(arg, '|')) {
+                    *q = 0; q++;
+                    printf("\"%s, %s\"\n%s %s", q, arg, arg, q);
+                    need_nl = 1;
+                } else {
+                    printf("\"%s\"\n%s", arg, inx);
+                    need_nl = 1;
+                }
+            } else {
+                putchar(*p);
+                need_nl = 1;
+                p++;
+            }
+        }
+        putchar('\n');
+        need_nl = 0;
+        line++;
     }
 }
 
 eatfont(from, to) char *from, *to; {
     while (*from) {
-	if (*from == '\\' && from[1] == 'f' && from[2]) {
-	    from += 3;
-	} else if (*from == '\'' && from[1] == '\'') {
-	    from += 2;
-	} else if (*from == '`' && from[1] == '`') {
-	    from += 2;
-	} else if (*from == '\\' && from[1] == '%') {
-	    from += 2;
-	} else *to++ = *from++;
+        if (*from == '\\' && from[1] == 'f' && from[2]) {
+            from += 3;
+        } else if (*from == '\'' && from[1] == '\'') {
+            from += 2;
+        } else if (*from == '`' && from[1] == '`') {
+            from += 2;
+        } else if (*from == '\\' && from[1] == '%') {
+            from += 2;
+        } else *to++ = *from++;
     }
     *to = 0;
 }

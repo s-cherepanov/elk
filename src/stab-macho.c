@@ -50,15 +50,15 @@ static SYMTAB *Grovel_Over_Nlist (symcmd, nl, strtab, text_sect)
      * have a section mumber equal to the number of the text section:
      */
     for (i = 0; i < symcmd->nsyms; i++) {
-	if ((nl[i].n_type & (N_TYPE|N_EXT)) == (N_SECT|N_EXT) &&
-		nl[i].n_sect == text_sect) {
-	    sp = (SYM *)Safe_Malloc (sizeof (SYM));
-	    sp->name = strtab + nl[i].n_un.n_strx;
-	    sp->value = nl[i].n_value;
-	    sp->next = 0;
-	    *nextp = sp;
-	    nextp = &sp->next;
-	}
+        if ((nl[i].n_type & (N_TYPE|N_EXT)) == (N_SECT|N_EXT) &&
+                nl[i].n_sect == text_sect) {
+            sp = (SYM *)Safe_Malloc (sizeof (SYM));
+            sp->name = strtab + nl[i].n_un.n_strx;
+            sp->value = nl[i].n_value;
+            sp->next = 0;
+            *nextp = sp;
+            nextp = &sp->next;
+        }
     }
     return tab;
 }
@@ -78,25 +78,25 @@ SYMTAB *Snarf_Symbols (struct mach_header *mhdr) {
      */
     cmdptr = (char *)mhdr + sizeof (struct mach_header);
     for (i = 0; i < mhdr->ncmds; i++) {
-	ld_cmd = (struct load_command *)cmdptr;
-	if (ld_cmd->cmd == LC_SYMTAB && !symtab) {
-	    sym_cmd = (struct symtab_command *)ld_cmd;
-	    symtab = (struct nlist *)((char *)mhdr + sym_cmd->symoff);
-	    strtab = (char *)mhdr + sym_cmd->stroff;
-	} else if (ld_cmd->cmd == LC_SEGMENT && !text_sect) {
-	    seg_cmd = (struct segment_command *)ld_cmd;
-	    sp = (struct section *)
-		((char *)ld_cmd + sizeof (struct segment_command));
-	    for (j = 1; j <= seg_cmd->nsects && !text_sect; j++, sp++)
-		if (strcmp (sp->sectname, SECT_TEXT) == 0)
-		    text_sect = j;
-	}
-	cmdptr += ld_cmd->cmdsize;
+        ld_cmd = (struct load_command *)cmdptr;
+        if (ld_cmd->cmd == LC_SYMTAB && !symtab) {
+            sym_cmd = (struct symtab_command *)ld_cmd;
+            symtab = (struct nlist *)((char *)mhdr + sym_cmd->symoff);
+            strtab = (char *)mhdr + sym_cmd->stroff;
+        } else if (ld_cmd->cmd == LC_SEGMENT && !text_sect) {
+            seg_cmd = (struct segment_command *)ld_cmd;
+            sp = (struct section *)
+                ((char *)ld_cmd + sizeof (struct segment_command));
+            for (j = 1; j <= seg_cmd->nsects && !text_sect; j++, sp++)
+                if (strcmp (sp->sectname, SECT_TEXT) == 0)
+                    text_sect = j;
+        }
+        cmdptr += ld_cmd->cmdsize;
     }
     if (!symtab)
-	Primitive_Error ("couldn't find symbol table in object file");
+        Primitive_Error ("couldn't find symbol table in object file");
     if (!text_sect)
-	Primitive_Error ("couldn't find text section in object file");
+        Primitive_Error ("couldn't find text section in object file");
     return Grovel_Over_Nlist (sym_cmd, symtab, strtab, text_sect);
 }
 

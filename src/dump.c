@@ -71,8 +71,8 @@ void Init_Dump () {
 \
     Check_If_Dump_Works ();\
     if (!EQ (Curr_Input_Port, Standard_Input_Port) ||\
-	    !EQ (Curr_Output_Port, Standard_Output_Port))\
-	Primitive_Error ("cannot dump with current ports redirected");\
+            !EQ (Curr_Output_Port, Standard_Output_Port))\
+        Primitive_Error ("cannot dump with current ports redirected");\
     Flush_Output (Curr_Output_Port);\
     Close_All_Files ();\
     GC_FINALIZE;\
@@ -80,20 +80,20 @@ void Init_Dump () {
     GC_Link (ofile);\
     ret = Internal_Call_CC (1, Null);\
     if (Truep (ret))\
-	return ret;\
+        return ret;\
     GC_Unlink;\
 \
     Disable_Interrupts;\
 \
     ofn = Get_Strsym (ofile);\
     if ((ofd = open (ofn, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0666)) == -1) {\
-	Saved_Errno = errno;\
-	Primitive_Error ("cannot open ~s: ~E", ofile);\
+        Saved_Errno = errno;\
+        Primitive_Error ("cannot open ~s: ~E", ofile);\
     }\
     if ((afd = open (A_Out_Name, O_RDONLY|O_BINARY)) == -1) {\
-	Saved_Errno = errno;\
-	close (ofd);\
-	Primitive_Error ("cannot open a.out file: ~E");\
+        Saved_Errno = errno;\
+        close (ofd);\
+        Primitive_Error ("cannot open a.out file: ~E");\
     }
 
 #define Dump_Finalize    Saved_Errno = errno; close (afd); close (ofd)
@@ -122,12 +122,12 @@ void Set_File_Executable (int fd, char *fn) {
     struct stat st;
 
     if (fstat (fd, &st) != -1) {
-	int omask = umask (0);
-	(void)umask (omask);
+        int omask = umask (0);
+        (void)umask (omask);
 #ifdef FCHMOD_BROKEN
-	(void)chmod (fn, (st.st_mode & 0777) | (0111 & ~omask));
+        (void)chmod (fn, (st.st_mode & 0777) | (0111 & ~omask));
 #else
-	(void)fchmod (fd, (st.st_mode & 0777) | (0111 & ~omask));
+        (void)fchmod (fd, (st.st_mode & 0777) | (0111 & ~omask));
 #endif
     }
 }

@@ -68,15 +68,15 @@ static Object P_Make_Record_Type (Object name, Object fields) {
     GC_Node2;
 
     if (TYPE(name) == T_Symbol)
-	name = SYMBOL(name)->name;
+        name = SYMBOL(name)->name;
     else if (TYPE(name) != T_String)
-	Wrong_Type_Combination (name, "string or symbol");
+        Wrong_Type_Combination (name, "string or symbol");
     Check_List (fields);
     for (s = fields; !Nullp (s); s = Cdr (s)) {
-	Check_Type (Car (s), T_Symbol);
-	ismem = P_Memq (Car (s), Cdr (s));
-	if (Truep (ismem))
-	    Primitive_Error ("duplicate field name");
+        Check_Type (Car (s), T_Symbol);
+        ismem = P_Memq (Car (s), Cdr (s));
+        if (Truep (ismem))
+            Primitive_Error ("duplicate field name");
     }
     GC_Link2 (name, fields);
     s = Alloc_Object (sizeof (struct S_Rtd), T_Rtd, 0);
@@ -103,7 +103,7 @@ static Object P_Make_Record (Object rtd, Object values) {
     Check_Type (rtd, T_Rtd);
     Check_Type (values, T_Vector);
     if (VECTOR(values)->size != Fast_Length (RTD(rtd)->fields))
-	Primitive_Error ("wrong number of fields for record type");
+        Primitive_Error ("wrong number of fields for record type");
     GC_Link2 (rtd, values);
     s = Alloc_Object (sizeof (struct S_Record), T_Record, 0);
     RECORD(s)->rtd = rtd;
@@ -119,12 +119,12 @@ static int Rtd_Eqv (Object a, Object b) {
 
 static int Rtd_Equal (Object a, Object b) {
     return EQ(RTD(a)->name, RTD(b)->name) &&
-	   Equal (RTD(a)->fields, RTD(b)->fields);
+           Equal (RTD(a)->fields, RTD(b)->fields);
 }
 
 static int Record_Equal (Object a, Object b) {
     return EQ(RECORD(a)->rtd, RECORD(b)->rtd) &&
-	   Equal (RECORD(a)->values, RECORD(b)->values);
+           Equal (RECORD(a)->values, RECORD(b)->values);
 }
 
 static int Rtd_Print (Object x, Object port, int raw, int depth, int length) {
@@ -156,14 +156,14 @@ static int Record_Visit (register Object *sp, register int (*f)()) {
 
 void elk_init_lib_record () {
     T_Rtd = Define_Type (0, "record-type", NOFUNC, sizeof (struct S_Rtd),
-	Rtd_Eqv, Rtd_Equal, Rtd_Print, Rtd_Visit);
+        Rtd_Eqv, Rtd_Equal, Rtd_Print, Rtd_Visit);
     Def_Prim (P_Rtdp,             "record-type?",             1, 1, EVAL);
     Def_Prim (P_Rtd_Name,         "record-type-name",         1, 1, EVAL);
     Def_Prim (P_Rtd_Field_Names,  "record-type-field-names",  1, 1, EVAL);
     Def_Prim (P_Make_Record_Type, "make-record-type",         2, 2, EVAL);
 
     T_Record = Define_Type (0, "record", NOFUNC, sizeof (struct S_Record),
-	Record_Eqv, Record_Equal, Record_Print, Record_Visit);
+        Record_Eqv, Record_Equal, Record_Print, Record_Visit);
     Def_Prim (P_Recordp,          "record?",                  1, 1, EVAL);
     Def_Prim (P_Record_Type,      "record-type-descriptor",   1, 1, EVAL);
     Def_Prim (P_Record_Values,    "record-values",            1, 1, EVAL);

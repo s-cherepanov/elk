@@ -51,15 +51,15 @@
     int len = (size), n;\
     \
     while (len > 0) {\
-	if ((n = read (from, buf, 4096)) == -1) {\
-	    Dump_Finalize;\
-	    Primitive_Error ("error reading old a.out: ~E");\
-	}\
-	if (write (to, buf, n) == -1) {\
-	    Dump_Finalize;\
-	    Primitive_Error ("error writing new a.out: ~E");\
-	}\
-	len -= n;\
+        if ((n = read (from, buf, 4096)) == -1) {\
+            Dump_Finalize;\
+            Primitive_Error ("error reading old a.out: ~E");\
+        }\
+        if (write (to, buf, n) == -1) {\
+            Dump_Finalize;\
+            Primitive_Error ("error writing new a.out: ~E");\
+        }\
+        len -= n;\
     }\
 }
 
@@ -76,21 +76,21 @@ Object P_Dump (Object ofile) {
     /* Read a.out header and first aux header
      */
     if (read (afd, (char *)&hdr, sizeof (hdr)) != sizeof (hdr) ||
-	    lseek (afd, (off_t)hdr.aux_header_location, SEEK_SET) == -1 ||
-	    read (afd, (char *)&auxhdr, sizeof (auxhdr)) != sizeof (auxhdr)) {
-	Dump_Finalize;
-	Primitive_Error ("can't read a.out headers");
+            lseek (afd, (off_t)hdr.aux_header_location, SEEK_SET) == -1 ||
+            read (afd, (char *)&auxhdr, sizeof (auxhdr)) != sizeof (auxhdr)) {
+        Dump_Finalize;
+        Primitive_Error ("can't read a.out headers");
     }
     if (hdr.a_magic != EXEC_MAGIC && hdr.a_magic != SHARE_MAGIC &&
-	    hdr.a_magic != DEMAND_MAGIC) {
-	Dump_Finalize;
-	Primitive_Error ("bad magic number ~s in a.out",
-	    Make_Integer (hdr.a_magic));
+            hdr.a_magic != DEMAND_MAGIC) {
+        Dump_Finalize;
+        Primitive_Error ("bad magic number ~s in a.out",
+            Make_Integer (hdr.a_magic));
     }
     if (auxhdr.som_auxhdr.type != HPUX_AUX_ID) {
-	Dump_Finalize;
-	Primitive_Error ("bad aux header id ~s in a.out",
-	    Make_Integer (auxhdr.som_auxhdr.type));
+        Dump_Finalize;
+        Primitive_Error ("bad aux header id ~s in a.out",
+            Make_Integer (auxhdr.som_auxhdr.type));
     }
 
     /* Copy old file up to beginning of data space
@@ -110,8 +110,8 @@ Object P_Dump (Object ofile) {
     Brk_On_Dump = sbrk (0);
     data_size = Brk_On_Dump - (char *)auxhdr.exec_dmem;
     if (write (ofd, (char *)auxhdr.exec_dmem, data_size) != data_size) {
-	Dump_Finalize;
-	Primitive_Error ("error writing data space: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error writing data space: ~E");
     }
 
     /* Check if data space was last space in a.out file.
@@ -120,7 +120,7 @@ Object P_Dump (Object ofile) {
      */
     (void)fstat (afd, &stat);
     if (lseek (afd, (off_t)auxhdr.exec_dsize, SEEK_CUR) != stat.st_size)
-	Primitive_Error ("$DATA$ not last space in a.out file");
+        Primitive_Error ("$DATA$ not last space in a.out file");
 
     /* Write new headers.
      * Do we have to recalculate the checksum?  The manual doesn't
@@ -132,10 +132,10 @@ Object P_Dump (Object ofile) {
     auxhdr.exec_bsize = 0;
     (void)lseek (ofd, (off_t)0, SEEK_SET);
     if (write (ofd, (char *)&hdr, sizeof (hdr)) == -1 ||
-	    lseek (ofd, (off_t)hdr.aux_header_location, SEEK_SET) == -1 ||
-	    write (ofd, (char *)&auxhdr, sizeof (auxhdr)) == -1) {
-	Dump_Finalize;
-	Primitive_Error ("error writing a.out headers: ~E");
+            lseek (ofd, (off_t)hdr.aux_header_location, SEEK_SET) == -1 ||
+            write (ofd, (char *)&auxhdr, sizeof (auxhdr)) == -1) {
+        Dump_Finalize;
+        Primitive_Error ("error writing a.out headers: ~E");
     }
 
     Dump_Epilog;
@@ -183,29 +183,29 @@ Save_Shared_Data () {
      */
     for (i = 1; shl_get (i, &p) != -1 ; i++) {
 #ifdef DEBUG_DUMP
-	sprintf (Z, "Saving shared lib %s\n", p->filename); W;
+        sprintf (Z, "Saving shared lib %s\n", p->filename); W;
 #endif
-	for (sp = shared_data; sp != lsp &&
-		strcmp (sp->desc.filename, p->filename) != 0; sp++)
-	    ;
-	if (sp == lsp) {
+        for (sp = shared_data; sp != lsp &&
+                strcmp (sp->desc.filename, p->filename) != 0; sp++)
+            ;
+        if (sp == lsp) {
 #ifdef DEBUG_DUMP
-	    sprintf (Z, "   (new library)\n"); W;
+            sprintf (Z, "   (new library)\n"); W;
 #endif
-	    if (sp == shared_data + MAX_SHARED)
-		Primitive_Error ("too many shared libraries");
-	    lsp++;
-	    sp->desc = *p;
-	    sp->saved = Safe_Malloc (p->dend - p->dstart);
-	    sp->oldaddr = (char *)p->dstart;
-	}
+            if (sp == shared_data + MAX_SHARED)
+                Primitive_Error ("too many shared libraries");
+            lsp++;
+            sp->desc = *p;
+            sp->saved = Safe_Malloc (p->dend - p->dstart);
+            sp->oldaddr = (char *)p->dstart;
+        }
     }
     for (sp = shared_data; sp != lsp; sp++) {
 #ifdef DEBUG_DUMP
-	sprintf (Z, "   copy data seg from %x to %x len %d\n",
-	    sp->oldaddr, sp->saved, sp->desc.dend - sp->desc.dstart); W;
+        sprintf (Z, "   copy data seg from %x to %x len %d\n",
+            sp->oldaddr, sp->saved, sp->desc.dend - sp->desc.dstart); W;
 #endif
-	memcpy (sp->saved, sp->oldaddr, sp->desc.dend - sp->desc.dstart);
+        memcpy (sp->saved, sp->oldaddr, sp->desc.dend - sp->desc.dstart);
     }
 }
 
@@ -215,55 +215,55 @@ Restore_Shared_Data () {
     shl_t tmp;
 
     for (sp = shared_data; sp != lsp; sp++) {
-	/*
-	 * Assumption:  libraries whose names start with /lib/ or
-	 * with /usr/lib/ were present in the original a.out and
-	 * need not be re-loaded
-	 */
+        /*
+         * Assumption:  libraries whose names start with /lib/ or
+         * with /usr/lib/ were present in the original a.out and
+         * need not be re-loaded
+         */
 #ifdef DEBUG_DUMP
-	sprintf (Z, "Restoring shared lib %s\n", sp->desc.filename); W;
+        sprintf (Z, "Restoring shared lib %s\n", sp->desc.filename); W;
 #endif
-	if (strncmp (sp->desc.filename, "/lib/", 5) != 0 &&
-		strncmp (sp->desc.filename, "/usr/lib/", 8) != 0) {
-	    /*
-	     * Re-load the library and make sure memory locations
-	     * at the old start of data segment are mapped
-	     */
+        if (strncmp (sp->desc.filename, "/lib/", 5) != 0 &&
+                strncmp (sp->desc.filename, "/usr/lib/", 8) != 0) {
+            /*
+             * Re-load the library and make sure memory locations
+             * at the old start of data segment are mapped
+             */
 #ifdef DEBUG_DUMP
-	    sprintf (Z, "   (re-loading)\n"); W;
+            sprintf (Z, "   (re-loading)\n"); W;
 #endif
-	    tmp = shl_load (sp->desc.filename, BIND_IMMEDIATE|BIND_VERBOSE, 0L);
-	    if (tmp == 0)
-		exit (1);   /* There's nothing we can do... */
-	    (void)shl_gethandle (tmp, &p);
-	    sp->desc = *p;
+            tmp = shl_load (sp->desc.filename, BIND_IMMEDIATE|BIND_VERBOSE, 0L);
+            if (tmp == 0)
+                exit (1);   /* There's nothing we can do... */
+            (void)shl_gethandle (tmp, &p);
+            sp->desc = *p;
 
-	    /* Try to mnumap the region in any case.  If MAP_REPLACE is
-	     * there, use it.
-	     */
-	    (void)munmap (sp->oldaddr, sp->desc.dend - sp->desc.dstart);
+            /* Try to mnumap the region in any case.  If MAP_REPLACE is
+             * there, use it.
+             */
+            (void)munmap (sp->oldaddr, sp->desc.dend - sp->desc.dstart);
 #ifndef MAP_REPLACE
 #  define MAP_REPLACE 0
 #endif
-	    if (mmap (sp->oldaddr, sp->desc.dend - sp->desc.dstart,
-		PROT_READ|PROT_WRITE,
-		MAP_REPLACE|MAP_PRIVATE|MAP_ANONYMOUS|MAP_FIXED,
-		-1, 0) == (char *)-1) {
-		    sprintf (Z, "mmap failed[%d]\n", errno); W;
-		    exit (1);
-	    }
-	}
+            if (mmap (sp->oldaddr, sp->desc.dend - sp->desc.dstart,
+                PROT_READ|PROT_WRITE,
+                MAP_REPLACE|MAP_PRIVATE|MAP_ANONYMOUS|MAP_FIXED,
+                -1, 0) == (char *)-1) {
+                    sprintf (Z, "mmap failed[%d]\n", errno); W;
+                    exit (1);
+            }
+        }
 #ifdef DEBUG_DUMP
-	sprintf (Z, "   copy data seg from %x to %x len %d\n", sp->saved,
-	    sp->oldaddr, sp->desc.dend-sp->desc.dstart); W;
+        sprintf (Z, "   copy data seg from %x to %x len %d\n", sp->saved,
+            sp->oldaddr, sp->desc.dend-sp->desc.dstart); W;
 #endif
-	memcpy (sp->oldaddr, sp->saved, sp->desc.dend - sp->desc.dstart);
-	/*
-	 * Initial break must be set as soon as data segment of
-	 * C library is restored
-	 */
-	if (strcmp (sp->desc.filename, "/lib/libc.sl") == 0)
-	    (void)brk (Brk_On_Dump);
+        memcpy (sp->oldaddr, sp->saved, sp->desc.dend - sp->desc.dstart);
+        /*
+         * Initial break must be set as soon as data segment of
+         * C library is restored
+         */
+        if (strcmp (sp->desc.filename, "/lib/libc.sl") == 0)
+            (void)brk (Brk_On_Dump);
     }
 }
 #endif /* HPSHLIB */

@@ -27,15 +27,15 @@ static Object Internal_Make_Context (finalize, context) XtAppContext context; {
 
     c = Find_Object (T_Context, (GENERIC)0, Match_Xt_Obj, context);
     if (Nullp (c)) {
-	c = Alloc_Object (sizeof (struct S_Context), T_Context, 0);
-	CONTEXT(c)->tag = Null;
-	CONTEXT(c)->context = context;
-	CONTEXT(c)->free = 0;
-	Register_Object (c, (GENERIC)0,
-	    finalize ? P_Destroy_Context : (PFO)0, 1);
-	XtAppSetWarningHandler (context, Xt_Warning);
-	XtAppAddActionHook (context, (XtActionHookProc)Action_Hook,
-	    (XtPointer)0);
+        c = Alloc_Object (sizeof (struct S_Context), T_Context, 0);
+        CONTEXT(c)->tag = Null;
+        CONTEXT(c)->context = context;
+        CONTEXT(c)->free = 0;
+        Register_Object (c, (GENERIC)0,
+            finalize ? P_Destroy_Context : (PFO)0, 1);
+        XtAppSetWarningHandler (context, Xt_Warning);
+        XtAppAddActionHook (context, (XtActionHookProc)Action_Hook,
+            (XtPointer)0);
     }
     return c;
 }
@@ -52,7 +52,7 @@ Object Make_Context_Foreign (context) XtAppContext context; {
 void Check_Context (c) Object c; {
     Check_Type (c, T_Context);
     if (CONTEXT(c)->free)
-	Primitive_Error ("invalid context: ~s", c);
+        Primitive_Error ("invalid context: ~s", c);
 }
 
 static Object P_Create_Context () {
@@ -69,7 +69,7 @@ static Object P_Destroy_Context (c) Object c; {
 }
 
 static Object P_Initialize_Display (c, d, name, class)
-	Object c, d, name, class; {
+        Object c, d, name, class; {
     register char *sn = 0, *sc = "", *sd = 0;
     Display *dpy;
     extern char **Argv;
@@ -79,25 +79,25 @@ static Object P_Initialize_Display (c, d, name, class)
     Argv[First_Arg-1] = "elk";
     Check_Context (c);
     if (!EQ(name, False))
-	sn = Get_Strsym (name);
+        sn = Get_Strsym (name);
     if (!EQ(class, False))
-	sc = Get_Strsym (class);
+        sc = Get_Strsym (class);
     if (TYPE(d) == T_Display) {
-	XtDisplayInitialize (CONTEXT(c)->context, DISPLAY(d)->dpy,
-	    sn, sc, (XrmOptionDescRec *)0, 0, &argc, &Argv[First_Arg-1]);
-	Argc = First_Arg + argc;
-	return Void;
+        XtDisplayInitialize (CONTEXT(c)->context, DISPLAY(d)->dpy,
+            sn, sc, (XrmOptionDescRec *)0, 0, &argc, &Argv[First_Arg-1]);
+        Argc = First_Arg + argc;
+        return Void;
     }
     if (!EQ(d, False))
-	sd = Get_Strsym (d);
+        sd = Get_Strsym (d);
     dpy = XtOpenDisplay (CONTEXT(c)->context, sd, sn, sc,
-	(XrmOptionDescRec *)0, 0, &argc, &Argv[First_Arg-1]);
+        (XrmOptionDescRec *)0, 0, &argc, &Argv[First_Arg-1]);
     Argc = First_Arg + argc - 1;
     if (dpy == 0)
-	if (sd)
-	    Primitive_Error ("cannot open display ~s", d);
-	else
-	    Primitive_Error ("cannot open display");
+        if (sd)
+            Primitive_Error ("cannot open display ~s", d);
+        else
+            Primitive_Error ("cannot open display");
     return Make_Display (0, dpy);
 }
 
@@ -107,7 +107,7 @@ static Object P_Initialize_Display (c, d, name, class)
 static Object P_Display_To_Context (d) Object d; {
     Check_Type (d, T_Display);
     return
-	Make_Context_Foreign (XtDisplayToApplicationContext (DISPLAY(d)->dpy));
+        Make_Context_Foreign (XtDisplayToApplicationContext (DISPLAY(d)->dpy));
 }
 
 static Object P_Set_Context_Fallback_Resources (argc, argv) Object *argv; {
@@ -119,16 +119,16 @@ static Object P_Set_Context_Fallback_Resources (argc, argv) Object *argv; {
     con = argv[0];
     Check_Context (con);
     if (argc > 1) {
-	argv++; argc--;
-	p = (char **)XtMalloc ((argc+1) * sizeof (char *));
-	for (i = 0; i < argc; i++) {
-	    Check_Type (argv[i], T_String);
-	    sp = STRING(argv[i]);
-	    p[i] = XtMalloc (sp->size + 1);
-	    bcopy (sp->data, p[i], sp->size);
-	    p[i][sp->size] = 0;
-	}
-	p[i] = 0;
+        argv++; argc--;
+        p = (char **)XtMalloc ((argc+1) * sizeof (char *));
+        for (i = 0; i < argc; i++) {
+            Check_Type (argv[i], T_String);
+            sp = STRING(argv[i]);
+            p[i] = XtMalloc (sp->size + 1);
+            bcopy (sp->data, p[i], sp->size);
+            p[i][sp->size] = 0;
+        }
+        p[i] = 0;
     }
     XtAppSetFallbackResources (CONTEXT(con)->context, p);
     return Void;
@@ -143,7 +143,7 @@ static Object P_Context_Main_Loop (c) Object c; {
 static Object P_Context_Pending (c) Object c; {
     Check_Context (c);
     return Bits_To_Symbols ((unsigned long)XtAppPending (CONTEXT(c)->context),
-	1, XtIM_Syms);
+        1, XtIM_Syms);
 }
 
 static Object P_Context_Process_Event (argc, argv) Object *argv; {
@@ -151,7 +151,7 @@ static Object P_Context_Process_Event (argc, argv) Object *argv; {
 
     Check_Context (argv[0]);
     if (argc == 2)
-	mask = (XtInputMask)Symbols_To_Bits (argv[1], 1, XtIM_Syms);
+        mask = (XtInputMask)Symbols_To_Bits (argv[1], 1, XtIM_Syms);
     XtAppProcessEvent (CONTEXT(argv[0])->context, mask);
     return Void;
 }
@@ -161,7 +161,7 @@ static Boolean Work_Proc (client_data) XtPointer client_data; {
 
     ret = Funcall (Get_Function ((int)client_data), Null, 0);
     if (Truep (ret))
-	Deregister_Function ((int)client_data);
+        Deregister_Function ((int)client_data);
     return Truep (ret);
 }
 
@@ -183,7 +183,7 @@ static Object P_Remove_Work_Proc (id) Object id; {
 }
 
 static void Timeout_Proc (client_data, id)
-	XtPointer client_data; XtIntervalId *id; {
+        XtPointer client_data; XtIntervalId *id; {
     Object proc, args;
     register i = (int)client_data;
 
@@ -201,7 +201,7 @@ static Object P_Context_Add_Timeout (c, n, p) Object c, n, p; {
     Check_Procedure (p);
     i = Register_Function (p);
     id = XtAppAddTimeOut (CONTEXT(c)->context, (unsigned long)Get_Long (n),
-	Timeout_Proc, (XtPointer)i);
+        Timeout_Proc, (XtPointer)i);
     return Make_Id ('t', (XtPointer)id, i);
 }
 
@@ -213,7 +213,7 @@ static Object P_Remove_Timeout (id) Object id; {
 
 /*ARGSUSED*/
 static void Input_Proc (client_data, src, id) XtPointer client_data; int *src;
-	XtInputId *id; {
+        XtInputId *id; {
     Object p, args;
     GC_Node2;
 
@@ -237,21 +237,21 @@ static Object P_Context_Add_Input (argc, argv) Object *argv; {
     Check_Procedure (p);
     Check_Type (src, T_Port);
     if (!(PORT(src)->flags & P_OPEN))
-	Primitive_Error ("port has been closed: ~s", src);
+        Primitive_Error ("port has been closed: ~s", src);
     if (PORT(src)->flags & P_STRING)
-	Primitive_Error ("invalid port: ~s", src);
+        Primitive_Error ("invalid port: ~s", src);
     if (argc == 4) {
-	m = Symbols_To_Bits (argv[3], 1, XtInputMask_Syms);
+        m = Symbols_To_Bits (argv[3], 1, XtInputMask_Syms);
     } else {
-	switch (PORT(src)->flags & (P_INPUT|P_BIDIR)) {
-	case 0:       m = XtInputWriteMask;                 break;
-	case P_INPUT: m = XtInputReadMask;                  break;
-	default:      m = XtInputReadMask|XtInputWriteMask; break;
-	}
+        switch (PORT(src)->flags & (P_INPUT|P_BIDIR)) {
+        case 0:       m = XtInputWriteMask;                 break;
+        case P_INPUT: m = XtInputReadMask;                  break;
+        default:      m = XtInputReadMask|XtInputWriteMask; break;
+        }
     }
     i = Register_Function (Cons (src, p));
     id = XtAppAddInput (CONTEXT(c)->context, fileno (PORT(src)->file),
-	(XtPointer)m, Input_Proc, (XtPointer)i);
+        (XtPointer)m, Input_Proc, (XtPointer)i);
     return Make_Id ('i', (XtPointer)id, i);
 }
 
@@ -268,13 +268,13 @@ elk_init_xt_context () {
     Define_Primitive (P_Initialize_Display, "initialize-display", 4, 4, EVAL);
     Define_Primitive (P_Display_To_Context, "display->context",   1, 1, EVAL);
     Define_Primitive (P_Set_Context_Fallback_Resources,
-			"set-context-fallback-resources!",   1, MANY, VARARGS);
+                        "set-context-fallback-resources!",   1, MANY, VARARGS);
     Define_Primitive (P_Context_Main_Loop,  "context-main-loop",  1, 1, EVAL);
     Define_Primitive (P_Context_Pending,    "context-pending",    1, 1, EVAL);
     Define_Primitive (P_Context_Process_Event,
-			"context-process-event",                1, 2, VARARGS);
+                        "context-process-event",                1, 2, VARARGS);
     Define_Primitive (P_Context_Add_Work_Proc,
-			"context-add-work-proc",                  2, 2, EVAL);
+                        "context-add-work-proc",                  2, 2, EVAL);
     Define_Primitive (P_Remove_Work_Proc,   "remove-work-proc",   1, 1, EVAL);
     Define_Primitive (P_Context_Add_Timeout,"context-add-timeout",3, 3, EVAL);
     Define_Primitive (P_Remove_Timeout,     "remove-timeout",     1, 1, EVAL);

@@ -128,12 +128,12 @@ struct S_gdbm_fh{
 
 int Gdbm_fh_Equal (Object a, Object b) {
     return !GDBM_FH(a)->free && !GDBM_FH(b)->free &&
-	    GDBM_FH(a)->fptr == GDBM_FH(b)->fptr;
+            GDBM_FH(a)->fptr == GDBM_FH(b)->fptr;
 }
 
 /*ARGSUSED*/
 int Gdbm_fh_Print (fh, port, raw, depth, len) Object fh, port;
-	int /*Bool*/ raw; int depth, len; {
+        int /*Bool*/ raw; int depth, len; {
     Printf (port, "#[gdbm-file %lu]", GDBM_FH(fh)->fptr);
     return 0;
 }
@@ -153,11 +153,11 @@ Object P_Gdbm_Open (int argc, Object *argv) {
 
     Disable_Interrupts;
     dbf = gdbm_open (Get_Strsym (argv[0]), Get_Integer (argv[1]),
-	Symbols_To_Bits (argv[2], 0, RW_Syms),
-	argc == 4 ? Get_Integer (argv[3]) : 0644, Fatal_Func);
+        Symbols_To_Bits (argv[2], 0, RW_Syms),
+        argc == 4 ? Get_Integer (argv[3]) : 0644, Fatal_Func);
     if (dbf == 0) {
-	Enable_Interrupts;
-	return False;
+        Enable_Interrupts;
+        return False;
     }
     Gdbm_fh = Alloc_Object (sizeof (struct S_gdbm_fh), T_Gdbm_fh, 0);
     GDBM_FH (Gdbm_fh)->tag = Null;
@@ -170,7 +170,7 @@ Object P_Gdbm_Open (int argc, Object *argv) {
 void Check_Fh (Object fh) {
     Check_Type (fh, T_Gdbm_fh);
     if (GDBM_FH(fh)->free)
-	Primitive_Error ("invalid gdbm-file: ~s", fh);
+        Primitive_Error ("invalid gdbm-file: ~s", fh);
 }
 
 Object P_Gdbm_Close (Object fh) {
@@ -183,7 +183,7 @@ Object P_Gdbm_Close (Object fh) {
 }
 
 Object P_Gdbm_Store (fh, key, content, flag)
-	Object fh, key, content, flag; {
+        Object fh, key, content, flag; {
     int res;
     datum k, c;
 
@@ -196,7 +196,7 @@ Object P_Gdbm_Store (fh, key, content, flag)
     c.dsize = STRING(content)->size;
     Disable_Interrupts;
     res = gdbm_store (GDBM_FH(fh)->fptr, k, c,
-	Symbols_To_Bits (flag, 0, Flag_Syms));
+        Symbols_To_Bits (flag, 0, Flag_Syms));
     Enable_Interrupts;
     return Make_Integer (res);
 }
@@ -213,7 +213,7 @@ static Object Gdbm_Get (Object fh, Object key, datum (*func)()) {
     c = (*func) (GDBM_FH(fh)->fptr, k);
     Enable_Interrupts;
     if (c.dptr == 0)
-	return False;
+        return False;
     res = Make_String (c.dptr, c.dsize);
     free (c.dptr);
     return res;
@@ -250,7 +250,7 @@ Object P_Gdbm_Firstkey (Object fh) {
     k = gdbm_firstkey (GDBM_FH(fh)->fptr);
     Enable_Interrupts;
     if (k.dptr == 0)
-	return False;
+        return False;
     res = Make_String (k.dptr, k.dsize);
     free (k.dptr);
     return res;
@@ -285,8 +285,8 @@ void elk_init_lib_gdbm () {
     Define_Primitive (P_Gdbm_Error, "gdbm-error", 0, 0, EVAL);
     Define_Primitive (P_Gdbm_Error_Text, "gdbm-error-text", 0, 0, EVAL);
     T_Gdbm_fh = Define_Type (0, "gdbm-file", NOFUNC,
-	sizeof (struct S_gdbm_fh), Gdbm_fh_Equal, Gdbm_fh_Equal,
-	Gdbm_fh_Print, NOFUNC);
+        sizeof (struct S_gdbm_fh), Gdbm_fh_Equal, Gdbm_fh_Equal,
+        Gdbm_fh_Print, NOFUNC);
     P_Provide (Intern ("gdbm.so"));
     P_Provide (Intern ("gdbm.o"));
 }

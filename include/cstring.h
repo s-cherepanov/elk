@@ -43,9 +43,9 @@
 #define Get_Strsym_Stack(_from,_to) {\
     int _len;\
     if (TYPE(_from) == T_Symbol)\
-	(_from) = SYMBOL(_from)->name;\
+        (_from) = SYMBOL(_from)->name;\
     else if (TYPE(_from) != T_String)\
-	Wrong_Type_Combination ((_from), "string or symbol");\
+        Wrong_Type_Combination ((_from), "string or symbol");\
     _len = STRING(_from)->size;\
     Alloca ((_to), char*, _len+1);\
     memcpy ((_to), STRING(_from)->data, _len);\

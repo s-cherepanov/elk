@@ -101,43 +101,43 @@ void Call_Initializers (SYMTAB *tab, char *addr, int which) {
      * functions and C++ static destructors will be appended to this list:
      */
     for (fpp = &Finalizers; *fpp; fpp = &(*fpp)->next)
-	;
+        ;
 
     for (sp = tab->first; sp; sp = sp->next) {
-	if ((char *)sp->value < addr)
-	    continue;
-	p = sp->name;
+        if ((char *)sp->value < addr)
+            continue;
+        p = sp->name;
 #ifdef SYMS_BEGIN_WITH
-	if (*p == SYMS_BEGIN_WITH)
-	    p++;
-	else
-	    continue;
+        if (*p == SYMS_BEGIN_WITH)
+            p++;
+        else
+            continue;
 #endif
-	for (pp = Ignore_Prefixes; pp->name; pp++)
-	    if (strncmp (p, pp->name, strlen (pp->name)) == 0)
-		goto next;
-	for (pp = Init_Prefixes; pp->name; pp++) {
-	    if (pp->type == which
-		    && strncmp (p, pp->name, strlen (pp->name)) == 0) {
-		if (Verb_Init)
-		    printf ("[calling %s]\n", p);
-		Call (sp->value);
-	    }
-	}
-	/* Append to list of finalizers (to be invoked on exit):
-	 */
-	for (pp = Finit_Prefixes; pp->name; pp++) {
-	    if (pp->type == which
-	            && strncmp (p, pp->name, strlen (pp->name)) == 0) {
-		fp = (FUNCT *)Safe_Malloc (sizeof (FUNCT));
-		fp->func = (void (*)())sp->value;
-		fp->name = Safe_Malloc (strlen (p) + 1);
-		strcpy (fp->name, p);
-		fp->next = 0;
-		*fpp = fp;
-		fpp = &fp->next;
-	    }
-	}
+        for (pp = Ignore_Prefixes; pp->name; pp++)
+            if (strncmp (p, pp->name, strlen (pp->name)) == 0)
+                goto next;
+        for (pp = Init_Prefixes; pp->name; pp++) {
+            if (pp->type == which
+                    && strncmp (p, pp->name, strlen (pp->name)) == 0) {
+                if (Verb_Init)
+                    printf ("[calling %s]\n", p);
+                Call (sp->value);
+            }
+        }
+        /* Append to list of finalizers (to be invoked on exit):
+         */
+        for (pp = Finit_Prefixes; pp->name; pp++) {
+            if (pp->type == which
+                    && strncmp (p, pp->name, strlen (pp->name)) == 0) {
+                fp = (FUNCT *)Safe_Malloc (sizeof (FUNCT));
+                fp->func = (void (*)())sp->value;
+                fp->name = Safe_Malloc (strlen (p) + 1);
+                strcpy (fp->name, p);
+                fp->next = 0;
+                *fpp = fp;
+                fpp = &fp->next;
+            }
+        }
 next: ;
     }
 }
@@ -147,11 +147,11 @@ next: ;
  */
 void Call_Finalizers () {
     while (Finalizers) {
-	FUNCT *fp = Finalizers;
-	Finalizers = fp->next;
-	if (Verb_Init)
-	    printf ("[calling %s]\n", fp->name);
-	Call ((unsigned long int)fp->func);
+        FUNCT *fp = Finalizers;
+        Finalizers = fp->next;
+        if (Verb_Init)
+            printf ("[calling %s]\n", fp->name);
+        Call ((unsigned long int)fp->func);
     }
 }
 
@@ -159,14 +159,14 @@ void Free_Symbols (SYMTAB *tab) {
     register SYM *sp, *nextp;
 
     for (sp = tab->first; sp; sp = nextp) {
-	nextp = sp->next;
+        nextp = sp->next;
 #if defined(COFF) || defined(ECOFF)
-	free (sp->name);
+        free (sp->name);
 #endif
-	free ((char *)sp);
+        free ((char *)sp);
     }
     if (tab->strings)
-	free (tab->strings);
+        free (tab->strings);
     free ((char *)tab);
 }
 #endif /* CAN_LOAD_OBJ || INIT_OBJECTS */

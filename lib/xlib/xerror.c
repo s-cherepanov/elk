@@ -17,7 +17,7 @@ static X_Fatal_Error (d) Display *d; {
     GC_Unlink;
     fun = Var_Get (V_X_Fatal_Error_Handler);
     if (TYPE(fun) == T_Compound)
-	(void)Funcall (fun, args, 0);
+        (void)Funcall (fun, args, 0);
     _XDefaultIOError (d);
     exit (1);         /* In case the default handler doesn't exit() */
     /*NOTREACHED*/
@@ -37,7 +37,7 @@ static X_Error (d, ep) Display *d; XErrorEvent *ep; {
     args = Cons (a, args);
     a = Bits_To_Symbols ((unsigned long)ep->error_code, 0, Error_Syms);
     if (Nullp (a))
-	a = Make_Unsigned (ep->error_code);
+        a = Make_Unsigned (ep->error_code);
     args = Cons (a, args);
     a = Make_Unsigned_Long (ep->serial);
     args = Cons (a, args);
@@ -46,9 +46,9 @@ static X_Error (d, ep) Display *d; XErrorEvent *ep; {
     GC_Unlink;
     fun = Var_Get (V_X_Error_Handler);
     if (TYPE(fun) == T_Compound)
-	(void)Funcall (fun, args, 0);
+        (void)Funcall (fun, args, 0);
     else
-	_XDefaultError (d, ep);
+        _XDefaultError (d, ep);
 }
 
 static X_After_Function (d) Display *d; {
@@ -67,10 +67,10 @@ static Object P_Set_After_Function (d, f) Object d, f; {
 
     Check_Type (d, T_Display);
     if (EQ(f, False)) {
-	(void)XSetAfterFunction (DISPLAY(d)->dpy, (int (*)())0);
+        (void)XSetAfterFunction (DISPLAY(d)->dpy, (int (*)())0);
     } else {
-	Check_Procedure (f);
-	(void)XSetAfterFunction (DISPLAY(d)->dpy, X_After_Function);
+        Check_Procedure (f);
+        (void)XSetAfterFunction (DISPLAY(d)->dpy, X_After_Function);
     }
     old = DISPLAY(d)->after;
     DISPLAY(d)->after = f;

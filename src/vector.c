@@ -41,11 +41,11 @@ Object General_Make_Vector (int len, Object fill, int konst) {
 
     GC_Link (fill);
     vec = Alloc_Object ((len-1) * sizeof (Object) + sizeof (struct S_Vector),
-	T_Vector, konst);
+        T_Vector, konst);
     VECTOR(vec)->tag = Null;
     VECTOR(vec)->size = len;
     for (op = VECTOR(vec)->data; len--; op++)
-	*op = fill;
+        *op = fill;
     GC_Unlink;
     return vec;
 }
@@ -62,7 +62,7 @@ Object P_Make_Vector (int argc, Object *argv) {
     register int len;
 
     if ((len = Get_Exact_Integer (argv[0])) < 0)
-	Range_Error (argv[0]);
+        Range_Error (argv[0]);
     return Make_Vector (len, argc == 1 ? Null : argv[1]);
 }
 
@@ -72,7 +72,7 @@ Object P_Vector (int argc, Object *argv) {
 
     vec = Make_Vector (argc, Null);
     for (i = 0; i < argc; i++)
-	VECTOR(vec)->data[i] = *argv++;
+        VECTOR(vec)->data[i] = *argv++;
     return vec;
 }
 
@@ -113,11 +113,11 @@ Object P_Vector_To_List (Object vec) {
     list = tail = Null;
     GC_Link3 (vec, list, tail);
     for (i = 0; i < VECTOR(vec)->size; i++, tail = cell) {
-	cell = Cons (VECTOR(vec)->data[i], Null);
-	if (Nullp (list))
-	    list = cell;
-	else
-	    (void)P_Set_Cdr (tail, cell);
+        cell = Cons (VECTOR(vec)->data[i], Null);
+        if (Nullp (list))
+            list = cell;
+        else
+            (void)P_Set_Cdr (tail, cell);
     }
     GC_Unlink;
     return list;
@@ -131,11 +131,11 @@ Object List_To_Vector (Object list, int konst) {
     GC_Link (list);
     len = P_Length (list);
     if (konst)
-	vec = Make_Const_Vector (FIXNUM(len), Null);
+        vec = Make_Const_Vector (FIXNUM(len), Null);
     else
-	vec = Make_Vector (FIXNUM(len), Null);
+        vec = Make_Vector (FIXNUM(len), Null);
     for (i = 0; i < FIXNUM(len); i++, list = Cdr (list))
-	VECTOR(vec)->data[i] = Car (list);
+        VECTOR(vec)->data[i] = Car (list);
     GC_Unlink;
     return vec;
 }
@@ -150,7 +150,7 @@ Object P_Vector_Fill (Object vec, Object fill) {
     Check_Type (vec, T_Vector);
     Check_Mutable (vec);
     for (i = 0; i < VECTOR(vec)->size; i++)
-	VECTOR(vec)->data[i] = fill;
+        VECTOR(vec)->data[i] = fill;
     return vec;
 }
 
@@ -162,7 +162,7 @@ Object P_Vector_Copy (Object vec) {
     GC_Link (vec);
     new = Make_Vector (VECTOR(vec)->size, Null);
     memcpy (POINTER(new), POINTER(vec),
-	(VECTOR(vec)->size-1) * sizeof (Object) + sizeof (struct S_Vector));
+        (VECTOR(vec)->size-1) * sizeof (Object) + sizeof (struct S_Vector));
     GC_Unlink;
     return new;
 }

@@ -9,20 +9,20 @@ Generic_Print (Pixmap, "#[pixmap %lu]", PIXMAP(x)->pm)
 Generic_Get_Display (Pixmap, PIXMAP)
 
 static Object Internal_Make_Pixmap (finalize, dpy, pix)
-	Display *dpy; Pixmap pix; {
+        Display *dpy; Pixmap pix; {
     Object pm;
 
     if (pix == None)
-	return Sym_None;
+        return Sym_None;
     pm = Find_Object (T_Pixmap, (GENERIC)dpy, Match_X_Obj, pix);
     if (Nullp (pm)) {
-	pm = Alloc_Object (sizeof (struct S_Pixmap), T_Pixmap, 0);
-	PIXMAP(pm)->tag = Null;
-	PIXMAP(pm)->pm = pix;
-	PIXMAP(pm)->dpy = dpy;
-	PIXMAP(pm)->free = 0;
-	Register_Object (pm, (GENERIC)dpy,
-	    finalize ? P_Free_Pixmap : (PFO)0, 0);
+        pm = Alloc_Object (sizeof (struct S_Pixmap), T_Pixmap, 0);
+        PIXMAP(pm)->tag = Null;
+        PIXMAP(pm)->pm = pix;
+        PIXMAP(pm)->dpy = dpy;
+        PIXMAP(pm)->free = 0;
+        Register_Object (pm, (GENERIC)dpy,
+            finalize ? P_Free_Pixmap : (PFO)0, 0);
     }
     return pm;
 }
@@ -44,7 +44,7 @@ Pixmap Get_Pixmap (p) Object p; {
 Object P_Free_Pixmap (p) Object p; {
     Check_Type (p, T_Pixmap);
     if (!PIXMAP(p)->free)
-	XFreePixmap (PIXMAP(p)->dpy, PIXMAP(p)->pm);
+        XFreePixmap (PIXMAP(p)->dpy, PIXMAP(p)->pm);
     Deregister_Object (p);
     PIXMAP(p)->free = 1;
     return Void;
@@ -55,11 +55,11 @@ static Object P_Create_Pixmap (d, w, h, depth) Object d, w, h, depth; {
     Drawable dr = Get_Drawable (d, &dpy);
 
     return Make_Pixmap (dpy, XCreatePixmap (dpy, dr, Get_Integer (w),
-	Get_Integer (h), Get_Integer (depth)));
+        Get_Integer (h), Get_Integer (depth)));
 }
 
 static Object P_Create_Bitmap_From_Data (win, data, pw, ph)
-	Object win, data, pw, ph; {
+        Object win, data, pw, ph; {
     register w, h;
 
     Check_Type (win, T_Window);
@@ -67,14 +67,14 @@ static Object P_Create_Bitmap_From_Data (win, data, pw, ph)
     w = Get_Integer (pw);
     h = Get_Integer (ph);
     if (w * h > 8 * STRING(data)->size)
-	Primitive_Error ("bitmap too small");
+        Primitive_Error ("bitmap too small");
     return Make_Pixmap (WINDOW(win)->dpy,
-	XCreateBitmapFromData (WINDOW(win)->dpy, WINDOW(win)->win,
-	    STRING(data)->data, w, h));
+        XCreateBitmapFromData (WINDOW(win)->dpy, WINDOW(win)->win,
+            STRING(data)->data, w, h));
 }
 
 static Object P_Create_Pixmap_From_Bitmap_Data (win, data, pw, ph, fg, bg,
-	depth) Object win, data, pw, ph, fg, bg, depth; {
+        depth) Object win, data, pw, ph, fg, bg, depth; {
     register w, h;
 
     Check_Type (win, T_Window);
@@ -82,11 +82,11 @@ static Object P_Create_Pixmap_From_Bitmap_Data (win, data, pw, ph, fg, bg,
     w = Get_Integer (pw);
     h = Get_Integer (ph);
     if (w * h > 8 * STRING(data)->size)
-	Primitive_Error ("bitmap too small");
+        Primitive_Error ("bitmap too small");
     return Make_Pixmap (WINDOW(win)->dpy,
-	XCreatePixmapFromBitmapData (WINDOW(win)->dpy, WINDOW(win)->win,
-	    STRING(data)->data, w, h, Get_Pixel (fg), Get_Pixel (bg),
-		Get_Integer (depth)));
+        XCreatePixmapFromBitmapData (WINDOW(win)->dpy, WINDOW(win)->win,
+            STRING(data)->data, w, h, Get_Pixel (fg), Get_Pixel (bg),
+                Get_Integer (depth)));
 }
 
 static Object P_Read_Bitmap_File (d, fn) Object d, fn; {
@@ -100,10 +100,10 @@ static Object P_Read_Bitmap_File (d, fn) Object d, fn; {
 
     Disable_Interrupts;
     r = XReadBitmapFile (dpy, dr, Get_Strsym (fn), &width, &height, &bitmap,
-	&xhot, &yhot);
+        &xhot, &yhot);
     Enable_Interrupts;
     if (r != BitmapSuccess)
-	return Bits_To_Symbols ((unsigned long)r, 0, Bitmapstatus_Syms);
+        return Bits_To_Symbols ((unsigned long)r, 0, Bitmapstatus_Syms);
     t = ret = P_Make_List (Make_Integer (5), Null);
     GC_Link2 (ret, t);
     x = Make_Pixmap (dpy, bitmap);
@@ -122,14 +122,14 @@ static Object P_Write_Bitmap_File (argc, argv) Object *argv; {
 
     pm = Get_Pixmap (argv[1]);
     if (argc == 5)
-	Primitive_Error ("both x-hot and y-hot must be specified");
+        Primitive_Error ("both x-hot and y-hot must be specified");
     if (argc == 6) {
-	xhot = Get_Integer (argv[4]);
-	yhot = Get_Integer (argv[5]);
+        xhot = Get_Integer (argv[4]);
+        yhot = Get_Integer (argv[5]);
     }
     Disable_Interrupts;
     ret = XWriteBitmapFile (PIXMAP(argv[1])->dpy, Get_Strsym (argv[0]), pm,
-	Get_Integer (argv[2]), Get_Integer (argv[3]), xhot, yhot);
+        Get_Integer (argv[2]), Get_Integer (argv[3]), xhot, yhot);
     Enable_Interrupts;
     return Bits_To_Symbols ((unsigned long)ret, 0, Bitmapstatus_Syms);
 }
@@ -140,9 +140,9 @@ elk_init_xlib_pixmap () {
     Define_Primitive (P_Free_Pixmap,       "free-pixmap",       1, 1, EVAL);
     Define_Primitive (P_Create_Pixmap,     "create-pixmap",     4, 4, EVAL);
     Define_Primitive (P_Create_Bitmap_From_Data,
-			"create-bitmap-from-data",              4, 4, EVAL);
+                        "create-bitmap-from-data",              4, 4, EVAL);
     Define_Primitive (P_Create_Pixmap_From_Bitmap_Data,
-			"create-pixmap-from-bitmap-data",       7, 7, EVAL);
+                        "create-pixmap-from-bitmap-data",       7, 7, EVAL);
     Define_Primitive (P_Read_Bitmap_File,  "read-bitmap-file",  2, 2, EVAL);
     Define_Primitive (P_Write_Bitmap_File, "write-bitmap-file", 4, 6, VARARGS);
 }

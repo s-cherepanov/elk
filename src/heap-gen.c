@@ -60,25 +60,25 @@
  */
 
 int tuneable_forward_region = 5;   /* fraction of heap pages that are tried
-				    * to allocate as forward region when
-				    * collecting.
-				    */
+                                    * to allocate as forward region when
+                                    * collecting.
+                                    */
 int tuneable_force_total = 35;     /* % newly allocated during collection
-				    * to force total collection
-				    */
+                                    * to force total collection
+                                    */
 int tuneable_newly_expand = 25;    /* % of heap newly allocated during
-				    * a total collection to force heap
-				    * expansion.
-				    */
+                                    * a total collection to force heap
+                                    * expansion.
+                                    */
 int tuneable_force_expand = 20;    /* % stable to force heap expansion
-				    */
+                                    */
 
 /* ------------------------------------------------------------------------
 
 defined in object.h:
 
-typedef int gcspace_t;		// type used for space and type arrays
-typedef unsigned int gcptr_t;	// type used for pointers
+typedef int gcspace_t;          // type used for space and type arrays
+typedef unsigned int gcptr_t;   // type used for pointers
 
    ------------------------------------------------------------------------ */
 
@@ -110,12 +110,12 @@ static pageno_t protected_pages, allocated_pages;
 static addrarith_t bytes_per_pp, pp_shift; /* bytes per physical page */
 static addrarith_t hp_per_pp;      /* number of heap pages per physical page */
 static addrarith_t pp_mask;        /* ANDed with a virtual address gives
-				    * base address of physical page
-				    */
+                                    * base address of physical page
+                                    */
 static addrarith_t hp_per_pp_mask; /* ANDed with heap page number gives
-				    * first page number in the physical
-				    * page the heap page belongs to.
-				    */
+                                    * first page number in the physical
+                                    * page the heap page belongs to.
+                                    */
 #define SAME_PHYSPAGE(a,b) (((a) & pp_mask) == ((b) & pp_mask))
 
 gcspace_t current_space; /* has to be exported because IS_ALIVE depends on it */
@@ -128,11 +128,11 @@ static pageno_t last_forward_freepage;
 static Object *current_freep, *forward_freep;
 
 static int scanning = 0; /* set to true if scanning a
-			  * physical page is in progress */
+                          * physical page is in progress */
 static Object *scanpointer;
 static Object *scanfirst, *scanlast;
 #define IN_SCANREGION(addr) ((Object*)(addr) >= scanfirst \
-			     && (Object*)(addr) <= scanlast)
+                             && (Object*)(addr) <= scanlast)
 #define IS_SCANNED(addr) ((Object *)(addr) < scanpointer)
 #define MAXRESCAN 10
 static pageno_t rescan[MAXRESCAN];
@@ -140,7 +140,7 @@ static int rescanpages = 0;
 static int allscan = 0;
 
 static pageno_t stable_queue, stable_tail; /* head and tail of the queue
-					    * of stable pages */
+                                            * of stable pages */
 
 #define DIRTYENTRIES 20
 struct dirty_rec {
@@ -170,9 +170,9 @@ static void TerminateGC ();
 #  define NEEDED_PAGES(size)    (((size) + PAGEWORDS - 1) / PAGEWORDS)
 #endif
 
-#define MAKE_HEADER(obj,words,type)	(SET(obj, type, words))
-#define HEADER_TO_TYPE(header)		((unsigned int)TYPE(header))
-#define HEADER_TO_WORDS(header)		((unsigned int)FIXNUM(header))
+#define MAKE_HEADER(obj,words,type)     (SET(obj, type, words))
+#define HEADER_TO_TYPE(header)          ((unsigned int)TYPE(header))
+#define HEADER_TO_WORDS(header)         ((unsigned int)FIXNUM(header))
 
 /* some conversion stuff. PHYSPAGE converts a logical page number into the
  * start address of the physical page the logical page lies on.
@@ -197,11 +197,11 @@ static void TerminateGC ();
 #define HEAPPERCENT(x)  PERCENT(x, logical_pages)
 
 #define IS_CLUSTER(a,b) (SAME_PHYSPAGE (PAGE_TO_ADDR ((a)), \
-					PAGE_TO_ADDR ((b))) || \
-			 (space[(a)&hp_per_pp_mask] == \
-			  space[((b)&hp_per_pp_mask)+hp_per_pp] && \
-			  type[(a)&hp_per_pp_mask] == OBJECTPAGE && \
-			  type[((b)&hp_per_pp_mask)+hp_per_pp] == OBJECTPAGE))
+                                        PAGE_TO_ADDR ((b))) || \
+                         (space[(a)&hp_per_pp_mask] == \
+                          space[((b)&hp_per_pp_mask)+hp_per_pp] && \
+                          type[(a)&hp_per_pp_mask] == OBJECTPAGE && \
+                          type[((b)&hp_per_pp_mask)+hp_per_pp] == OBJECTPAGE))
 
 /* check whether the (physical) page starting at address addr is protected
  * or not. SET_PROTECT and SET_UNPROTECT are used to set or clear the flag
@@ -224,7 +224,7 @@ static void TerminateGC ();
 #  endif
 #  define MPROTECT(addr,len,prot) { if (inc_collection) \
                                         mprotect ((caddr_t)(addr), (len), \
-						  (prot)); }
+                                                  (prot)); }
 #else
 #  define PROT_RW
 #  define PROT_NONE
@@ -232,17 +232,17 @@ static void TerminateGC ();
 #endif
 
 #define PROTECT(addr)   { if (!IS_PROTECTED (addr)) {                         \
-			      if (!scanning) {                                \
-			          SET_PROTECT (addr);                         \
-				  MPROTECT ((addr), bytes_per_pp, PROT_NONE); \
-			      } else                                          \
+                              if (!scanning) {                                \
+                                  SET_PROTECT (addr);                         \
+                                  MPROTECT ((addr), bytes_per_pp, PROT_NONE); \
+                              } else                                          \
                                   AddDirty ((addr));                          \
-			  } }
+                          } }
 
 #define UNPROTECT(addr) { if (IS_PROTECTED (addr)) {                          \
-			      SET_UNPROTECT (addr);                           \
-			      MPROTECT ((addr), bytes_per_pp, PROT_RW);       \
-			  } }
+                              SET_UNPROTECT (addr);                           \
+                              MPROTECT ((addr), bytes_per_pp, PROT_RW);       \
+                          } }
 
 /*****************************************************************************/
 
@@ -258,7 +258,7 @@ static void TerminateGC ();
 static void SetupDirtyList () {
     dirtylist = (struct dirty_rec *) malloc (sizeof (struct dirty_rec));
     if (dirtylist == (struct dirty_rec *)0)
-	Fatal_Error ("SetupDirtyList: unable to allocate memory");
+        Fatal_Error ("SetupDirtyList: unable to allocate memory");
     memset (dirtylist->pages, 0, sizeof (dirtylist->pages));
     dirtylist->next = (struct dirty_rec *)0;
     dirtyhead = dirtylist;
@@ -269,19 +269,19 @@ static void AddDirty (pageno_t addr) {
     struct dirty_rec *p;
 
     if (dirtyentries != 0 &&
-	dirtylist->pages[(dirtyentries-1) % DIRTYENTRIES] == addr)
-	    return;
+        dirtylist->pages[(dirtyentries-1) % DIRTYENTRIES] == addr)
+            return;
     else
-	dirtylist->pages[dirtyentries++ % DIRTYENTRIES] = addr;
+        dirtylist->pages[dirtyentries++ % DIRTYENTRIES] = addr;
 
     if (dirtyentries % DIRTYENTRIES == 0) {
-	p = (struct dirty_rec *) malloc (sizeof (struct dirty_rec));
-	if (p == (struct dirty_rec *)0)
-	    Fatal_Error ("AddDirty: unable to allocate memory");
-	memset (p->pages, 0, sizeof (p->pages));
-	p->next = (struct dirty_rec *)0;
-	dirtylist->next = p;
-	dirtylist = p;
+        p = (struct dirty_rec *) malloc (sizeof (struct dirty_rec));
+        if (p == (struct dirty_rec *)0)
+            Fatal_Error ("AddDirty: unable to allocate memory");
+        memset (p->pages, 0, sizeof (p->pages));
+        p->next = (struct dirty_rec *)0;
+        dirtylist->next = p;
+        dirtylist = p;
     }
 }
 
@@ -290,9 +290,9 @@ static void ReprotectDirty () {
 
     dirtylist = dirtyhead;
     while (dirtylist) {
-	for (i = 0; i < DIRTYENTRIES && dirtyentries--; i++)
-	    PROTECT (dirtylist->pages[i]);
-	dirtylist = dirtylist->next;
+        for (i = 0; i < DIRTYENTRIES && dirtyentries--; i++)
+            PROTECT (dirtylist->pages[i]);
+        dirtylist = dirtylist->next;
     }
 
     dirtyentries = 0;
@@ -309,13 +309,13 @@ static void ReprotectDirty () {
 
 static void RegisterPage (pageno_t page) {
     if (allscan)
-	return;
+        return;
 
     if (IS_SCANNED (PAGE_TO_ADDR (page))) {
-	if (rescanpages < MAXRESCAN)
-	    rescan[rescanpages++] = page;
-	else
-	    allscan = 1;
+        if (rescanpages < MAXRESCAN)
+            rescan[rescanpages++] = page;
+        else
+            allscan = 1;
     }
 }
 
@@ -331,16 +331,16 @@ static void DetermineCluster (gcptr_t *addr, int *len) {
 
     *len = 1;
     while (type[ADDR_TO_PAGE (*addr)] != OBJECTPAGE) {
-	*addr -= bytes_per_pp;
-	(*len)++;
+        *addr -= bytes_per_pp;
+        (*len)++;
     }
     addr1 = *addr + ((*len) << pp_shift);
 
     while (ADDR_TO_PAGE(addr1) <= lastpage &&
-	    space[ADDR_TO_PAGE(addr1)] > 0 &&
-	    type[ADDR_TO_PAGE(addr1)] != OBJECTPAGE) {
-	addr1 += bytes_per_pp;
-	(*len)++;
+            space[ADDR_TO_PAGE(addr1)] > 0 &&
+            type[ADDR_TO_PAGE(addr1)] != OBJECTPAGE) {
+        addr1 += bytes_per_pp;
+        (*len)++;
     }
 }
 
@@ -354,23 +354,23 @@ static void DetermineCluster (gcptr_t *addr, int *len) {
 static void ProtectCluster (gcptr_t addr, int len) {
     if (!len) DetermineCluster (&addr, &len);
     if (len > 1) {
-	while (len) {
-	    if (!IS_PROTECTED (addr)) {
-		MPROTECT (addr, len << pp_shift, PROT_NONE);
-		break;
-	    }
-	    len--;
-	    addr += bytes_per_pp;
-	}
-	while (len--) {
-	    if (!IS_PROTECTED (addr)) SET_PROTECT (addr);
-	    addr += bytes_per_pp;
-	}
+        while (len) {
+            if (!IS_PROTECTED (addr)) {
+                MPROTECT (addr, len << pp_shift, PROT_NONE);
+                break;
+            }
+            len--;
+            addr += bytes_per_pp;
+        }
+        while (len--) {
+            if (!IS_PROTECTED (addr)) SET_PROTECT (addr);
+            addr += bytes_per_pp;
+        }
     } else {
-	if (!IS_PROTECTED (addr)) {
-	    MPROTECT (addr, bytes_per_pp, PROT_NONE);
-	    SET_PROTECT (addr);
-	}
+        if (!IS_PROTECTED (addr)) {
+            MPROTECT (addr, bytes_per_pp, PROT_NONE);
+            SET_PROTECT (addr);
+        }
     }
 }
 
@@ -379,8 +379,8 @@ static void UnprotectCluster (gcptr_t addr, int len) {
     if (!len) DetermineCluster (&addr, &len);
     MPROTECT (addr, len << pp_shift, PROT_RW);
     while (len--) {
-	if (IS_PROTECTED (addr)) SET_UNPROTECT (addr);
-	addr += bytes_per_pp;
+        if (IS_PROTECTED (addr)) SET_UNPROTECT (addr);
+        addr += bytes_per_pp;
     }
 }
 
@@ -390,9 +390,9 @@ static void UnprotectCluster (gcptr_t addr, int len) {
 static void AddQueue (pageno_t page) {
 
     if (stable_queue != (pageno_t)-1)
-	link[stable_tail] = page;
+        link[stable_tail] = page;
     else
-	stable_queue = page;
+        stable_queue = page;
     link[page] = (pageno_t)-1;
     stable_tail = page;
 }
@@ -409,17 +409,17 @@ static void PromoteStableQueue () {
     pageno_t start;
 
     while (stable_queue != (pageno_t)-1) {
-	p = PAGE_TO_OBJ (stable_queue);
+        p = PAGE_TO_OBJ (stable_queue);
 #ifdef ALIGN_8BYTE
-	p++;
+        p++;
 #endif
-	size = HEADER_TO_WORDS (*p);
-	pcount = NEEDED_PAGES (size);
+        size = HEADER_TO_WORDS (*p);
+        pcount = NEEDED_PAGES (size);
 
-	start = stable_queue;
-	while (pcount--)
-	    space[start++] = current_space;
-	stable_queue = link[stable_queue];
+        start = stable_queue;
+        while (pcount--)
+            space[start++] = current_space;
+        stable_queue = link[stable_queue];
     }
     current_pages = allocated_pages;
     forwarded_pages = 0;
@@ -463,7 +463,7 @@ static char *heapmalloc (int s) {
     char *ret = mmap (0, s, PROT_READ|PROT_WRITE, MAP_ANON, -1, 0);
 
     if (ret == (char*)-1)
-	ret = 0;
+        ret = 0;
 
     return ret;
 }
@@ -498,7 +498,7 @@ void Make_Heap (int size) {
 
 #if defined(SC_PAGESIZE_IN_UNISTD_H)
     if ((bytes_per_pp = sysconf (_SC_PAGESIZE)) == -1)
-	Fatal_Error ("sysconf(_SC_PAGESIZE) failed; can't get pagesize");
+        Fatal_Error ("sysconf(_SC_PAGESIZE) failed; can't get pagesize");
 #elif defined(HAVE_GETPAGESIZE)
     bytes_per_pp = getpagesize ();
 #elif defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
@@ -518,15 +518,15 @@ void Make_Heap (int size) {
     saved_heap_ptr = heap_ptr;
 
     if (heap_ptr == NULL)
-	Fatal_Error ("cannot allocate heap (%u KBytes)", size);
+        Fatal_Error ("cannot allocate heap (%u KBytes)", size);
 
     /* Align heap at a memory page boundary */
 
     if ((gcptr_t)heap_ptr & (bytes_per_pp-1))
-	aligned_heap_ptr = (char*)(((gcptr_t)heap_ptr+bytes_per_pp-1)
-	    & ~(bytes_per_pp-1));
+        aligned_heap_ptr = (char*)(((gcptr_t)heap_ptr+bytes_per_pp-1)
+            & ~(bytes_per_pp-1));
     else
-	aligned_heap_ptr = heap_ptr;
+        aligned_heap_ptr = heap_ptr;
 
     SET(heap_obj, 0, (ptrdiff_t)aligned_heap_ptr);
 
@@ -541,12 +541,12 @@ void Make_Heap (int size) {
     pmap = (gcspace_t *)malloc (physical_pages*sizeof (gcspace_t));
     link = (pageno_t *)malloc (logical_pages*sizeof (pageno_t));
     if (!space || !type || !pmap || !link) {
-	free (heap_ptr);
-	if (space) free ((char*)space);
-	if (type) free ((char*)type);
-	if (pmap) free ((char*)pmap);
-	if (link) free ((char*)link);
-	Fatal_Error ("cannot allocate heap maps");
+        free (heap_ptr);
+        if (space) free ((char*)space);
+        if (type) free ((char*)type);
+        if (pmap) free ((char*)pmap);
+        if (link) free ((char*)link);
+        Fatal_Error ("cannot allocate heap maps");
     }
 
     memset (type, 0, (logical_pages + 1)*sizeof (gcspace_t));
@@ -561,7 +561,7 @@ void Make_Heap (int size) {
 #endif
 
     for (i = firstpage; i <= lastpage; i++)
-	space[i] = FREE_PAGE;
+        space[i] = FREE_PAGE;
 
     allocated_pages = 0;
     forwarded_pages = 0;
@@ -602,23 +602,23 @@ static int ExpandHeap (char *reason) {
     heap_ptr = heapmalloc (heapinc+bytes_per_pp/*-1*/);
 
     if (heap_ptr == NULL) {
-	if (Var_Is_True (V_Garbage_Collect_Notifyp)) {
-	    char buf[243];
-	    sprintf(buf, "[Heap expansion failed (%s)]~%%", reason);
-	    Format (Standard_Output_Port, buf,
-		    strlen(buf), 0, (Object *)0);
-	    (void)fflush (stdout);
-	}
-	return (0);
+        if (Var_Is_True (V_Garbage_Collect_Notifyp)) {
+            char buf[243];
+            sprintf(buf, "[Heap expansion failed (%s)]~%%", reason);
+            Format (Standard_Output_Port, buf,
+                    strlen(buf), 0, (Object *)0);
+            (void)fflush (stdout);
+        }
+        return (0);
     }
 
     /* Align heap at a memory page boundary */
 
     if ((gcptr_t)heap_ptr & (bytes_per_pp-1))
-	aligned_heap_ptr = (char*)(((gcptr_t)heap_ptr+bytes_per_pp-1)
-	    & ~(bytes_per_pp-1));
+        aligned_heap_ptr = (char*)(((gcptr_t)heap_ptr+bytes_per_pp-1)
+            & ~(bytes_per_pp-1));
     else
-	aligned_heap_ptr = heap_ptr;
+        aligned_heap_ptr = heap_ptr;
 
     SET(heap_obj, 0, (ptrdiff_t)aligned_heap_ptr);
 
@@ -630,11 +630,11 @@ static int ExpandHeap (char *reason) {
     inc_first = 0; /* = OBJ_TO_PAGE (heap_obj) - new_pagebase */
 
     new_firstpage = (pagebase > new_pagebase)
-	? new_pagebase : pagebase;
+        ? new_pagebase : pagebase;
 
     new_lastpage = (pagebase > new_pagebase)
-	? pagebase + lastpage
-	: new_pagebase + incpages - 1;
+        ? pagebase + lastpage
+        : new_pagebase + incpages - 1;
 
     offset = pagebase - new_firstpage;
 #else
@@ -643,9 +643,9 @@ static int ExpandHeap (char *reason) {
 
     inc_last = inc_first+incpages-1;
     if (inc_last > lastpage)
-	new_last = inc_last;
+        new_last = inc_last;
     if (inc_first < firstpage)
-	new_first = inc_first;
+        new_first = inc_first;
     new_logpages = logical_pages+incpages;
 #ifdef ARRAY_BROKEN
     new_spanpages = new_lastpage-new_firstpage+1;
@@ -660,17 +660,17 @@ static int ExpandHeap (char *reason) {
     new_pmap = (gcspace_t *)malloc (new_physpages*sizeof (gcspace_t));
     new_link = (pageno_t *)malloc (new_spanpages*sizeof (pageno_t));
     if (!new_space || !new_type || !new_pmap || !new_link) {
-	free (heap_ptr);
-	if (new_space) free ((char*)new_space);
-	if (new_type) free ((char*)new_type);
-	if (new_pmap) free ((char*)new_pmap);
-	if (new_link) free ((char*)new_link);
-	if (Var_Is_True (V_Garbage_Collect_Notifyp)) {
-	    Format (Standard_Output_Port, "[Heap expansion failed]~%",
-		    25, 0, (Object *)0);
-	    (void)fflush (stdout);
-	}
-	return (0);
+        free (heap_ptr);
+        if (new_space) free ((char*)new_space);
+        if (new_type) free ((char*)new_type);
+        if (new_pmap) free ((char*)new_pmap);
+        if (new_link) free ((char*)new_link);
+        if (Var_Is_True (V_Garbage_Collect_Notifyp)) {
+            Format (Standard_Output_Port, "[Heap expansion failed]~%",
+                    25, 0, (Object *)0);
+            (void)fflush (stdout);
+        }
+        return (0);
     }
 
 
@@ -690,13 +690,13 @@ static int ExpandHeap (char *reason) {
 
     /* FIXME: memmove! */
     for (i = firstpage; i <= lastpage; i++) {
-	new_link[i + offset] = link[i] + offset;
-	new_type[i + offset] = type[i];
+        new_link[i + offset] = link[i] + offset;
+        new_type[i + offset] = type[i];
     }
     for (addr = PAGE_TO_ADDR (firstpage); addr <= PAGE_TO_ADDR (lastpage);
-	 addr += bytes_per_pp) {
-	new_pmap[((addr - PAGE_TO_ADDR(0)) >> pp_shift) + offset] =
-	    IS_PROTECTED (addr);
+         addr += bytes_per_pp) {
+        new_pmap[((addr - PAGE_TO_ADDR(0)) >> pp_shift) + offset] =
+            IS_PROTECTED (addr);
     }
 
 #ifdef ARRAY_BROKEN
@@ -739,12 +739,12 @@ static int ExpandHeap (char *reason) {
     physical_pages = new_physpages;
 
     if (Var_Is_True (V_Garbage_Collect_Notifyp)) {
-	int a = (logical_pages * PAGEBYTES) >> 10;
-	char buf[243];
+        int a = (logical_pages * PAGEBYTES) >> 10;
+        char buf[243];
 
-	sprintf(buf, "[Heap expanded to %dK (%s)]~%%", a, reason);
-	Format (Standard_Output_Port, buf, strlen(buf), 0, (Object *)0);
-	(void)fflush (stdout);
+        sprintf(buf, "[Heap expanded to %dK (%s)]~%%", a, reason);
+        Format (Standard_Output_Port, buf, strlen(buf), 0, (Object *)0);
+        (void)fflush (stdout);
     }
     return (1);
 }
@@ -778,9 +778,9 @@ static int ProtectedInRegion (pageno_t start, pageno_t npages) {
     gcptr_t endpage = PHYSPAGE (start+npages-1);
 
     do {
-	if (IS_PROTECTED (beginpage))
-	    return (1);
-	beginpage += bytes_per_pp;
+        if (IS_PROTECTED (beginpage))
+            return (1);
+        beginpage += bytes_per_pp;
     } while (beginpage <= endpage);
 
     return (0);
@@ -792,17 +792,17 @@ static void AllocPage (pageno_t npg) {
     pageno_t n, p;
 
     if (current_space != forward_space) {
-	(void)Scanner ((pageno_t)1);
-	if (!protected_pages)
-	    TerminateGC ();
+        (void)Scanner ((pageno_t)1);
+        if (!protected_pages)
+            TerminateGC ();
     } else {
-	if (inc_collection) {
-	    if (allocated_pages+npg >= logical_pages/3)
-		P_Collect_Incremental ();
-	} else {
-	    if (allocated_pages+npg >= logical_pages/2)
-		P_Collect ();
-	}
+        if (inc_collection) {
+            if (allocated_pages+npg >= logical_pages/3)
+                P_Collect_Incremental ();
+        } else {
+            if (allocated_pages+npg >= logical_pages/2)
+                P_Collect ();
+        }
     }
 
     /* now look for a cluster of npg free pages. cont_free counts the
@@ -811,57 +811,57 @@ static void AllocPage (pageno_t npg) {
      */
 
     for (p = spanning_pages, cont_free = 0; p; p--) {
-	if (space[current_freepage] < previous_space
-	    && !STABLE (current_freepage)) {
-	    if (cont_free == 0) {
-		/* This is our first free page, first check that we have a
+        if (space[current_freepage] < previous_space
+            && !STABLE (current_freepage)) {
+            if (cont_free == 0) {
+                /* This is our first free page, first check that we have a
                  * continuous cluster of pages (we'll check later that they
                  * are free). Otherwise, go to the next free page */
-		if (current_freepage+npg-1 <= lastpage
-		    && IS_CLUSTER (current_freepage, current_freepage+npg-1))
-		    first_freepage = current_freepage;
-		else {
-		    current_freepage = next (current_freepage -
-					     current_freepage % hp_per_pp +
-					     hp_per_pp-1);
-		    continue;
-		}
-	    }
+                if (current_freepage+npg-1 <= lastpage
+                    && IS_CLUSTER (current_freepage, current_freepage+npg-1))
+                    first_freepage = current_freepage;
+                else {
+                    current_freepage = next (current_freepage -
+                                             current_freepage % hp_per_pp +
+                                             hp_per_pp-1);
+                    continue;
+                }
+            }
 
-	    cont_free++;
+            cont_free++;
 
-	    if (cont_free == npg) {
-		space[first_freepage] = current_space;
-		type[first_freepage] = OBJECTPAGE;
-		for (n = 1; n < npg; n++) {
-		    space[first_freepage+n] = current_space;
-		    type[first_freepage+n] = CONTPAGE;
-		}
-		current_freep = PAGE_TO_OBJ (first_freepage);
-		current_free = npg*PAGEWORDS;
-		current_pages += npg;
-		allocated_pages += npg;
-		current_freepage = next (first_freepage+npg-1);
-		if (ProtectedInRegion (first_freepage, npg))
-		    (void)ScanCluster (PHYSPAGE (first_freepage));
-		return;
-	    }
+            if (cont_free == npg) {
+                space[first_freepage] = current_space;
+                type[first_freepage] = OBJECTPAGE;
+                for (n = 1; n < npg; n++) {
+                    space[first_freepage+n] = current_space;
+                    type[first_freepage+n] = CONTPAGE;
+                }
+                current_freep = PAGE_TO_OBJ (first_freepage);
+                current_free = npg*PAGEWORDS;
+                current_pages += npg;
+                allocated_pages += npg;
+                current_freepage = next (first_freepage+npg-1);
+                if (ProtectedInRegion (first_freepage, npg))
+                    (void)ScanCluster (PHYSPAGE (first_freepage));
+                return;
+            }
 
-	    /* check the next free page. If we warped, reset cont_free to 0. */
-	    current_freepage = next (current_freepage);
-	    if (current_freepage == firstpage) cont_free = 0;
+            /* check the next free page. If we warped, reset cont_free to 0. */
+            current_freepage = next (current_freepage);
+            if (current_freepage == firstpage) cont_free = 0;
 
-	} else {
-	    current_freepage = next (current_freepage);
-	    cont_free = 0;
-	}
+        } else {
+            current_freepage = next (current_freepage);
+            cont_free = 0;
+        }
     }
 
     /* no space available, try to expand heap */
 
     if (ExpandHeap ("to allocate new object")) {
-	AllocPage (npg);
-	return;
+        AllocPage (npg);
+        return;
     }
 
     Fatal_Error ("unable to allocate %lu bytes in heap", npg*PAGEBYTES);
@@ -878,14 +878,14 @@ static void AllocPage (pageno_t npg) {
 Object Alloc_Object (size, type, konst) {
     Object obj;
     register addrarith_t s = /* size in words */
-	((size + sizeof(Object) - 1) / sizeof(Object)) + 1;
+        ((size + sizeof(Object) - 1) / sizeof(Object)) + 1;
     int big = 0;
 
     if (GC_Debug) {
-	if (inc_collection)
-	    P_Collect_Incremental ();
-	else
-	    P_Collect ();
+        if (inc_collection)
+            P_Collect_Incremental ();
+        else
+            P_Collect ();
     }
 
     /* if there is not enough space left on the current page, discard
@@ -894,32 +894,32 @@ Object Alloc_Object (size, type, konst) {
      */
 
     if (s > current_free) {
-	if (current_free) {
-	    MAKE_HEADER (*current_freep, current_free, T_Freespace);
-	    current_free = 0;
-	}
+        if (current_free) {
+            MAKE_HEADER (*current_freep, current_free, T_Freespace);
+            current_free = 0;
+        }
 
-	/* If we are about to allocate an object bigger than one heap page,
-	 * set a flag. The space behind big objects is discarded, see below.
-	 */
+        /* If we are about to allocate an object bigger than one heap page,
+         * set a flag. The space behind big objects is discarded, see below.
+         */
 
 #ifdef ALIGN_8BYTE
-	if (s < PAGEWORDS-1)
-	    AllocPage ((pageno_t)1);
-	else {
-	    AllocPage ((pageno_t)(s+PAGEWORDS)/PAGEWORDS);
-	    big = 1;
-	}
-	MAKE_HEADER (*current_freep, 1, T_Align_8Byte);
-	current_freep++;
-	current_free--;
+        if (s < PAGEWORDS-1)
+            AllocPage ((pageno_t)1);
+        else {
+            AllocPage ((pageno_t)(s+PAGEWORDS)/PAGEWORDS);
+            big = 1;
+        }
+        MAKE_HEADER (*current_freep, 1, T_Align_8Byte);
+        current_freep++;
+        current_free--;
 #else
-	if (s < PAGEWORDS)
-	    AllocPage ((pageno_t)1);
-	else {
-	    AllocPage ((pageno_t)(s+PAGEWORDS-1)/PAGEWORDS);
-	    big = 1;
-	}
+        if (s < PAGEWORDS)
+            AllocPage ((pageno_t)1);
+        else {
+            AllocPage ((pageno_t)(s+PAGEWORDS-1)/PAGEWORDS);
+            big = 1;
+        }
 #endif
     }
 
@@ -933,18 +933,18 @@ Object Alloc_Object (size, type, konst) {
     *current_freep = Null;
     SET (obj, type, (ptrdiff_t)current_freep);
     if (big)
-	current_freep = (Object*)0, current_free = 0;
+        current_freep = (Object*)0, current_free = 0;
     else
-	current_freep += (s-1), current_free -= s;
+        current_freep += (s-1), current_free -= s;
 #ifdef ALIGN_8BYTE
     if (!((gcptr_t)current_freep & 7) && current_free) {
-	MAKE_HEADER (*current_freep, 1, T_Align_8Byte);
-	current_freep++;
-	current_free--;
+        MAKE_HEADER (*current_freep, 1, T_Align_8Byte);
+        current_freep++;
+        current_free--;
     }
 #endif
     if (type == T_Control_Point)
-	CONTROL(obj)->reloc = 0;
+        CONTROL(obj)->reloc = 0;
 
     if (konst) SETCONST (obj);
     return (obj);
@@ -962,36 +962,36 @@ static void AllocForwardPage (Object bad) {
     pageno_t tpage;
 
     while (whole_heap--) {
-	if (space[forward_freepage] < previous_space
-	    && !STABLE (forward_freepage)
-	    && !SAME_PHYSPAGE ((gcptr_t)badaddr,
-		    PAGE_TO_ADDR (forward_freepage))
-	    && !IN_SCANREGION (PAGE_TO_ADDR (forward_freepage))) {
+        if (space[forward_freepage] < previous_space
+            && !STABLE (forward_freepage)
+            && !SAME_PHYSPAGE ((gcptr_t)badaddr,
+                    PAGE_TO_ADDR (forward_freepage))
+            && !IN_SCANREGION (PAGE_TO_ADDR (forward_freepage))) {
 
-	    allocated_pages++;
-	    forwarded_pages++;
-	    space[forward_freepage] = forward_space;
-	    type[forward_freepage] = OBJECTPAGE;
-	    forward_freep = PAGE_TO_OBJ (forward_freepage);
-	    forward_free = PAGEWORDS;
-	    AddQueue (forward_freepage);
+            allocated_pages++;
+            forwarded_pages++;
+            space[forward_freepage] = forward_space;
+            type[forward_freepage] = OBJECTPAGE;
+            forward_freep = PAGE_TO_OBJ (forward_freepage);
+            forward_free = PAGEWORDS;
+            AddQueue (forward_freepage);
 
-	    tpage = last_forward_freepage;
-	    last_forward_freepage = next (forward_freepage);
-	    forward_freepage = tpage;
-	    return;
-	} else {
-	    forward_freepage = next (forward_freepage);
-	}
+            tpage = last_forward_freepage;
+            last_forward_freepage = next (forward_freepage);
+            forward_freepage = tpage;
+            return;
+        } else {
+            forward_freepage = next (forward_freepage);
+        }
     }
 
     if (ExpandHeap ("to allocate forward page")) {
-	AllocForwardPage (bad);
-	return;
+        AllocForwardPage (bad);
+        return;
     }
 
     Fatal_Error ("unable to allocate forward page in %lu KBytes heap",
-		 (logical_pages * PAGEBYTES) >> 10);
+                 (logical_pages * PAGEBYTES) >> 10);
 
     /*NOTREACHED*/
 }
@@ -1016,32 +1016,32 @@ int Visit (register Object *cp) {
      */
 
     if (current_space == forward_space)
-	return 0;
+        return 0;
 
     if (page < firstpage || page > lastpage || STABLE (page)
-	|| space[page] == current_space  || space[page] == UNALLOCATED_PAGE
-	|| !Types[tag].haspointer)
-	return 0;
+        || space[page] == current_space  || space[page] == UNALLOCATED_PAGE
+        || !Types[tag].haspointer)
+        return 0;
 
     if (space[page] != previous_space) {
-	char buf[100];
-	sprintf (buf, "Visit: object not in prev space at %p ('%s') %d %d",
-	    obj_ptr, Types[tag].name, space[page], previous_space);
-	Panic (buf);
+        char buf[100];
+        sprintf (buf, "Visit: object not in prev space at %p ('%s') %d %d",
+            obj_ptr, Types[tag].name, space[page], previous_space);
+        Panic (buf);
     }
 
     if (!IN_SCANREGION (obj_ptr) && IS_PROTECTED ((gcptr_t)obj_ptr)) {
-	pageaddr = OBJ_TO_PPADDR (*cp);
-	UNPROTECT (pageaddr);
+        pageaddr = OBJ_TO_PPADDR (*cp);
+        UNPROTECT (pageaddr);
     }
 
     if (WAS_FORWARDED (*cp)) {
-	if (pageaddr != 0)
-	    PROTECT (pageaddr);
-	MAKEOBJ (*cp, tag, (ptrdiff_t)POINTER(*obj_ptr));
-	if (konst)
-	    SETCONST (*cp);
-	return 0;
+        if (pageaddr != 0)
+            PROTECT (pageaddr);
+        MAKEOBJ (*cp, tag, (ptrdiff_t)POINTER(*obj_ptr));
+        if (konst)
+            SETCONST (*cp);
+        return 0;
     }
 
     ffreep = PTR_TO_PPADDR (forward_freep);
@@ -1049,63 +1049,63 @@ int Visit (register Object *cp) {
     objwords = HEADER_TO_WORDS (*(obj_ptr - 1));
     if (objwords >= forward_free) {
 #ifdef ALIGN_8BYTE
-	if (objwords >= PAGEWORDS - 1) {
-	    objpages = (objwords + PAGEWORDS) / PAGEWORDS;
+        if (objwords >= PAGEWORDS - 1) {
+            objpages = (objwords + PAGEWORDS) / PAGEWORDS;
 #else
-	if (objwords >= PAGEWORDS) {
-	    objpages = (objwords + PAGEWORDS - 1) / PAGEWORDS;
+        if (objwords >= PAGEWORDS) {
+            objpages = (objwords + PAGEWORDS - 1) / PAGEWORDS;
 #endif
-	    forwarded_pages += objpages;
-	    for (pcount = 0; pcount < objpages; pcount++)
-		space[page + pcount] = forward_space;
-	    AddQueue (page);
-	    if (IN_SCANREGION (PAGE_TO_ADDR (page)))
-		RegisterPage (page);
-	    else
-		ProtectCluster (PHYSPAGE (page), 0);
+            forwarded_pages += objpages;
+            for (pcount = 0; pcount < objpages; pcount++)
+                space[page + pcount] = forward_space;
+            AddQueue (page);
+            if (IN_SCANREGION (PAGE_TO_ADDR (page)))
+                RegisterPage (page);
+            else
+                ProtectCluster (PHYSPAGE (page), 0);
 
-	    if (pageaddr != 0)
-		PROTECT (pageaddr);
+            if (pageaddr != 0)
+                PROTECT (pageaddr);
 
-	    return 0;
-	}
+            return 0;
+        }
 
-	if (forward_free) {
-	    if (outside && IS_PROTECTED (ffreep)
-		&& !SAME_PHYSPAGE ((gcptr_t)obj_ptr, ffreep)) {
+        if (forward_free) {
+            if (outside && IS_PROTECTED (ffreep)
+                && !SAME_PHYSPAGE ((gcptr_t)obj_ptr, ffreep)) {
 
-		UNPROTECT (ffreep);
-		MAKE_HEADER (*forward_freep, forward_free, T_Freespace);
-		forward_free = 0;
-		PROTECT (ffreep);
-	    } else {
-		MAKE_HEADER (*forward_freep, forward_free, T_Freespace);
-		forward_free = 0;
-	    }
-	}
+                UNPROTECT (ffreep);
+                MAKE_HEADER (*forward_freep, forward_free, T_Freespace);
+                forward_free = 0;
+                PROTECT (ffreep);
+            } else {
+                MAKE_HEADER (*forward_freep, forward_free, T_Freespace);
+                forward_free = 0;
+            }
+        }
 
-	AllocForwardPage (*cp);
-	outside = !IN_SCANREGION (forward_freep);
-	ffreep = PTR_TO_PPADDR (forward_freep); /* re-set ffreep ! */
+        AllocForwardPage (*cp);
+        outside = !IN_SCANREGION (forward_freep);
+        ffreep = PTR_TO_PPADDR (forward_freep); /* re-set ffreep ! */
 #ifdef ALIGN_8BYTE
-	if (outside && IS_PROTECTED (ffreep))
-	    UNPROTECT (ffreep);
-	MAKE_HEADER (*forward_freep, 1, T_Align_8Byte);
-	forward_freep++;
-	forward_free--;
-	goto do_forward;
+        if (outside && IS_PROTECTED (ffreep))
+            UNPROTECT (ffreep);
+        MAKE_HEADER (*forward_freep, 1, T_Align_8Byte);
+        forward_freep++;
+        forward_free--;
+        goto do_forward;
 #endif
     }
 
     if (outside && IS_PROTECTED (ffreep))
-	UNPROTECT (ffreep);
+        UNPROTECT (ffreep);
 
 #ifdef ALIGN_8BYTE
 do_forward:
 #endif
     if (tag == T_Control_Point) {
-	CONTROL (*cp)->reloc =
-	    (char*)(forward_freep + 1) - (char*)obj_ptr;
+        CONTROL (*cp)->reloc =
+            (char*)(forward_freep + 1) - (char*)obj_ptr;
     }
 
     MAKE_HEADER (*forward_freep, objwords, tag);
@@ -1114,23 +1114,23 @@ do_forward:
     SET (*obj_ptr, T_Broken_Heart, (ptrdiff_t)forward_freep);
     MAKEOBJ (*cp, tag, (ptrdiff_t)forward_freep);
     if (konst)
-	SETCONST (*cp);
+        SETCONST (*cp);
     forward_freep += (objwords - 1);
     forward_free -= objwords;
 
 #ifdef ALIGN_8BYTE
     if (!((gcptr_t)forward_freep & 7) && forward_free) {
-	MAKE_HEADER (*forward_freep, 1, T_Align_8Byte);
-	forward_freep++;
-	forward_free--;
+        MAKE_HEADER (*forward_freep, 1, T_Align_8Byte);
+        forward_freep++;
+        forward_free--;
     }
 #endif
 
     if (outside)
-	PROTECT (ffreep);
+        PROTECT (ffreep);
 
     if (pageaddr != 0)
-	PROTECT (pageaddr);
+        PROTECT (pageaddr);
 
     return 0;
 }
@@ -1146,80 +1146,80 @@ static void ScanPage (Object *currentp, Object *nextcp) {
     int t;
 
     while (cp < nextcp && (cp != forward_freep || forward_free == 0)) {
-	t = HEADER_TO_TYPE (*cp);
-	len = HEADER_TO_WORDS (*cp);
-	cp++;
+        t = HEADER_TO_TYPE (*cp);
+        len = HEADER_TO_WORDS (*cp);
+        cp++;
 
-	/* cp now points to the real Scheme object in the heap. t denotes
-	 * the type of the object, len its length inclusive header in
-	 * words.
-	 */
+        /* cp now points to the real Scheme object in the heap. t denotes
+         * the type of the object, len its length inclusive header in
+         * words.
+         */
 
-	SET(obj, t, (ptrdiff_t)cp);
+        SET(obj, t, (ptrdiff_t)cp);
 
-	switch (t) {
-	case T_Symbol:
-	    Visit (&SYMBOL(obj)->next);
-	    Visit (&SYMBOL(obj)->name);
-	    Visit (&SYMBOL(obj)->value);
-	    Visit (&SYMBOL(obj)->plist);
-	    break;
+        switch (t) {
+        case T_Symbol:
+            Visit (&SYMBOL(obj)->next);
+            Visit (&SYMBOL(obj)->name);
+            Visit (&SYMBOL(obj)->value);
+            Visit (&SYMBOL(obj)->plist);
+            break;
 
-	case T_Pair:
-	case T_Environment:
-	    Visit (&PAIR(obj)->car);
-	    Visit (&PAIR(obj)->cdr);
-	    break;
+        case T_Pair:
+        case T_Environment:
+            Visit (&PAIR(obj)->car);
+            Visit (&PAIR(obj)->cdr);
+            break;
 
-	case T_Vector:
-	    for (n = 0, m = VECTOR(obj)->size; n < m; n++ )
-		Visit (&VECTOR(obj)->data[n]);
-	    break;
+        case T_Vector:
+            for (n = 0, m = VECTOR(obj)->size; n < m; n++ )
+                Visit (&VECTOR(obj)->data[n]);
+            break;
 
-	case T_Compound:
-	    Visit (&COMPOUND(obj)->closure);
-	    Visit (&COMPOUND(obj)->env);
-	    Visit (&COMPOUND(obj)->name);
-	    break;
+        case T_Compound:
+            Visit (&COMPOUND(obj)->closure);
+            Visit (&COMPOUND(obj)->env);
+            Visit (&COMPOUND(obj)->name);
+            break;
 
-	case T_Control_Point:
-	    (CONTROL(obj)->delta) += CONTROL(obj)->reloc;
+        case T_Control_Point:
+            (CONTROL(obj)->delta) += CONTROL(obj)->reloc;
 
 #ifdef USE_ALLOCA
-	    Visit_GC_List (CONTROL(obj)->gclist, CONTROL(obj)->delta);
+            Visit_GC_List (CONTROL(obj)->gclist, CONTROL(obj)->delta);
 #else
-	    Visit (&CONTROL(obj)->gcsave);
+            Visit (&CONTROL(obj)->gcsave);
 #endif
-	    Visit_Wind (CONTROL(obj)->firstwind,
-			(CONTROL(obj)->delta) );
+            Visit_Wind (CONTROL(obj)->firstwind,
+                        (CONTROL(obj)->delta) );
 
-	    Visit (&CONTROL(obj)->env);
-	    break;
+            Visit (&CONTROL(obj)->env);
+            break;
 
-	case T_Promise:
-	    Visit (&PROMISE(obj)->env);
-	    Visit (&PROMISE(obj)->thunk);
-	    break;
+        case T_Promise:
+            Visit (&PROMISE(obj)->env);
+            Visit (&PROMISE(obj)->thunk);
+            break;
 
-	case T_Port:
-	    Visit (&PORT(obj)->name);
-	    break;
+        case T_Port:
+            Visit (&PORT(obj)->name);
+            break;
 
-	case T_Autoload:
-	    Visit (&AUTOLOAD(obj)->files);
-	    Visit (&AUTOLOAD(obj)->env);
-	    break;
+        case T_Autoload:
+            Visit (&AUTOLOAD(obj)->files);
+            Visit (&AUTOLOAD(obj)->env);
+            break;
 
-	case T_Macro:
-	    Visit (&MACRO(obj)->body);
-	    Visit (&MACRO(obj)->name);
-	    break;
+        case T_Macro:
+            Visit (&MACRO(obj)->body);
+            Visit (&MACRO(obj)->name);
+            break;
 
-	default:
-	    if (Types[t].visit)
-		(Types[t].visit) (&obj, Visit);
-	}
-	cp += (len - 1);
+        default:
+            if (Types[t].visit)
+                (Types[t].visit) (&obj, Visit);
+        }
+        cp += (len - 1);
     }
 }
 
@@ -1233,11 +1233,11 @@ static void RescanPages () {
 
     rescanpages = 0;
     for (i = 0; i < pages; i++) {
-	cp = PAGE_TO_OBJ (rescan[i]);
+        cp = PAGE_TO_OBJ (rescan[i]);
 #ifdef ALIGN_8BYTE
-	ScanPage (cp + 1, cp + PAGEWORDS);
+        ScanPage (cp + 1, cp + PAGEWORDS);
 #else
-	ScanPage (cp, cp + PAGEWORDS);
+        ScanPage (cp, cp + PAGEWORDS);
 #endif
     }
 }
@@ -1257,22 +1257,22 @@ static int ScanCluster (gcptr_t addr) {
  rescan_cluster:
     lastpage = ADDR_TO_PAGE ((gcptr_t)scanlast);
     for (page = ADDR_TO_PAGE ((gcptr_t)scanfirst); page <= lastpage; page++) {
-	if (STABLE (page) && type[page] == OBJECTPAGE) {
-	    scanpointer = PAGE_TO_OBJ (page);
+        if (STABLE (page) && type[page] == OBJECTPAGE) {
+            scanpointer = PAGE_TO_OBJ (page);
 #ifdef ALIGN_8BYTE
-	    ScanPage (scanpointer + 1, scanpointer + PAGEWORDS);
+            ScanPage (scanpointer + 1, scanpointer + PAGEWORDS);
 #else
-	    ScanPage (scanpointer, scanpointer + PAGEWORDS);
+            ScanPage (scanpointer, scanpointer + PAGEWORDS);
 #endif
-	}
+        }
     }
 
     while (rescanpages) {
-	if (allscan) {
-	    allscan = 0;
-	    goto rescan_cluster;
-	} else
-	    RescanPages ();
+        if (allscan) {
+            allscan = 0;
+            goto rescan_cluster;
+        } else
+            RescanPages ();
     }
 
     scanfirst = (Object *)0;
@@ -1290,18 +1290,18 @@ static int Scanner (pageno_t npages) {
     pageno_t scanned = 0;
 
     while (npages > 0 && protected_pages) {
-	lastaddr = PAGE_TO_ADDR (lastpage);
-	for (addr = PAGE_TO_ADDR(firstpage); addr < lastaddr && npages > 0;
-	     addr += bytes_per_pp) {
+        lastaddr = PAGE_TO_ADDR (lastpage);
+        for (addr = PAGE_TO_ADDR(firstpage); addr < lastaddr && npages > 0;
+             addr += bytes_per_pp) {
 
-	    if (IS_PROTECTED (addr)) {
-		if (space[ADDR_TO_PAGE (addr)] == UNALLOCATED_PAGE)
-		    Panic ("Scanner: found incorrect heap page");
-		spages = ScanCluster (addr);
-		scanned += spages;
-		npages -= spages;
-	    }
-	}
+            if (IS_PROTECTED (addr)) {
+                if (space[ADDR_TO_PAGE (addr)] == UNALLOCATED_PAGE)
+                    Panic ("Scanner: found incorrect heap page");
+                spages = ScanCluster (addr);
+                scanned += spages;
+                npages -= spages;
+            }
+        }
     }
 
     scanfirst = (Object *)0;
@@ -1361,12 +1361,12 @@ static void PagefaultHandler (int sig, int code, struct sigcontext *scp) {
 
 #ifdef SIGSEGV_AIX
     if ((char *)scp->sc_jmpbuf.jmp_context.except[0] != addr)
-	Panic ("except");
+        Panic ("except");
 #endif
 
 #ifdef SIGSEGV_SIGINFO
     if (sip == 0)
-	Fatal_Error ("SIGSEGV handler got called with zero siginfo_t");
+        Fatal_Error ("SIGSEGV handler got called with zero siginfo_t");
     addr = sip->si_addr;
 #endif
 
@@ -1374,7 +1374,7 @@ static void PagefaultHandler (int sig, int code, struct sigcontext *scp) {
     char *addr;
 
     if (scp == 0)
-	Fatal_Error ("SIGSEGV handler got called with zero sigcontext");
+        Fatal_Error ("SIGSEGV handler got called with zero sigcontext");
     addr = (char *)scp->sc_sl.sl_ss.ss_cr21;
 #endif
 
@@ -1382,14 +1382,14 @@ static void PagefaultHandler (int sig, int code, struct sigcontext *scp) {
     page = ADDR_TO_PAGE((gcptr_t)addr);
 
     if (!inc_collection)
-	errmsg = "SIGSEGV signal received";
+        errmsg = "SIGSEGV signal received";
     else if (current_space == forward_space)
-	errmsg = "SIGSEGV signal received while not garbage collecting";
+        errmsg = "SIGSEGV signal received while not garbage collecting";
     else if (page < firstpage || page > lastpage)
-	errmsg = "SIGSEV signal received; address outside of heap";
+        errmsg = "SIGSEV signal received; address outside of heap";
     if (errmsg) {
-	fprintf (stderr, "\n[%s]\n", errmsg);
-	abort ();
+        fprintf (stderr, "\n[%s]\n", errmsg);
+        abort ();
     }
 
     GC_In_Progress = 1;
@@ -1411,7 +1411,7 @@ void InstallHandler () {
     sact.sa_mask = mask;
     sact.sa_flags = SA_SIGINFO;
     if (sigaction (SIGSEGV, &sact, 0) == -1) {
-	perror ("sigaction"); exit (1);
+        perror ("sigaction"); exit (1);
     }
 #else
     (void)signal (SIGSEGV, (void (*)())PagefaultHandler);
@@ -1426,14 +1426,14 @@ static void TerminateGC () {
     previous_space = current_space;
 
     if (protected_pages)
-	Panic ("TerminateGC: protected pages after collection");
+        Panic ("TerminateGC: protected pages after collection");
 
     allocated_pages = current_pages + forwarded_pages;
     current_pages = 0;
 
     if (forward_free) {
-	MAKE_HEADER (*forward_freep, forward_free, T_Freespace);
-	forward_free = 0;
+        MAKE_HEADER (*forward_freep, forward_free, T_Freespace);
+        forward_free = 0;
     }
     forward_freep = (Object *)0;
 
@@ -1442,33 +1442,33 @@ static void TerminateGC () {
     Enable_Interrupts;
 
     if (Var_Is_True (V_Garbage_Collect_Notifyp) && !GC_Debug) {
-	int foo = percent - HEAPPERCENT (allocated_pages);
-	Object bar;
+        int foo = percent - HEAPPERCENT (allocated_pages);
+        Object bar;
 
-	bar = Make_Integer (foo);
-	if (!incomplete_msg)
-	    Format (Standard_Output_Port, "[", 1, 0, (Object *)0);
+        bar = Make_Integer (foo);
+        if (!incomplete_msg)
+            Format (Standard_Output_Port, "[", 1, 0, (Object *)0);
 
-	if (foo >= 0)
-	    Format (Standard_Output_Port, "~s% reclaimed]~%", 16, 1, &bar);
-	else
-	    Format (Standard_Output_Port, "finished]~%", 11, 0, (Object *)0);
-	(void)fflush (stdout);
-	incomplete_msg = 0;
+        if (foo >= 0)
+            Format (Standard_Output_Port, "~s% reclaimed]~%", 16, 1, &bar);
+        else
+            Format (Standard_Output_Port, "finished]~%", 11, 0, (Object *)0);
+        (void)fflush (stdout);
+        incomplete_msg = 0;
     }
 
     if (PERCENT (allocated_pages, old_logical_pages) >= tuneable_force_total) {
-	PromoteStableQueue ();
-	save_force_total = tuneable_force_total;
-	tuneable_force_total = 100;
-	if (inc_collection)
-	    P_Collect_Incremental ();
-	else
-	    P_Collect ();
-	tuneable_force_total = save_force_total;
-	if (HEAPPERCENT (allocated_pages) >= tuneable_newly_expand)
-	    /* return value should not be ignore here: */
-	    (void)ExpandHeap ("after full collection");
+        PromoteStableQueue ();
+        save_force_total = tuneable_force_total;
+        tuneable_force_total = 100;
+        if (inc_collection)
+            P_Collect_Incremental ();
+        else
+            P_Collect ();
+        tuneable_force_total = save_force_total;
+        if (HEAPPERCENT (allocated_pages) >= tuneable_newly_expand)
+            /* return value should not be ignore here: */
+            (void)ExpandHeap ("after full collection");
     }
 }
 
@@ -1477,15 +1477,15 @@ static void Finish_Collection () {
     register gcptr_t addr;
 
     do {
-	for (addr = PAGE_TO_ADDR(firstpage);
-	     addr < PAGE_TO_ADDR(lastpage);
-	     addr += bytes_per_pp) {
+        for (addr = PAGE_TO_ADDR(firstpage);
+             addr < PAGE_TO_ADDR(lastpage);
+             addr += bytes_per_pp) {
 
-	    if (IS_PROTECTED (addr)) {
-		(void)ScanCluster (addr);
-		if (protected_pages == 0) TerminateGC ();
-	    }
-	}
+            if (IS_PROTECTED (addr)) {
+                (void)ScanCluster (addr);
+                if (protected_pages == 0) TerminateGC ();
+            }
+        }
     } while (protected_pages);
 
     return;
@@ -1499,12 +1499,12 @@ static void General_Collect (int initiate) {
     Object obj;
 
     if (!Interpreter_Initialized)
-	Fatal_Error ("Out of heap space (increase heap size)");
+        Fatal_Error ("Out of heap space (increase heap size)");
 
     if (current_space != forward_space && !inc_collection) {
-	Format (Standard_Output_Port, "GC while GC in progress~%",
-		25, 0, (Object*)0);
-	return;
+        Format (Standard_Output_Port, "GC while GC in progress~%",
+                25, 0, (Object*)0);
+        return;
     }
 
     /* Call all user-registered functions to be executed just before GC. */
@@ -1516,20 +1516,20 @@ static void General_Collect (int initiate) {
     old_logical_pages = logical_pages;
 
     if (Var_Is_True (V_Garbage_Collect_Notifyp) && !GC_Debug) {
-	if (initiate) {
-	    Format (Standard_Output_Port, "[Garbage collecting...]~%",
-		    25, 0, (Object *)0);
-	    incomplete_msg = 0;
-	} else {
-	    Format (Standard_Output_Port, "[Garbage collecting... ",
-		    23, 0, (Object *)0);
-	    incomplete_msg = 1;
-	}
+        if (initiate) {
+            Format (Standard_Output_Port, "[Garbage collecting...]~%",
+                    25, 0, (Object *)0);
+            incomplete_msg = 0;
+        } else {
+            Format (Standard_Output_Port, "[Garbage collecting... ",
+                    23, 0, (Object *)0);
+            incomplete_msg = 1;
+        }
         (void)fflush (stdout);
     }
 
     if (GC_Debug) {
-	printf ("."); (void)fflush (stdout);
+        printf ("."); (void)fflush (stdout);
     }
 
     /* discard any remaining portion of the current heap page */
@@ -1556,7 +1556,7 @@ static void General_Collect (int initiate) {
 
     for (i = 0; free_fpages <= fregion_pages && i < spanning_pages; i++) {
         if (space[fpage] != current_space && !STABLE (fpage))
-	    free_fpages++;
+            free_fpages++;
         fpage = next (fpage);
     }
     current_freep = (Object *)PHYSPAGE (fpage);
@@ -1587,10 +1587,10 @@ static void General_Collect (int initiate) {
     }
 
     if (!initiate) {
-	Finish_Collection ();
+        Finish_Collection ();
     } else
-	if (HEAPPERCENT (forwarded_pages) > tuneable_force_expand)
-	    /* return value should not be ignored here: */
+        if (HEAPPERCENT (forwarded_pages) > tuneable_force_expand)
+            /* return value should not be ignored here: */
             (void)ExpandHeap ("large stable set");
 
     GC_In_Progress = 0;
@@ -1602,25 +1602,25 @@ Object P_Collect_Incremental () {
     /* if already collecting, scan a few pages and return */
 
     if (!inc_collection) {
-	if (current_space == forward_space)
-	    Primitive_Error ("incremental garbage collection not enabled");
-	else {
-	    inc_collection = 1;
-	    Finish_Collection ();
-	    inc_collection = 0;
-	    return (True);
-	}
+        if (current_space == forward_space)
+            Primitive_Error ("incremental garbage collection not enabled");
+        else {
+            inc_collection = 1;
+            Finish_Collection ();
+            inc_collection = 0;
+            return (True);
+        }
     } else {
-	if (current_space != forward_space) {
-	    (void)Scanner ((pageno_t)1);
-	    GC_In_Progress = 0;
-	    if (protected_pages == 0)
-		TerminateGC ();
-	    return (protected_pages ? False : True);
-	} else {
-	    General_Collect (1);
-	    return (False);
-	}
+        if (current_space != forward_space) {
+            (void)Scanner ((pageno_t)1);
+            GC_In_Progress = 0;
+            if (protected_pages == 0)
+                TerminateGC ();
+            return (protected_pages ? False : True);
+        } else {
+            General_Collect (1);
+            return (False);
+        }
     }
     /*NOTREACHED*/
 }
@@ -1632,24 +1632,24 @@ Object P_Collect () {
      */
 
     if (!inc_collection && current_space != forward_space) {
-	inc_collection = 1;
-	Finish_Collection ();
-	inc_collection = 0;
-	return (Void);
+        inc_collection = 1;
+        Finish_Collection ();
+        inc_collection = 0;
+        return (Void);
     }
 
     if (current_space != forward_space) {
-	Finish_Collection ();
-	return (Void);
+        Finish_Collection ();
+        return (Void);
     } else {
-	General_Collect (0);
-	return (Void);
+        General_Collect (0);
+        return (Void);
     }
 }
 
 void Generational_GC_Finalize () {
     if (current_space != forward_space)
-	Finish_Collection ();
+        Finish_Collection ();
 }
 
 void Generational_GC_Reinitialize () {
@@ -1671,21 +1671,21 @@ Object Internal_GC_Status (int strat, int flags) {
     switch (strat) {
     default:            /* query or stop-and-copy */
 #if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
-	if (inc_collection) {
-	    cell = Cons (Sym_Incremental_GC, Null);
-	    (void)P_Set_Cdr (list, cell);
-	}
+        if (inc_collection) {
+            cell = Cons (Sym_Incremental_GC, Null);
+            (void)P_Set_Cdr (list, cell);
+        }
 #endif
-	break;
+        break;
     case GC_STRAT_GEN:
-	if (flags == GC_FLAGS_INCR) {
+        if (flags == GC_FLAGS_INCR) {
 #if defined(MPROTECT_SIG) || defined(MPROTECT_MMAP)
-	    inc_collection = 1;
-	    cell = Cons (Sym_Incremental_GC, Null);
-	    (void)P_Set_Cdr (list, cell);
+            inc_collection = 1;
+            cell = Cons (Sym_Incremental_GC, Null);
+            (void)P_Set_Cdr (list, cell);
 #endif
-	} else inc_collection = 0;
-	break;
+        } else inc_collection = 0;
+        break;
     }
     GC_Unlink;
     return (list);

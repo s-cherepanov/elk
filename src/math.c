@@ -59,23 +59,23 @@ Object Make_Integer (register int n) {
 
 Object Make_Unsigned (register unsigned int n) {
     if (UFIXNUM_FITS(n))
-	return Make_Integer (n);
+        return Make_Integer (n);
     else
-	return Unsigned_To_Bignum (n);
+        return Unsigned_To_Bignum (n);
 }
 
 Object Make_Long (register long int n) {
     if (n < 0 ? (n < (long)INT_MIN) : (n > (long)INT_MAX))
-	return Long_To_Bignum (n);
+        return Long_To_Bignum (n);
     else
-	return Make_Integer ((int)n);
+        return Make_Integer ((int)n);
 }
 
 Object Make_Unsigned_Long (register unsigned long int n) {
     if ((n & ~((unsigned long int)SIGNBIT-1)) == 0)
-	return Make_Integer ((int)n);
+        return Make_Integer ((int)n);
     else
-	return Unsigned_Long_To_Bignum (n);
+        return Unsigned_Long_To_Bignum (n);
 }
 
 Object Fixnum_To_String (Object x, int radix) {
@@ -84,21 +84,21 @@ Object Fixnum_To_String (Object x, int radix) {
     register int n = FIXNUM(x), neg = 0;
 
     if (n == 0)
-	return Make_String ("0", 1);
+        return Make_String ("0", 1);
     if (n < 0) {
-	neg++;
-	n = -n;
+        neg++;
+        n = -n;
     }
     p = buf+31;
     *p = '\0';
     while (n > 0) {
-	*--p = '0' + n % radix;
-	if (*p > '9')
-	    *p = 'A' + (*p - '9') - 1;
-	n /= radix;
+        *--p = '0' + n % radix;
+        if (*p > '9')
+            *p = 'A' + (*p - '9') - 1;
+        n /= radix;
     }
     if (neg)
-	*--p = '-';
+        *--p = '-';
     return Make_String (p, strlen (p));
 }
 
@@ -108,8 +108,8 @@ char *Flonum_To_String (Object x) {
 
     sprintf (buf, "%.15g", FLONUM(x)->val);
     for (p = buf; *p; p++)
-	if (*p == '.' || *p == 'e' || *p == 'N' || *p == 'i')
-	    return buf;
+        if (*p == '.' || *p == 'e' || *p == 'N' || *p == 'i')
+            return buf;
     *p++ = '.', *p++ = '0', *p++ = '\0';
     return buf;
 }
@@ -121,27 +121,27 @@ Object P_Number_To_String (int argc, Object *argv) {
 
     x = argv[0];
     if (argc == 2) {
-	radix = Get_Exact_Integer (argv[1]);
-	switch (radix) {
-	case 2: case 8: case 10: case 16:
-	    break;
-	default:
-	    Primitive_Error ("invalid radix: ~s", argv[1]);
-	}
+        radix = Get_Exact_Integer (argv[1]);
+        switch (radix) {
+        case 2: case 8: case 10: case 16:
+            break;
+        default:
+            Primitive_Error ("invalid radix: ~s", argv[1]);
+        }
     }
     Check_Number (x);
     switch (TYPE(x)) {
     case T_Fixnum:
-	return Fixnum_To_String (x, radix);
+        return Fixnum_To_String (x, radix);
     case T_Bignum:
-	return Bignum_To_String (x, radix);
+        return Bignum_To_String (x, radix);
     case T_Flonum:
-	if (radix != 10)
-	    Primitive_Error ("radix for reals must be 10");   /* bleah! */
-	s = Flonum_To_String (x);
-	return Make_String (s, strlen (s));
+        if (radix != 10)
+            Primitive_Error ("radix for reals must be 10");   /* bleah! */
+        s = Flonum_To_String (x);
+        return Make_String (s, strlen (s));
     default: /* Just to avoid compiler warnings */
-	return Null;
+        return Null;
     }
     /*NOTREACHED*/
 }
@@ -152,19 +152,19 @@ int Get_Integer (Object x) {
 
     switch (TYPE(x)) {
     case T_Fixnum:
-	return FIXNUM(x);
+        return FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Integer (x);
+        return Bignum_To_Integer (x);
     case T_Flonum:
-	d = FLONUM(x)->val;
-	if (d != floor (d))
-	    Wrong_Type (x, T_Fixnum);
-	(void)frexp (d, &expo);
-	if (expo <= 8 * (int)sizeof(int) - 1)
-	    return d;
-	Primitive_Error ("integer out of range: ~s", x);
+        d = FLONUM(x)->val;
+        if (d != floor (d))
+            Wrong_Type (x, T_Fixnum);
+        (void)frexp (d, &expo);
+        if (expo <= 8 * (int)sizeof(int) - 1)
+            return d;
+        Primitive_Error ("integer out of range: ~s", x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -175,24 +175,24 @@ unsigned int Get_Unsigned (Object x) {
 
     switch (TYPE(x)) {
     case T_Fixnum:
-	if (FIXNUM(x) < 0)
-	    goto err;
-	return FIXNUM(x);
+        if (FIXNUM(x) < 0)
+            goto err;
+        return FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Unsigned (x);
+        return Bignum_To_Unsigned (x);
     case T_Flonum:
-	d = FLONUM(x)->val;
-	if (d < 0)
-	    goto err;
-	if (d != floor (d))
-	    Wrong_Type (x, T_Fixnum);
-	(void)frexp (d, &expo);
-	if (expo <= 8 * (int)sizeof(int))
-	    return d;
+        d = FLONUM(x)->val;
+        if (d < 0)
+            goto err;
+        if (d != floor (d))
+            Wrong_Type (x, T_Fixnum);
+        (void)frexp (d, &expo);
+        if (expo <= 8 * (int)sizeof(int))
+            return d;
 err:
-	Primitive_Error ("integer out of range: ~s", x);
+        Primitive_Error ("integer out of range: ~s", x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -203,19 +203,19 @@ long int Get_Long (Object x) {
 
     switch (TYPE(x)) {
     case T_Fixnum:
-	return FIXNUM(x);
+        return FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Long (x);
+        return Bignum_To_Long (x);
     case T_Flonum:
-	d = FLONUM(x)->val;
-	if (d != floor (d))
-	    Wrong_Type (x, T_Fixnum);
-	(void)frexp (d, &expo);
-	if (expo <= 8 * (int)sizeof(long) - 1)
-	    return d;
-	Primitive_Error ("integer out of range: ~s", x);
+        d = FLONUM(x)->val;
+        if (d != floor (d))
+            Wrong_Type (x, T_Fixnum);
+        (void)frexp (d, &expo);
+        if (expo <= 8 * (int)sizeof(long) - 1)
+            return d;
+        Primitive_Error ("integer out of range: ~s", x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -226,24 +226,24 @@ unsigned long int Get_Unsigned_Long (Object x) {
 
     switch (TYPE(x)) {
     case T_Fixnum:
-	if (FIXNUM(x) < 0)
-	    goto err;
-	return (unsigned long int)FIXNUM(x);
+        if (FIXNUM(x) < 0)
+            goto err;
+        return (unsigned long int)FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Unsigned_Long (x);
+        return Bignum_To_Unsigned_Long (x);
     case T_Flonum:
-	d = FLONUM(x)->val;
-	if (d < 0)
-	    goto err;
-	if (d != floor (d))
-	    Wrong_Type (x, T_Fixnum);
-	(void)frexp (d, &expo);
-	if (expo <= 8 * (int)sizeof(long))
-	    return d;
+        d = FLONUM(x)->val;
+        if (d < 0)
+            goto err;
+        if (d != floor (d))
+            Wrong_Type (x, T_Fixnum);
+        (void)frexp (d, &expo);
+        if (expo <= 8 * (int)sizeof(long))
+            return d;
 err:
-	Primitive_Error ("integer out of range: ~s", x);
+        Primitive_Error ("integer out of range: ~s", x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -251,11 +251,11 @@ err:
 int Get_Exact_Integer (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
-	return FIXNUM(x);
+        return FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Integer (x);
+        return Bignum_To_Integer (x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -263,13 +263,13 @@ int Get_Exact_Integer (Object x) {
 unsigned int Get_Exact_Unsigned (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
-	if (FIXNUM(x) < 0)
-	    Primitive_Error ("integer out of range: ~s", x);
-	return FIXNUM(x);
+        if (FIXNUM(x) < 0)
+            Primitive_Error ("integer out of range: ~s", x);
+        return FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Unsigned (x);
+        return Bignum_To_Unsigned (x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -277,11 +277,11 @@ unsigned int Get_Exact_Unsigned (Object x) {
 long int Get_Exact_Long (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
-	return FIXNUM(x);
+        return FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Long (x);
+        return Bignum_To_Long (x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -289,13 +289,13 @@ long int Get_Exact_Long (Object x) {
 unsigned long int Get_Exact_Unsigned_Long (Object x) {
     switch (TYPE(x)) {
     case T_Fixnum:
-	if (FIXNUM(x) < 0)
-	    Primitive_Error ("integer out of range: ~s", x);
-	return FIXNUM(x);
+        if (FIXNUM(x) < 0)
+            Primitive_Error ("integer out of range: ~s", x);
+        return FIXNUM(x);
     case T_Bignum:
-	return Bignum_To_Unsigned_Long (x);
+        return Bignum_To_Unsigned_Long (x);
     default:
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     }
     /*NOTREACHED*/
 }
@@ -306,7 +306,7 @@ int Get_Index (Object n, Object obj) {
     i = Get_Exact_Integer (n);
     size = TYPE(obj) == T_Vector ? VECTOR(obj)->size : STRING(obj)->size;
     if (i < 0 || i >= size)
-	Range_Error (n);
+        Range_Error (n);
     return i;
 }
 
@@ -324,11 +324,11 @@ Object Make_Reduced_Flonum (double d) {
     int expo;
 
     if (floor (d) == d) {
-	if (d == 0)
-	    return Zero;
-	(void)frexp (d, &expo);
-	if (expo <= FIXBITS-1)
-	    return Make_Integer ((int)d);
+        if (d == 0)
+            return Zero;
+        (void)frexp (d, &expo);
+        if (expo <= FIXBITS-1)
+            return Make_Integer ((int)d);
     }
     num = Alloc_Object (sizeof (struct S_Flonum), T_Flonum, 0);
     FLONUM(num)->tag = Null;
@@ -341,9 +341,9 @@ int Fixnum_Add (int a, int b, int *fits) {
 
     *fits = 1;
     if (a > 0 && b > 0) {
-	if (ret < 0) *fits = 0;
+        if (ret < 0) *fits = 0;
     } else if (a < 0 && b < 0) {
-	if (ret > 0) *fits = 0;
+        if (ret > 0) *fits = 0;
     }
     return ret;
 }
@@ -353,9 +353,9 @@ int Fixnum_Sub (int a, int b, int *fits) {
 
     *fits = 1;
     if (a < 0 && b > 0) {
-	if (ret > 0) *fits = 0;
+        if (ret > 0) *fits = 0;
     } else if (a > 0 && b < 0) {
-	if (ret < 0) *fits = 0;
+        if (ret < 0) *fits = 0;
     }
     return ret;
 }
@@ -371,31 +371,31 @@ Object Fixnum_Multiply (int a, int b) {
     register unsigned int prod, prod2;
     register int sign = 1;
     if (a < 0) {
-	aa = -a;
-	sign = -1;
+        aa = -a;
+        sign = -1;
     }
     if (b < 0) {
-	ab = -b;
-	sign = -sign;
+        ab = -b;
+        sign = -sign;
     }
     prod = (aa & 0xFFFF) * (ab & 0xFFFF);
     if (aa & 0xFFFF0000) {
-	if (ab & 0xFFFF0000)
-	    return Null;
-	prod2 = (aa >> 16) * ab;
+        if (ab & 0xFFFF0000)
+            return Null;
+        prod2 = (aa >> 16) * ab;
     } else {
-	prod2 = aa * (ab >> 16);
+        prod2 = aa * (ab >> 16);
     }
     prod2 += prod >> 16;
     prod &= 0xFFFF;
     if (prod2 > (1 << (FIXBITS - 1 - 16)) - 1) {
-	if (sign == 1 || prod2 != (1 << (FIXBITS - 1 - 16)) || prod != 0)
-	    return Null;
-	return Make_Integer (-(unsigned int)SIGNBIT);
+        if (sign == 1 || prod2 != (1 << (FIXBITS - 1 - 16)) || prod != 0)
+            return Null;
+        return Make_Integer (-(unsigned int)SIGNBIT);
     }
     prod += prod2 << 16;
     if (sign == -1)
-	prod = - prod;
+        prod = - prod;
     return Make_Integer (prod);
 }
 
@@ -404,10 +404,10 @@ Object P_Integerp (Object x) {
 
     switch (TYPE(x)) {
     case T_Fixnum: case T_Bignum:
-	return True;
+        return True;
     case T_Flonum:
-	d = FLONUM(x)->val;
-	return d == floor(d) ? True : False;
+        d = FLONUM(x)->val;
+        return d == floor(d) ? True : False;
     }
     return False;
 }
@@ -443,13 +443,13 @@ Object P_Exact_To_Inexact (Object n) {
     Check_Number (n);
     switch (TYPE(n)) {
     case T_Fixnum:
-	return Make_Flonum ((double)FIXNUM(n));
+        return Make_Flonum ((double)FIXNUM(n));
     case T_Flonum:
-	return n;
+        return n;
     case T_Bignum:
-	return Make_Flonum (Bignum_To_Double (n));
+        return Make_Flonum (Bignum_To_Double (n));
     default: /* Just to avoid compiler warnings */
-	return Null;
+        return Null;
     }
     /*NOTREACHED*/
 }
@@ -462,13 +462,13 @@ Object P_Inexact_To_Exact (Object n) {
     switch (TYPE(n)) {
     case T_Fixnum:
     case T_Bignum:
-	return n;
+        return n;
     case T_Flonum:
-	d = floor (FLONUM(n)->val + 0.5);
-	(void)frexp (d, &i);
-	return (i <= FIXBITS-1) ? Make_Integer ((int)d) : Double_To_Bignum (d);
+        d = floor (FLONUM(n)->val + 0.5);
+        (void)frexp (d, &i);
+        return (i <= FIXBITS-1) ? Make_Integer ((int)d) : Double_To_Bignum (d);
     default: /* Just to avoid compiler warnings */
-	return Null;
+        return Null;
     }
     /*NOTREACHED*/
 }
@@ -478,13 +478,13 @@ Object P_Inexact_To_Exact (Object n) {
     Check_Number (x);\
     switch (TYPE(x)) {\
     case T_Flonum:\
-	ret = FLONUM(x)->val op 0; break;\
+        ret = FLONUM(x)->val op 0; break;\
     case T_Fixnum:\
-	ret = FIXNUM(x) op 0; break;\
+        ret = FIXNUM(x) op 0; break;\
     case T_Bignum:\
-	ret = bigop (x); break;\
+        ret = bigop (x); break;\
     default: /* Just to avoid compiler warnings */\
-	return False;\
+        return False;\
     }\
     return ret ? True : False;\
 }
@@ -499,20 +499,20 @@ Object P_Evenp (Object x) {
 
     switch (TYPE(x)) {
     case T_Fixnum:
-	ret = !(FIXNUM(x) & 1); break;
+        ret = !(FIXNUM(x) & 1); break;
     case T_Bignum:
-	ret = Bignum_Even (x); break;
+        ret = Bignum_Even (x); break;
     case T_Flonum:
-	d = FLONUM(x)->val;
-	if (floor (d) == d) {
-	    d /= 2;
-	    ret = floor (d) == d;
-	    break;
-	}
-	/*FALLTHROUGH*/
+        d = FLONUM(x)->val;
+        if (floor (d) == d) {
+            d /= 2;
+            ret = floor (d) == d;
+            break;
+        }
+        /*FALLTHROUGH*/
     default:
-	Wrong_Type (x, T_Fixnum);
-	/*NOTREACHED*/
+        Wrong_Type (x, T_Fixnum);
+        /*NOTREACHED*/
     }
     return ret ? True : False;
 }
@@ -529,48 +529,48 @@ Object P_Oddp (Object x) {
     \
     switch (TYPE(x)) {\
     case T_Fixnum:\
-	switch (TYPE(y)) {\
-	case T_Fixnum:\
-	    return FIXNUM(x) op FIXNUM(y);\
-	case T_Flonum:\
-	    return FIXNUM(x) op FLONUM(y)->val;\
-	case T_Bignum:\
-	    GC_Link (y);\
-	    b = Integer_To_Bignum (FIXNUM(x));\
-	    ret = bigop (b, y);\
-	    GC_Unlink;\
-	    return ret;\
-	default: /* Just to avoid compiler warnings */\
-	    return 0;\
-	}\
+        switch (TYPE(y)) {\
+        case T_Fixnum:\
+            return FIXNUM(x) op FIXNUM(y);\
+        case T_Flonum:\
+            return FIXNUM(x) op FLONUM(y)->val;\
+        case T_Bignum:\
+            GC_Link (y);\
+            b = Integer_To_Bignum (FIXNUM(x));\
+            ret = bigop (b, y);\
+            GC_Unlink;\
+            return ret;\
+        default: /* Just to avoid compiler warnings */\
+            return 0;\
+        }\
     case T_Flonum:\
-	switch (TYPE(y)) {\
-	case T_Fixnum:\
-	    return FLONUM(x)->val op FIXNUM(y);\
-	case T_Flonum:\
-	    return FLONUM(x)->val op FLONUM(y)->val;\
-	case T_Bignum:\
-	    return FLONUM(x)->val op Bignum_To_Double (y);\
-	default: /* Just to avoid compiler warnings */\
-	    return 0;\
-	}\
+        switch (TYPE(y)) {\
+        case T_Fixnum:\
+            return FLONUM(x)->val op FIXNUM(y);\
+        case T_Flonum:\
+            return FLONUM(x)->val op FLONUM(y)->val;\
+        case T_Bignum:\
+            return FLONUM(x)->val op Bignum_To_Double (y);\
+        default: /* Just to avoid compiler warnings */\
+            return 0;\
+        }\
     case T_Bignum:\
-	switch (TYPE(y)) {\
-	case T_Fixnum:\
-	    GC_Link (x);\
-	    b = Integer_To_Bignum (FIXNUM(y));\
-	    ret = bigop (x, b);\
-	    GC_Unlink;\
-	    return ret;\
-	case T_Flonum:\
-	    return Bignum_To_Double (x) op FLONUM(y)->val;\
-	case T_Bignum:\
-	    return bigop (x, y);\
-	default: /* Just to avoid compiler warnings */\
-	    return 0;\
-	}\
+        switch (TYPE(y)) {\
+        case T_Fixnum:\
+            GC_Link (x);\
+            b = Integer_To_Bignum (FIXNUM(y));\
+            ret = bigop (x, b);\
+            GC_Unlink;\
+            return ret;\
+        case T_Flonum:\
+            return Bignum_To_Double (x) op FLONUM(y)->val;\
+        case T_Bignum:\
+            return bigop (x, y);\
+        default: /* Just to avoid compiler warnings */\
+            return 0;\
+        }\
     default: /* Just to avoid compiler warnings */\
-	return 0;\
+        return 0;\
     }\
     /*NOTREACHED*/ /* ...but lint never sees it */\
 }
@@ -586,9 +586,9 @@ Object General_Compare (int argc, Object *argv, register int (*op)()) {
 
     Check_Number (argv[0]);
     for (i = 1; i < argc; i++) {
-	Check_Number (argv[i]);
-	if (!(*op) (argv[i-1], argv[i]))
-	    return False;
+        Check_Number (argv[i]);
+        if (!(*op) (argv[i-1], argv[i]))
+            return False;
     }
     return True;
 }
@@ -614,64 +614,64 @@ Object P_Generic_Eq_Greater (int argc, Object *argv) {
 }
 
 #define General_Generic_Operator(name,op,fixop,bigop) Object name (Object x,\
-	Object y) {\
+        Object y) {\
     Object b1, b2, ret; register int i;\
     int fits;\
     GC_Node2;\
     \
     switch (TYPE(x)) {\
     case T_Fixnum:\
-	switch (TYPE(y)) {\
-	case T_Fixnum:\
-	    i = fixop (FIXNUM(x), FIXNUM(y), &fits);\
-	    if (fits)\
-		return Make_Integer (i);\
-	    b1 = b2 = Null;\
-	    GC_Link2 (b1, b2);\
-	    b1 = Integer_To_Bignum (FIXNUM(x));\
-	    b2 = Integer_To_Bignum (FIXNUM(y));\
-	    ret = bigop (b1, b2);\
-	    GC_Unlink;\
-	    return ret;\
-	case T_Flonum:\
-	    return Make_Flonum (FIXNUM(x) op FLONUM(y)->val);\
-	case T_Bignum:\
-	    GC_Link (y);\
-	    b1 = Integer_To_Bignum (FIXNUM(x));\
-	    ret = bigop (b1, y);\
-	    GC_Unlink;\
-	    return ret;\
-	default: /* Just to avoid compiler warnings */\
-	    return False;\
-	}\
+        switch (TYPE(y)) {\
+        case T_Fixnum:\
+            i = fixop (FIXNUM(x), FIXNUM(y), &fits);\
+            if (fits)\
+                return Make_Integer (i);\
+            b1 = b2 = Null;\
+            GC_Link2 (b1, b2);\
+            b1 = Integer_To_Bignum (FIXNUM(x));\
+            b2 = Integer_To_Bignum (FIXNUM(y));\
+            ret = bigop (b1, b2);\
+            GC_Unlink;\
+            return ret;\
+        case T_Flonum:\
+            return Make_Flonum (FIXNUM(x) op FLONUM(y)->val);\
+        case T_Bignum:\
+            GC_Link (y);\
+            b1 = Integer_To_Bignum (FIXNUM(x));\
+            ret = bigop (b1, y);\
+            GC_Unlink;\
+            return ret;\
+        default: /* Just to avoid compiler warnings */\
+            return False;\
+        }\
     case T_Flonum:\
-	switch (TYPE(y)) {\
-	case T_Fixnum:\
-	    return Make_Flonum (FLONUM(x)->val op FIXNUM(y));\
-	case T_Flonum:\
-	    return Make_Flonum (FLONUM(x)->val op FLONUM(y)->val);\
-	case T_Bignum:\
-	    return Make_Flonum (FLONUM(x)->val op Bignum_To_Double (y));\
-	default: /* Just to avoid compiler warnings */\
-	    return False;\
-	}\
+        switch (TYPE(y)) {\
+        case T_Fixnum:\
+            return Make_Flonum (FLONUM(x)->val op FIXNUM(y));\
+        case T_Flonum:\
+            return Make_Flonum (FLONUM(x)->val op FLONUM(y)->val);\
+        case T_Bignum:\
+            return Make_Flonum (FLONUM(x)->val op Bignum_To_Double (y));\
+        default: /* Just to avoid compiler warnings */\
+            return False;\
+        }\
     case T_Bignum:\
-	switch (TYPE(y)) {\
-	case T_Fixnum:\
-	    GC_Link (x);\
-	    b1 = Integer_To_Bignum (FIXNUM(y));\
-	    ret = bigop (x, b1);\
-	    GC_Unlink;\
-	    return ret;\
-	case T_Flonum:\
-	    return Make_Flonum (Bignum_To_Double (x) op FLONUM(y)->val);\
-	case T_Bignum:\
-	    return bigop (x, y);\
-	default: /* Just to avoid compiler warnings */\
-	    return False;\
-	}\
+        switch (TYPE(y)) {\
+        case T_Fixnum:\
+            GC_Link (x);\
+            b1 = Integer_To_Bignum (FIXNUM(y));\
+            ret = bigop (x, b1);\
+            GC_Unlink;\
+            return ret;\
+        case T_Flonum:\
+            return Make_Flonum (Bignum_To_Double (x) op FLONUM(y)->val);\
+        case T_Bignum:\
+            return bigop (x, y);\
+        default: /* Just to avoid compiler warnings */\
+            return False;\
+        }\
     default: /* Just to avoid compiler warnings */\
-	return False;\
+        return False;\
     }\
     /*NOTREACHED*/ /* ...but lint never sees it */\
 }
@@ -690,23 +690,23 @@ Object P_Dec (Object x) {
 }
 
 Object General_Operator (int argc, Object *argv, Object start,
-	register Object (*op)()) {
+        register Object (*op)()) {
     register int i;
     Object accum;
 
     if (argc > 0)
-	Check_Number (argv[0]);
+        Check_Number (argv[0]);
     accum = start;
     switch (argc) {
     case 0:
-	break;
+        break;
     case 1:
-	accum = (*op) (accum, argv[0]); break;
+        accum = (*op) (accum, argv[0]); break;
     default:
-	for (accum = argv[0], i = 1; i < argc; i++) {
-	    Check_Number (argv[i]);
-	    accum = (*op) (accum, argv[i]);
-	}
+        for (accum = argv[0], i = 1; i < argc; i++) {
+            Check_Number (argv[i]);
+            accum = (*op) (accum, argv[i]);
+        }
     }
     return accum;
 }
@@ -732,45 +732,45 @@ Object Generic_Multiply (Object x, Object y) {
 
     switch (TYPE(x)) {
     case T_Fixnum:
-	switch (TYPE(y)) {
-	case T_Fixnum:
-	    ret = Fixnum_Multiply (FIXNUM(x), FIXNUM(y));
-	    if (Nullp (ret)) {
-		b = Integer_To_Bignum (FIXNUM(x));
-		return Bignum_Fixnum_Multiply (b, y);
-	    }
-	    return ret;
-	case T_Flonum:
-	    return Make_Flonum (FIXNUM(x) * FLONUM(y)->val);
-	case T_Bignum:
-	    return Bignum_Fixnum_Multiply (y, x);
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+        switch (TYPE(y)) {
+        case T_Fixnum:
+            ret = Fixnum_Multiply (FIXNUM(x), FIXNUM(y));
+            if (Nullp (ret)) {
+                b = Integer_To_Bignum (FIXNUM(x));
+                return Bignum_Fixnum_Multiply (b, y);
+            }
+            return ret;
+        case T_Flonum:
+            return Make_Flonum (FIXNUM(x) * FLONUM(y)->val);
+        case T_Bignum:
+            return Bignum_Fixnum_Multiply (y, x);
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     case T_Flonum:
-	switch (TYPE(y)) {
-	case T_Fixnum:
-	    return Make_Flonum (FLONUM(x)->val * FIXNUM(y));
-	case T_Flonum:
-	    return Make_Flonum (FLONUM(x)->val * FLONUM(y)->val);
-	case T_Bignum:
-	    return Make_Flonum (FLONUM(x)->val * Bignum_To_Double (y));
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+        switch (TYPE(y)) {
+        case T_Fixnum:
+            return Make_Flonum (FLONUM(x)->val * FIXNUM(y));
+        case T_Flonum:
+            return Make_Flonum (FLONUM(x)->val * FLONUM(y)->val);
+        case T_Bignum:
+            return Make_Flonum (FLONUM(x)->val * Bignum_To_Double (y));
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     case T_Bignum:
-	switch (TYPE(y)) {
-	case T_Fixnum:
-	    return Bignum_Fixnum_Multiply (x, y);
-	case T_Flonum:
-	    return Make_Flonum (Bignum_To_Double (x) * FLONUM(y)->val);
-	case T_Bignum:
-	    return Bignum_Multiply (x, y);
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+        switch (TYPE(y)) {
+        case T_Fixnum:
+            return Bignum_Fixnum_Multiply (x, y);
+        case T_Flonum:
+            return Make_Flonum (Bignum_To_Double (x) * FLONUM(y)->val);
+        case T_Bignum:
+            return Bignum_Multiply (x, y);
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     default: /* Just to avoid compiler warnings */
-	return Null;
+        return Null;
     }
     /*NOTREACHED*/
 }
@@ -781,63 +781,63 @@ Object Generic_Divide (Object x, Object y) {
     GC_Node2;
 
     if (t == T_Fixnum ? FIXNUM(y) == 0 :
-	(t == T_Flonum ? FLONUM(y) == 0 : Bignum_Zero (y)))
-	Range_Error (y);
+        (t == T_Flonum ? FLONUM(y) == 0 : Bignum_Zero (y)))
+        Range_Error (y);
     switch (TYPE(x)) {
     case T_Fixnum:
-	switch (t) {
-	case T_Fixnum:
-	    return Make_Reduced_Flonum ((double)FIXNUM(x) / (double)FIXNUM(y));
-	case T_Flonum:
-	    return Make_Flonum ((double)FIXNUM(x) / FLONUM(y)->val);
-	case T_Bignum:
-	    GC_Link (y);
-	    b = Integer_To_Bignum (FIXNUM(x));
-	    ret = Bignum_Divide (b, y);
-	    GC_Unlink;
-	    if (EQ(Cdr (ret),Zero))
-		return Car (ret);
-	    return Make_Reduced_Flonum ((double)FIXNUM(x)
-		/ Bignum_To_Double (y));
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+        switch (t) {
+        case T_Fixnum:
+            return Make_Reduced_Flonum ((double)FIXNUM(x) / (double)FIXNUM(y));
+        case T_Flonum:
+            return Make_Flonum ((double)FIXNUM(x) / FLONUM(y)->val);
+        case T_Bignum:
+            GC_Link (y);
+            b = Integer_To_Bignum (FIXNUM(x));
+            ret = Bignum_Divide (b, y);
+            GC_Unlink;
+            if (EQ(Cdr (ret),Zero))
+                return Car (ret);
+            return Make_Reduced_Flonum ((double)FIXNUM(x)
+                / Bignum_To_Double (y));
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     case T_Flonum:
-	switch (t) {
-	case T_Fixnum:
-	    return Make_Flonum (FLONUM(x)->val / (double)FIXNUM(y));
-	case T_Flonum:
-	    return Make_Flonum (FLONUM(x)->val / FLONUM(y)->val);
-	case T_Bignum:
-	    return Make_Flonum (FLONUM(x)->val / Bignum_To_Double (y));
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+        switch (t) {
+        case T_Fixnum:
+            return Make_Flonum (FLONUM(x)->val / (double)FIXNUM(y));
+        case T_Flonum:
+            return Make_Flonum (FLONUM(x)->val / FLONUM(y)->val);
+        case T_Bignum:
+            return Make_Flonum (FLONUM(x)->val / Bignum_To_Double (y));
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     case T_Bignum:
-	switch (t) {
-	case T_Fixnum:
-	    GC_Link (x);
-	    ret = Bignum_Fixnum_Divide (x, y);
-	    GC_Unlink;
-	    if (EQ(Cdr (ret),Zero))
-		return Car (ret);
-	    return Make_Reduced_Flonum (Bignum_To_Double (x)
-		/ (double)FIXNUM(y));
-	case T_Flonum:
-	    return Make_Flonum (Bignum_To_Double (x) / FLONUM(y)->val);
-	case T_Bignum:
-	    GC_Link2 (x, y);
-	    ret = Bignum_Divide (x, y);
-	    GC_Unlink;
-	    if (EQ(Cdr (ret),Zero))
-		return Car (ret);
-	    return Make_Reduced_Flonum (Bignum_To_Double (x)
-		/ Bignum_To_Double (y));
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+        switch (t) {
+        case T_Fixnum:
+            GC_Link (x);
+            ret = Bignum_Fixnum_Divide (x, y);
+            GC_Unlink;
+            if (EQ(Cdr (ret),Zero))
+                return Car (ret);
+            return Make_Reduced_Flonum (Bignum_To_Double (x)
+                / (double)FIXNUM(y));
+        case T_Flonum:
+            return Make_Flonum (Bignum_To_Double (x) / FLONUM(y)->val);
+        case T_Bignum:
+            GC_Link2 (x, y);
+            ret = Bignum_Divide (x, y);
+            GC_Unlink;
+            if (EQ(Cdr (ret),Zero))
+                return Car (ret);
+            return Make_Reduced_Flonum (Bignum_To_Double (x)
+                / Bignum_To_Double (y));
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     default: /* Just to avoid compiler warnings */
-	return Null;
+        return Null;
     }
     /*NOTREACHED*/
 }
@@ -848,14 +848,14 @@ Object P_Abs (Object x) {
     Check_Number (x);
     switch (TYPE(x)) {
     case T_Fixnum:
-	i = FIXNUM(x);
-	return i < 0 ? Make_Integer (-i) : x;
+        i = FIXNUM(x);
+        return i < 0 ? Make_Integer (-i) : x;
     case T_Flonum:
-	return Make_Flonum (fabs (FLONUM(x)->val));
+        return Make_Flonum (fabs (FLONUM(x)->val));
     case T_Bignum:
-	return Bignum_Abs (x);
+        return Bignum_Abs (x);
     default: /* Just to avoid compiler warnings */
-	return Null;
+        return Null;
     }
     /*NOTREACHED*/
 }
@@ -866,35 +866,35 @@ Object General_Integer_Divide (Object x, Object y, int rem) {
     GC_Node;
 
     if (TYPE(y) == T_Fixnum ? FIXNUM(y) == 0 : Bignum_Zero (y))
-	Range_Error (y);
+        Range_Error (y);
     switch (TYPE(x)) {
     case T_Fixnum:
-	switch (TYPE(y)) {
-	case T_Fixnum:
-	    return Make_Integer (rem ? (fx % fy) : (fx / fy));
-	case T_Bignum:
-	    GC_Link (y);
-	    b = Integer_To_Bignum (fx);
-	    GC_Unlink;
-	    ret = Bignum_Divide (b, y);
+        switch (TYPE(y)) {
+        case T_Fixnum:
+            return Make_Integer (rem ? (fx % fy) : (fx / fy));
+        case T_Bignum:
+            GC_Link (y);
+            b = Integer_To_Bignum (fx);
+            GC_Unlink;
+            ret = Bignum_Divide (b, y);
 done:
-	    return rem ? Cdr (ret) : Car (ret);
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+            return rem ? Cdr (ret) : Car (ret);
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     case T_Bignum:
-	switch (TYPE(y)) {
-	case T_Fixnum:
-	    ret = Bignum_Fixnum_Divide (x, y);
-	    goto done;
-	case T_Bignum:
-	    ret = Bignum_Divide (x, y);
-	    goto done;
-	default: /* Just to avoid compiler warnings */
-	    return Null;
-	}
+        switch (TYPE(y)) {
+        case T_Fixnum:
+            ret = Bignum_Fixnum_Divide (x, y);
+            goto done;
+        case T_Bignum:
+            ret = Bignum_Divide (x, y);
+            goto done;
+        default: /* Just to avoid compiler warnings */
+            return Null;
+        }
     default: /* Just to avoid compiler warnings */
-	return Null;
+        return Null;
     }
     /*NOTREACHED*/
 }
@@ -914,10 +914,10 @@ Object Exact_Modulo (Object x, Object y) {
     GC_Link2 (x, y);
     rem = General_Integer_Divide (x, y, 1);
     if (!EQ(rem,Zero)) {
-	xneg = P_Negativep (x);
-	yneg = P_Negativep (y);
-	if (!EQ(xneg,yneg))
-	    rem = Generic_Plus (rem, y);
+        xneg = P_Negativep (x);
+        yneg = P_Negativep (y);
+        if (!EQ(xneg,yneg))
+            rem = Generic_Plus (rem, y);
     }
     GC_Unlink;
     return rem;
@@ -932,19 +932,19 @@ Object With_Exact_Ints (Object x, Object y, Object (*fun)()) {
     GC_Link3 (x, y, ret);
     i = P_Integerp (x);
     if (!EQ(i,True))
-	Wrong_Type (x, T_Fixnum);
+        Wrong_Type (x, T_Fixnum);
     i = P_Integerp (y);
     if (!EQ(i,True))
-	Wrong_Type (y, T_Fixnum);
+        Wrong_Type (y, T_Fixnum);
     if (TYPE(x) == T_Flonum) {
-	x = P_Inexact_To_Exact (x); inex++;
+        x = P_Inexact_To_Exact (x); inex++;
     }
     if (TYPE(y) == T_Flonum) {
-	y = P_Inexact_To_Exact (y); inex++;
+        y = P_Inexact_To_Exact (y); inex++;
     }
     ret = fun (x, y);
     if (inex)
-	ret = P_Exact_To_Inexact (ret);
+        ret = P_Exact_To_Inexact (ret);
     GC_Unlink;
     return ret;
 }
@@ -967,19 +967,19 @@ Object Exact_Gcd (Object x, Object y) {
 
     GC_Link2 (x, y);
     while (1) {
-	z = P_Zerop (x);
-	if (EQ(z,True)) {
-	    r = y;
-	    break;
-	}
-	z = P_Zerop (y);
-	if (EQ(z,True)) {
-	    r = x;
-	    break;
-	}
-	r = General_Integer_Divide (x, y, 1);
-	x = y;
-	y = r;
+        z = P_Zerop (x);
+        if (EQ(z,True)) {
+            r = y;
+            break;
+        }
+        z = P_Zerop (y);
+        if (EQ(z,True)) {
+            r = x;
+            break;
+        }
+        r = General_Integer_Divide (x, y, 1);
+        x = y;
+        y = r;
     }
     GC_Unlink;
     return r;
@@ -1002,8 +1002,8 @@ Object Exact_Lcm (Object x, Object y) {
     ret = Exact_Gcd (x, y);
     z = P_Zerop (ret);
     if (!EQ(z,True)) {
-	p = Generic_Multiply (x, y);
-	ret = General_Integer_Divide (p, ret, 0);
+        p = Generic_Multiply (x, y);
+        ret = General_Integer_Divide (p, ret, 0);
     }
     GC_Unlink;
     return ret;
@@ -1022,7 +1022,7 @@ Object P_Lcm (int argc, Object *argv) {
 \
     Check_Number (x);\
     if (TYPE(x) != T_Flonum)\
-	return x;\
+        return x;\
     d = FLONUM(x)->val;\
     (void)modf (op (d), &i);\
     return Make_Flonum (i);\
@@ -1040,15 +1040,15 @@ Object P_Round (Object x) {
 
     Check_Number (x);
     if (TYPE(x) != T_Flonum)
-	return x;
+        return x;
     d = FLONUM(x)->val;
     y = d + 0.5;
     f = floor (y);
     ret = Make_Flonum (f);
     if (y == f) {
-	isodd = P_Oddp (ret);
-	if (Truep (isodd))
-	    FLONUM(ret)->val--;
+        isodd = P_Oddp (ret);
+        if (Truep (isodd))
+            FLONUM(ret)->val--;
     }
     return ret;
 }
@@ -1057,13 +1057,13 @@ double Get_Double (Object x) {
     Check_Number (x);
     switch (TYPE(x)) {
     case T_Fixnum:
-	return (double)FIXNUM(x);
+        return (double)FIXNUM(x);
     case T_Flonum:
-	return FLONUM(x)->val;
+        return FLONUM(x)->val;
     case T_Bignum:
-	return Bignum_To_Double (x);
+        return Bignum_To_Double (x);
     default: /* Just to avoid compiler warnings */
-	return 0.0;
+        return 0.0;
     }
     /*NOTREACHED*/
 }
@@ -1074,11 +1074,11 @@ Object General_Function (Object x, Object y, double (*fun)()) {
     d = Get_Double (x);
     errno = 0;
     if (Nullp (y))
-	ret = (*fun) (d);
+        ret = (*fun) (d);
     else
-	ret = (*fun) (d, Get_Double (y));
+        ret = (*fun) (d, Get_Double (y));
     if (errno == ERANGE || errno == EDOM)
-	Range_Error (x);
+        Range_Error (x);
     return Make_Flonum (ret);
 }
 
@@ -1101,7 +1101,7 @@ Object P_Acos (Object x) { return General_Function (x, Null, acos); }
 Object P_Atan (int argc, Object *argv) {
     register int a2 = argc == 2;
     return General_Function (argv[0], a2 ? argv[1] : Null, a2 ?
-	(double(*)())atan2 : (double(*)())atan);
+        (double(*)())atan2 : (double(*)())atan);
 }
 
 Object Min (Object x, Object y) {
@@ -1109,7 +1109,7 @@ Object Min (Object x, Object y) {
 
     ret = Generic_Less (x, y) ? x : y;
     if (TYPE(x) == T_Flonum || TYPE(y) == T_Flonum)
-	ret = P_Exact_To_Inexact (ret);
+        ret = P_Exact_To_Inexact (ret);
     return ret;
 }
 
@@ -1118,7 +1118,7 @@ Object Max (Object x, Object y) {
 
     ret = Generic_Less (x, y) ? y : x;
     if (TYPE(x) == T_Flonum || TYPE(y) == T_Flonum)
-	ret = P_Exact_To_Inexact (ret);
+        ret = P_Exact_To_Inexact (ret);
     return ret;
 }
 

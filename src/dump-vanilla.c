@@ -70,38 +70,38 @@ Object P_Dump (Object ofile) {
     Dump_Prolog;
 
     if (read (afd, (char *)&hdr, sizeof (hdr)) != sizeof (hdr)
-	    || N_BADMAG(hdr)) {
+            || N_BADMAG(hdr)) {
 #ifdef COFF
 badaout:
 #endif
-	Dump_Finalize;
-	Primitive_Error ("corrupt a.out file");
+        Dump_Finalize;
+        Primitive_Error ("corrupt a.out file");
     }
 #ifdef COFF
     data_end = ((unsigned int)sbrk (0) + pagemask) & ~pagemask;
     syms_start = sizeof (hdr);
     if (hdr.f_opthdr > 0) {
-	if (read (afd, (char *)&ohdr, sizeof (ohdr)) != sizeof (ohdr))
-	    goto badaout;
+        if (read (afd, (char *)&ohdr, sizeof (ohdr)) != sizeof (ohdr))
+            goto badaout;
     }
     for (n = 0; n < hdr.f_nscns; n++) {
-	if (read (afd, (char *)&scn, sizeof (scn)) != sizeof (scn))
-	    goto badaout;
-	if (scn.s_scnptr > 0 && syms_start < scn.s_scnptr + scn.s_size)
-	    syms_start = scn.s_scnptr + scn.s_size;
-	if (strcmp (scn.s_name, ".text") == 0)
-	    thdr = scn;
-	else if (strcmp (scn.s_name, ".data") == 0)
-	    dhdr = scn;
-	else if (strcmp (scn.s_name, ".bss") == 0)
-	    bhdr = scn;
+        if (read (afd, (char *)&scn, sizeof (scn)) != sizeof (scn))
+            goto badaout;
+        if (scn.s_scnptr > 0 && syms_start < scn.s_scnptr + scn.s_size)
+            syms_start = scn.s_scnptr + scn.s_size;
+        if (strcmp (scn.s_name, ".text") == 0)
+            thdr = scn;
+        else if (strcmp (scn.s_name, ".data") == 0)
+            dhdr = scn;
+        else if (strcmp (scn.s_name, ".bss") == 0)
+            bhdr = scn;
     }
     hdr.f_flags |= (F_RELFLG|F_EXEC);
     ohdr.dsize = data_end - ohdr.data_start;
     ohdr.bsize = 0;
     thdr.s_size = ohdr.tsize;
     thdr.s_scnptr = sizeof (hdr) + sizeof (ohdr)
-	+ hdr.f_nscns * sizeof (thdr);
+        + hdr.f_nscns * sizeof (thdr);
     lnno_start = thdr.s_lnnoptr;
     text_scn_start = thdr.s_scnptr;
     dhdr.s_paddr = dhdr.s_vaddr = ohdr.data_start;
@@ -114,30 +114,30 @@ badaout:
 
     bias = dhdr.s_scnptr + dhdr.s_size - syms_start;
     if (hdr.f_symptr > 0)
-	hdr.f_symptr += bias;
+        hdr.f_symptr += bias;
     if (thdr.s_lnnoptr > 0)
-	thdr.s_lnnoptr += bias;
+        thdr.s_lnnoptr += bias;
 
     if (write (ofd, (char *)&hdr, sizeof (hdr)) != sizeof (hdr)) {
 badwrite:
-	Dump_Finalize;
-	Primitive_Error ("error writing dump file: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error writing dump file: ~E");
     }
     if (write (ofd, (char *)&ohdr, sizeof (ohdr)) != sizeof (ohdr))
-	goto badwrite;
+        goto badwrite;
     if (write (ofd, (char *)&thdr, sizeof (thdr)) != sizeof (thdr))
-	goto badwrite;
+        goto badwrite;
     if (write (ofd, (char *)&dhdr, sizeof (dhdr)) != sizeof (dhdr))
-	goto badwrite;
+        goto badwrite;
     if (write (ofd, (char *)&bhdr, sizeof (bhdr)) != sizeof (bhdr))
-	goto badwrite;
+        goto badwrite;
     lseek (ofd, (off_t)text_scn_start, 0);
     if (write (ofd, (char *)ohdr.text_start, ohdr.tsize) != ohdr.tsize)
-	goto badwrite;
+        goto badwrite;
     Was_Dumped = 1;
     lseek (ofd, (off_t)data_scn_start, 0);
     if (write (ofd, (char *)ohdr.data_start, ohdr.dsize) != ohdr.dsize)
-	goto badwrite;
+        goto badwrite;
     lseek (afd, lnno_start ? (off_t)lnno_start : (off_t)syms_start, 0);
 #else
     close (afd);
@@ -160,15 +160,15 @@ badwrite:
 
     afn = Loader_Input;
     if (!afn)
-	afn = A_Out_Name;
+        afn = A_Out_Name;
     if ((afd = open (afn, O_RDONLY|O_BINARY)) == -1) {
-	Dump_Finalize;
-	Primitive_Error ("cannot open symbol table file: ~E");
+        Dump_Finalize;
+        Primitive_Error ("cannot open symbol table file: ~E");
     }
     if (read (afd, (char *)&shdr, sizeof (shdr)) != sizeof (shdr)
-	|| N_BADMAG(shdr)) {
-	Dump_Finalize;
-	Primitive_Error ("corrupt symbol table file");
+        || N_BADMAG(shdr)) {
+        Dump_Finalize;
+        Primitive_Error ("corrupt symbol table file");
     }
 #if defined(hp9000s300) || defined(__hp9000s300) || defined(__hp9000s300__)
     hdr.a_lesyms = shdr.a_lesyms;
@@ -180,8 +180,8 @@ badwrite:
     n = hdr.a_text - TEXT_LENGTH_ADJ;
     if (write (ofd, (char *)MEM_TEXT_START, n) != n) {
 badwrite:
-	Dump_Finalize;
-	Primitive_Error ("error writing dump file: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error writing dump file: ~E");
     }
     Was_Dumped = 1;
 
@@ -194,29 +194,29 @@ badwrite:
 #ifdef GENERATIONAL_GC
     n = data_end - data_start;
     if (write (ofd, (char *)data_start, n) != n)
-	goto badwrite;
+        goto badwrite;
 #else
 
     if (Heap_Start > Free_Start) {
-	n = (unsigned int)Free_Start - data_start;
-	if (write (ofd, (char *)data_start, n) != n)
-	    goto badwrite;
-	(void)lseek (ofd, (off_t)(Free_End - Free_Start), 1);
-	n = Hp - Heap_Start;
-	if (write (ofd, Heap_Start, n) != n)
-	    goto badwrite;
-	(void)lseek (ofd, (off_t)(Heap_End - Hp), 1);
-	n = data_end - (unsigned int)Heap_End;
-	if (write (ofd, Heap_End, n) != n)
-	    goto badwrite;
+        n = (unsigned int)Free_Start - data_start;
+        if (write (ofd, (char *)data_start, n) != n)
+            goto badwrite;
+        (void)lseek (ofd, (off_t)(Free_End - Free_Start), 1);
+        n = Hp - Heap_Start;
+        if (write (ofd, Heap_Start, n) != n)
+            goto badwrite;
+        (void)lseek (ofd, (off_t)(Heap_End - Hp), 1);
+        n = data_end - (unsigned int)Heap_End;
+        if (write (ofd, Heap_End, n) != n)
+            goto badwrite;
     } else {
-	n = (unsigned int)Hp - data_start;
-	if (write (ofd, (char *)data_start, n) != n)
-	    goto badwrite;
-	(void)lseek (ofd, (off_t)(Free_End - Hp), 1);
-	n = data_end - (unsigned int)Free_End;
-	if (write (ofd, Free_End, n) != n)
-	    goto badwrite;
+        n = (unsigned int)Hp - data_start;
+        if (write (ofd, (char *)data_start, n) != n)
+            goto badwrite;
+        (void)lseek (ofd, (off_t)(Free_End - Hp), 1);
+        n = data_end - (unsigned int)Free_End;
+        if (write (ofd, Free_End, n) != n)
+            goto badwrite;
     }
 #endif
 #if defined(hp9000s300) || defined(__hp9000s300) || defined(__hp9000s300__)
@@ -230,17 +230,17 @@ badwrite:
 #endif
 #endif /* !COFF */
     while ((n = read (afd, buf, BUFSIZ)) > 0) {
-	if (write (ofd, buf, n) != n)
-	    goto badwrite;
+        if (write (ofd, buf, n) != n)
+            goto badwrite;
     }
     if (n < 0) {
-	Dump_Finalize;
-	Primitive_Error ("error reading symbol table: ~E");
+        Dump_Finalize;
+        Primitive_Error ("error reading symbol table: ~E");
     }
 #if !defined(COFF)
     (void)lseek (ofd, (off_t)0L, 0);
     if (write (ofd, (char *)&hdr, sizeof (hdr)) != sizeof (hdr))
-	goto badwrite;
+        goto badwrite;
 #endif
 
     Dump_Epilog;

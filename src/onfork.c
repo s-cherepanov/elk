@@ -54,5 +54,5 @@ void Call_Onfork () {
     FUNCT *p;
 
     for (p = Onfork_Funcs; p; p = p->next)
-	p->func();
+        p->func();
 }

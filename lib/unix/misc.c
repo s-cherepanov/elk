@@ -8,7 +8,7 @@ static Object P_Getpass(prompt) Object prompt; {
     ret = getpass(Get_String(prompt));
     Enable_Interrupts;
     if (ret == 0)
-	Raise_Error("cannot read password from /dev/tty");
+        Raise_Error("cannot read password from /dev/tty");
     return Make_String(ret, strlen(ret));
 }
 

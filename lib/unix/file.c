@@ -27,39 +27,39 @@ static SYMDESCR Access_Syms[] = {
 
 static Object P_Accessp(fn, mode) Object fn, mode; {
     if (access(Get_Strsym(fn), (int)Symbols_To_Bits(mode, 1, Access_Syms))
-	    == 0)
-	return True;
+            == 0)
+        return True;
     Saved_Errno = errno;
     return False;
 }
 
 static Object P_Chdir(fn) Object fn; {
     if (chdir(Get_Strsym(fn)) == -1)
-	Raise_System_Error1("~s: ~E", fn);
+        Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
 static Object P_Chmod(fn, mode) Object fn, mode; {
     if (chmod(Get_Strsym(fn), Get_Integer(mode)) == -1)
-	Raise_System_Error1("~s: ~E", fn);
+        Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
 static Object P_Chown(fn, uid, gid) Object fn, uid, gid; {
     if (chown(Get_Strsym(fn), Get_Integer(uid), Get_Integer(gid)) == -1)
-	Raise_System_Error1("~s: ~E", fn);
+        Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
 static Object P_Link(fn1, fn2) Object fn1, fn2; {
     if (link(Get_Strsym(fn1), Get_Strsym(fn2)) == -1)
-	Raise_System_Error2("(~s ~s): ~E", fn1, fn2);
+        Raise_System_Error2("(~s ~s): ~E", fn1, fn2);
     return Void;
 }
 
 static Object P_Mkdir(fn, mode) Object fn, mode; {
     if (mkdir(Get_Strsym(fn), Get_Integer(mode)) == -1)
-	Raise_System_Error1("~s: ~E", fn);
+        Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
@@ -77,15 +77,15 @@ static Object P_Read_Directory(fn) Object fn; {
     GC_Link(ret);
     Disable_Interrupts;
     if ((d = opendir(Get_Strsym(fn))) == NULL) {
-	Saved_Errno = errno;
-	Enable_Interrupts;
-	Raise_System_Error1("~s: cannot open", fn);
+        Saved_Errno = errno;
+        Enable_Interrupts;
+        Raise_System_Error1("~s: cannot open", fn);
     }
     while ((dp = readdir(d)) != NULL) {
-	Object x;
+        Object x;
 
-	x = Make_String(dp->d_name, strlen(dp->d_name));
-	ret = Cons(x, ret);
+        x = Make_String(dp->d_name, strlen(dp->d_name));
+        ret = Cons(x, ret);
     }
     /* closedir() is void under 4.3BSD, should check result elsewhere.
      */
@@ -98,21 +98,21 @@ static Object P_Read_Directory(fn) Object fn; {
 static Object P_Rename(fromfn, tofn) Object fromfn, tofn; {
 #ifdef HAVE_RENAME
     if (rename(Get_Strsym(fromfn), Get_Strsym(tofn)) == -1)
-	Raise_System_Error2("(~s ~s): ~E", fromfn, tofn);
+        Raise_System_Error2("(~s ~s): ~E", fromfn, tofn);
 #else
     char *from = Get_Strsym(fromfn), *to = Get_Strsym(tofn);
 
     Disable_Interrupts;
     if (link(from, to) == -1) {
-	Saved_Errno = errno;
-	Enable_Interrupts;
-	Raise_System_Error2("(~s ~s): ~E", fromfn, tofn);
+        Saved_Errno = errno;
+        Enable_Interrupts;
+        Raise_System_Error2("(~s ~s): ~E", fromfn, tofn);
     }
     if (unlink(from) == -1) {
-	Saved_Errno = errno;
-	(void)unlink(to);
-	Enable_Interrupts;
-	Raise_Error1("~s: ~E", fromfn);
+        Saved_Errno = errno;
+        (void)unlink(to);
+        Enable_Interrupts;
+        Raise_Error1("~s: ~E", fromfn);
     }
     Enable_Interrupts;
 #endif
@@ -129,14 +129,14 @@ static Object General_Stat(obj, ret, l) Object obj, ret; int l; {
     Check_Result_Vector(ret, 11);
     if (l) {
 #ifdef SYMLINKS
-	result = lstat(Get_Strsym(obj), &st);
+        result = lstat(Get_Strsym(obj), &st);
 #endif
     } else {
-	Get_Filename_Or_Filedescr(obj, fd, fn);
+        Get_Filename_Or_Filedescr(obj, fd, fn);
         result = fn ? stat(fn, &st) : fstat(fd, &st);
     }
     if (result == -1)
-	Raise_System_Error1("~s: ~E", obj);
+        Raise_System_Error1("~s: ~E", obj);
     switch (st.st_mode & S_IFMT) {
     case S_IFDIR:  s = "directory";         break;
     case S_IFCHR:  s = "character-special"; break;
@@ -200,8 +200,8 @@ static Object P_Readlink(fn) Object fn; {
     len = Path_Max();
     Alloca(buf, char*, len);
     if ((len = readlink(Get_Strsym(fn), buf, len)) == -1) {
-	Alloca_End;
-	Raise_System_Error1("~s: ~E", fn);
+        Alloca_End;
+        Raise_System_Error1("~s: ~E", fn);
     }
     ret = Make_String(buf, len);
     Alloca_End;
@@ -210,20 +210,20 @@ static Object P_Readlink(fn) Object fn; {
 
 static Object P_Rmdir(fn) Object fn; {
     if (rmdir(Get_Strsym(fn)) == -1)
-	Raise_System_Error1("~s: ~E", fn);
+        Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
 static Object P_Symlink(fn1, fn2) Object fn1, fn2; {
     if (symlink(Get_Strsym(fn1), Get_Strsym(fn2)) == -1)
-	Raise_System_Error2("(~s ~s): ~E", fn1, fn2);
+        Raise_System_Error2("(~s ~s): ~E", fn1, fn2);
     return Void;
 }
 #endif
 
 static Object P_Unlink(fn) Object fn; {
     if (unlink(Get_Strsym(fn)) == -1)
-	Raise_System_Error1("~s: ~E", fn);
+        Raise_System_Error1("~s: ~E", fn);
     return Void;
 }
 
@@ -231,14 +231,14 @@ static Object P_Utime(argc, argv) int argc; Object *argv; {
     struct utimbuf ut;
 
     if (argc == 2)
-	Primitive_Error("wrong number of arguments");
+        Primitive_Error("wrong number of arguments");
     if (argc == 3) {
-	ut.actime = (time_t)Get_Unsigned_Long(argv[1]);
-	ut.modtime = (time_t)Get_Unsigned_Long(argv[2]);
+        ut.actime = (time_t)Get_Unsigned_Long(argv[1]);
+        ut.modtime = (time_t)Get_Unsigned_Long(argv[2]);
     }
     if (utime(Get_Strsym(argv[0]), argc == 1 ? (struct utimbuf *)0 : &ut)
-	    == -1)
-	Raise_System_Error1("~s: ~E", argv[0]);
+            == -1)
+        Raise_System_Error1("~s: ~E", argv[0]);
     return Void;
 }
 

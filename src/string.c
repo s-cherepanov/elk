@@ -41,9 +41,9 @@ void Init_String () {
     register int i;
 
     for (i = 0; i < 256; i++)
-	Char_Map[i] = i;
+        Char_Map[i] = i;
     for (i = 'A'; i <= 'Z'; i++)
-	Char_Map[i] = tolower (i);
+        Char_Map[i] = tolower (i);
 }
 
 Object General_Make_String (char const *s, int len, int konst) {
@@ -53,7 +53,7 @@ Object General_Make_String (char const *s, int len, int konst) {
     STRING(str)->tag = Null;
     STRING(str)->size = len;
     if (s)
-	memcpy (STRING(str)->data, s, len);
+        memcpy (STRING(str)->data, s, len);
     return str;
 }
 
@@ -75,10 +75,10 @@ Object P_Make_String (int argc, Object *argv) {
     register char *p;
 
     if ((len = Get_Exact_Integer (argv[0])) < 0)
-	Range_Error (argv[0]);
+        Range_Error (argv[0]);
     if (argc == 2) {
-	Check_Type (argv[1], T_Character);
-	c = CHAR(argv[1]);
+        Check_Type (argv[1], T_Character);
+        c = CHAR(argv[1]);
     }
     str = Make_String ((char *)0, len);
     for (p = STRING(str)->data; len; len--) *p++ = c;
@@ -91,8 +91,8 @@ Object P_String (int argc, Object *argv) {
 
     str = Make_String ((char *)0, argc);
     for (i = 0; i < argc; i++) {
-	Check_Type (argv[i], T_Character);
-	STRING(str)->data[i] = CHAR(argv[i]);
+        Check_Type (argv[i], T_Character);
+        STRING(str)->data[i] = CHAR(argv[i]);
     }
     return str;
 }
@@ -106,13 +106,13 @@ Object P_String_To_Number (int argc, Object *argv) {
 
     Check_Type (argv[0], T_String);
     if (argc == 2) {
-	radix = Get_Exact_Integer (argv[1]);
-	switch (radix) {
-	case 2: case 8: case 10: case 16:
-	    break;
-	default:
-	    Primitive_Error ("invalid radix: ~s", argv[1]);
-	}
+        radix = Get_Exact_Integer (argv[1]);
+        switch (radix) {
+        case 2: case 8: case 10: case 16:
+            break;
+        default:
+            Primitive_Error ("invalid radix: ~s", argv[1]);
+        }
     }
     p = STRING(argv[0]);
     Alloca (b, char*, p->size+1);
@@ -149,11 +149,11 @@ Object P_Substring (Object s, Object a, Object b) {
 
     Check_Type (s, T_String);
     if ((i = Get_Exact_Integer (a)) < 0 || i > STRING(s)->size)
-	Range_Error (a);
+        Range_Error (a);
     if ((j = Get_Exact_Integer (b)) < 0 || j > STRING(s)->size)
-	Range_Error (b);
+        Range_Error (b);
     if (i > j)
-	Primitive_Error ("`end' less than `start'");
+        Primitive_Error ("`end' less than `start'");
     return Make_String (&STRING(s)->data[i], j-i);
 }
 
@@ -167,14 +167,14 @@ Object P_String_Append (int argc, Object *argv) {
     Object s, str;
 
     for (len = i = 0; i < argc; i++) {
-	Check_Type (argv[i], T_String);
-	len += STRING(argv[i])->size;
+        Check_Type (argv[i], T_String);
+        len += STRING(argv[i])->size;
     }
     str = Make_String ((char *)0, len);
     for (len = i = 0; i < argc; i++) {
-	s = argv[i];
-	memcpy (&STRING(str)->data[len], STRING(s)->data, STRING(s)->size);
-	len += STRING(s)->size;
+        s = argv[i];
+        memcpy (&STRING(str)->data[len], STRING(s)->data, STRING(s)->size);
+        len += STRING(s)->size;
     }
     return str;
 }
@@ -188,8 +188,8 @@ Object P_List_To_String (Object list) {
     len = P_Length (list);
     str = Make_String ((char *)0, FIXNUM(len));
     for (i = 0; i < FIXNUM(len); i++, list = Cdr (list)) {
-	Check_Type (Car (list), T_Character);
-	STRING(str)->data[i] = CHAR(Car (list));
+        Check_Type (Car (list), T_Character);
+        STRING(str)->data[i] = CHAR(Car (list));
     }
     GC_Unlink;
     return str;
@@ -204,11 +204,11 @@ Object P_String_To_List (Object s) {
     list = tail = Null;
     GC_Link3 (s, list, tail);
     for (i = 0; i < STRING(s)->size; i++, tail = cell) {
-	cell = Cons (Make_Char (STRING(s)->data[i]), Null);
-	if (Nullp (list))
-	    list = cell;
-	else
-	    (void)P_Set_Cdr (tail, cell);
+        cell = Cons (Make_Char (STRING(s)->data[i]), Null);
+        if (Nullp (list))
+            list = cell;
+        else
+            (void)P_Set_Cdr (tail, cell);
     }
     GC_Unlink;
     return list;
@@ -222,11 +222,11 @@ Object P_Substring_Fill (Object s, Object a, Object b, Object c) {
     Check_Type (c, T_Character);
     i = Get_Index (a, s);
     if ((j = Get_Exact_Integer (b)) < 0 || j > STRING(s)->size)
-	Range_Error (b);
+        Range_Error (b);
     if (i > j)
-	Primitive_Error ("`end' less than `start'");
+        Primitive_Error ("`end' less than `start'");
     while (i < j)
-	STRING(s)->data[i++] = CHAR(c);
+        STRING(s)->data[i++] = CHAR(c);
     return s;
 }
 
@@ -238,7 +238,7 @@ Object P_String_Fill (Object s, Object c) {
     Check_Mutable (s);
     GC_Link2 (s, c);
     ret = P_Substring_Fill (s, Make_Integer (0),
-	Make_Integer (STRING(s)->size), c);
+        Make_Integer (STRING(s)->size), c);
     GC_Unlink;
     return ret;
 }
@@ -253,13 +253,13 @@ Object General_Substringp (Object s1, Object s2, register int ci) {
     l2 = STRING(s2)->size;
     map = Char_Map;
     for (p2 = STRING(s2)->data; l2 >= l1; p2++, l2--) {
-	for (p1 = STRING(s1)->data, p3 = p2, n = l1; n; n--, p1++, p3++) {
-	    if (ci) {
-		if (map[(int)*p1] != map[(int)*p3]) goto fail;
-	    } else
-		if (*p1 != *p3) goto fail;
-	}
-	return Make_Integer (STRING(s2)->size - l2);
+        for (p1 = STRING(s1)->data, p3 = p2, n = l1; n; n--, p1++, p3++) {
+            if (ci) {
+                if (map[(int)*p1] != map[(int)*p3]) goto fail;
+            } else
+                if (*p1 != *p3) goto fail;
+        }
+        return Make_Integer (STRING(s2)->size - l2);
 fail:   ;
     }
     return False;
@@ -283,13 +283,13 @@ int General_Strcmp (Object s1, Object s2, register int ci) {
     n = l1 > l2 ? l2 : l1;
     p1 = STRING(s1)->data; p2 = STRING(s2)->data;
     for (map = Char_Map; --n >= 0; p1++, p2++) {
-	if (ci) {
-	    if (map[(int)*p1] != map[(int)*p2]) break;
-	} else
-	    if (*p1 != *p2) break;
+        if (ci) {
+            if (map[(int)*p1] != map[(int)*p2]) break;
+        } else
+            if (*p1 != *p2) break;
     }
     if (n < 0)
-	return l1 - l2;
+        return l1 - l2;
     return ci ? map[(int)*p1] - map[(int)*p2] : *p1 - *p2;
 }
 

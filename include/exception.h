@@ -63,9 +63,9 @@ extern unsigned long Intr_Level;
 #else
 #ifdef POSIX_SIGNALS
 #define Force_Disable_Interrupts  (void)sigprocmask (SIG_BLOCK, &Sigset_Block,\
-				      (sigset_t *)0)
+                                      (sigset_t *)0)
 #define Force_Enable_Interrupts   (void)sigprocmask (SIG_SETMASK, &Sigset_Old,\
-				      (sigset_t *)0)
+                                      (sigset_t *)0)
 #else
 #define Force_Disable_Interrupts  {\
     if (!Intr_Was_Ignored) (void)signal (SIGINT, SIG_IGN);\

@@ -7,7 +7,7 @@ XtAccelerators Get_Accelerators (a) Object a; {
 
     Get_Strsym_Stack (a, s);
     if ((ret = XtParseAcceleratorTable (s)) == 0)
-	Primitive_Error ("bad accelerator table: ~s", a);
+        Primitive_Error ("bad accelerator table: ~s", a);
     Alloca_End;
     return ret;
 }
@@ -29,7 +29,7 @@ static Object P_Install_All_Accelerators (dst, src) Object dst, src; {
 
 elk_init_xt_accelerator () {
     Define_Primitive (P_Install_Accelerators,
-			"install-accelerators",       2, 2, EVAL);
+                        "install-accelerators",       2, 2, EVAL);
     Define_Primitive (P_Install_All_Accelerators,
-			"install-all-accelerators",   2, 2, EVAL);
+                        "install-all-accelerators",   2, 2, EVAL);
 }

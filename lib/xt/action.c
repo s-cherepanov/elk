@@ -11,36 +11,36 @@ ACTION *actions;
 
 /*ARGSUSED*/
 static void Dummy_Action (w, ep, argv, argc) Widget w; XEvent *ep;
-	String *argv; int *argc; {
+        String *argv; int *argc; {
 }
 
 void Action_Hook (w, client_data, name, ep, argv, argc)
-	Widget w; XtPointer client_data; char *name; XEvent *ep;
-	char **argv; int *argc; {
+        Widget w; XtPointer client_data; char *name; XEvent *ep;
+        char **argv; int *argc; {
     ACTION *ap;
     Object args, params, tail;
     register i;
     GC_Node3;
 
     for (ap = actions; ap; ap = ap->next) {
-	if (strcmp (ap->name, name))
-	    continue;
-	args = params = tail = Null;
-	GC_Link3 (args, params, tail);
-	params = P_Make_List (Make_Integer (*argc), Null);
-	for (i = 0, tail = params; i < *argc; tail = Cdr (tail), i++) {
-	    Object tmp;
+        if (strcmp (ap->name, name))
+            continue;
+        args = params = tail = Null;
+        GC_Link3 (args, params, tail);
+        params = P_Make_List (Make_Integer (*argc), Null);
+        for (i = 0, tail = params; i < *argc; tail = Cdr (tail), i++) {
+            Object tmp;
 
-	    tmp = Make_String (argv[i], strlen (argv[i]));
-	    Car (tail) = tmp;
-	}
-	args = Cons (params, Null);
-	params = Get_Event_Args (ep);
-	args = Cons (Copy_List (params), args);
-	Destroy_Event_Args (params);
-	args = Cons (Make_Widget_Foreign (w), args);
-	(void)Funcall (Get_Function (ap->num), args, 0);
-	GC_Unlink;
+            tmp = Make_String (argv[i], strlen (argv[i]));
+            Car (tail) = tmp;
+        }
+        args = Cons (params, Null);
+        params = Get_Event_Args (ep);
+        args = Cons (Copy_List (params), args);
+        Destroy_Event_Args (params);
+        args = Cons (Make_Widget_Foreign (w), args);
+        (void)Funcall (Get_Function (ap->num), args, 0);
+        GC_Unlink;
     }
 }
 
@@ -66,12 +66,12 @@ void Free_Actions (con) XtAppContext con; {
     register ACTION *p, **pp;
 
     for (pp = &actions; p = *pp; ) {
-	if (p->con == con) {
-	    Deregister_Function (p->num);
-	    XtFree (p->name);
-	    *pp = p->next;
-	    XtFree ((char *)p);
-	} else pp = &p->next;
+        if (p->con == con) {
+            Deregister_Function (p->num);
+            XtFree (p->name);
+            *pp = p->next;
+            XtFree ((char *)p);
+        } else pp = &p->next;
     }
 }
 

@@ -7,7 +7,7 @@ XtTranslations Get_Translations (t) Object t; {
 
     Get_Strsym_Stack (t, s);
     if ((ret = XtParseTranslationTable (s)) == 0)
-	Primitive_Error ("bad translation table: ~s", t);
+        Primitive_Error ("bad translation table: ~s", t);
     Alloca_End;
     return ret;
 }
@@ -46,12 +46,12 @@ static Object P_Set_Multi_Click_Time (d, t) Object d, t; {
 
 elk_init_xt_translation () {
     Define_Primitive (P_Augment_Translations,
-			"augment-translations",                  2, 2, EVAL);
+                        "augment-translations",                  2, 2, EVAL);
     Define_Primitive (P_Override_Translations,
-			"override-translations",                 2, 2, EVAL);
+                        "override-translations",                 2, 2, EVAL);
     Define_Primitive (P_Uninstall_Translations,
-			"uninstall-translations",                1, 1, EVAL);
+                        "uninstall-translations",                1, 1, EVAL);
     Define_Primitive (P_Multi_Click_Time,   "multi-click-time",  1, 1, EVAL);
     Define_Primitive (P_Set_Multi_Click_Time,
-			"set-multi-click-time!",                 2, 2, EVAL);
+                        "set-multi-click-time!",                 2, 2, EVAL);
 }

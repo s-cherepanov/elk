@@ -152,13 +152,13 @@ static Object P_Kill(pid, sig) Object pid, sig; {
     int t, s;
 
     if ((t = TYPE(sig)) == T_Fixnum || t == T_Bignum)
-	s = Get_Integer(sig);
+        s = Get_Integer(sig);
     else if (t == T_Symbol)
-	s = Symbols_To_Bits(sig, 0, Signal_Syms);
+        s = Symbols_To_Bits(sig, 0, Signal_Syms);
     else
-	Wrong_Type_Combination(sig, "symbol or integer");
+        Wrong_Type_Combination(sig, "symbol or integer");
     if (kill(Get_Integer(pid), s) == -1)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     return Void;
 }
 
@@ -196,7 +196,7 @@ void General_Handler(sig) int sig; {
     args = Cons(args, Null);
     fun = VECTOR(Handlers)->data[sig];
     if (TYPE(fun) != T_Compound)
-	Fatal_Error("no handler for signal %d", sig);
+        Fatal_Error("no handler for signal %d", sig);
     (void)Funcall(fun, args, 0);
     Format(Curr_Output_Port, "~%\7Signal!~%", 15, 0, (Object *)0);
     (void)P_Reset();
@@ -207,13 +207,13 @@ static Object Action_To_Sym(act) void (*act)(); {
     char *sym;
 
     if (act == Signal_Exit)
-	sym = "exit";
+        sym = "exit";
     else if (act == SIG_IGN)
-	sym = "ignore";
+        sym = "ignore";
     else if (act == SIG_DFL || act == (void (*)())-1)
-	sym = "default";
+        sym = "default";
     else
-	sym = "handler";
+        sym = "handler";
     return Intern(sym);
 }
 
@@ -224,7 +224,7 @@ void Add_To_Mask(sig) int sig; {
     Sigmask_Block |= sigmask(sig);
 #endif
     if (Intr_Level > 0)  /* make sure new signal gets blocked */
-	Force_Disable_Interrupts;
+        Force_Disable_Interrupts;
 }
 
 void Remove_From_Mask(sig) int sig; {
@@ -242,14 +242,14 @@ static Object P_Signal(argc, argv) int argc; Object *argv; {
 
     sig = Symbols_To_Bits(argv[0], 0, Signal_Syms);
     if (sig >= NSIG)
-	Fatal_Error("signal %d >= NSIG", sig);
+        Fatal_Error("signal %d >= NSIG", sig);
     if (argc == 1) {
-	handler = VECTOR(Handlers)->data[sig];
-	if (Truep(handler))
-	    return handler;
-	if ((disp = signal(sig, SIG_DFL)) != SIG_DFL)
-	    (void)signal(sig, disp);
-	return Action_To_Sym(disp);
+        handler = VECTOR(Handlers)->data[sig];
+        if (Truep(handler))
+            return handler;
+        if ((disp = signal(sig, SIG_DFL)) != SIG_DFL)
+            (void)signal(sig, disp);
+        return Action_To_Sym(disp);
     }
     switch (sig) {
 #ifdef SIGBUS
@@ -263,30 +263,30 @@ static Object P_Signal(argc, argv) int argc; Object *argv; {
 #ifdef SIGABRT
     case SIGABRT:
 #endif
-	Primitive_Error("changing signal ~s not permitted", argv[0]);
+        Primitive_Error("changing signal ~s not permitted", argv[0]);
     }
     handler = argv[1];
     if (EQ(handler, Sym_Exit)) {
-	disp = Signal_Exit;
+        disp = Signal_Exit;
     } else if (EQ(handler, Sym_Default)) {
-	disp = SIG_DFL;
+        disp = SIG_DFL;
     } else if (EQ(handler, Sym_Ignore)) {
-	disp = SIG_IGN;
+        disp = SIG_IGN;
     } else if (TYPE(handler) == T_Compound) {
-	if (COMPOUND(handler)->min_args > 1 ||
-		COMPOUND(handler)->max_args == 0)
-	    Primitive_Error("handler expects wrong number of args");
-	disp = General_Handler;
+        if (COMPOUND(handler)->min_args > 1 ||
+                COMPOUND(handler)->max_args == 0)
+            Primitive_Error("handler expects wrong number of args");
+        disp = General_Handler;
     } else
-	Primitive_Error("invalid handler: ~s", handler);
+        Primitive_Error("invalid handler: ~s", handler);
     old = VECTOR(Handlers)->data[sig];
     VECTOR(Handlers)->data[sig] = (disp == General_Handler) ? handler : False;
     if (disp == General_Handler)
-	Add_To_Mask(sig);
+        Add_To_Mask(sig);
     else
-	Remove_From_Mask(sig);
+        Remove_From_Mask(sig);
     if ((disp = signal(sig, disp)) == (void (*)())-1)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     return Truep(old) ? old : Action_To_Sym(disp);
 }
 #endif /* RELIABLE_SIGNALS */

@@ -59,14 +59,14 @@ Object Do_Autoload (Object sym, Object al) {
     GC_Node;
 
     if (Var_Is_True (V_Autoload_Notifyp)) {
-	a[0] = AUTOLOAD(al)->files;
-	Format (Standard_Output_Port, "[Autoloading ~a]~%", 18, 1, a);
+        a[0] = AUTOLOAD(al)->files;
+        Format (Standard_Output_Port, "[Autoloading ~a]~%", 18, 1, a);
     }
     GC_Link (sym);
     (void)General_Load (AUTOLOAD(al)->files, AUTOLOAD(al)->env);
     GC_Unlink;
     val = SYMBOL(sym)->value;
     if (TYPE(val) == T_Autoload)
-	Primitive_Error ("autoloading failed to define ~s", sym);
+        Primitive_Error ("autoloading failed to define ~s", sym);
     return val;
 }

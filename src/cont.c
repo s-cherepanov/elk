@@ -144,18 +144,18 @@ void Jump_Cont (struct S_Control *cp, Object val) {
     p = cp;
     Cont_Value = val;
     if (Stack_Grows_Down) {
-	if (stkbase - &foo < p->size) Grow_Stack (cp, val);
-	to = stkbase - p->size;
+        if (stkbase - &foo < p->size) Grow_Stack (cp, val);
+        to = stkbase - p->size;
     } else {
-	if (stkbase + p->size > &foo) Grow_Stack (cp, val);
-	to = stkbase;
+        if (stkbase + p->size > &foo) Grow_Stack (cp, val);
+        to = stkbase;
     }
     from = p->stack;
 #if defined(sparc) || defined(__sparc__)
     __asm__("t 0x3");   /* Flush register window */
 #endif
     for (i = p->size; i > 0; i--)
-	*to++ = *from++;
+        *to++ = *from++;
     longjmp (p->j, 1);
 }
 
@@ -175,7 +175,7 @@ Object P_Call_With_Current_Continuation (Object proc) {
 
     t = TYPE(proc);
     if (t != T_Primitive && t != T_Compound && t != T_Control_Point)
-	Wrong_Type_Combination (proc, "procedure");
+        Wrong_Type_Combination (proc, "procedure");
     return Internal_Call_CC (0, proc);
 }
 
@@ -195,7 +195,7 @@ Object Internal_Call_CC (int from_dump, Object proc) {
     size = Stack_Size ();
     size = (size + 7) & ~7;
     control = Alloc_Object (size + sizeof (struct S_Control) - 1,
-	T_Control_Point, 0);
+        T_Control_Point, 0);
     cp = CONTROL(control);
     cp->env = The_Environment;
     cp->gclist = GC_List;
@@ -224,23 +224,23 @@ Object Internal_Call_CC (int from_dump, Object proc) {
 #endif
     if (setjmp (CONTROL(control)->j) != 0) {
 #ifndef USE_ALLOCA
-	Restore_GC_Nodes (Cont_GCsave);
+        Restore_GC_Nodes (Cont_GCsave);
 #endif
-	if (Intr_Level == 0) {
-	    Force_Enable_Interrupts;
-	} else {
-	    Force_Disable_Interrupts;
-	}
-	return Cont_Value;
+        if (Intr_Level == 0) {
+            Force_Enable_Interrupts;
+        } else {
+            Force_Disable_Interrupts;
+        }
+        return Cont_Value;
     }
     if (from_dump) {
 #ifdef CAN_DUMP
-	Dump_Control_Point = control;
+        Dump_Control_Point = control;
 #endif
-	ret = False;
+        ret = False;
     } else {
-	control = Cons (control, Null);
-	ret = Funcall (proc, control, 0);
+        control = Cons (control, Null);
+        ret = Funcall (proc, control, 0);
     }
     GC_Unlink;
     return ret;
@@ -254,33 +254,33 @@ void Funcall_Control_Point (Object control, Object argl, int eval) {
     GC_Node3;
 
     if (GC_In_Progress)
-	Fatal_Error ("jumping out of GC");
+        Fatal_Error ("jumping out of GC");
     val = Null;
     GC_Link3 (argl, control, val);
     len = P_Length (argl);
     if (FIXNUM(len) != 1)
-	Primitive_Error ("control point expects one argument");
+        Primitive_Error ("control point expects one argument");
     val = Car (argl);
     if (eval)
-	val = Eval (val);
+        val = Eval (val);
     delta = CONTROL(control)->delta;
     wp = First_Wind;
     cwp = CONTROL(control)->firstwind;
     while (wp && cwp) {
-	p = (WIND *)NORM(wp);
-	if (!EQ(wp->inout,p->inout)) break;
-	wp = wp->next;
-	cwp = p->next;
+        p = (WIND *)NORM(wp);
+        if (!EQ(wp->inout,p->inout)) break;
+        wp = wp->next;
+        cwp = p->next;
     }
     if (wp) {
-	for (w = Last_Wind; w != wp->prev; w = w->prev)
-	    Do_Wind (Cdr (w->inout));
+        for (w = Last_Wind; w != wp->prev; w = w->prev)
+            Do_Wind (Cdr (w->inout));
     }
     while (cwp) {
-	delta = CONTROL(control)->delta;
-	p = (WIND *)NORM(cwp);
-	cwp = p->next;
-	Do_Wind (Car (p->inout));
+        delta = CONTROL(control)->delta;
+        p = (WIND *)NORM(cwp);
+        cwp = p->next;
+        Do_Wind (Car (p->inout));
     }
     GC_Unlink;
     Disable_Interrupts;
@@ -302,19 +302,19 @@ void Do_Wind (Object w) {
     Object oldenv, b, tmp;
 
     if (TYPE(w) == T_Vector) {          /* fluid-let */
-	oldenv = The_Environment;
-	Switch_Environment (VECTOR(w)->data[1]);
-	b = Lookup_Symbol (VECTOR(w)->data[0], 0);
-	if (Nullp (b))
-	    Panic ("fluid-let");
-	tmp = VECTOR(w)->data[2];
-	VECTOR(w)->data[2] = Cdr (b);
-	Cdr (b) = tmp;
-	SYMBOL(Car (b))->value = tmp;
-	VECTOR(w)->data[1] = oldenv;
-	Switch_Environment (oldenv);
+        oldenv = The_Environment;
+        Switch_Environment (VECTOR(w)->data[1]);
+        b = Lookup_Symbol (VECTOR(w)->data[0], 0);
+        if (Nullp (b))
+            Panic ("fluid-let");
+        tmp = VECTOR(w)->data[2];
+        VECTOR(w)->data[2] = Cdr (b);
+        Cdr (b) = tmp;
+        SYMBOL(Car (b))->value = tmp;
+        VECTOR(w)->data[1] = oldenv;
+        Switch_Environment (oldenv);
     } else {                            /* dynamic-wind */
-	(void)Funcall (w, Null, 0);
+        (void)Funcall (w, Null, 0);
     }
 }
 
@@ -327,9 +327,9 @@ void Add_Wind (register WIND *w, Object in, Object out) {
     w->inout = inout;
     w->next = 0;
     if (First_Wind == 0)
-	First_Wind = w;
+        First_Wind = w;
     else
-	Last_Wind->next = w;
+        Last_Wind->next = w;
     w->prev = Last_Wind;
     Last_Wind = w;
     GC_Unlink;
@@ -350,7 +350,7 @@ Object P_Dynamic_Wind (Object in, Object body, Object out) {
     ret = Funcall (body, Null, 0);
     (void)Funcall (out, Null, 0);
     if ((Last_Wind = w.prev))
-	Last_Wind->next = 0;
+        Last_Wind->next = 0;
     First_Wind = first;
     GC_Unlink;
     return ret;

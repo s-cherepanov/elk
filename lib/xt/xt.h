@@ -26,9 +26,9 @@ extern int T_Class;
 extern int T_Widget;
 extern int T_Identifier;
 
-#define CONTEXT(x)	((struct S_Context *)POINTER(x))
-#define CLASS(x)	((struct S_Class *)POINTER(x))
-#define WIDGET(x)	((struct S_Widget *)POINTER(x))
+#define CONTEXT(x)      ((struct S_Context *)POINTER(x))
+#define CLASS(x)        ((struct S_Class *)POINTER(x))
+#define WIDGET(x)       ((struct S_Widget *)POINTER(x))
 #define IDENTIFIER(x)   ((struct S_Identifier *)POINTER(x))
 
 struct S_Context {

@@ -52,7 +52,7 @@ Object P_Integer_To_Char (Object n) {
     register int i;
 
     if ((i = Get_Exact_Integer (n)) < 0 || i > 255)
-	Range_Error (n);
+        Range_Error (n);
     return Make_Char (i);
 }
 
@@ -98,7 +98,7 @@ int General_Chrcmp (Object c1, Object c2, register int ci) {
     Check_Type (c1, T_Character);
     Check_Type (c2, T_Character);
     if (ci)
-	return Char_Map[CHAR(c1)] - Char_Map[CHAR(c2)];
+        return Char_Map[CHAR(c1)] - Char_Map[CHAR(c2)];
     return CHAR(c1) - CHAR(c2);
 }
 

@@ -5,8 +5,8 @@ static Object P_Get_Default (d, program, option) Object d, program, option; {
 
     Check_Type (d, T_Display);
     if (ret = XGetDefault (DISPLAY(d)->dpy, Get_Strsym (program),
-	    Get_Strsym (option)))
-	return Make_String (ret, strlen (ret));
+            Get_Strsym (option)))
+        return Make_String (ret, strlen (ret));
     return False;
 }
 
@@ -40,15 +40,15 @@ static Object P_Parse_Color (d, cmap, spec) Object d, cmap, spec; {
 
     Check_Type (d, T_Display);
     if (XParseColor (DISPLAY(d)->dpy, Get_Colormap (cmap), Get_Strsym (spec),
-	    &ret))
-	return Make_Color (ret.red, ret.green, ret.blue);
+            &ret))
+        return Make_Color (ret.red, ret.green, ret.blue);
     return False;
 }
 
 elk_init_xlib_util () {
     Define_Primitive (P_Get_Default,       "get-default",         3, 3, EVAL);
     Define_Primitive (P_Resource_Manager_String,
-			"resource-manager-string",                1, 1, EVAL);
+                        "resource-manager-string",                1, 1, EVAL);
     Define_Primitive (P_Parse_Geometry,    "parse-geometry",      1, 1, EVAL);
     Define_Primitive (P_Parse_Color,       "parse-color",         3, 3, EVAL);
 }

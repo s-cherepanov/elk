@@ -11,10 +11,10 @@ Object Make_Pixel (val) unsigned long val; {
 
     pix = Find_Object (T_Pixel, (GENERIC)0, Match_X_Obj, val);
     if (Nullp (pix)) {
-	pix = Alloc_Object (sizeof (struct S_Pixel), T_Pixel, 0);
-	PIXEL(pix)->tag = Null;
-	PIXEL(pix)->pix = val;
-	Register_Object (pix, (GENERIC)0, (PFO)0, 0);
+        pix = Alloc_Object (sizeof (struct S_Pixel), T_Pixel, 0);
+        PIXEL(pix)->tag = Null;
+        PIXEL(pix)->pix = val;
+        Register_Object (pix, (GENERIC)0, (PFO)0, 0);
     }
     return pix;
 }
@@ -31,13 +31,13 @@ static Object P_Pixel_Value (p) Object p; {
 static Object P_Black_Pixel (d) Object d; {
     Check_Type (d, T_Display);
     return Make_Pixel (BlackPixel (DISPLAY(d)->dpy,
-	DefaultScreen (DISPLAY(d)->dpy)));
+        DefaultScreen (DISPLAY(d)->dpy)));
 }
 
 static Object P_White_Pixel (d) Object d; {
     Check_Type (d, T_Display);
     return Make_Pixel (WhitePixel (DISPLAY(d)->dpy,
-	DefaultScreen (DISPLAY(d)->dpy)));
+        DefaultScreen (DISPLAY(d)->dpy)));
 }
 
 elk_init_xlib_pixel () {

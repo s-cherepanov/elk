@@ -14,7 +14,7 @@
 #ifdef LOCKS
 
 static Object P_Internal_Lock_Operation(fd, lck, block, what, ret)
-	Object fd, lck, block, what, ret; {
+        Object fd, lck, block, what, ret; {
 #ifdef RECORD_LOCKS
     struct flock fl;
 #else
@@ -27,7 +27,7 @@ static Object P_Internal_Lock_Operation(fd, lck, block, what, ret)
     Check_Type(what, T_Character);
     op = CHAR(what);
     if (op == 'q')
-	Check_Result_Vector(ret, 4);
+        Check_Result_Vector(ret, 4);
 
 #ifdef RECORD_LOCKS
     Check_Type(block, T_Boolean);
@@ -38,39 +38,39 @@ static Object P_Internal_Lock_Operation(fd, lck, block, what, ret)
     fl.l_start = Get_Long(*++vp);
     fl.l_len = Get_Long(*++vp);
     if (fcntl(Get_Integer(fd), op == 'q' ? F_GETLK :
-	    (Truep(block) ? F_SETLKW : F_SETLK), &fl) == -1) {
-	if (op == 's' && !Truep(block) && (errno == EAGAIN || errno == EACCES))
-	    return False;
-	Raise_System_Error("fcntl: ~E");
+            (Truep(block) ? F_SETLKW : F_SETLK), &fl) == -1) {
+        if (op == 's' && !Truep(block) && (errno == EAGAIN || errno == EACCES))
+            return False;
+        Raise_System_Error("fcntl: ~E");
     }
     if (op == 'q') {
-	Object x;
-	GC_Node;
+        Object x;
+        GC_Node;
 
-	if (fl.l_type == F_UNLCK)
-	    return False;
-	GC_Link(ret);
-	VECTOR(ret)->data[0] = fl.l_type == F_WRLCK ? True : False;
-	x = Bits_To_Symbols((unsigned long)fl.l_whence, 0, Lseek_Syms);
-	VECTOR(ret)->data[1] = x;
-	x = Make_Long(fl.l_start); VECTOR(ret)->data[2] = x;
-	x = Make_Long(fl.l_len);   VECTOR(ret)->data[3] = x;
-	GC_Unlink;
-	return Make_Integer(fl.l_pid);
+        if (fl.l_type == F_UNLCK)
+            return False;
+        GC_Link(ret);
+        VECTOR(ret)->data[0] = fl.l_type == F_WRLCK ? True : False;
+        x = Bits_To_Symbols((unsigned long)fl.l_whence, 0, Lseek_Syms);
+        VECTOR(ret)->data[1] = x;
+        x = Make_Long(fl.l_start); VECTOR(ret)->data[2] = x;
+        x = Make_Long(fl.l_len);   VECTOR(ret)->data[3] = x;
+        GC_Unlink;
+        return Make_Integer(fl.l_pid);
     }
 #else
     Check_Type(block, T_Boolean);
     if (op == 'q')
-	return False;
+        return False;
     vp = VECTOR(lck)->data;
     Check_Type(*vp, T_Boolean);
     mode = op == 'r' ? LOCK_UN : (Truep(*vp) ? LOCK_EX : LOCK_SH);
     if (op != 'r' && !Truep(block))
-	mode |= LOCK_NB;
+        mode |= LOCK_NB;
     if (flock(Get_Integer(fd), mode) == -1) {
-	if (op == 's' && !Truep(block) && errno == EWOULDBLOCK)
-	    return False;
-	Raise_System_Error("flock: ~E");
+        if (op == 's' && !Truep(block) && errno == EWOULDBLOCK)
+            return False;
+        Raise_System_Error("flock: ~E");
     }
 #endif
     return op == 's' ? True : Void;
@@ -81,7 +81,7 @@ static Object P_Internal_Lock_Operation(fd, lck, block, what, ret)
 elk_init_unix_lock() {
 #ifdef LOCKS
     Def_Prim(P_Internal_Lock_Operation, "unix-internal-lock-operation",
-	5, 5, EVAL);
+        5, 5, EVAL);
     P_Provide(Intern("unix:file-locking"));
 #ifdef RECORD_LOCKS
     P_Provide(Intern("unix:record-locks"));

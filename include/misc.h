@@ -45,9 +45,9 @@
 #  define NBITS(v)    ((sizeof v) * 8)
 #  define HIBIT(v,n)  (NBITS(v) - (n))
 #  define ASR(n,s)    ((n) >>= (s),\
-			 ((n) & (1 << (HIBIT((n),(s)) - 1)) ?\
-			    ((n) |= ~(((unsigned)1 << HIBIT((n),(s))) - 1)) :\
-			    (n)))
+                         ((n) & (1 << (HIBIT((n),(s)) - 1)) ?\
+                            ((n) |= ~(((unsigned)1 << HIBIT((n),(s))) - 1)) :\
+                            (n)))
 #endif
 
 extern Object False2;

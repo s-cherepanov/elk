@@ -65,8 +65,8 @@ static void Check_Structure_Type (Object x, Object t) {
     Check_Type (x, T_Struct);
     Check_Type (t, T_Symbol);
     if (!EQ(STRUCT(x)->name, t))
-	Primitive_Error ("wrong structure type ~s (expected ~s)",
-	    STRUCT(x)->name, t);
+        Primitive_Error ("wrong structure type ~s (expected ~s)",
+            STRUCT(x)->name, t);
 }
 
 static Object P_Structure_Ref (Object x, Object t, Object n) {
@@ -98,8 +98,8 @@ static Object P_Make_Structure (Object name, Object slots) {
     STRUCT(s)->slots = vec;
     GC_Unlink;
     for (vp = VECTOR(vec)->data; n--; slots = Cdr (slots)) {
-	Check_Type (Car (slots), T_Symbol);
-	*vp++ = Car (slots);
+        Check_Type (Car (slots), T_Symbol);
+        *vp++ = Car (slots);
     }
     return s;
 }
@@ -110,8 +110,8 @@ static int Structure_Eqv (Object a, Object b) {
 
 static int Structure_Equal (Object a, Object b) {
     return EQ(STRUCT(a)->name,STRUCT(b)->name) &&
-	   Equal (STRUCT(a)->slots, STRUCT(b)->slots) &&
-	   Equal (STRUCT(a)->values, STRUCT(b)->values);
+           Equal (STRUCT(a)->slots, STRUCT(b)->slots) &&
+           Equal (STRUCT(a)->values, STRUCT(b)->values);
 }
 
 static int Structure_Print (Object x, Object port,
@@ -130,7 +130,7 @@ static int Structure_Visit (register Object *sp, register int (*f)()) {
 
 void elk_init_lib_struct () {
     T_Struct = Define_Type (0, "structure", NOFUNC, sizeof (struct S_Struct),
-	Structure_Eqv, Structure_Equal, Structure_Print, Structure_Visit);
+        Structure_Eqv, Structure_Equal, Structure_Print, Structure_Visit);
     Define_Primitive (P_Structurep,       "structure?",       1, 1, EVAL);
     Define_Primitive (P_Structure_Name,   "structure-name",   1, 1, EVAL);
     Define_Primitive (P_Structure_Slots,  "structure-slots",  1, 1, EVAL);

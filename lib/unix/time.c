@@ -89,20 +89,20 @@ static struct tm *Get_Tm(v) Object v; {
     int i, n;
     Object *op;
     static struct { int min, max; } bounds[] = {
-	{ 0, 61 },       /* sec */
-	{ 0, 59 },       /* min */
-	{ 0, 23 },       /* hour */
-	{ 1, 31 },       /* mday */
-	{ 0, 11 },       /* mon */
-	{ 0, 65535 },  /* year */
-	{ 0, 7 },        /* wday */
-	{ 0, 365 }       /* yday */
+        { 0, 61 },       /* sec */
+        { 0, 59 },       /* min */
+        { 0, 23 },       /* hour */
+        { 1, 31 },       /* mday */
+        { 0, 11 },       /* mon */
+        { 0, 65535 },  /* year */
+        { 0, 7 },        /* wday */
+        { 0, 365 }       /* yday */
     };
 
     Check_Result_Vector(v, 9);
     for (op = VECTOR(v)->data, i = 0; i < 7; i++, op++)
-	if ((n = Get_Integer(*op)) < bounds[i].min || n > bounds[i].max)
-	    Range_Error(*op);
+        if ((n = Get_Integer(*op)) < bounds[i].min || n > bounds[i].max)
+            Range_Error(*op);
     op = VECTOR(v)->data;
     tm.tm_sec   = Get_Integer(*op++);
     tm.tm_min   = Get_Integer(*op++);
@@ -122,15 +122,15 @@ static Object P_Time_To_String(t) Object t; {
 
     switch (TYPE(t)) {
     case T_Fixnum: case T_Bignum:
-	tt = (time_t)Get_Unsigned_Long(t);
-	ret = ctime(&tt);
-	break;
+        tt = (time_t)Get_Unsigned_Long(t);
+        ret = ctime(&tt);
+        break;
     case T_Vector:
-	ret = asctime(Get_Tm(t));
-	break;
+        ret = asctime(Get_Tm(t));
+        break;
     default:
-	Wrong_Type_Combination(t, "integer or vector");
-	/*NOTREACHED*/
+        Wrong_Type_Combination(t, "integer or vector");
+        /*NOTREACHED*/
     }
     return Make_String(ret, strlen(ret));
 }

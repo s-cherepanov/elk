@@ -43,7 +43,7 @@ static Object P_Display_Keysyms_Per_Keycode (d) Object d; {
     Check_Type (d, T_Display);
     XDisplayKeycodes(DISPLAY(d)->dpy, &mink, &maxk);
     ksyms = XGetKeyboardMapping(DISPLAY(d)->dpy, (KeyCode)mink,
-	maxk - mink + 1, &ksyms_per_kode);
+        maxk - mink + 1, &ksyms_per_kode);
     return Make_Integer (ksyms_per_kode);
 }
 
@@ -78,7 +78,7 @@ static Object P_Keycode_To_Keysym (d, k, index) Object d, k, index; {
     Check_Type (d, T_Display);
     Disable_Interrupts;
     ret = Make_Unsigned_Long ((unsigned long)XKeycodeToKeysym (DISPLAY(d)->dpy,
-	Get_Integer (k), Get_Integer (index)));
+        Get_Integer (k), Get_Integer (index)));
     Enable_Interrupts;
     return ret;
 }
@@ -89,7 +89,7 @@ static Object P_Keysym_To_Keycode (d, k) Object d, k; {
     Check_Type (d, T_Display);
     Disable_Interrupts;
     ret = Make_Unsigned (XKeysymToKeycode (DISPLAY(d)->dpy,
-	(KeySym)Get_Long (k)));
+        (KeySym)Get_Long (k)));
     Enable_Interrupts;
     return ret;
 }
@@ -122,9 +122,9 @@ static Object P_Rebind_Keysym (d, k, mods, str) Object d, k, mods, str; {
     n = VECTOR(mods)->size;
     Alloca (p, KeySym*, n * sizeof (KeySym));
     for (i = 0; i < n; i++)
-	p[i] = (KeySym)Get_Long (VECTOR(mods)->data[i]);
+        p[i] = (KeySym)Get_Long (VECTOR(mods)->data[i]);
     XRebindKeysym (DISPLAY(d)->dpy, (KeySym)Get_Long (k), p, n,
-	(unsigned char *)STRING(str)->data, STRING(str)->size);
+        (unsigned char *)STRING(str)->data, STRING(str)->size);
     Alloca_End;
     return Void;
 }
@@ -143,11 +143,11 @@ static Object P_Refresh_Keyboard_Mapping (w, event) Object w, event; {
 
 elk_init_xlib_key () {
     Define_Primitive (P_Display_Min_Keycode, "display-min-keycode",
-							      1, 1, EVAL);
+                                                              1, 1, EVAL);
     Define_Primitive (P_Display_Max_Keycode, "display-max-keycode",
-							      1, 1, EVAL);
+                                                              1, 1, EVAL);
     Define_Primitive (P_Display_Keysyms_Per_Keycode,
-			"display-keysyms-per-keycode",        1, 1, EVAL);
+                        "display-keysyms-per-keycode",        1, 1, EVAL);
     Define_Primitive (P_String_To_Keysym,  "string->keysym",  1, 1, EVAL);
     Define_Primitive (P_Keysym_To_String,  "keysym->string",  1, 1, EVAL);
     Define_Primitive (P_Keycode_To_Keysym, "keycode->keysym", 3, 3, EVAL);
@@ -155,5 +155,5 @@ elk_init_xlib_key () {
     Define_Primitive (P_Lookup_String,     "lookup-string",   3, 3, EVAL);
     Define_Primitive (P_Rebind_Keysym,     "rebind-keysym",   4, 4, EVAL);
     Define_Primitive (P_Refresh_Keyboard_Mapping,
-			"refresh-keyboard-mapping",           2, 2, EVAL);
+                        "refresh-keyboard-mapping",           2, 2, EVAL);
 }

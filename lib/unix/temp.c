@@ -33,9 +33,9 @@ static Object P_Tempname(argc, argv) int argc; Object *argv; {
 #endif
 
     if (argc > 0)
-	dir = Get_Strsym(argv[0]);
+        dir = Get_Strsym(argv[0]);
     if (argc > 1)
-	pref = Get_Strsym(argv[1]);
+        pref = Get_Strsym(argv[1]);
 #ifdef HAVE_TMPNAM
     name = tmpnam((char *)0);
 #else
@@ -46,7 +46,7 @@ static Object P_Tempname(argc, argv) int argc; Object *argv; {
     if (!dir) dir = "/tmp";
     if (!pref) pref = "elk";
     if (strlen(dir) + strlen(pref) > 1000)
-	Primitive_Error("directory/prefix argument too long");
+        Primitive_Error("directory/prefix argument too long");
 #ifdef HAVE_MKTEMP
     sprintf(buf, "%s/%sXXXXXX", dir, pref);
     name = mktemp(buf);
@@ -55,29 +55,29 @@ static Object P_Tempname(argc, argv) int argc; Object *argv; {
     sprintf(buf, "%s/%sa%d", dir, pref, getpid());
     p = buf+strlen(dir)+strlen(pref)+1;
     while (stat(buf, &st) == 0) {         /* Simple ersatz mktemp */
-	q = p;
-	while (1) {
-	    if (*q == '\0') goto fail;
-	    if (*q == 'z') {
-		*q++ = 'a';
-	    } else {
-		if (*q >= '0' && *q <= '9')
-		    *q = 'a';
-		else
-		    *++q;
-		break;
-	    }
-	}
+        q = p;
+        while (1) {
+            if (*q == '\0') goto fail;
+            if (*q == 'z') {
+                *q++ = 'a';
+            } else {
+                if (*q >= '0' && *q <= '9')
+                    *q = 'a';
+                else
+                    *++q;
+                break;
+            }
+        }
     }
     if (errno == ENOENT)
-	name = buf;
+        name = buf;
 fail: ;
 #endif
 #endif
 #endif
     if (name == 0 || name[0] == '\0') {
-	Enable_Interrupts;
-	Raise_Error("cannot create temp file name");
+        Enable_Interrupts;
+        Raise_Error("cannot create temp file name");
     }
     ret = Make_String(name, strlen(name));
 #ifdef HAVE_TEMPNAM

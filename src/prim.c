@@ -51,7 +51,7 @@ struct Prim_Init {
     { P_Eqv,               "eqv?",                           2, 2,    EVAL },
     { P_Equal,             "equal?",                         2, 2,    EVAL },
     { P_Empty_List_Is_False, "empty-list-is-false-for-backward-compatibility",
-							   1, 1,    EVAL },
+                                                             1, 1,    EVAL },
 
     /* char.c:
      */
@@ -80,10 +80,10 @@ struct Prim_Init {
      */
     { P_Control_Pointp,    "control-point?",                 1, 1,    EVAL },
     { P_Call_With_Current_Continuation,
-			 "call-with-current-continuation", 1, 1,    EVAL },
+                         "call-with-current-continuation", 1, 1,    EVAL },
     { P_Dynamic_Wind,      "dynamic-wind",                   3, 3,    EVAL },
     { P_Control_Point_Environment,
-			 "control-point-environment",      1, 1,    EVAL },
+                         "control-point-environment",      1, 1,    EVAL },
 
     /* debug.c:
      */
@@ -104,7 +104,7 @@ struct Prim_Init {
     { P_Define_Macro,      "define-macro",                   1, MANY, NOEVAL },
     { P_Set,               "set!",                           2, 2,    NOEVAL },
     { P_Environment_To_List,
-			 "environment->list",              1, 1,    EVAL },
+                         "environment->list",              1, 1,    EVAL },
     { P_Boundp,            "bound?",                         1, 1,    EVAL },
 
     /* error.c:
@@ -139,9 +139,9 @@ struct Prim_Init {
     { P_Port_Line_Number,  "port-line-number",               1, 1,    EVAL },
     { P_Eof_Objectp,       "eof-object?",                    1, 1,    EVAL },
     { P_Current_Input_Port,
-			 "current-input-port",             0, 0,    EVAL },
+                         "current-input-port",             0, 0,    EVAL },
     { P_Current_Output_Port,
-			 "current-output-port",            0, 0,    EVAL },
+                         "current-output-port",            0, 0,    EVAL },
     { P_Input_Portp,       "input-port?",                    1, 1,    EVAL },
     { P_Output_Portp,      "output-port?",                   1, 1,    EVAL },
     { P_Open_Input_File,   "open-input-file",                1, 1,    EVAL },
@@ -304,7 +304,7 @@ struct Prim_Init {
     { P_Apply,             "apply",                          2, MANY, VARARGS },
     { P_Lambda,            "lambda",                         2, MANY, NOEVAL },
     { P_Procedure_Environment,
-			 "procedure-environment",          1, 1,    EVAL },
+                         "procedure-environment",          1, 1,    EVAL },
     { P_Procedure_Lambda,  "procedure-lambda",               1, 1,    EVAL },
     { P_Map,               "map",                            2, MANY, VARARGS },
     { P_For_Each,          "for-each",                       2, MANY, VARARGS },
@@ -318,7 +318,7 @@ struct Prim_Init {
     { P_Force,             "force",                          1, 1,    EVAL },
     { P_Promisep,          "promise?",                       1, 1,    EVAL },
     { P_Promise_Environment,
-			 "promise-environment",            1, 1,    EVAL },
+                         "promise-environment",            1, 1,    EVAL },
 
     /* read.c:
      */
@@ -373,7 +373,7 @@ struct Prim_Init {
     { P_String_CI_Greater, "string-ci>?",                    2, 2,    EVAL },
     { P_String_CI_Eq_Less, "string-ci<=?",                   2, 2,    EVAL },
     { P_String_CI_Eq_Greater,
-			 "string-ci>=?",                   2, 2,    EVAL },
+                         "string-ci>=?",                   2, 2,    EVAL },
     { P_Substringp,        "substring?",                     2, 2,    EVAL },
     { P_CI_Substringp,     "substring-ci?",                  2, 2,    EVAL },
 
@@ -417,17 +417,17 @@ void Init_Prim () {
     Object frame, prim, sym;
 
     for (frame = Car (The_Environment), p = Primitives; p->fun; p++) {
-	prim = Make_Primitive (p->fun, p->name, p->minargs, p->maxargs,
-	    p->disc);
-	sym = Intern (p->name);
-	frame = Add_Binding (frame, sym, prim);
+        prim = Make_Primitive (p->fun, p->name, p->minargs, p->maxargs,
+            p->disc);
+        sym = Intern (p->name);
+        frame = Add_Binding (frame, sym, prim);
     }
     Car (The_Environment) = frame;
     Memoize_Frame (frame);
 }
 
 void Define_Primitive (Object (*fun)(), char const *name, int min, int max,
-	enum discipline disc) {
+        enum discipline disc) {
     Object prim, sym, frame;
     GC_Node2;
 
@@ -437,7 +437,7 @@ void Define_Primitive (Object (*fun)(), char const *name, int min, int max,
     GC_Link2 (prim, sym);
     sym = Intern (name);
     if (disc == EVAL && min != max)
-	Primitive_Error ("~s: number of arguments must be fixed", sym);
+        Primitive_Error ("~s: number of arguments must be fixed", sym);
     frame = Add_Binding (Car (The_Environment), sym, prim);
     SYMBOL(sym)->value = prim;
     Car (The_Environment) = frame;

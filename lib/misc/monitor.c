@@ -66,14 +66,14 @@ static Object P_Monitor (Object on) {
     Check_Type (on, T_Boolean);
     Disable_Interrupts;
     if (Truep (on)) {
-	if (!monitoring) {
-	    brk = sbrk (0);
-	    monstartup ((int (*)())MONSTART, (int (*)())brk);
-	    monitoring = 1;
-	}
+        if (!monitoring) {
+            brk = sbrk (0);
+            monstartup ((int (*)())MONSTART, (int (*)())brk);
+            monitoring = 1;
+        }
     } else {
-	monitor (0);
-	monitoring = 0;
+        monitor (0);
+        monitoring = 0;
     }
     Enable_Interrupts;
     return Void;
@@ -85,8 +85,8 @@ void elk_init_lib_monitor () {
 
 void elk_finit_lib_monitor () {
     if (monitoring) {
-	monitoring = 0;
-	printf ("[writing mon.out]\n");
-	monitor (0);
+        monitoring = 0;
+        printf ("[writing mon.out]\n");
+        monitor (0);
     }
 }

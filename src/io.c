@@ -64,9 +64,9 @@ void Init_Io () {
 void Reset_IO (int destructive) {
     Discard_Input (Curr_Input_Port);
     if (destructive)
-	Discard_Output (Curr_Output_Port);
+        Discard_Output (Curr_Output_Port);
     else
-	Flush_Output (Curr_Output_Port);
+        Flush_Output (Curr_Output_Port);
     Curr_Input_Port = Standard_Input_Port;
     Curr_Output_Port = Standard_Output_Port;
 }
@@ -121,9 +121,9 @@ int Path_Max () {
 #elif defined(PC_PATH_MAX_IN_UNISTD_H)
     static int r;
     if (r == 0) {
-	if ((r = pathconf ("/", _PC_PATH_MAX)) == -1)
-	    r = 1024;
-	r++;
+        if ((r = pathconf ("/", _PC_PATH_MAX)) == -1)
+            r = 1024;
+        r++;
     }
     return r;
 #else
@@ -135,11 +135,11 @@ Object Get_File_Name (Object name) {
     register int len;
 
     if (TYPE(name) == T_Symbol)
-	name = SYMBOL(name)->name;
+        name = SYMBOL(name)->name;
     else if (TYPE(name) != T_String)
-	Wrong_Type_Combination (name, "string or symbol");
+        Wrong_Type_Combination (name, "string or symbol");
     if ((len = STRING(name)->size) > Path_Max () || len == 0)
-	Primitive_Error ("invalid file name");
+        Primitive_Error ("invalid file name");
     return name;
 }
 
@@ -148,17 +148,17 @@ char *Internal_Tilde_Expand (register char *s, register char **dirp) {
     struct passwd *pw, *getpwnam();
 
     if (*s++ != '~')
-	return 0;
+        return 0;
     for (p = s; *p && *p != '/'; p++)
-	;
+        ;
     if (*p == '/') *p++ = 0;
     if (*s == '\0') {
-	if ((*dirp = getenv ("HOME")) == 0)
-	    *dirp = "";
+        if ((*dirp = getenv ("HOME")) == 0)
+            *dirp = "";
     } else {
-	if ((pw = getpwnam (s)) == 0)
-	    Primitive_Error ("unknown user: ~a", Make_String (s, strlen (s)));
-	*dirp = pw->pw_dir;
+        if ((pw = getpwnam (s)) == 0)
+            Primitive_Error ("unknown user: ~a", Make_String (s, strlen (s)));
+        *dirp = pw->pw_dir;
     }
     return p;
 }
@@ -172,27 +172,27 @@ Object General_File_Operation (Object s, register int op) {
     Get_Strsym_Stack (fn, r);
     switch (op) {
     case 0: {
-	char *p, *dir;
-	if ((p = Internal_Tilde_Expand (r, &dir)) == 0) {
-	    Alloca_End;
-	    return s;
-	}
-	Alloca (r, char*, strlen (dir) + 1 + strlen (p) + 1);
-	sprintf (r, "%s/%s", dir, p);
-	ret = Make_String (r, strlen (r));
-	Alloca_End;
-	return ret;
+        char *p, *dir;
+        if ((p = Internal_Tilde_Expand (r, &dir)) == 0) {
+            Alloca_End;
+            return s;
+        }
+        Alloca (r, char*, strlen (dir) + 1 + strlen (p) + 1);
+        sprintf (r, "%s/%s", dir, p);
+        ret = Make_String (r, strlen (r));
+        Alloca_End;
+        return ret;
     }
     case 1: {
-	struct stat st;
-	/* Doesn't make much sense to check for errno != ENOENT here:
-	 */
-	ret = stat (r, &st) == 0 ? True : False;
-	Alloca_End;
-	return ret;
+        struct stat st;
+        /* Doesn't make much sense to check for errno != ENOENT here:
+         */
+        ret = stat (r, &st) == 0 ? True : False;
+        Alloca_End;
+        return ret;
     }
     default: {
-	return Null; /* Just to avoid compiler warnings */
+        return Null; /* Just to avoid compiler warnings */
     }}
     /*NOTREACHED*/
 }
@@ -223,13 +223,13 @@ Object Open_File (char *name, int flags, int err) {
     Alloca_Begin;
 
     if ((p = Internal_Tilde_Expand (name, &dir))) {
-	Alloca (name, char*, strlen (dir) + 1 + strlen (p) + 1);
-	sprintf (name, "%s/%s", dir, p);
+        Alloca (name, char*, strlen (dir) + 1 + strlen (p) + 1);
+        sprintf (name, "%s/%s", dir, p);
     }
     if (!err && stat (name, &st) == -1 &&
-	    (errno == ENOENT || errno == ENOTDIR)) {
-	Alloca_End;
-	return Null;
+            (errno == ENOENT || errno == ENOTDIR)) {
+        Alloca_End;
+        return Null;
     }
     switch (flags & (P_INPUT|P_BIDIR)) {
     case 0:               p = "w";  break;
@@ -239,8 +239,8 @@ Object Open_File (char *name, int flags, int err) {
     fn = Make_String (name, strlen (name));
     Disable_Interrupts;
     if ((f = fopen (name, p)) == NULL) {
-	Saved_Errno = errno;  /* errno valid here? */
-	Primitive_Error ("~s: ~E", fn);
+        Saved_Errno = errno;  /* errno valid here? */
+        Primitive_Error ("~s: ~E", fn);
     }
     port = Make_Port (flags, f, fn);
     Register_Object (port, (GENERIC)0, Terminate_File, 0);
@@ -260,37 +260,37 @@ Object General_Open_File (Object name, int flags, Object path) {
     len = STRING(name)->size;
     fn = STRING(name)->data;
     if (fn[0] != '/' && fn[0] != '~') {
-	for ( ; TYPE(path) == T_Pair; path = Cdr (path)) {
-	    pref = Car (path);
-	    if (TYPE(pref) == T_Symbol)
-		pref = SYMBOL(pref)->name;
-	    if (TYPE(pref) != T_String)
-		continue;
-	    gotpath = 1;
-	    if ((plen = STRING(pref)->size) > Path_Max () || plen == 0)
-		continue;
-	    if (len + plen + 2 > blen) {
-		blen = len + plen + 2;
-		Alloca (buf, char*, blen);
-	    }
-	    memcpy (buf, STRING(pref)->data, plen);
-	    if (buf[plen-1] != '/')
-		buf[plen++] = '/';
-	    memcpy (buf+plen, fn, len);
-	    buf[len+plen] = '\0';
-	    port = Open_File (buf, flags, 0);
-	    /* No GC has been taken place in Open_File() if it returns Null.
-	     */
-	    if (!Nullp (port)) {
-		Alloca_End;
-		return port;
-	    }
-	}
+        for ( ; TYPE(path) == T_Pair; path = Cdr (path)) {
+            pref = Car (path);
+            if (TYPE(pref) == T_Symbol)
+                pref = SYMBOL(pref)->name;
+            if (TYPE(pref) != T_String)
+                continue;
+            gotpath = 1;
+            if ((plen = STRING(pref)->size) > Path_Max () || plen == 0)
+                continue;
+            if (len + plen + 2 > blen) {
+                blen = len + plen + 2;
+                Alloca (buf, char*, blen);
+            }
+            memcpy (buf, STRING(pref)->data, plen);
+            if (buf[plen-1] != '/')
+                buf[plen++] = '/';
+            memcpy (buf+plen, fn, len);
+            buf[len+plen] = '\0';
+            port = Open_File (buf, flags, 0);
+            /* No GC has been taken place in Open_File() if it returns Null.
+             */
+            if (!Nullp (port)) {
+                Alloca_End;
+                return port;
+            }
+        }
     }
     if (gotpath)
-	Primitive_Error ("file ~s not found", name);
+        Primitive_Error ("file ~s not found", name);
     if (len + 1 > blen)
-	Alloca (buf, char*, len + 1);
+        Alloca (buf, char*, len + 1);
     memcpy (buf, fn, len);
     buf[len] = '\0';
     port = Open_File (buf, flags, 1);
@@ -317,18 +317,18 @@ Object General_Close_Port (Object port) {
     Check_Type (port, T_Port);
     flags = PORT(port)->flags;
     if (!(flags & P_OPEN) || (flags & P_STRING))
-	return Void;
+        return Void;
     f = PORT(port)->file;
     if (f == stdin || f == stdout)
-	return Void;
+        return Void;
     if ((PORT(port)->closefun) (f) == EOF) {
-	Saved_Errno = errno;   /* errno valid here? */
-	err++;
+        Saved_Errno = errno;   /* errno valid here? */
+        err++;
     }
     PORT(port)->flags &= ~P_OPEN;
     Deregister_Object (port);
     if (err)
-	Primitive_Error ("write error on ~s: ~E", port);
+        Primitive_Error ("write error on ~s: ~E", port);
     return Void;
 }
 
@@ -341,7 +341,7 @@ Object P_Close_Output_Port (Object port) {
 }
 
 #define General_With(prim,curr,flags) Object prim (name, thunk)\
-	Object name, thunk; {\
+        Object name, thunk; {\
     Object old, ret;\
     GC_Node2;\
 \

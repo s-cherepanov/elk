@@ -20,8 +20,8 @@ Object Syms_To_List(p) SYMDESCR *p; {
     ret = Null;
     GC_Link(ret);
     for ( ; p->name; p++) {
-	mode = Intern(p->name);
-	ret = Cons(mode, ret);
+        mode = Intern(p->name);
+        ret = Cons(mode, ret);
     }
     GC_Unlink;
     return P_Reverse(ret);
@@ -30,7 +30,7 @@ Object Syms_To_List(p) SYMDESCR *p; {
 void Check_Result_Vector(x, len) Object x; {
     Check_Type(x, T_Vector);
     if (VECTOR(x)->size != len)
-	Primitive_Error("argument vector has the wrong length");
+        Primitive_Error("argument vector has the wrong length");
 }
 
 elk_init_unix_unix() {

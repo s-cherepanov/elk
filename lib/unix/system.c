@@ -27,68 +27,68 @@ static Object P_File_Limit(lim, f) Object lim, f; {
     switch (Symbols_To_Bits(lim, 0, Limit_Syms)) {
     case L_LINK_MAX:
 #ifdef LINK_MAX
-	return Make_Integer(LINK_MAX);
+        return Make_Integer(LINK_MAX);
 #else
 #ifdef _PC_LINK_MAX
-	op = _PC_LINK_MAX;
+        op = _PC_LINK_MAX;
 #       define HAVEOP
 #else
-	return Make_Integer(sizeof(short) * 8);   /* guess */
+        return Make_Integer(sizeof(short) * 8);   /* guess */
 #endif
 #endif
-	break;
+        break;
 
     case L_NAME_MAX:
 #ifdef NAME_MAX
-	return Make_Integer(NAME_MAX);
+        return Make_Integer(NAME_MAX);
 #else
 #ifdef _PC_NAME_MAX
-	op = _PC_NAME_MAX;
+        op = _PC_NAME_MAX;
 #       define HAVEOP
 #else
-	return Make_Integer(255);   /* guess */
+        return Make_Integer(255);   /* guess */
 #endif
 #endif
-	break;
+        break;
 
     case L_PATH_MAX:
 #ifdef MAX_PATH
-	return Make_Integer(MAX_PATH);
+        return Make_Integer(MAX_PATH);
 #else
 #ifdef _PC_PATH_MAX
-	op = _PC_PATH_MAX;
+        op = _PC_PATH_MAX;
 #       define HAVEOP
 #else
 #ifdef MAXPATHLEN
-	return Make_Integer(MAXPATHLEN);
+        return Make_Integer(MAXPATHLEN);
 #else
-	return Make_Integer(1024);   /* guess */
+        return Make_Integer(1024);   /* guess */
 #endif
 #endif
 #endif
-	break;
+        break;
 
     case L_PIPE_BUF:
 #ifdef PIPE_BUF
-	return Make_Integer(PIPE_BUF);
+        return Make_Integer(PIPE_BUF);
 #else
 #ifdef _PC_PIPE_BUF
-	op = _PC_PIPE_BUF;
+        op = _PC_PIPE_BUF;
 #       define HAVEOP
 #else
-	return Make_Integer(512);   /* guess */
+        return Make_Integer(512);   /* guess */
 #endif
 #endif
-	break;
+        break;
 
     case L_NO_TRUNC:
 #ifdef _PC_NO_TRUNC
-	op = _PC_NO_TRUNC;
+        op = _PC_NO_TRUNC;
 #       define HAVEOP
 #else
-	return False;   /* guess */
+        return False;   /* guess */
 #endif
-	break;
+        break;
     }
 #ifdef HAVEOP
     /* If we get here, we have a _PC_XXX symbol in `op' and can invoke
@@ -99,17 +99,17 @@ static Object P_File_Limit(lim, f) Object lim, f; {
     ret = fn ? pathconf(fn, op) : fpathconf(fd, op);
     if (ret == -1) {
 #ifdef _PC_NO_TRUNC
-	if (op == _PC_NO_TRUNC && errno == 0)
-	    return False;
+        if (op == _PC_NO_TRUNC && errno == 0)
+            return False;
 #endif
-	Raise_System_Error1("~s: ~E", f);
+        Raise_System_Error1("~s: ~E", f);
     }
 #ifdef _PC_NO_TRUNC
     if (op == _PC_NO_TRUNC)
-	return ret ? True : False;
+        return ret ? True : False;
     else
 #endif
-	return Make_Long(ret);
+        return Make_Long(ret);
 #endif
 }
 
@@ -161,7 +161,7 @@ static Object P_System_Info(ret) Object ret; {
     x = Make_String(p, strlen(p)); VECTOR(ret)->data[0] = x;
     strcpy(systype, SYSTEMTYPE);
     if ((p = index(systype, '-')) && (q = index(p+1, '-'))) {
-	*p++ = 0; *q = 0;
+        *p++ = 0; *q = 0;
     } else p = "?";
     x = Make_String(systype, strlen(systype)); VECTOR(ret)->data[1] = x;
     x = Make_String(p, strlen(p)); VECTOR(ret)->data[2] = x;

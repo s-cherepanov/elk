@@ -97,10 +97,10 @@ Object Obarray_Lookup (register char const *str, register int len) {
 
     h = Hash (str, len) % OBARRAY_SIZE;
     for (p = VECTOR(Obarray)->data[h]; !Nullp (p); p = sym->next) {
-	sym = SYMBOL(p);
-	s = STRING(sym->name);
-	if (s->size == len && bcmp (s->data, str, len) == 0)
-	    return p;
+        sym = SYMBOL(p);
+        s = STRING(sym->name);
+        if (s->size == len && bcmp (s->data, str, len) == 0)
+            return p;
     }
     return Make_Integer (h);
 }
@@ -115,17 +115,17 @@ Object CI_Intern (char const *str) {
 
     len = strlen (str);
     if (len > sizeof (buf)) {
-	Alloca (dst, char*, len);
+        Alloca (dst, char*, len);
     } else
-	dst = buf;
+        dst = buf;
     src = str;
     str = dst;
     for ( ; *src; src++, dst++)
-	*dst = isupper (*src) ? tolower (*src) : *src;
+        *dst = isupper (*src) ? tolower (*src) : *src;
     s = Obarray_Lookup (str, len);
     if (TYPE(s) != T_Fixnum) {
-	Alloca_End;
-	return s;
+        Alloca_End;
+        return s;
     }
     ostr = Make_Const_String (str, len);
     sym = Make_Symbol (ostr);
@@ -141,11 +141,11 @@ Object Intern (char const *str) {
     register int len;
 
     if (Case_Insensitive)
-	return CI_Intern (str);
+        return CI_Intern (str);
     len = strlen (str);
     s = Obarray_Lookup (str, len);
     if (TYPE(s) != T_Fixnum)
-	return s;
+        return s;
     ostr = Make_Const_String (str, len);
     sym = Make_Symbol (ostr);
     p = &VECTOR(Obarray)->data[FIXNUM(s)];
@@ -160,7 +160,7 @@ Object P_String_To_Symbol (Object str) {
     Check_Type (str, T_String);
     s = Obarray_Lookup (STRING(str)->data, STRING(str)->size);
     if (TYPE(s) != T_Fixnum)
-	return s;
+        return s;
     str = Make_String (STRING(str)->data, STRING(str)->size);
     sym = Make_Symbol (str);
     p = &VECTOR(Obarray)->data[FIXNUM(s)];
@@ -177,11 +177,11 @@ Object P_Oblist () {
     p = list = Null;
     GC_Link2 (p, list);
     for (i = 0; i < OBARRAY_SIZE; i++) {
-	bucket = Null;
-	for (p = VECTOR(Obarray)->data[i]; !Nullp (p); p = SYMBOL(p)->next)
-	    bucket = Cons (p, bucket);
-	if (!Nullp (bucket))
-	    list = Cons (bucket, list);
+        bucket = Null;
+        for (p = VECTOR(Obarray)->data[i]; !Nullp (p); p = SYMBOL(p)->next)
+            bucket = Cons (p, bucket);
+        if (!Nullp (bucket))
+            list = Cons (bucket, list);
     }
     GC_Unlink;
     return list;
@@ -197,27 +197,27 @@ Object P_Put (int argc, Object *argv) {
     Check_Type (key, T_Symbol);
     last = Null;
     for (tail = SYMBOL(sym)->plist; !Nullp (tail); tail = Cdr (tail)) {
-	prop = Car (tail);
-	if (EQ(Car (prop), key)) {
-	    if (argc == 3)
-		Cdr (prop) = argv[2];
-	    else if (Nullp (last))
-		SYMBOL(sym)->plist = Cdr (tail);
-	    else
-		Cdr (last) = Cdr (tail);
-	    return key;
-	}
-	last = tail;
+        prop = Car (tail);
+        if (EQ(Car (prop), key)) {
+            if (argc == 3)
+                Cdr (prop) = argv[2];
+            else if (Nullp (last))
+                SYMBOL(sym)->plist = Cdr (tail);
+            else
+                Cdr (last) = Cdr (tail);
+            return key;
+        }
+        last = tail;
     }
     if (argc == 2)
-	return False;
+        return False;
     GC_Link3 (sym, last, key);
     tail = Cons (key, argv[2]);
     tail = Cons (tail, Null);
     if (Nullp (last))
-	SYMBOL(sym)->plist = tail;
+        SYMBOL(sym)->plist = tail;
     else
-	Cdr (last) = tail;
+        Cdr (last) = tail;
     GC_Unlink;
     return key;
 }
@@ -229,12 +229,12 @@ Object P_Get (Object sym, Object key) {
     Check_Type (key, T_Symbol);
     prop = Assq (key, SYMBOL(sym)->plist);
     if (!Truep (prop))
-	return False;
-	/*
-	 * Do we want to signal an error or return #f?
-	 *
-	 * Primitive_Error ("~s has no such property: ~s", sym, key);
-	 */
+        return False;
+        /*
+         * Do we want to signal an error or return #f?
+         *
+         * Primitive_Error ("~s has no such property: ~s", sym, key);
+         */
     return Cdr (prop);
 }
 
@@ -249,9 +249,9 @@ int Hash (char const *str, int len) {
 
     h = 5 * len;
     if (len > 5)
-	len = 5;
+        len = 5;
     for (p = str, ep = p+len; p < ep; ++p)
-	h = (h << 2) ^ *p;
+        h = (h << 2) ^ *p;
     return h & 017777777777;
 }
 
@@ -297,20 +297,20 @@ unsigned long int Symbols_To_Bits (Object x, int mflag, SYMDESCR *stab) {
 
     if (!mflag) Check_Type (x, T_Symbol);
     for (l = x; !Nullp (l); l = Cdr (l)) {
-	if (mflag) {
-	    Check_Type (l, T_Pair);
-	    x = Car (l);
-	}
-	Check_Type (x, T_Symbol);
-	s = SYMBOL(x)->name;
-	p = STRING(s)->data;
-	n = STRING(s)->size;
-	for (syms = stab; syms->name; syms++)
-	    if (n && strncmp (syms->name, p, n) == 0) break;
-	if (syms->name == 0)
-	    Primitive_Error ("invalid argument: ~s", x);
-	mask |= syms->val;
-	if (!mflag) break;
+        if (mflag) {
+            Check_Type (l, T_Pair);
+            x = Car (l);
+        }
+        Check_Type (x, T_Symbol);
+        s = SYMBOL(x)->name;
+        p = STRING(s)->data;
+        n = STRING(s)->size;
+        for (syms = stab; syms->name; syms++)
+            if (n && strncmp (syms->name, p, n) == 0) break;
+        if (syms->name == 0)
+            Primitive_Error ("invalid argument: ~s", x);
+        mask |= syms->val;
+        if (!mflag) break;
     }
     return mask;
 }
@@ -321,24 +321,24 @@ Object Bits_To_Symbols (unsigned long int x, int mflag, SYMDESCR *stab) {
     GC_Node2;
 
     if (mflag) {
-	GC_Link2 (list, tail);
-	for (list = tail = Null, syms = stab; syms->name; syms++)
-	    if ((x & syms->val) && syms->val != ~0) {
-		Object z;
+        GC_Link2 (list, tail);
+        for (list = tail = Null, syms = stab; syms->name; syms++)
+            if ((x & syms->val) && syms->val != ~0) {
+                Object z;
 
-		z = Intern (syms->name);
-		cell = Cons (z, Null);
-		if (Nullp (list))
-		    list = cell;
-		else
-		    P_Set_Cdr (tail, cell);
-		tail = cell;
-	    }
-	GC_Unlink;
-	return list;
+                z = Intern (syms->name);
+                cell = Cons (z, Null);
+                if (Nullp (list))
+                    list = cell;
+                else
+                    P_Set_Cdr (tail, cell);
+                tail = cell;
+            }
+        GC_Unlink;
+        return list;
     }
     for (syms = stab; syms->name; syms++)
-	if (syms->val == x)
-	    return Intern (syms->name);
+        if (syms->val == x)
+            return Intern (syms->name);
     return Null;
 }

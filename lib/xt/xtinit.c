@@ -37,11 +37,11 @@ elk_init_xt_init () {
     dummy(vendorShellWidgetClass);
 
     Define_Primitive (P_Xt_Release_4_Or_Laterp, "xt-release-4-or-later?",
-	0, 0, EVAL);
+        0, 0, EVAL);
     Define_Primitive (P_Xt_Release_5_Or_Laterp, "xt-release-5-or-later?",
-	0, 0, EVAL);
+        0, 0, EVAL);
     Define_Primitive (P_Xt_Release_6_Or_Laterp, "xt-release-6-or-later?",
-	0, 0, EVAL);
+        0, 0, EVAL);
     XtToolkitInitialize ();
     P_Provide (Intern ("xt.so"));
     P_Provide (Intern ("xt.o"));

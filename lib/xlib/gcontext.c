@@ -14,16 +14,16 @@ Object Make_Gc (finalize, dpy, g) Display *dpy; GC g; {
     Object gc;
 
     if (g == None)
-	return Sym_None;
+        return Sym_None;
     gc = Find_Object (T_Gc, (GENERIC)dpy, Match_X_Obj, g);
     if (Nullp (gc)) {
-	gc = Alloc_Object (sizeof (struct S_Gc), T_Gc, 0);
-	GCONTEXT(gc)->tag = Null;
-	GCONTEXT(gc)->gc = g;
-	GCONTEXT(gc)->dpy = dpy;
-	GCONTEXT(gc)->free = 0;
-	Register_Object (gc, (GENERIC)dpy, finalize ? P_Free_Gc :
-	    (PFO)0, 0);
+        gc = Alloc_Object (sizeof (struct S_Gc), T_Gc, 0);
+        GCONTEXT(gc)->tag = Null;
+        GCONTEXT(gc)->gc = g;
+        GCONTEXT(gc)->dpy = dpy;
+        GCONTEXT(gc)->free = 0;
+        Register_Object (gc, (GENERIC)dpy, finalize ? P_Free_Gc :
+            (PFO)0, 0);
     }
     return gc;
 }
@@ -62,7 +62,7 @@ static Object P_Change_Gc (gc, g) Object gc, g; {
 Object P_Free_Gc (g) Object g; {
     Check_Type (g, T_Gc);
     if (!GCONTEXT(g)->free)
-	XFreeGC (GCONTEXT(g)->dpy, GCONTEXT(g)->gc);
+        XFreeGC (GCONTEXT(g)->dpy, GCONTEXT(g)->gc);
     Deregister_Object (g);
     GCONTEXT(g)->free = 1;
     return Void;
@@ -73,14 +73,14 @@ static Object P_Query_Best_Size (d, w, h, shape) Object d, w, h, shape; {
 
     Check_Type (d, T_Display);
     if (!XQueryBestSize (DISPLAY(d)->dpy, Symbols_To_Bits (shape, 0,
-	    Shape_Syms), DefaultRootWindow (DISPLAY(d)->dpy),
-	    Get_Integer (w), Get_Integer (h), &rw, &rh))
-	Primitive_Error ("cannot query best shape");
+            Shape_Syms), DefaultRootWindow (DISPLAY(d)->dpy),
+            Get_Integer (w), Get_Integer (h), &rw, &rh))
+        Primitive_Error ("cannot query best shape");
     return Cons (Make_Integer (rw), Make_Integer (rh));
 }
 
 static Object P_Set_Gcontext_Clip_Rectangles (gc, x, y, v, ord)
-	Object gc, x, y, v, ord; {
+        Object gc, x, y, v, ord; {
     register XRectangle *p;
     register i, n;
     Alloca_Begin;
@@ -90,19 +90,19 @@ static Object P_Set_Gcontext_Clip_Rectangles (gc, x, y, v, ord)
     n = VECTOR(v)->size;
     Alloca (p, XRectangle*, n * sizeof (XRectangle));
     for (i = 0; i < n; i++) {
-	Object rect;
+        Object rect;
 
-	rect = VECTOR(v)->data[i];
-	Check_Type (rect, T_Pair);
-	if (Fast_Length (rect) != 4)
-	    Primitive_Error ("invalid rectangle: ~s", rect);
-	p[i].x = Get_Integer (Car (rect)); rect = Cdr (rect);
-	p[i].y = Get_Integer (Car (rect)); rect = Cdr (rect);
-	p[i].width = Get_Integer (Car (rect)); rect = Cdr (rect);
-	p[i].height = Get_Integer (Car (rect));
+        rect = VECTOR(v)->data[i];
+        Check_Type (rect, T_Pair);
+        if (Fast_Length (rect) != 4)
+            Primitive_Error ("invalid rectangle: ~s", rect);
+        p[i].x = Get_Integer (Car (rect)); rect = Cdr (rect);
+        p[i].y = Get_Integer (Car (rect)); rect = Cdr (rect);
+        p[i].width = Get_Integer (Car (rect)); rect = Cdr (rect);
+        p[i].height = Get_Integer (Car (rect));
     }
     XSetClipRectangles (GCONTEXT(gc)->dpy, GCONTEXT(gc)->gc, Get_Integer (x),
-	Get_Integer (y), p, n, Symbols_To_Bits (ord, 0, Ordering_Syms));
+        Get_Integer (y), p, n, Symbols_To_Bits (ord, 0, Ordering_Syms));
     Alloca_End;
     return Void;
 }
@@ -117,10 +117,10 @@ static Object P_Set_Gcontext_Dashlist (gc, off, v) Object gc, off, v; {
     n = VECTOR(v)->size;
     Alloca (p, char*, n);
     for (i = 0; i < n; i++) {
-	d = Get_Integer (VECTOR(v)->data[i]);
-	if (d < 0 || d > 255)
-	    Range_Error (VECTOR(v)->data[i]);
-	p[i] = d;
+        d = Get_Integer (VECTOR(v)->data[i]);
+        if (d < 0 || d > 255)
+            Range_Error (VECTOR(v)->data[i]);
+        p[i] = d;
     }
     XSetDashes (GCONTEXT(gc)->dpy, GCONTEXT(gc)->gc, Get_Integer (off), p, n);
     Alloca_End;
@@ -139,9 +139,9 @@ static Object P_Get_Gc_Values (gc) Object gc; {
 
     Check_Type (gc, T_Gc);
     if (!XGetGCValues (GCONTEXT(gc)->dpy, GCONTEXT(gc)->gc, mask, &GCV))
-	Primitive_Error ("cannot get gcontext values");
+        Primitive_Error ("cannot get gcontext values");
     return Record_To_Vector (GC_Rec, GC_Size, Sym_Gc, GCONTEXT(gc)->dpy,
-	mask);
+        mask);
 }
 
 elk_init_xlib_gcontext () {
@@ -154,9 +154,9 @@ elk_init_xlib_gcontext () {
     Define_Primitive (P_Free_Gc,         "free-gcontext",       1, 1, EVAL);
     Define_Primitive (P_Query_Best_Size, "query-best-size",     4, 4, EVAL);
     Define_Primitive (P_Set_Gcontext_Clip_Rectangles,
-	"set-gcontext-clip-rectangles!",                        5, 5, EVAL);
+        "set-gcontext-clip-rectangles!",                        5, 5, EVAL);
     Define_Primitive (P_Set_Gcontext_Dashlist,
-	"set-gcontext-dashlist!",                               3, 3, EVAL);
+        "set-gcontext-dashlist!",                               3, 3, EVAL);
     Define_Primitive (P_Get_Gc_Values,
-			"xlib-get-gcontext-values",             1, 1, EVAL);
+                        "xlib-get-gcontext-values",             1, 1, EVAL);
 }

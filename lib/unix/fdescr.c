@@ -54,7 +54,7 @@ SYMDESCR Lseek_Syms[] = {
  */
 static Object P_Close(fd) Object fd; {
     if (close(Get_Integer(fd)) == -1)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     return Void;
 }
 
@@ -63,11 +63,11 @@ static Object P_Close_On_Exec(argc, argv) int argc; Object *argv; {
 
     fd = Get_Integer(argv[0]);
     if ((flags = fcntl(fd, F_GETFD, 0)) == -1)
-	Raise_System_Error("fcntl(F_GETFD): ~E");
+        Raise_System_Error("fcntl(F_GETFD): ~E");
     if (argc == 2) {
-	Check_Type(argv[1], T_Boolean);
-	if (fcntl(fd, F_SETFD, Truep(argv[1])) == -1)
-	    Raise_System_Error("fcntl(F_SETFD): ~E");
+        Check_Type(argv[1], T_Boolean);
+        if (fcntl(fd, F_SETFD, Truep(argv[1])) == -1)
+            Raise_System_Error("fcntl(F_SETFD): ~E");
     }
     return flags & 1 ? True : False;
 }
@@ -76,7 +76,7 @@ static Object P_Dup(argc, argv) int argc; Object *argv; {
     int fd = Get_Integer(argv[0]), ret;
 
     if ((ret = (argc == 1 ? dup(fd) : dup2(fd, Get_Integer(argv[1])))) == -1)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     return Make_Integer(ret);
 }
 
@@ -85,10 +85,10 @@ static Object P_Filedescriptor_Flags(argc, argv) int argc; Object *argv; {
 
     fd = Get_Integer(argv[0]);
     if ((flags = fcntl(fd, F_GETFL, 0)) == -1)
-	Raise_System_Error("fcntl(F_GETFL): ~E");
+        Raise_System_Error("fcntl(F_GETFL): ~E");
     if (argc == 2) {
-	if (fcntl(fd, F_SETFL, Symbols_To_Bits(argv[1], 1, Fcntl_Flags)) == -1)
-	    Raise_System_Error("fcntl(F_SETFL): ~E");
+        if (fcntl(fd, F_SETFL, Symbols_To_Bits(argv[1], 1, Fcntl_Flags)) == -1)
+            Raise_System_Error("fcntl(F_SETFL): ~E");
     }
     return Bits_To_Symbols((unsigned long)flags, 1, Fcntl_Flags);
 }
@@ -102,19 +102,19 @@ static Object P_Fildescriptor_Port(fd, mode) Object fd, mode; {
     m = Get_String(mode);
     switch (m[0]) {
     case 'r':
-	flags = P_INPUT; break;
+        flags = P_INPUT; break;
     case 'w': case 'a':
-	flags = 0; break;
+        flags = 0; break;
     default:
-	Primitive_Error("invalid mode: ~s", mode);
+        Primitive_Error("invalid mode: ~s", mode);
     }
     if (m[1] == '+')
-	flags = P_BIDIR;
+        flags = P_BIDIR;
     Disable_Interrupts;
     if ((fp = fdopen(n = Get_Integer(fd), m)) == 0) {
-	Saved_Errno = errno;
-	Enable_Interrupts;
-	Raise_System_Error("~E");
+        Saved_Errno = errno;
+        Enable_Interrupts;
+        Raise_System_Error("~E");
     }
     sprintf(buf, "unix-fildescriptor[%d]", n);
     ret = Make_Port(flags, fp, Make_String(buf, strlen(buf)));
@@ -141,8 +141,8 @@ static Object P_Lseek(fd, off, whence) Object fd, off, whence; {
     off_t ret;
 
     if ((ret = lseek(Get_Integer(fd), (off_t)Get_Long(off),
-	    (int)Symbols_To_Bits(whence, 0, Lseek_Syms))) == (off_t)-1)
-	Raise_System_Error("~E");
+            (int)Symbols_To_Bits(whence, 0, Lseek_Syms))) == (off_t)-1)
+        Raise_System_Error("~E");
     return Make_Unsigned_Long((unsigned long)ret);
 }
 
@@ -155,8 +155,8 @@ int Num_Filedescriptors() {
 #elif defined(SC_OPEN_MAX_IN_UNISTD_H)
     static r;
     if (r == 0) {
-	if ((r = sysconf(_SC_OPEN_MAX)) == -1)
-	    r = 256;
+        if ((r = sysconf(_SC_OPEN_MAX)) == -1)
+            r = 256;
     }
     ret = r;
 #elif defined(NOFILE)
@@ -178,13 +178,13 @@ static Object P_Open(argc, argv) int argc; Object *argv; {
     fn = argv[0];
     mode = (int)Symbols_To_Bits(argv[1], 1, Open_Syms);
     if (!(n = mode & 3))
-	Primitive_Error("mode must include 'read or 'write");
+        Primitive_Error("mode must include 'read or 'write");
     mode &= ~3; mode |= n-1;
     if (mode & O_CREAT && argc == 2)
-	Primitive_Error("third argument required for 'create");
+        Primitive_Error("third argument required for 'create");
     if ((n = open(Get_Strsym(fn), mode, argc == 3 ? Get_Integer(argv[2]) : 0))
-	    == -1)
-	Raise_System_Error1("~s: ~E", fn);
+            == -1)
+        Raise_System_Error1("~s: ~E", fn);
     return Make_Integer(n);
 }
 
@@ -192,14 +192,14 @@ static Object P_Pipe() {
     int fd[2];
 
     if (pipe(fd) == -1)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     return Integer_Pair(fd[0], fd[1]);
 }
 
 static Object P_Port_Filedescriptor(port) Object port; {
     Check_Type(port, T_Port);
     if ((PORT(port)->flags & (P_STRING|P_OPEN)) != P_OPEN)
-	Primitive_Error("~s: invalid port", port);
+        Primitive_Error("~s: invalid port", port);
     return Make_Integer(fileno(PORT(port)->file));
 }
 
@@ -211,15 +211,15 @@ static Object Read_Write(argc, argv, readflg) int argc; Object *argv; {
     Check_Type(argv[1], T_String);
     sp = STRING(argv[1]);
     if (argc == 3) {
-	if ((len = Get_Integer(argv[2])) < 0 || len > sp->size)
-	    Range_Error(argv[2]);
+        if ((len = Get_Integer(argv[2])) < 0 || len > sp->size)
+            Range_Error(argv[2]);
     } else len = sp->size;
     if (readflg)
-	len = read(fd, sp->data, len);
+        len = read(fd, sp->data, len);
     else
-	len = write(fd, sp->data, len);
+        len = write(fd, sp->data, len);
     if (len == -1)
-	Raise_System_Error("~E");
+        Raise_System_Error("~E");
     return Make_Integer(len);
 }
 
@@ -251,7 +251,7 @@ void elk_init_unix_fdescr() {
     Def_Prim(P_Fildescriptor_Port,  "unix-filedescriptor->port",2, 2, EVAL);
     Def_Prim(P_Isatty,              "unix-isatty?",             1, 1, EVAL);
     Def_Prim(P_List_Filedescriptor_Flags,
-			      "unix-list-filedescriptor-flags", 0, 0, EVAL);
+                              "unix-list-filedescriptor-flags", 0, 0, EVAL);
     Def_Prim(P_List_Open_Modes,     "unix-list-open-modes",     0, 0, EVAL);
     Def_Prim(P_Lseek,               "unix-lseek",               3, 3, EVAL);
     Def_Prim(P_Num_Filedescriptors, "unix-num-filedescriptors", 0, 0, EVAL);

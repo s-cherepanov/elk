@@ -54,7 +54,7 @@ Object P_Force (Object d) {
 
     Check_Type (d, T_Promise);
     if (PROMISE(d)->done)
-	return PROMISE(d)->thunk;
+        return PROMISE(d)->thunk;
     GC_Link (d);
     a[0] = PROMISE(d)->thunk; a[1] = PROMISE(d)->env;
     TC_Disable;
@@ -62,7 +62,7 @@ Object P_Force (Object d) {
     TC_Enable;
     GC_Unlink;
     if (PROMISE(d)->done)    /* take care of recursive force calls */
-	return PROMISE(d)->thunk;
+        return PROMISE(d)->thunk;
     PROMISE(d)->thunk = ret;
     PROMISE(d)->done = 1;
     return ret;

@@ -82,7 +82,7 @@ void Intr_Handler (int sig) {
     Reset_IO (1);
     fun = Var_Get (V_Interrupt_Handler);
     if (TYPE(fun) == T_Compound && COMPOUND(fun)->min_args == 0)
-	(void)Funcall (fun, Null, 0);
+        (void)Funcall (fun, Null, 0);
     Format (Curr_Output_Port, "~%\7Interrupt!~%", 15, 0, (Object *)0);
     Reset ();
     /*NOTREACHED*/
@@ -90,9 +90,9 @@ void Intr_Handler (int sig) {
 
 void Install_Intr_Handler () {
     if (signal (SIGINT, SIG_IGN) == SIG_IGN)
-	Intr_Was_Ignored = 1;
+        Intr_Was_Ignored = 1;
     else
-	(void)signal (SIGINT, Intr_Handler);
+        (void)signal (SIGINT, Intr_Handler);
 }
 
 Object P_Disable_Interrupts () {

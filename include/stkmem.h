@@ -78,14 +78,14 @@ extern char *Mem_Alloc P_((unsigned));
 #define Alloca_End {\
     register MEM_NODE *_p, *_q;\
     if (_mem_first != 0) {\
-	_p = Mem_List;\
-	do {\
-	    _q = _p;\
-	    _p = _p->next;\
-	    if (--_q->refcnt == 0)\
-		free ((char *)_q);\
-	} while (_q != _mem_first);\
-	Mem_List = _p;\
+        _p = Mem_List;\
+        do {\
+            _q = _p;\
+            _p = _p->next;\
+            if (--_q->refcnt == 0)\
+                free ((char *)_q);\
+        } while (_q != _mem_first);\
+        Mem_List = _p;\
     }\
 }
 
