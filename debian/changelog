@@ -2,7 +2,13 @@ elk (3.99.6-1) unstable; urgency=low
 
   * New upstream release.
 
- -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 28 Sep 2003 14:52:11 +0200
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 10 Oct 2003 14:35:06 +0200
+
+elk (3.99.5-2) unstable; urgency=low
+
+  * Added libelfg0-dev and xlibs-dev to the -dev package's dependencies.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 10 Oct 2003 14:35:06 +0200
 
 elk (3.99.5-1) unstable; urgency=low
 

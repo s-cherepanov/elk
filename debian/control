@@ -36,7 +36,7 @@ Description: implementation of Scheme (the Extension Language Kit)
 Package: libelk0-dev
 Architecture: any
 Section: libdevel
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, libelfg0-dev, xlibs-dev
 Conflicts: elk (<< 3.99-1)
 Replaces: elk (<< 3.99-1)
 Description: development files for libelk0
