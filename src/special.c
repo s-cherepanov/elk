@@ -131,7 +131,7 @@ Object P_Begin (Object forms) {
     TC_Prolog;
 
     if (Nullp (forms))
-        return Null;
+        return Unspecified;
     GC_Link (forms);
     TC_Disable;
     for ( ; !Nullp (Cdr (forms)); forms = Cdr (forms))
@@ -147,6 +147,8 @@ Object P_Begin1 (Object forms) {
     GC_Node;
     TC_Prolog;
 
+    if (Nullp (forms))
+        return Unspecified;
     GC_Link (forms);
     TC_Disable;
     for (n = 1; !Nullp (Cdr (forms)); n = 0, forms = Cdr (forms)) {
@@ -228,6 +230,9 @@ Object P_Cond (Object argl) {
     int else_clause = 0;
     GC_Node3;
     TC_Prolog;
+
+    if (Nullp (argl))
+        return Unspecified;
 
     ret = False;
     clause = guard = Null;
