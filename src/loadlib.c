@@ -32,14 +32,24 @@
 
 #ifdef CAN_LOAD_LIB
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#if defined(HAVE_DL_DYLD)
+#if defined(HAVE_MACH_O_DYLD_H)
 #   include <mach-o/dyld.h>
 #elif defined(HAVE_DL_DLOPEN)
-#   include <dlfcn.h>
+#   if defined(HAVE_DLFCN_H)
+#       include <dlfcn.h>
+#   endif
+#   if defined(HAVE_SYS_DL_H)
+#       include <sys/dl.h>
+#   endif
+#elif defined(HAVE_DL_SHL_LOAD)
+#   if defined(HAVE_DL_H)
+#       include <dl.h>
+#   endif
 #endif
 
 #include "kernel.h"
@@ -58,29 +68,29 @@ void Dlopen_File (char *fn) {
     if (Verb_Load)
         printf ("[dyld %s]\n", fn);
 
-    ret = NSCreateObjectFileImageFromFile(fn, &image);
+    ret = NSCreateObjectFileImageFromFile (fn, &image);
 
     if (ret != NSObjectFileImageSuccess)
         Primitive_Error ("could not map `~%~s'",
                          Make_String (fn, strlen (fn)));
 
     /* Open the dynamic module */
-    handle = NSLinkModule(image, fn, NSLINKMODULE_OPTION_RETURN_ON_ERROR);
+    handle = NSLinkModule (image, fn, NSLINKMODULE_OPTION_RETURN_ON_ERROR);
 
     if (!handle) {
         NSLinkEditErrors errors;
-        const char *file, *errstr;
+        const char *file, *err;
         int errnum;
-        NSLinkEditError(&errors, &errnum, &file, &errstr);
+        NSLinkEditError (&errors, &errnum, &file, &err);
         Primitive_Error ("could not dyld `~%~s': ~%~s",
                          Make_String (file, strlen (file)),
-                         Make_String (errstr, strlen (errstr)));
+                         Make_String (err, strlen (err)));
     }
 
     /* Destroy our image, we won't need it */
-    NSDestroyObjectFileImage(image);
+    NSDestroyObjectFileImage (image);
 
-    /* NSUnLinkModule(handle, FALSE); */
+    /* NSUnLinkModule (handle, FALSE); */
 
 #elif defined(HAVE_DL_DLOPEN)
     void *handle;
@@ -88,12 +98,32 @@ void Dlopen_File (char *fn) {
     if (Verb_Load)
         printf ("[dlopen %s]\n", fn);
 
-    handle = dlopen (fn, RTLD_NOW|RTLD_GLOBAL);
+#if defined(RTLD_GLOBAL)
+    handle = dlopen (fn, RTLD_NOW | RTLD_GLOBAL);
+#elif defined(DL_GLOBAL)
+    handle = dlopen (fn, DL_NOW | DL_GLOBAL);
+#else
+    handle = dlopen (fn, 0);
+#endif
 
     if (handle == NULL) {
-        char *errstr = dlerror ();
+        char *err = dlerror ();
         Primitive_Error ("dlopen failed: ~%~s",
-                         Make_String (errstr, strlen (errstr)));
+                         Make_String (err, strlen (err)));
+    }
+
+#elif defined(HAVE_DL_SHL_LOAD)
+    shl_t handle;
+
+    if (Verb_Load)
+        printf ("[shl_load %s]\n", fn);
+
+    handle = shl_load (fn, BIND_IMMEDIATE | BIND_NONFATAL, NULL);
+
+    if (handle == NULL) {
+        char *err = strerror (errno);
+        Primitive_Error ("shl_load failed: ~%~s",
+                         Make_String (err, strlen (err)));
     }
 
 #else
@@ -106,15 +136,19 @@ void Dlopen_File (char *fn) {
     The_Symbols = Open_File_And_Snarf_Symbols (fn);
     for (sp = The_Symbols->first; sp; sp = sp->next) {
 #if defined(HAVE_DL_DYLD)
-        NSSymbol sym = NSLookupSymbolInModule(handle, sp->name);
+        NSSymbol sym = NSLookupSymbolInModule (handle, sp->name);
         if (sym)
-            sp->value = (unsigned long int)(intptr_t)NSAddressOfSymbol(sym);
+            sp->value = (unsigned long int)(intptr_t)NSAddressOfSymbol (sym);
 
 #elif defined(HAVE_DL_DLOPEN)
         /* dlsym() may fail for symbols not exported by object file;
          * this can be safely ignored. */
         sp->value = (unsigned long int)(intptr_t)dlsym (handle, sp->name);
 
+#elif defined(HAVE_DL_SHL_LOAD)
+        void *sym;
+        shl_findsym (&handle, "share", TYPE_UNDEFINED, &sym);
+        sp->value = (unsigned long int)(intptr_t)sym;
 #endif
     }
 

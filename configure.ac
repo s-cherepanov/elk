@@ -155,21 +155,54 @@ fi
 # Which mechanism should be used to dynamically load object files?
 ac_cv_my_can_load_lib=no
 
+# OS X style
 AC_CHECK_HEADERS(mach-o/dyld.h,
   [AC_CHECK_FUNCS(NSLinkModule,
     [AC_DEFINE(HAVE_DL_DYLD, 1, [Define if you have the Darwin dyld API])
      AC_DEFINE(SYMS_BEGIN_WITH, ['_'], [Define if symbols start with '_'])
      ac_cv_my_can_load_lib=yes])])
 
+# HP-UX style
+if test "${ac_cv_my_can_load_lib}" = "no"; then
+  AC_CHECK_HEADERS(dl.h)
+  ac_cv_my_have_shl_load=no
+  AC_CHECK_FUNC(shl_load,
+   [ac_cv_my_have_shl_load=yes,
+    AC_CHECK_LIB(dld, shl_load,
+     [ac_cv_my_have_shl_load=yes
+      ELK_LIBS="${ELK_LIBS} -ldld"])])
+  if test "${ac_cv_my_have_shl_load}" = "yes"; then
+    AC_DEFINE(HAVE_DL_SHL_LOAD, 1, [Define if you have the shl_load API])
+    ac_cv_my_can_load_lib=yes
+  fi
+fi
+
+# Whatever style
+if test "${ac_cv_my_can_load_lib}" = "no"; then
+  AC_CHECK_LIB(dld, dld_link,
+   [ELK_LIBS="${ELK_LIBS} -ldld"
+    AC_DEFINE(HAVE_DL_DLD_LINK, 1, [Define if you have the GNU dld library])
+    ac_cv_my_can_load_lib=yes])
+fi
+
 AC_CHECK_HEADERS(a.out.h)
 
 # Only test for dlopen() if the others didn't work
 if test "${ac_cv_my_can_load_lib}" = "no"; then
-  AC_CHECK_HEADERS(dlfcn.h,
-    [AC_CHECK_LIB(dl, dlopen,
-      [AC_DEFINE(HAVE_DL_DLOPEN, 1, [Define if you have the dlopen API])
-       ELK_LIBS="${ELK_LIBS} -ldl"
-       ac_cv_my_can_load_lib=yes])])
+  AC_CHECK_HEADERS(dlfcn.h sys/dl.h)
+  ac_cv_my_have_dlopen=no
+  AC_CHECK_FUNC(dlopen,
+    ac_cv_my_have_dlopen=yes,
+    AC_CHECK_LIB(dl, dlopen,
+      ac_cv_my_have_dlopen=yes
+      ELK_LIBS="${ELK_LIBS} -ldl",
+      AC_CHECK_LIB(svld, dlopen,
+        ac_cv_my_have_dlopen=yes
+        ELK_LIBS="${ELK_LIBS} -lsvld")))
+  if test "${ac_cv_my_have_dlopen}" = "yes"; then
+    AC_DEFINE(HAVE_DL_DLOPEN, 1, [Define if you have the dlopen API])
+    ac_cv_my_can_load_lib=yes
+  fi
 fi
 
 if test "${ac_cv_my_can_load_lib}" = "yes"; then
