@@ -114,8 +114,9 @@ int Check_Stack_Grows_Down () {
  */
 unsigned int Stack_Size () {
     char foo;
+    char *pfoo;
 
-    return Stack_Grows_Down ? stkbase-&foo : &foo-stkbase;
+    return Stack_Grows_Down ? stkbase-pfoo : pfoo-stkbase;
 }
 
 void Grow_Stack (struct S_Control *cp, Object val) {
