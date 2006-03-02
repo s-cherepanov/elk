@@ -112,6 +112,6 @@ void Init_Type() {
     memset(Types, 0, bytes);
     for (i = 0; (p = builtin_types[i]); i++) {
         Types[i].haspointer = *p != '0';
-        Types[i].name = ++p;
+        Types[i].name = p + 1; /* Skip first character */
     }
 }
