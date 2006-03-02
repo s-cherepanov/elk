@@ -274,11 +274,17 @@ Object Funcall_Primitive (Object fun, Object argl, int eval) {
             prim = PRIM(fun);   /* fun has possibly been moved during gc */
         }
         if (prim->disc == VARARGS) {
-            r = (prim->fun)(argc, argv);
+            Object (*varfun) (int, Object *);
+            varfun = (Object (*) (int, Object *))prim->fun;
+            r = varfun(argc, argv);
         } else {
             switch (argc) {
-            case 0:
-                r = (prim->fun)(); break;
+            case 0: {
+                Object (*myfun) (void);
+                myfun = (Object (*) (void))prim->fun;
+                r = myfun();
+                break;
+            }
             case 1:
                 TC_Disable;
                 r = eval ? Eval (Car (argl)) : Car (argl);
