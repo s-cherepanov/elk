@@ -38,7 +38,7 @@ typedef struct {
 } Object;
 
 #define FIXBITS         (8 * (int)sizeof(int))
-#define SIGNBIT         ((unsigned)1 << (FIXBITS-1))
+#define SIGNBIT         ((unsigned int)1 << (FIXBITS-1))
 #define CONSTBIT        1
 #define TYPEBITS        (8 * (int)sizeof(int) - 1)
 #define MAX_TYPE        ((1 << TYPEBITS) - 1)
@@ -51,8 +51,8 @@ typedef struct {
 #define FIXNUM(x)       ((int)(x).data)
 #define CHAR(x)         ((int)(x).data)
 
-#define POINTER(x)      ((void *)(intptr_t)(x).data)
-#define SETPOINTER(x,p) ((x).data = (intptr_t)(void *)(p))
+#define POINTER(x)      ((void *)(uintptr_t)(x).data)
+#define SETPOINTER(x,p) ((x).data = (uintptr_t)(void *)(p))
 #define SET(x,t,p)      ((x).tag = (int)t << 1, (x).data = (p))
 
 #define ISCONST(x)      ((x).tag & CONSTBIT)
@@ -68,9 +68,9 @@ typedef struct {
 #ifdef GENERATIONAL_GC
 
    typedef int gcspace_t;                 /* type for space and type arrays */
-   typedef intptr_t gcptr_t;              /* type for pointers */
-   typedef long int pageno_t;             /* type for page numbers */
-   typedef intptr_t addrarith_t;          /* type for address arithmetic */
+   typedef uintptr_t gcptr_t;             /* type for pointers */
+   typedef uintptr_t pageno_t;            /* type for page numbers */
+   typedef uintptr_t addrarith_t;         /* type for address arithmetic */
 
    extern gcspace_t *space;
    extern gcspace_t current_space;
