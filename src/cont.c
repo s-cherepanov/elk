@@ -113,14 +113,14 @@ int Check_Stack_Grows_Down () {
  * (the stack grows upwards on HP-PA based machines and Pyramids).
  */
 unsigned int Stack_Size () {
-    char foo;
-    char *pfoo;
+    volatile char foo;
+    char *pfoo = &foo;
 
     return Stack_Grows_Down ? stkbase-pfoo : pfoo-stkbase;
 }
 
 void Grow_Stack (struct S_Control *cp, Object val) {
-    char buf[100];
+    volatile char buf[100];
 
     /* Prevent the optimizer from optimizing buf away:
      */
@@ -133,7 +133,7 @@ void Jump_Cont (struct S_Control *cp, Object val) {
     static struct S_Control *p;
     static char *from, *to;      /* Must not be allocated on stack */
     static int i;                /* Ditto */
-    char foo;
+    volatile char foo;
 
     /* Reinstall the saved stack contents; take stack direction
      * into account.  cp must be put into a static variable, as
