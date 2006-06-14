@@ -1,4 +1,230 @@
 ------------------------------------------------------------------------
+r267 | sam | 2006-06-14 17:06:05 +0200 (Wed, 14 Jun 2006) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/doc/bitstring/Makefile.am
+   M /trunk/doc/cprog/Makefile.am
+   M /trunk/doc/kernel/Makefile.am
+   M /trunk/doc/man/Makefile.am
+   M /trunk/doc/oops/Makefile.am
+   M /trunk/doc/record/Makefile.am
+   M /trunk/doc/regexp/Makefile.am
+   M /trunk/doc/unix/Makefile.am
+   M /trunk/doc/usenix/Makefile.am
+   M /trunk/doc/xlib/Makefile.am
+   M /trunk/doc/xt/Makefile.am
+
+  * Fixed build with recent autotools.
+
+------------------------------------------------------------------------
+r266 | sam | 2006-06-14 16:48:50 +0200 (Wed, 14 Jun 2006) | 3 lines
+Changed paths:
+   M /trunk
+   M /trunk/NEWS
+   M /trunk/configure.ac
+
+  * Updated NEWS for 0.99.7.
+  * Prepared 0.99.7 release.
+
+------------------------------------------------------------------------
+r265 | sam | 2006-06-14 16:47:30 +0200 (Wed, 14 Jun 2006) | 2 lines
+Changed paths:
+   M /trunk/examples/tests/Makefile.am
+   A /trunk/examples/tests/gc-stress.scm
+
+  * Added a garbage collector stress test.
+
+------------------------------------------------------------------------
+r264 | sam | 2006-06-14 16:11:36 +0200 (Wed, 14 Jun 2006) | 2 lines
+Changed paths:
+   M /trunk/src/libelk.c
+
+  * Added volatile keyword to prevent gcc from optimising away.
+
+------------------------------------------------------------------------
+r263 | sam | 2006-06-14 14:33:15 +0200 (Wed, 14 Jun 2006) | 2 lines
+Changed paths:
+   M /trunk/Makefile.am
+   D /trunk/debian
+
+  * Removed debian/ directory from upstream.
+
+------------------------------------------------------------------------
+r262 | sam | 2006-03-02 22:17:23 +0100 (Thu, 02 Mar 2006) | 3 lines
+Changed paths:
+   M /trunk/src/cont.c
+
+  * src/cont.c: marked as volatile variables that we don't want optimised
+    away.
+
+------------------------------------------------------------------------
+r261 | sam | 2006-03-02 22:07:01 +0100 (Thu, 02 Mar 2006) | 2 lines
+Changed paths:
+   M /trunk/src/proc.c
+
+  * src/proc.c: store function pointers in typed variables before calling them.
+
+------------------------------------------------------------------------
+r260 | sam | 2006-03-02 22:04:10 +0100 (Thu, 02 Mar 2006) | 2 lines
+Changed paths:
+   M /trunk/src/type.c
+
+  * src/type.c: Replaced useless ++p with p+1.
+
+------------------------------------------------------------------------
+r259 | sam | 2006-03-02 22:02:40 +0100 (Thu, 02 Mar 2006) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * bootstrap: imported a newer bootstrap script.
+
+------------------------------------------------------------------------
+r258 | sam | 2006-03-02 21:54:22 +0100 (Thu, 02 Mar 2006) | 3 lines
+Changed paths:
+   M /trunk/include/object.h
+
+  * include/object.h: use uintptr_t instead of intptr_t to avoid side
+    effects during divisions.
+
+------------------------------------------------------------------------
+r257 | sam | 2005-11-01 19:59:20 +0100 (Tue, 01 Nov 2005) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * bootstrap: support automake version 1.8 and 1.9.
+
+------------------------------------------------------------------------
+r256 | sam | 2005-11-01 19:58:14 +0100 (Tue, 01 Nov 2005) | 2 lines
+Changed paths:
+   M /trunk/src/cont.c
+
+  * src/cont.c: workaround for an amd64 gcc bug.
+
+------------------------------------------------------------------------
+r255 | sam | 2004-08-09 22:21:00 +0200 (Mon, 09 Aug 2004) | 3 lines
+Changed paths:
+   M /trunk/src/heap-gen.c
+
+  * src/heap-gen.c:
+    + Fixed shadowed global declarations.
+
+------------------------------------------------------------------------
+r254 | sam | 2004-08-09 22:09:20 +0200 (Mon, 09 Aug 2004) | 2 lines
+Changed paths:
+   D /trunk/autotools
+
+  * No longer version-control autotools.
+
+------------------------------------------------------------------------
+r253 | sam | 2004-08-09 22:08:52 +0200 (Mon, 09 Aug 2004) | 6 lines
+Changed paths:
+   M /trunk/Makefile.am
+   D /trunk/autotools/Makefile.am
+   M /trunk/bootstrap
+   M /trunk/configure.ac
+
+  * bootstrap:
+    + Call aclocal after libtoolize.
+    + Got rid of autotools/
+  * configure.ac:
+    + Added more warning flags to the compilation process.
+
+------------------------------------------------------------------------
+r252 | sam | 2004-08-09 22:05:25 +0200 (Mon, 09 Aug 2004) | 3 lines
+Changed paths:
+   M /trunk/include/exception.h
+   M /trunk/include/extern.h
+   M /trunk/include/funcproto.h
+   M /trunk/include/gc.h
+   M /trunk/include/intern.h
+   M /trunk/include/object.h
+   M /trunk/include/stkmem.h
+   M /trunk/lib/misc/newhandler.cpp
+   M /trunk/lib/unix/unix.h
+   M /trunk/lib/xlib/xlib.h
+   M /trunk/lib/xwidgets/motif/support.d
+   M /trunk/lib/xwidgets/xt.h
+   M /trunk/src/stab-elf.c
+
+  * Got rid of P_() and ELLIPSIS macros.
+  * Adapted all prototypes to no longer use P_().
+
+------------------------------------------------------------------------
+r251 | sam | 2004-03-14 14:10:32 +0100 (Sun, 14 Mar 2004) | 5 lines
+Changed paths:
+   M /trunk/debian/changelog
+   M /trunk/debian/control
+   M /trunk/debian/menu
+   M /trunk/debian/rules
+
+  * debian/control:
+    + Build-depend on the new X development packages instead of xlibs-dev.
+  * debian/menu:
+    + Syntax fixes.
+
+------------------------------------------------------------------------
+r250 | sam | 2004-03-11 19:21:55 +0100 (Thu, 11 Mar 2004) | 4 lines
+Changed paths:
+   M /trunk/src/loadlib.c
+
+  * src/loadlib.c:
+    + Use the internal Get_String() function to allocate a C string from
+      library objects, since Elk strings are not null-terminated.
+
+------------------------------------------------------------------------
+r249 | sam | 2004-01-29 14:55:42 +0100 (Thu, 29 Jan 2004) | 3 lines
+Changed paths:
+   M /trunk/src/math.c
+
+  * src/math.c:
+    + If one of the factors is the exact zero, the result yields exact zero.
+
+------------------------------------------------------------------------
+r248 | sam | 2004-01-19 20:29:59 +0100 (Mon, 19 Jan 2004) | 3 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/include/extern.h
+   M /trunk/src/math.c
+   M /trunk/src/prim.c
+
+  * include/extern.h:
+    + Export P_Pow to applications.
+
+------------------------------------------------------------------------
+r247 | sam | 2003-12-31 18:40:24 +0100 (Wed, 31 Dec 2003) | 3 lines
+Changed paths:
+   M /trunk/debian/changelog
+   M /trunk/debian/rules
+
+  * debian/rules:
+    + Added touch calls to avoid build failures due to clock skews.
+
+------------------------------------------------------------------------
+r246 | sam | 2003-12-31 18:21:21 +0100 (Wed, 31 Dec 2003) | 5 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/debian/control
+
+  * debian/control:
+    + Switched back to libelf; elfutils is rather non-free.
+  * configure.ac:
+    + Don't assume -lXt when checking for -lX11.
+
+------------------------------------------------------------------------
+r245 | sam | 2003-12-08 11:48:49 +0100 (Mon, 08 Dec 2003) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+
+  * configure.ac: Added an additional level of quoting (from the FreeBSD port).
+
+------------------------------------------------------------------------
+r244 | sam | 2003-12-08 11:48:14 +0100 (Mon, 08 Dec 2003) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+
+  * Updated ChangeLog.
+
+------------------------------------------------------------------------
 r242 | sam | 2003-12-05 13:35:48 +0100 (Fri, 05 Dec 2003) | 2 lines
 Changed paths:
    M /trunk/NEWS
