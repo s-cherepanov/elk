@@ -487,13 +487,15 @@ AC_CHECK_LIB(gdbm, gdbm_open, ac_cv_my_have_gdbm=yes, ac_cv_my_have_gdbm=no)
 AM_CONDITIONAL(HAVE_GDBM, test "${ac_cv_my_have_gdbm}" = "yes")
 
 AC_PATH_X
+if test -n "${x_includes}"; then x_cflags="-I${x_includes}"; fi
+if test -n "${x_libraries}"; then x_libs="-I${x_libraries}"; fi
 
 AC_CHECK_LIB(X11, XOpenDisplay,
  [ac_cv_my_have_x11=yes
-  X_CFLAGS="-I${x_includes}"
-  X_LIBS="-lX11 -L${x_libraries}"],
+  X_CFLAGS="${x_cflags}"
+  X_LIBS="${x_libs} -lX11"],
  [ac_cv_my_have_x11=no],
- [[-L${x_libraries}]])
+ [[${x_libs}]])
 AM_CONDITIONAL(HAVE_X11, test "${ac_cv_my_have_x11}" = "yes")
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_LIBS)
@@ -502,13 +504,13 @@ if test "${cross_compiling}" = "no"; then
   AC_CHECK_LIB(Xt, XtFree,
    [ac_cv_my_have_xt=yes
     AC_CHECK_LIB(Xmu, XmuDrawLogo,
-     [XT_CFLAGS="-I${x_includes}"
-      XT_LIBS="-L${x_libraries} -lXmu -lXt -lSM -lICE -lXext -lX11"],
-     [XT_CFLAGS="-I${x_includes}"
-      XT_LIBS="-L${x_libraries} -lXt -lSM -lICE -lXext -lX11"],
-     [[-lXt -lSM -lICE -lXext -lX11 -L${x_libraries}]])],
+     [XT_CFLAGS="${x_cflags}"
+      XT_LIBS="${x_libs} -lXmu -lXt -lSM -lICE -lXext -lX11"],
+     [XT_CFLAGS="${x_cflags}"
+      XT_LIBS="${x_libs} -lXt -lSM -lICE -lXext -lX11"],
+     [[-lXt -lSM -lICE -lXext -lX11 ${x_libs}]])],
    [ac_cv_my_have_xt=no],
-   [[-lSM -lICE -lXext -lX11 -L${x_libraries}]])
+   [[-lSM -lICE -lXext -lX11 ${x_libs}]])
 else
   ac_cv_my_have_xt=no
 fi
@@ -519,8 +521,8 @@ AC_SUBST(XT_LIBS)
 if test "${cross_compiling}" = "no"; then
   AC_CHECK_LIB(Xaw, XawTextSearch,
    [ac_cv_my_have_xaw=yes
-    XAW_CFLAGS="-I${x_includes}"
-    XAW_LIBS="-L${x_libraries} -lXaw ${XT_LIBS}"],
+    XAW_CFLAGS="${x_cflags}"
+    XAW_LIBS="${x_libs} -lXaw ${XT_LIBS}"],
    [ac_cv_my_have_xaw=no],
    [[${XT_LIBS}]])
 else
@@ -533,8 +535,8 @@ AC_SUBST(XAW_LIBS)
 if test "${cross_compiling}" = "no"; then
   AC_CHECK_LIB(Xm, XmStringConcat,
    [ac_cv_my_have_motif=yes
-    MOTIF_CFLAGS="-I${x_includes} -I/usr/include/Xm"
-    MOTIF_LIBS="-L${x_libraries} -lXm ${XT_LIBS}"],
+    MOTIF_CFLAGS="${x_cflags} -I/usr/include/Xm"
+    MOTIF_LIBS="${x_libs} -lXm ${XT_LIBS}"],
    [ac_cv_my_have_motif=no],
    [[${XT_LIBS}]])
 else
@@ -571,7 +573,6 @@ dnl  Finished!
 dnl
 AC_OUTPUT([
   Makefile
-  debian/Makefile
   doc/Makefile
   doc/bitstring/Makefile
   doc/cprog/Makefile

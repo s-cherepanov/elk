@@ -2,8 +2,8 @@ EXTRA_DIST = unix.ms
 CLEANFILES = index.raw index.ms unix.ps unix.html
 
 if HAVE_GROFF
-doc_DATA = unix.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = unix.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/unix.ms

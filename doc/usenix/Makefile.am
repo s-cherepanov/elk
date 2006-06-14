@@ -2,8 +2,8 @@ EXTRA_DIST = usenix.ms
 CLEANFILES = tmp.ref usenix.ps
 
 if HAVE_GROFF
-doc_DATA = usenix.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = usenix.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/usenix.ms

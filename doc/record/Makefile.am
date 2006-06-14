@@ -2,8 +2,8 @@ EXTRA_DIST = record.ms
 CLEANFILES = index.raw index.ms record.ps record.html
 
 if HAVE_GROFF
-doc_DATA = record.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = record.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/record.ms

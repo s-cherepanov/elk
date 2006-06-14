@@ -2,8 +2,8 @@ EXTRA_DIST = xt.ms
 CLEANFILES = index.raw index.ms xt.ps xt.html
 
 if HAVE_GROFF
-doc_DATA = xt.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = xt.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/xt.ms

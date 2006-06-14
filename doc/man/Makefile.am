@@ -4,8 +4,8 @@ CLEANFILES = elk.ps elk.1.html
 man_MANS = elk.1
 
 if HAVE_GROFF
-doc_DATA = elk.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = elk.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 TROFF= groff -man -t

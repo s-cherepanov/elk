@@ -2,8 +2,8 @@ EXTRA_DIST = xlib.ms
 CLEANFILES = index.raw index.ms xlib.ps xlib.html
 
 if HAVE_GROFF
-doc_DATA = xlib.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = xlib.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/xlib.ms

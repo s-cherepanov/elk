@@ -2,8 +2,8 @@ EXTRA_DIST = cprog.ms
 CLEANFILES = side side.ref side.inx cprog.ps cprog.html
 
 if HAVE_GROFF
-doc_DATA = cprog.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = cprog.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/cprog.ms

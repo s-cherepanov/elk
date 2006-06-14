@@ -2,8 +2,8 @@ EXTRA_DIST = kernel.ms
 CLEANFILES = index.raw index.ms kernel.ps kernel.html
 
 if HAVE_GROFF
-doc_DATA = kernel.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = kernel.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/kernel.ms

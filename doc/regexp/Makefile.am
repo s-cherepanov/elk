@@ -2,8 +2,8 @@ EXTRA_DIST = regexp.ms
 CLEANFILES = index.raw index.ms regexp.ps regexp.html
 
 if HAVE_GROFF
-doc_DATA = regexp.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = regexp.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/regexp.ms

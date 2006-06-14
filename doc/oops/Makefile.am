@@ -2,8 +2,8 @@ EXTRA_DIST = oops.ms
 CLEANFILES = index.raw index.ms oops.ps oops.html
 
 if HAVE_GROFF
-doc_DATA = oops.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = oops.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/oops.ms

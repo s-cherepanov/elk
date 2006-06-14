@@ -2,8 +2,8 @@ EXTRA_DIST = bitstring.ms
 CLEANFILES = index.raw index.ms bitstring.ps bitstring.html
 
 if HAVE_GROFF
-doc_DATA = bitstring.ps
-docdir = $(datadir)/doc/@PACKAGE@/ps
+docs_DATA = bitstring.ps
+docsdir = $(datadir)/doc/@PACKAGE@/ps
 endif
 
 MANUAL = $(srcdir)/bitstring.ms
