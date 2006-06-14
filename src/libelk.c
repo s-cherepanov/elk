@@ -176,7 +176,7 @@ void Elk_Init (int ac, char **av, int init_objects, char *toplevel) {
 #if defined(CAN_DUMP)
 #   define foo (av[0][0])
 #else
-    char foo;
+    volatile char foo;
 #endif
 
 #ifdef CAN_DUMP
