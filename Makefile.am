@@ -1,7 +1,7 @@
 NULL = 
 
 SUBDIRS = include src lib scm doc examples
-DIST_SUBDIRS = $(SUBDIRS) debian
+DIST_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = \
 	bootstrap \
