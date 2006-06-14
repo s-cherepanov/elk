@@ -3,6 +3,9 @@ $Id$
 Changes between 3.0 and 4.0:
 ----------------------------
 
+  * New in 3.99.7 prerelease:
+    + Last known garbage collector bug was fixed.
+
   * New in 3.99.6 prerelease:
     + Many portability checks added to the configure script.
     + Fix for an installation bug that prevented extension loading.
