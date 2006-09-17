@@ -466,7 +466,7 @@ if test "x${ac_cv_c_Wall}" != "xno"; then
 fi
 
 # Code qui fait des warnings == code de porc == deux baffes dans ta gueule
-CFLAGS_warn="-Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Waggregate-return -Wmissing-prototypes -Wnested-externs -Wsign-compare"
+CFLAGS_warn="-Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Wmissing-prototypes -Wnested-externs -Wsign-compare"
 AC_CACHE_CHECK([if \$CC accepts ${CFLAGS_warn}],
   [ac_cv_c_Wwarn],
   [CFLAGS="${CFLAGS_warn} ${CFLAGS_save}"
