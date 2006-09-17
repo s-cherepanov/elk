@@ -37,7 +37,7 @@ static int Color_Equal (Object x, Object y) {
     return p->red == q->red && p->green == q->green && p->blue == q->blue;
 }
 
-Generic_Print (Color, "#[color %lu]", POINTER(x))
+Generic_Print (Color, "#[color %lu]", (unsigned int)(uintptr_t)POINTER(x))
 
 Object Make_Color (unsigned int r, unsigned int g, unsigned int b) {
     Object c;

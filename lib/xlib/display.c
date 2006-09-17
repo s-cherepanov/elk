@@ -43,7 +43,8 @@ Generic_Equal (Display, DISPLAY, dpy)
 
 static int Display_Print (Object d, Object port,
                           int raw, int depth, int length) {
-    Printf (port, "#[display %lu %s]", (unsigned)DISPLAY(d)->dpy,
+    Printf (port, "#[display %lu %s]",
+        (unsigned long)(uintptr_t)DISPLAY(d)->dpy,
         DisplayString (DISPLAY(d)->dpy));
     return 0;
 }

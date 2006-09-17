@@ -36,7 +36,7 @@ Generic_Predicate (Gc)
 
 Generic_Equal_Dpy (Gc, GCONTEXT, gc)
 
-Generic_Print (Gc, "#[gcontext %lu]", GCONTEXT(x)->gc)
+Generic_Print (Gc, "#[gcontext %lu]", (unsigned int)(uintptr_t)GCONTEXT(x)->gc)
 
 Generic_Get_Display (Gc, GCONTEXT)
 
