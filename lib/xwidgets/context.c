@@ -50,7 +50,7 @@ Generic_Predicate (Context)
 
 Generic_Equal (Context, CONTEXT, context)
 
-Generic_Print (Context, "#[context %lu]", POINTER(x))
+Generic_Print (Context, "#[context %lu]", (unsigned int)(uintptr_t)POINTER(x))
 
 static Object Internal_Make_Context (int finalize, XtAppContext context) {
     Object c;

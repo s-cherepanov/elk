@@ -38,7 +38,7 @@ Generic_Predicate (Widget)
 
 Generic_Equal (Widget, WIDGET, widget)
 
-Generic_Print (Widget, "#[widget %lu]", POINTER(x))
+Generic_Print (Widget, "#[widget %lu]", (unsigned int)(uintptr_t)POINTER(x))
 
 static Object Internal_Make_Widget (int finalize, Widget widget) {
     Object w;

@@ -37,7 +37,8 @@ static int Identifier_Equal (Object x, Object y) {
     return p->type == q->type && p->val == q->val && !p->free && !q->free;
 }
 
-Generic_Print (Identifier, "#[identifier %lu]", POINTER(x))
+Generic_Print (Identifier, "#[identifier %lu]",
+               (unsigned int)(uintptr_t)POINTER(x))
 
 Object Make_Id (int type, XtPointer val, int num) {
     Object i;
