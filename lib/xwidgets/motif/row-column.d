@@ -54,7 +54,7 @@
     XtSetArg (a, XmNwhichButton, &b);
     XtGetValues (popup, &a, 1);
     if (ep->button != b)
-	return;
+        return;
     XmMenuPosition (popup, ep);
     XtManageChild (popup);
 }")
@@ -83,11 +83,11 @@
     XtSetArg (a, XmNuserData, &client_data);
     XtGetValues (WIDGET(w)->widget, &a, 1);
     if (client_data)
-	XtRemoveEventHandler (WIDGET(w)->widget, ButtonPressMask, 0,
-	    Post_Handler, client_data);
+        XtRemoveEventHandler (WIDGET(w)->widget, ButtonPressMask, 0,
+            Post_Handler, client_data);
     client_data = (XtPointer)WIDGET(m)->widget;
     XtAddEventHandler (WIDGET(w)->widget, ButtonPressMask, 0,
-	Post_Handler, client_data);
+        Post_Handler, client_data);
     client_data = (XtPointer)WIDGET(m)->widget;
     XtSetValues (WIDGET(w)->widget, &a, 1);
     return Void;")

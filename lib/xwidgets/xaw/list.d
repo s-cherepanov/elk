@@ -40,8 +40,8 @@ static char **Get_List (Object x) {
     n = Fast_Length (x);
     l = (char **)XtMalloc ((n+1) * sizeof (char *));
     for (i = 0; i < n; i++, x = Cdr (x)) {
-	Get_Strsym_Stack (Car (x), s);
-	l[i] = XtNewString (s);
+        Get_Strsym_Stack (Car (x), s);
+        l[i] = XtNewString (s);
     }
     l[i] = 0;
     Alloca_End;
@@ -55,7 +55,7 @@ static char **Get_List (Object x) {
 (c->scheme 'callback:list-callback
 "   XawListReturnStruct *p = (XawListReturnStruct *)x;
     return Cons (Make_String (p->string, strlen (p->string)),
-	Make_Integer (p->list_index));")
+        Make_Integer (p->list_index));")
 
 (scheme->c 'list-list
 "   return (XtArgVal)Get_List (x);")
@@ -82,6 +82,6 @@ static char **Get_List (Object x) {
     Check_Widget_Class (w, listWidgetClass);
     p = XawListShowCurrent (WIDGET(w)->widget);
     if (p->list_index == XAW_LIST_NONE)
-	return False;
+        return False;
     return Cons (Make_String (p->string, strlen (p->string)),
-	Make_Integer (p->list_index));")
+        Make_Integer (p->list_index));")

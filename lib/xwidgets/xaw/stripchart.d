@@ -55,7 +55,7 @@
     XtSetArg (a[0], XtNgetValue, &c);
     XtGetValues (WIDGET(w)->widget, a, 1);
     if (c[0].callback)
-	Primitive_Error (\"stripchart already has a sampler\");
+        Primitive_Error (\"stripchart already has a sampler\");
     i = Register_Function (p);
     XtAddCallback (WIDGET(w)->widget, XtNgetValue, Get_Value, (XtPointer)i);
     return Make_Id ('s', (XtPointer)WIDGET(w)->widget, i);")
@@ -65,6 +65,6 @@
 
     w = (Widget)Use_Id (i, 's');
     XtRemoveCallback (w, XtNgetValue, Get_Value,
-	(XtPointer)IDENTIFIER(i)->num);
+        (XtPointer)IDENTIFIER(i)->num);
     Deregister_Function (IDENTIFIER(i)->num);
     return Void;")

@@ -40,7 +40,7 @@
 (define-primitive 'paned-set-min-max! '(w min max)
 "   Check_Widget (w);
     XawPanedSetMinMax (WIDGET(w)->widget, Get_Integer (min),
-	Get_Integer (max));
+        Get_Integer (max));
     return Void;")
 
 (define-primitive 'paned-get-min-max '(w)

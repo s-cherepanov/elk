@@ -59,6 +59,6 @@
     ret = Cons (Make_Integer (p->slider_y), ret);
     ret = Cons (Make_Integer (p->slider_x), ret);
     ret = Cons (Bits_To_Symbols ((unsigned long)p->changed, 1, Panner_Syms),
-	ret);
+        ret);
     GC_Unlink;
     return ret;")

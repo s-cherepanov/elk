@@ -39,7 +39,7 @@
 (define-primitive 'simplemenu-get-active-entry '(w)
 "   Check_Widget_Class (w, simpleMenuWidgetClass);
     return
-	Make_Widget_Foreign (XawSimpleMenuGetActiveEntry (WIDGET(w)->widget));")
+        Make_Widget_Foreign (XawSimpleMenuGetActiveEntry (WIDGET(w)->widget));")
 
 (define-primitive 'simplemenu-clear-active-entry '(w)
 "   Check_Widget_Class (w, simpleMenuWidgetClass);

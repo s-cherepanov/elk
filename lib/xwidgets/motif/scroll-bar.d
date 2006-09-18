@@ -62,11 +62,11 @@
 (c->scheme 'callback:scroll-bar-decrementCallback  scrollbar-callback->scheme)
 (c->scheme 'callback:scroll-bar-incrementCallback  scrollbar-callback->scheme)
 (c->scheme 'callback:scroll-bar-pageDecrementCallback
-						   scrollbar-callback->scheme)
+                                                   scrollbar-callback->scheme)
 (c->scheme 'callback:scroll-bar-pageIncrementCallback
-						   scrollbar-callback->scheme)
+                                                   scrollbar-callback->scheme)
 (c->scheme 'callback:scroll-bar-dragCallback       scrollbar-callback->scheme)
 (c->scheme 'callback:scroll-bar-toTopCallback      scrollbar-callback->scheme)
 (c->scheme 'callback:scroll-bar-toBottomCallback   scrollbar-callback->scheme)
 (c->scheme 'callback:scroll-bar-valueChangedCallback
-						   scrollbar-callback->scheme)
+                                                   scrollbar-callback->scheme)

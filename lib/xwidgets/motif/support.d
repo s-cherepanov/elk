@@ -89,7 +89,7 @@
         Destroy_Event_Args (args);
     }
     ret = Cons (Bits_To_Symbols ((unsigned long)p->reason, 0, Reason_Syms),
-	      ret);
+              ret);
     GC_Unlink;
     return ret;
 }")
@@ -103,7 +103,7 @@
     GC_Node2;
 
     if (!XmStringGetLtoR (p->value, XmSTRING_DEFAULT_CHARSET, &text))
-	text = \"\";
+        text = \"\";
     ret = s = Make_String (text, strlen (text));
     GC_Link2 (ret, s);
     ret = Cons (ret, Null);
@@ -124,13 +124,13 @@
     Alloca_Begin;
 
     tab = (XmString *)XtMalloc (Get_Integer (P_Length (x))
-	* sizeof (XmString));
+        * sizeof (XmString));
     /* tab is never freed since the converter must return a new address
      * each time it is called.
      */
     for (t = x; TYPE(t) == T_Pair; t = Cdr (t)) {
-	Get_Strsym_Stack (Car (t), s);
-	tab[i++] = XmStringCreate (s, XmSTRING_DEFAULT_CHARSET);
+        Get_Strsym_Stack (Car (t), s);
+        tab[i++] = XmStringCreate (s, XmSTRING_DEFAULT_CHARSET);
     }
     Alloca_End;
     return (XtArgVal)tab;
@@ -195,7 +195,7 @@
 (define xm-string->scheme
 "   char *text;
     if (!XmStringGetLtoR ((XmString)x, XmSTRING_DEFAULT_CHARSET, &text))
-	text = \"\";
+        text = \"\";
     return Make_String (text, strlen (text));")
 
 (define scheme->xm-string

@@ -46,10 +46,10 @@
     Destroy_Event_Args (args);
     t = P_Make_List (Make_Integer (p->num_params), Null);
     for (i = 0, Cdr (ret) = t; i < p->num_params; i++, t = Cdr (t)) {
-	Object s;
-	
-	s = Make_String (p->params[i], strlen (p->params[i]));
-	Car (t) = s;
+        Object s;
+
+        s = Make_String (p->params[i], strlen (p->params[i]));
+        Car (t) = s;
     }
     GC_Unlink;
     return ret;")
