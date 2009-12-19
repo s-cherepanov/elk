@@ -301,8 +301,13 @@ struct Prim_Init {
      */
     { P_Procedurep,        "procedure?",                     1, 1,    EVAL },
     { P_Primitivep,        "primitive?",                     1, 1,    EVAL },
+    { P_Primitive_To_String,
+                           "primitive->string",              1, 1,    EVAL },
     { P_Compoundp,         "compound?",                      1, 1,    EVAL },
+    { P_Compound_To_String,
+                           "compound->string",               1, 1,    EVAL },
     { P_Macrop,            "macro?",                         1, 1,    EVAL },
+    { P_Macro_To_String,   "macro->string",                  1, 1,    EVAL },
     { P_Eval,              "eval",                           1, 2,    VARARGS },
     { P_Apply,             "apply",                          2, MANY, VARARGS },
     { P_Lambda,            "lambda",                         2, MANY, NOEVAL },

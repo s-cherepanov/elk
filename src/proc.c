@@ -100,12 +100,37 @@ Object P_Primitivep (Object x) {
     return TYPE(x) == T_Primitive ? True : False;
 }
 
+Object P_Primitive_To_String (Object x) {
+    Check_Type (x, T_Primitive);
+    return Make_String (PRIM(x)->name, strlen(PRIM(x)->name));
+}
+
 Object P_Compoundp (Object x) {
     return TYPE(x) == T_Compound ? True : False;
 }
 
+Object P_Compound_To_String (Object x) {
+    Check_Type (x, T_Compound);
+    if (Nullp (COMPOUND(x)->name)) {
+        static char buf[64];
+        sprintf (buf, "#<compound %lu>", POINTER(x));
+        return Make_String (buf, strlen(buf));
+    }
+    return COMPOUND(x)->name;
+}
+
 Object P_Macrop (Object x) {
     return TYPE(x) == T_Macro ? True : False;
+}
+
+Object P_Macro_To_String (Object x) {
+    Check_Type (x, T_Macro);
+    if (Nullp (MACRO(x)->name)) {
+        static char buf[64];
+        sprintf (buf, "#<macro %lu>", POINTER(x));
+        return Make_String (buf, strlen(buf));
+    }
+    return MACRO(x)->name;
 }
 
 Object Make_Compound () {

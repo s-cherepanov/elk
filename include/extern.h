@@ -366,8 +366,11 @@ extern Object P_Macro (Object);
 extern Object P_Macro_Body (Object);
 extern Object P_Macro_Expand (Object);
 extern Object P_Primitivep (Object);
+extern Object P_Primitive_To_String (Object);
 extern Object P_Compoundp (Object);
+extern Object P_Compound_To_String (Object);
 extern Object P_Macrop (Object);
+extern Object P_Macro_To_String (Object);
 extern void Check_Procedure (Object);
 
 /* Delay and force
