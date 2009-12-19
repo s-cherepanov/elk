@@ -73,3 +73,5 @@ SOURCES_MOTIF_D = \
 	toggle-btn.d \
 	$(NULL)
 
+echo-sources: ; echo $(SOURCES)
+

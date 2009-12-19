@@ -73,3 +73,5 @@ install-exec-hook:
 	rm -f "$(DESTDIR)$(bindir)/scheme-elk"
 	ln -s elk "$(DESTDIR)$(bindir)/scheme-elk"
 
+echo-sources: ; echo $(SOURCES)
+

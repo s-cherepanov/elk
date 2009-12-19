@@ -25,7 +25,7 @@ index.ms: $(MANUAL) index.raw
 index.raw: $(MANUAL)
 	$(TROFF) $(MANUAL) 2> index.raw >/dev/null
 
-check:
-	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] $(MANUAL) \
-	    | grep -v "Empty command"
+#check:
+#	checknr -c.Ul.Pr.Sy.Va.Sh.Ix.Id.Ch -a.Ss.Se.[[.]] $(MANUAL) \
+#	    | grep -v "Empty command"
 

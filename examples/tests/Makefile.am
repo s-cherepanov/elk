@@ -4,7 +4,7 @@ CLEANFILES = $(allstamps) mytest.scm tmp1 tmp2 tmp3
 allstamps = stamp-r4rs stamp-gc
 
 if NATIVE_BUILD
-all-local: $(allstamps)
+check-local: $(allstamps)
 endif
 
 stamp-r4rs: $(top_builddir)/src/elk

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-##  Win32 cross-compilation for Elk -- Sam Hocevar <sam@zoy.org>
+##  Win32 cross-compilation for Elk -- Sam Hocevar <sam@hocevar.net>
 ##  $Id$
 
 set -x

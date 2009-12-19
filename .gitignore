@@ -1,0 +1,34 @@
+# Generic autotools files
+*.o
+*.lo
+*.la
+*.exe
+*.pc
+.auto
+.libs
+.deps
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+config.h.in
+config.h
+config.log
+config.status
+configure
+libtool
+stamp-*
+*-stamp
+# Configure-generated files
+include/site.h
+scm/slib.scm
+# Build-generated files
+src/elk
+lib/xwidgets/xaw/*.c
+lib/xwidgets/motif/*.c
+doc/*/*.inx
+doc/*/*.ms
+doc/*/*.ps
+doc/*/*.raw
+doc/*/*.ref
+doc/cprog/side

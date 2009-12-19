@@ -25,3 +25,5 @@ unix_la_LIBADD = $(top_builddir)/src/libelk.la
 extensions_HEADERS = unix.h
 extensionsdir = $(pkgincludedir)/extensions
 
+echo-sources: ; echo $(SOURCES)
+

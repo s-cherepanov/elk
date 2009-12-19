@@ -62,3 +62,5 @@ newhandler_la_SOURCES = newhandler.cpp
 newhandler_la_LDFLAGS = -module -avoid-version -no-undefined
 newhandler_la_LIBADD = $(top_builddir)/src/libelk.la
 
+echo-sources: ; echo $(SOURCES)
+

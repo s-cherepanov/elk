@@ -46,3 +46,5 @@ xlib_la_LIBADD = $(top_builddir)/src/libelk.la libelk-xlib.la @X_LIBS@
 extensions_HEADERS = xlib.h
 extensionsdir = $(pkgincludedir)/extensions
 
+echo-sources: ; echo $(SOURCES)
+

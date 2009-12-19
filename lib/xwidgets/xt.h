@@ -3,7 +3,7 @@
  * $Id$
  *
  * Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
- * Copyright 2002, 2003 Sam Hocevar <sam@zoy.org>, Paris
+ * Copyright 2002, 2003 Sam Hocevar <sam@hocevar.net>, Paris
  *
  * This software was derived from Elk 1.2, which was Copyright 1987, 1988,
  * 1989, Nixdorf Computer AG and TELES GmbH, Berlin (Elk 1.2 has been written
@@ -30,10 +30,13 @@
 
 #include "xlib.h"
 
+#define XTSTRINGDEFINES
+
 #define Object FOO
 #  include <X11/Intrinsic.h>
 #  include <X11/Core.h>
 #  include <X11/StringDefs.h>
+#  include <X11/Composite.h>
 #undef Object
 
 #include <stdarg.h>

@@ -69,3 +69,5 @@ SOURCES_XAW_D = \
 	viewport.d \
 	$(NULL)
 
+echo-sources: ; echo $(SOURCES)
+

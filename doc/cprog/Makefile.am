@@ -30,6 +30,6 @@ side: $(MANUAL)
 cprog.html: $(MANUAL) side.ref
 	$(MKINDEX) $(MANUAL) | sed -f side.ref | $(UNROFF) document=cprog
 
-check:
-	cknr -c.Tc -a.Es.Ee.Cs.Ce $(MANUAL)
+#check:
+#	cknr -c.Tc -a.Es.Ee.Cs.Ce $(MANUAL)
 

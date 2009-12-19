@@ -10,7 +10,7 @@
  * $Id$
  *
  * Copyright 1990, 1991, 1992, 1993, 1994, 1995, Oliver Laumann, Berlin
- * Copyright 2002, 2003 Sam Hocevar <sam@zoy.org>, Paris
+ * Copyright 2002, 2003 Sam Hocevar <sam@hocevar.net>, Paris
  *
  * This software was derived from Elk 1.2, which was Copyright 1987, 1988,
  * 1989, Nixdorf Computer AG and TELES GmbH, Berlin (Elk 1.2 has been written
@@ -475,7 +475,7 @@ static char *heapmalloc (int s) {
  * make a heap of size kilobytes. It is divided into heappages of
  * PAGEBYTES byte and is aligned at a physical page boundary. The
  * heapsize is rounded up to the nearest multiple of the physical
- * pagesize. Checked by sam@zoy.org on Apr 1, 2003.
+ * pagesize. Checked by sam@hocevar.net on Apr 1, 2003.
  */
 
 void Make_Heap (int size) {
@@ -572,7 +572,7 @@ void Make_Heap (int size) {
 }
 
 /*
- * increment the heap by 1024 KB. Checked by sam@zoy.org on Apr 1, 2003.
+ * increment the heap by 1024 KB. Checked by sam@hocevar.net on Apr 1, 2003.
  */
 
 static int ExpandHeap (char *reason) {

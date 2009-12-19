@@ -37,3 +37,5 @@ SOURCES_XT = \
 	widget.c \
 	$(NULL)
 
+echo-sources: ; echo $(SOURCES)
+

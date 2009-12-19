@@ -1,6 +1,6 @@
 NULL = 
 
-SUBDIRS = include src lib scm doc examples
+SUBDIRS = include src lib scm doc examples test
 DIST_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = \

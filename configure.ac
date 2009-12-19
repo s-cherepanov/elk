@@ -3,11 +3,11 @@
 AC_INIT(src/main.c)
 
 AC_PREREQ(2.50)
-AC_CONFIG_AUX_DIR(autotools)
+AC_CONFIG_AUX_DIR(.auto)
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE(elk, 3.99.7)
-AM_MAINTAINER_MODE
+dnl AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -598,6 +598,7 @@ AC_OUTPUT([
   lib/xwidgets/motif/Makefile
   scm/Makefile
   src/Makefile
+  test/Makefile
 
   scm/slib.scm
   include/site.h
