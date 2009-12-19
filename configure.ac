@@ -571,7 +571,7 @@ AM_CONDITIONAL(HAVE_GROFF, test "${ac_cv_my_have_groff}" = "yes")
 dnl
 dnl  Finished!
 dnl
-AC_OUTPUT([
+AC_CONFIG_FILES([
   Makefile
   doc/Makefile
   doc/bitstring/Makefile
@@ -587,7 +587,6 @@ AC_OUTPUT([
   doc/xlib/Makefile
   doc/xt/Makefile
   examples/Makefile
-  examples/tests/Makefile
   include/Makefile
   lib/Makefile
   lib/misc/Makefile
@@ -599,10 +598,16 @@ AC_OUTPUT([
   scm/Makefile
   src/Makefile
   test/Makefile
-
+])
+AC_CONFIG_FILES([
   scm/slib.scm
   include/site.h
 ])
+AC_CONFIG_FILES([test/check-gc], [chmod 0755 test/check-gc])
+AC_CONFIG_FILES([test/check-gc2], [chmod 0755 test/check-gc2])
+AC_CONFIG_FILES([test/check-r4rs], [chmod 0755 test/check-r4rs])
+
+AC_OUTPUT
 
 cat << EOF
 

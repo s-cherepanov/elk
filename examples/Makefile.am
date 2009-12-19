@@ -1,6 +1,5 @@
 NULL = 
 
-SUBDIRS = tests
 EXTRA_DIST = $(DATA)
 
 examplesdir = $(datadir)/doc/@PACKAGE@/examples
@@ -41,12 +40,6 @@ scheme_DATA = \
 	scheme/compile.scm \
 	scheme/sqrt.scm \
 	scheme/unify.scm \
-	$(NULL)
-
-testsdir = $(examplesdir)/tests
-tests_DATA = \
-	tests/README \
-	tests/r4rstest.scm \
 	$(NULL)
 
 unixdir = $(examplesdir)/unix

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# this test sometimes crashes the GC with the well-known
+# Panic: Visit: object not in prev space at 0x40210b2c ('pair') 8199 8201 (dumping core).
+
+cat << EOF | @top_builddir@/src/elk -p .:@top_srcdir@/scm -l -
+
+(display "testing garbage collector integrity (10000 loops)\n")
+;(set! garbage-collect-notify? #t)
+(define c 0)
+(define cb
+  (lambda ignore
+    (let ((s '()))
+      (set! c (+ 1 c))
+        (call/cc
+          (lambda (return)
+            (do ((i 0 (+ i 1)))
+                ((= i 100))
+                (let ((a (+ i 1)))
+                  (set! s (append s (list i))))
+                (if (= i 60) (return #t))))))))
+(do ((i 0 (+ i 1))) ((= i 10000)) (cb))
+(display "test passed.\n")
+
+EOF
+

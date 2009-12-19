@@ -1,0 +1,6 @@
+#!/bin/sh
+
+(cat @srcdir@/r4rstest.scm; echo '(test-cont) (test-sc4) (test-delay)') \
+  | @top_builddir@/src/elk -p .:@top_srcdir@/scm -l -
+rm -f tmp1 tmp2 tmp3
+

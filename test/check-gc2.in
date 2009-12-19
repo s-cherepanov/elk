@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# This test used to crash the GC.
+
+cat << EOF | @top_builddir@/src/elk -p .:@top_srcdir@/scm -l -
+
+(display "testing deep calls (2000 calls)\n")
+(define crash
+  (lambda (x)
+    (begin
+      (if (> x 0)
+        (crash (- x 1)))
+      (collect))))
+(crash 2000)
+(display "test passed.\n")
+
+EOF
+

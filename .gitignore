@@ -22,6 +22,9 @@ stamp-*
 # Configure-generated files
 include/site.h
 scm/slib.scm
+test/check-gc
+test/check-gc2
+test/check-r4rs
 # Build-generated files
 src/elk
 lib/xwidgets/xaw/*.c
