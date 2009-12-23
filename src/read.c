@@ -80,7 +80,7 @@ static void Read_Grow () {
 
 Object General_Read(), Read_Sequence(), Read_Atom(), Read_Special();
 Object Read_String(), Read_Sharp(), Read_True(), Read_False(), Read_Void();
-Object Read_Kludge(), Read_Vector(), Read_Radix(), Read_Char();
+Object Read_Kludge(), Read_Vector_Paren(), Read_Vector_Bracket(), Read_Radix(), Read_Char();
 
 void Init_Read () {
     Define_Symbol (&Sym_Quote, "quote");
@@ -92,7 +92,8 @@ void Init_Read () {
     Readers['f'] = Readers['F'] = Read_False;
     Readers['v'] = Readers['V'] = Read_Void;
     Readers['!'] = Read_Kludge;  /* for interpreter files */
-    Readers['('] = Read_Vector;
+    Readers['('] = Read_Vector_Paren;
+    Readers['['] = Read_Vector_Bracket;
     Readers['b'] = Readers['B'] =
     Readers['o'] = Readers['O'] =
     Readers['d'] = Readers['D'] =
@@ -273,8 +274,8 @@ comment:
             }
             continue;
         }
-        if (c == '(') {
-            ret = Read_Sequence (port, 0, konst);
+        if (c == '(' || c == '[') {
+            ret = Read_Sequence (port, 0, konst, c);
         } else if (c == '#') {
             ret = Read_Sharp (port, konst);
             if (TYPE(ret) == T_Special)      /* it was a #! */
@@ -333,11 +334,13 @@ eof:
         if (Skip_Comment (port) == EOF)
             goto eof;
         goto again;
+    case ']':
     case ')':
         SET(ret, T_Special, c);
         return ret;
+    case '[':
     case '(':
-        return Read_Sequence (port, 0, konst);
+        return Read_Sequence (port, 0, konst, c);
     case '\'':
         return READ_QUOTE(Sym_Quote);
     case '`':
@@ -394,7 +397,7 @@ eof:
     /*NOTREACHED*/
 }
 
-Object Read_Sequence (Object port, int vec, int konst) {
+Object Read_Sequence (Object port, int vec, int konst, int start_chr) {
     Object ret, e, tail, t;
     GC_Node3;
 
@@ -403,7 +406,14 @@ Object Read_Sequence (Object port, int vec, int konst) {
     while (1) {
         e = Read_Special (port, konst);
         if (TYPE(e) == T_Special) {
-            if (CHAR(e) == ')') {
+            if (CHAR(e) == ')' || CHAR(e) == ']') {
+                if ((start_chr == '(' && CHAR(e) == ']')
+                      || (start_chr == '[' && CHAR(e) == ')')) {
+                    char buf[64];
+                    sprintf(buf, "expression starts with '%c' but ends "
+                                 "with '%c'", start_chr, CHAR(e));
+                    Reader_Error (port, buf);
+                }
                 GC_Unlink;
                 return ret;
             }
@@ -420,7 +430,7 @@ Object Read_Sequence (Object port, int vec, int konst) {
                     Cdr (tail) = e;
                 }
                 e = Read_Special (port, konst);
-                if (TYPE(e) == T_Special && CHAR(e) == ')') {
+                if (TYPE(e) == T_Special && (CHAR(e) == ')' || CHAR(e) == ']')) {
                     GC_Unlink;
                     return ret;
                 }
@@ -522,8 +532,13 @@ Object Read_Kludge (Object port, int chr, int konst) {
 }
 
 /*ARGSUSED*/
-Object Read_Vector (Object port, int chr, int konst) {
-    return List_To_Vector (Read_Sequence (port, 1, konst), konst);
+Object Read_Vector_Paren (Object port, int chr, int konst) {
+    return List_To_Vector (Read_Sequence (port, 1, konst, '('), konst);
+}
+
+/*ARGSUSED*/
+Object Read_Vector_Bracket (Object port, int chr, int konst) {
+    return List_To_Vector (Read_Sequence (port, 1, konst, '['), konst);
 }
 
 /*ARGSUSED*/

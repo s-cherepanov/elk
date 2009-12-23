@@ -41,7 +41,7 @@ extern_c Object elk_import False2;
 #define Numeric(t)  (t == T_Fixnum || t == T_Flonum || t == T_Bignum)
 
 #define Whitespace(c) (c == ' ' || c == '\t' || c == '\014' || c == '\n' || c == '\r')
-#define Delimiter(c) (c == ';' || c == ')' || c == '(' || c == '"')
+#define Delimiter(c) (c == ';' || c == ')' || c == '(' || c == '[' || c == ']' || c == '"')
 
 
 /* Align heap addresses */
