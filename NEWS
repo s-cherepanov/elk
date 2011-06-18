@@ -3,6 +3,9 @@ $Id$
 Changes between 3.0 and 4.0:
 ----------------------------
 
+  * New in 3.99.8 prerelease:
+    + Maintenance release with minor bugfixes.
+
   * New in 3.99.7 prerelease:
     + Last known garbage collector bug was fixed.
 
