@@ -567,6 +567,8 @@ fi
 AC_MSG_RESULT([${ac_cv_my_have_groff}])
 AM_CONDITIONAL(HAVE_GROFF, test "${ac_cv_my_have_groff}" = "yes")
 
+PKG_CHECK_MODULES(GTK, gtk+-2.0, ac_cv_my_have_gtk=yes, ac_cv_my_have_gtk=no)
+AM_CONDITIONAL(HAVE_GTK, test "${ac_cv_my_have_gtk}" = "yes")
 
 dnl
 dnl  Finished!
@@ -618,6 +620,7 @@ libgdbm support: ${ac_cv_my_have_gdbm}
 X11 support: ${ac_cv_my_have_x11}
 Xaw support: ${ac_cv_my_have_xaw}
 Motif support: ${ac_cv_my_have_motif}
+GTK+ support: ${ac_cv_my_have_gtk}
 build documentation: ${ac_cv_my_have_groff}
 EOF
 
