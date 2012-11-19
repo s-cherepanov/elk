@@ -591,6 +591,7 @@ AC_CONFIG_FILES([
   examples/Makefile
   include/Makefile
   lib/Makefile
+  lib/gtk/Makefile
   lib/misc/Makefile
   lib/unix/Makefile
   lib/xlib/Makefile

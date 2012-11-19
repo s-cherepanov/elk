@@ -1,1 +1,1 @@
-SUBDIRS = misc unix xlib xwidgets
+SUBDIRS = gtk misc unix xlib xwidgets
