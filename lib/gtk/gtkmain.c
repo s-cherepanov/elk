@@ -1,4 +1,4 @@
-/* gtk.h
+/* gtkmain.c
  *
  * $Id$
  *
@@ -28,8 +28,7 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include <scheme.h>
-#include <gtk/gtk.h>
-#include "config.h"
+#include "gtk.h"
 
-extern void elk_init_gtk_gtkmain (void);
+void elk_init_gtk_gtkmain () {
+}

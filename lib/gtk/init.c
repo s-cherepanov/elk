@@ -31,5 +31,6 @@
 #include "gtk.h"
 
 void elk_init_gtk_init () {
+    elk_init_gtk_gtkmain ();
     P_Provide (Intern ("gtk.la"));
 }
