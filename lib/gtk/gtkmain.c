@@ -29,6 +29,36 @@
  */
 
 #include "gtk.h"
+#include "intern.h"
+
+static Object P_Gtk_Init (Object args) {
+    int argc;
+    char **argv;
+    int i;
+
+    Check_List (args);
+    argc = Fast_Length (args) + 1;
+    argv = (char **)Safe_Malloc (sizeof (char *) * argc);
+    argv[0] = appname ? appname : "elk";
+    for (i = 1; i < argc; i++) {
+        Object arg = Car (args);
+        Check_Type (arg, T_String);
+        argv[i] = Get_String (arg);
+        args = Cdr (args);
+    }
+    gtk_init (&argc, &argv);
+    free (argv);
+
+    return Void;
+}
+
+static Object P_Gtk_Main () {
+    gtk_main ();
+
+    return Void;
+}
 
 void elk_init_gtk_gtkmain () {
+    Define_Primitive (P_Gtk_Init, "gtk-init", 1, 1, EVAL);
+    Define_Primitive (P_Gtk_Main, "gtk-main", 0, 0, EVAL);
 }
