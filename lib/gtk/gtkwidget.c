@@ -30,5 +30,38 @@
 
 #include "gtk.h"
 
+int T_GtkWidget;
+
+GtkWidget *Get_GtkWidget (Object w) {
+    Check_Type (w, T_GtkWidget);
+    return GTKWIDGET(w)->widget;
+}
+
+Object Make_GtkWidget (GtkWidget *w) {
+    Object yield;
+
+    yield = Alloc_Object (sizeof (struct S_GtkWidget), T_GtkWidget, 0);
+    GTKWIDGET(yield)->widget = w;
+    return yield;
+}
+
+static int GtkWidget_Equal (Object x, Object y) {
+    return GTKWIDGET(x)->widget == GTKWIDGET(y)->widget;
+}
+
+static int GtkWidget_Print (Object x, Object port, int raw, int depth,
+        int len) {
+    Printf (port, "#[gtk-widget %lu]", (unsigned long)GTKWIDGET(x)->widget);
+    return 0;
+}
+
+static Object GtkWidgetp (Object x) {
+    return TYPE(x) == T_GtkWidget ? True : False;
+}
+
 void elk_init_gtk_gtkwidget () {
+    T_GtkWidget = Define_Type (0, "gtk-widget", NOFUNC,
+        sizeof (struct S_GtkWidget), GtkWidget_Equal, GtkWidget_Equal,
+        GtkWidget_Print, NOFUNC);
+    Define_Primitive (GtkWidgetp, "gtk-widget?", 1, 1, EVAL);
 }

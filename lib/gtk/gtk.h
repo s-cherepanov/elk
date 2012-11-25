@@ -32,7 +32,19 @@
 #include <gtk/gtk.h>
 #include "config.h"
 
+extern int T_GtkWidget;
+
+#define GTKWIDGET(x)   ((struct S_GtkWidget *)POINTER(x))
+
+struct S_GtkWidget {
+    Object tag;
+    GtkWidget *widget;
+};
+
 C_LINKAGE_BEGIN
+
+extern GtkWidget *Get_GtkWidget (Object w);
+extern Object Make_GtkWidget (GtkWidget *w);
 
 extern void elk_init_gtk_gtkmain (void);
 extern void elk_init_gtk_gtkwidget (void);
