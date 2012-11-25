@@ -69,4 +69,5 @@ void elk_init_gtk_gtkwidget () {
         sizeof (struct S_GtkWidget), GtkWidget_Equal, GtkWidget_Equal,
         GtkWidget_Print, NOFUNC);
     Define_Primitive (GtkWidgetp, "gtk-widget?", 1, 1, EVAL);
+    Define_Primitive (P_Gtk_Widget_Show_All, "gtk-widget-show-all", 1, 1, EVAL);
 }
