@@ -49,6 +49,12 @@ static Object P_Gtk_Window_New (Object sym) {
     return Make_GtkWidget (w);
 }
 
+static Object P_Gtk_Window_Set_Title (Object w, Object title) {
+    gtk_window_set_title (GTK_WINDOW(Get_GtkWidget(w)), Get_String(title));
+    return Void;
+}
+
 void elk_init_gtk_gtkwindow () {
     Define_Primitive (P_Gtk_Window_New, "gtk-window-new", 1, 1, EVAL);
+    Define_Primitive (P_Gtk_Window_Set_Title, "gtk-window-set-title", 2, 2, EVAL);
 }
