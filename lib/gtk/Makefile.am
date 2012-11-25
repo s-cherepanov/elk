@@ -10,6 +10,7 @@ endif
 
 libelk_gtk_la_SOURCES = \
 	gtkmain.c \
+	gtkwidget.c \
 	$(NULL)
 libelk_gtk_la_CFLAGS = @GTK_CFLAGS@
 libelk_gtk_la_LDFLAGS = -no-undefined

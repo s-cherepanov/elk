@@ -32,5 +32,6 @@
 
 void elk_init_gtk_init () {
     elk_init_gtk_gtkmain ();
+    elk_init_gtk_gtkwidget ();
     P_Provide (Intern ("gtk.la"));
 }
