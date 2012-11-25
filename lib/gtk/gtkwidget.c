@@ -59,6 +59,11 @@ static Object GtkWidgetp (Object x) {
     return TYPE(x) == T_GtkWidget ? True : False;
 }
 
+static Object P_Gtk_Widget_Show_All (Object w) {
+    gtk_widget_show_all (Get_GtkWidget(w));
+    return Void;
+}
+
 void elk_init_gtk_gtkwidget () {
     T_GtkWidget = Define_Type (0, "gtk-widget", NOFUNC,
         sizeof (struct S_GtkWidget), GtkWidget_Equal, GtkWidget_Equal,
