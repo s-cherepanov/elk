@@ -32,5 +32,9 @@
 #include <gtk/gtk.h>
 #include "config.h"
 
+C_LINKAGE_BEGIN
+
 extern void elk_init_gtk_gtkmain (void);
 extern void elk_init_gtk_gtkwidget (void);
+
+C_LINKAGE_END
