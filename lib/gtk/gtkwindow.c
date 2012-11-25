@@ -28,7 +28,27 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
+#include <string.h>
 #include "gtk.h"
 
+static Object P_Gtk_Window_New (Object sym) {
+    Object string;
+    char *str;
+    GtkWidget *w;
+
+    Check_Type (sym, T_Symbol);
+    string = P_Symbol_To_String (sym);
+    str = Get_String (string);
+    if (!strcmp(str, "gtk-window-toplevel"))
+        w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    else if (!strcmp(str, "gtk-window-popup"))
+        w = gtk_window_new(GTK_WINDOW_POPUP);
+    else
+        Primitive_Error ("wrong symbol: %s", str);
+
+    return Make_GtkWidget (w);
+}
+
 void elk_init_gtk_gtkwindow () {
+    Define_Primitive (P_Gtk_Window_New, "gtk-window-new", 1, 1, EVAL);
 }
