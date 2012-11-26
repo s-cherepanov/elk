@@ -48,13 +48,11 @@ static Object P_Gtk_Init (Object args) {
     }
     gtk_init (&argc, &argv);
     free (argv);
-
     return Void;
 }
 
 static Object P_Gtk_Main () {
     gtk_main ();
-
     return Void;
 }
 
