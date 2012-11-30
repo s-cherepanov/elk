@@ -32,21 +32,13 @@
 #include "gtk.h"
 
 static Object P_Gtk_Window_New (Object sym) {
-    Object string;
-    char *str;
-    GtkWidget *w;
+    SYMDESCR syms[] = {
+        { "gtk-window-toplevel", GTK_WINDOW_TOPLEVEL },
+        { "gtk-window-popup",    GTK_WINDOW_POPUP },
+        { 0, 0 }
+    };
 
-    Check_Type (sym, T_Symbol);
-    string = P_Symbol_To_String (sym);
-    str = Get_String (string);
-    if (!strcmp(str, "gtk-window-toplevel"))
-        w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    else if (!strcmp(str, "gtk-window-popup"))
-        w = gtk_window_new(GTK_WINDOW_POPUP);
-    else
-        Primitive_Error ("wrong symbol: %s", str);
-
-    return Make_GtkWidget (w);
+    return Make_GtkWidget (gtk_window_new (Symbols_To_Bits (sym, 0, syms)));
 }
 
 static Object P_Gtk_Window_Set_Title (Object w, Object title) {
