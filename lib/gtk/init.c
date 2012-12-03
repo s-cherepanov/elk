@@ -31,6 +31,9 @@
 #include "gtk.h"
 
 void elk_init_gtk_init () {
+    Object sym = Intern ("gobject.la");
+
+    P_Require (1, &sym);
     elk_init_gtk_gtkmain ();
     elk_init_gtk_gtkwidget ();
     elk_init_gtk_gtkwindow ();
