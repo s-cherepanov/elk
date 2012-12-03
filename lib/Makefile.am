@@ -1,1 +1,1 @@
-SUBDIRS = gtk misc unix xlib xwidgets
+SUBDIRS = gobject gtk misc unix xlib xwidgets
