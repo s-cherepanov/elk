@@ -570,6 +570,11 @@ AM_CONDITIONAL(HAVE_GROFF, test "${ac_cv_my_have_groff}" = "yes")
 PKG_CHECK_MODULES(GTK, gtk+-2.0, ac_cv_my_have_gtk=yes, ac_cv_my_have_gtk=no)
 AM_CONDITIONAL(HAVE_GTK, test "${ac_cv_my_have_gtk}" = "yes")
 
+if test "${ac_cv_my_have_gtk}" = "yes"; then
+PKG_CHECK_MODULES(GOBJECT, gobject-2.0, ac_cv_my_have_gobject=yes, ac_cv_my_have_gobject=no)
+AM_CONDITIONAL(HAVE_GOBJECT, test "${ac_cv_my_have_gobject}" = "yes")
+fi
+
 dnl
 dnl  Finished!
 dnl
