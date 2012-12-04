@@ -56,7 +56,13 @@ static Object P_Gtk_Main () {
     return Void;
 }
 
+static Object P_Gtk_Main_Quit () {
+    gtk_main_quit ();
+    return Void;
+}
+
 void elk_init_gtk_gtkmain () {
     Define_Primitive (P_Gtk_Init, "gtk-init", 1, 1, EVAL);
     Define_Primitive (P_Gtk_Main, "gtk-main", 0, 0, EVAL);
+    Define_Primitive (P_Gtk_Main_Quit, "gtk-main-quit", 0, 0, EVAL);
 }
