@@ -1,4 +1,4 @@
-/* gobject.h
+/* closure.c
  *
  * $Id$
  *
@@ -28,14 +28,33 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include <scheme.h>
-#include <glib-object.h>
-#include "config.h"
+#include "gobject.h"
 
-C_LINKAGE_BEGIN
+typedef struct _ElkClosure ElkClosure;
+struct _ElkClosure {
+    GClosure closure;
+    Object callback;
+};
 
-GClosure *elk_closure_new (Object callback);
+static void elk_closure_finalize (gpointer notify_data, GClosure *closure)
+{
+}
 
-void elk_init_gobject_signal (void);
+static void elk_closure_marshal (GClosure *closure, GValue *return_value,
+                                 guint n_param_values,
+                                 const GValue *param_values,
+                                 gpointer invocation_hint,
+                                 gpointer marshal_data) {
+    Funcall (((ElkClosure *)closure)->callback, Null, 0);
+    if (return_value)
+        g_value_init (return_value, G_TYPE_NONE);
+}
 
-C_LINKAGE_END
+GClosure *elk_closure_new (Object callback) {
+    GClosure *closure = g_closure_new_simple (sizeof (ElkClosure), NULL);
+
+    ((ElkClosure *)closure)->callback = callback;
+    g_closure_add_finalize_notifier (closure, NULL, elk_closure_finalize);
+    g_closure_set_marshal (closure, elk_closure_marshal);
+    return closure;
+}

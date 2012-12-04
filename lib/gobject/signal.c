@@ -1,4 +1,4 @@
-/* gobject.h
+/* signal.c
  *
  * $Id$
  *
@@ -28,14 +28,17 @@
  * THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
  */
 
-#include <scheme.h>
-#include <glib-object.h>
-#include "config.h"
+#include "gobject.h"
 
-C_LINKAGE_BEGIN
+static Object P_G_Signal_Connect (Object instance, Object detailed_signal, Object handler) {
+    GClosure *closure;
 
-GClosure *elk_closure_new (Object callback);
+    closure = elk_closure_new (handler);
+    g_signal_connect_closure ((gpointer)Get_GtkWidget (instance),
+                              Get_String (detailed_signal), closure, FALSE);
+    return Void;
+}
 
-void elk_init_gobject_signal (void);
-
-C_LINKAGE_END
+void elk_init_gobject_signal () {
+    Define_Primitive (P_G_Signal_Connect, "g-signal-connect", 3, 3, EVAL);
+}

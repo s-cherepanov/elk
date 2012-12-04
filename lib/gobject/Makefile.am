@@ -9,6 +9,8 @@ gobject_la = gobject.la
 endif
 
 libelk_gobject_la_SOURCES = \
+	closure.c \
+	signal.c \
 	$(NULL)
 libelk_gobject_la_CFLAGS = @GOBJECT_CFLAGS@
 libelk_gobject_la_LDFLAGS = -no-undefined

@@ -31,5 +31,6 @@
 #include "gobject.h"
 
 void elk_init_gobject_init () {
+    elk_init_gobject_signal ();
     P_Provide (Intern ("gobject.la"));
 }
