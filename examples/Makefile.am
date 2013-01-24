@@ -104,6 +104,6 @@ motif_DATA = \
 
 gtkdir = $(examplesdir)/gtk
 gtk_DATA = \
-	gtk/hello-world.scm
+	gtk/hello-world.scm \
 	$(NULL)
 
