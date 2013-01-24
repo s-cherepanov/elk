@@ -102,3 +102,8 @@ motif_DATA = \
 	motif/selection-box.scm \
 	$(NULL)
 
+gtkdir = $(examplesdir)/gtk
+gtk_DATA = \
+	gtk/hello-world.scm
+	$(NULL)
+
